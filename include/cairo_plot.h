@@ -1,4 +1,5 @@
 #include <cairomm/context.h>
+#include <cairomm/xlib_surface.h>
 #ifndef CAIRO_PLOT_H
 #define CAIRO_PLOT_H
 
@@ -8,6 +9,7 @@ namespace cairo_plot {
 	 */
 	class Plot {
 		public:
+			Cairo::RefPtr<Cairo::XlibSurface> pSurface;
 			Cairo::RefPtr<Cairo::Context> pContext;
 			// Should open cairo surface
 			Plot( float max_x, float max_y );
