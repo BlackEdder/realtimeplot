@@ -1,2 +1,2 @@
 #compile and run examples/plot_points.cc
-g++ examples/plot_points.cc src/cairo_plot.cc -I./include && ./a.out
+g++ examples/plot_points.cc src/cairo_plot.cc -lcairomm-1.0 -I./include -I/usr/include/cairomm-1.0 -I/usr/include/cairo && ./a.out
