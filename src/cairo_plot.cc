@@ -103,19 +103,15 @@ namespace cairo_plot {
 
         xContext->set_source( surface, 0, 0 );
 
-        /*xSurface->set_size( 100, 100 );
-          xContext->scale(0.5,0.5);
-          xContext->set_source( surface, 0, 0 );*/
 				while(1) {
-					//At least draw three times a second
 					if (XPending(dpy)>0) {
 						XNextEvent( dpy, &report ); 
 						switch( report.type ) {
 							case ConfigureNotify:
 								xSurface->set_size( report.xconfigure.width,
 										report.xconfigure.height );
-								std::cout << report.xconfigure.width << std::endl;
-								std::cout << report.xconfigure.height << std::endl;
+								//std::cout << report.xconfigure.width << std::endl;
+								//std::cout << report.xconfigure.height << std::endl;
 								xContext = Cairo::Context::create( xSurface );
 								xContext->scale( float(xSurface->get_width())/surface->get_width(),
 										float(xSurface->get_height())/surface->get_height() );
@@ -128,6 +124,7 @@ namespace cairo_plot {
 								break;
 						}
 					} else {
+						//Draw at least three times a second
 						usleep(300000);
 						XClearWindow( dpy, win );
 						xContext->paint();
