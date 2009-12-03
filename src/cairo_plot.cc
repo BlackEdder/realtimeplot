@@ -48,7 +48,7 @@ namespace cairo_plot {
         config = conf;
 
         surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-                config.pixel_width, config.pixel_width );
+                config.pixel_width, config.pixel_height );
         context = Cairo::Context::create(surface);
 
         plot_surface = PlotSurface( config, surface );
@@ -110,6 +110,7 @@ namespace cairo_plot {
                     break;
                 case Expose:
                     xContext->paint();
+                    break;
             }
             /*xContext->paint();
             sleep(1);*/
