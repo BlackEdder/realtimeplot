@@ -80,10 +80,8 @@ namespace cairo_plot {
         public:
             Cairo::RefPtr<Cairo::ImageSurface> surface;
             Cairo::RefPtr<Cairo::Context> context;
-            Cairo::RefPtr<Cairo::Context> xContext;
             PlotSurface plot_surface;
             PlotConfig config;
-            Display *dpy;
 
             boost::shared_ptr<boost::thread> pEvent_thrd;
 
