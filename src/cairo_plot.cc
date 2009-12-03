@@ -2,12 +2,54 @@
 
 namespace cairo_plot {
 
+    PlotSurface::PlotSurface( Cairo::RefPtr<Cairo::ImageSurface> surface ) {
+        pSurface = surface;
+        origin_x = 10;
+        origin_y = 10;
+        min_x = 0;
+        max_x = 100;
+        min_y = 0;
+        max_y = 50;
+    }
+
+    /*
+     * Should draw axes, now drawing just a box
+     */
+
+    void PlotSurface::paint( Cairo::RefPtr<Cairo::Context> pContext ) {
+   		pContext->set_source_rgb(0, 0, 0);
+		pContext->rectangle( origin_x, 0,
+                this->get_pixel_width(), 
+                this->get_pixel_height() );
+		pContext->stroke();
+		pContext->set_source_rgb(1, 1, 1);
+    }
+
+    int PlotSurface::get_pixel_width() {
+        return pSurface->get_width() - origin_x;
+    }
+    
+    int PlotSurface::get_pixel_height() {
+        return pSurface->get_height() - origin_y;
+    }
+
+    Coord PlotSurface::to_pixel_coord( Coord plot_coords ) {
+        Coord pixel_coord = Coord( 
+                this->get_pixel_width()*plot_coords.x/(max_x-min_x)+origin_x,
+                pSurface->get_height()-(origin_y+this->get_pixel_height()*plot_coords.y/(max_y-min_y) ));
+        return pixel_coord;
+    }
+
     Plot::Plot( int x_size, int y_size ) {
         width = x_size;
         height = y_size;
+
         
         surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
-        context = Cairo::Context::create(surface); 
+        context = Cairo::Context::create(surface);
+
+        plot_surface = PlotSurface( surface );
+        plot_surface.paint( context );
 
         pEvent_thrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::Plot::event_loop, this ) ) );
     }
@@ -56,8 +98,9 @@ namespace cairo_plot {
     }
 
 	void Plot::plot_point( float x, float y ) {
+        Coord pixel_coord = plot_surface.to_pixel_coord( Coord(x, y) );
 		context->set_source_rgb(0, 0, 0);
-		context->rectangle( x*width, y*height, 1, 1 );
+		context->rectangle( pixel_coord.x, pixel_coord.y, 1, 1 );
 		context->stroke();
 		context->set_source_rgb(1, 1, 1);
 	}
