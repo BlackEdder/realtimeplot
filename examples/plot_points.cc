@@ -6,6 +6,8 @@ int main() {
 	
     Plot pl = Plot( 100, 100 );
 	pl.plot_point( 0.5, 0.5 );
+    sleep(1);
+	pl.plot_point( 0.8, 0.5 );
     sleep(5);
 	return 0;
 

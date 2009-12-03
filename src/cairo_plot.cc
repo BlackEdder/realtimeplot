@@ -45,10 +45,8 @@ namespace cairo_plot {
 
         xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), width, height);
         xContext = Cairo::Context::create( xSurface );
-        std::cout << "debug " << std::endl;
 
         xContext->set_source( surface, 0, 0 );
-        std::cout << "debug 1" << std::endl;
         
         while(1) {
             xContext->paint();
@@ -58,11 +56,9 @@ namespace cairo_plot {
     }
 
 	void Plot::plot_point( float x, float y ) {
-		context->set_line_width(20.0);
-		context->set_source_rgb(0.86, 0.85, 0.47);
-		context->rectangle( 0.0, 0.0, surface->get_width(), surface->get_height());
-		context->stroke();
 		context->set_source_rgb(0, 0, 0);
-		context->fill();
+		context->rectangle( x*width, y*height, 1, 1 );
+		context->stroke();
+		context->set_source_rgb(1, 1, 1);
 	}
 }
