@@ -73,6 +73,7 @@ namespace cairo_plot {
      * Implementation of Plot class
      */
     Plot::Plot( PlotConfig conf ) {
+				loop_started = False;
         config = conf;
 
         surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
@@ -122,6 +123,8 @@ namespace cairo_plot {
 
         xContext->set_source( surface, 0, 0 );
 
+				loop_started = True;
+
 				while(1) {
 					if (XPending(dpy)>0) {
 						XNextEvent( dpy, &report ); 
@@ -144,10 +147,8 @@ namespace cairo_plot {
 						}
 					} else {
 						//Not sure why needed, but else won't refresh correctly
+						//(threading issues)?
 						usleep(300000);
-						//xSurface->flush();
-						//XClearWindow( dpy, win );
-						//xContext->paint();
 					}
 				}
         XCloseDisplay(dpy);
@@ -160,6 +161,7 @@ namespace cairo_plot {
 		context->rectangle( pixel_coord.x, pixel_coord.y, 1, 1 );
 		context->stroke();
 		context->set_source_rgb(1, 1, 1);
-						XClearArea( dpy, win,0,0,0,0,True );
+		if (loop_started)
+			XClearArea( dpy, win,0,0,0,0,True );
 	}
 }

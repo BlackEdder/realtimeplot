@@ -115,6 +115,8 @@ namespace cairo_plot {
             // Plots a point to the surface
             void plot_point( float x, float y );
             void event_loop();
+				private:
+						bool loop_started;
     };
 }
 #endif
