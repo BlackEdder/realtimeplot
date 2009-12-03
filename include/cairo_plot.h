@@ -83,6 +83,10 @@ namespace cairo_plot {
             PlotSurface plot_surface;
             PlotConfig config;
 
+            Display *dpy;
+            Window win;
+            //XEvent anExposeEvent;
+
             boost::shared_ptr<boost::thread> pEvent_thrd;
 
             int width;

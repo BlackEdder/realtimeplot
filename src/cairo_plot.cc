@@ -66,9 +66,7 @@ namespace cairo_plot {
         int scr, white, black;
         Cairo::RefPtr<Cairo::XlibSurface> xSurface;
         Cairo::RefPtr<Cairo::Context> xContext;
-        Window win;
         XEvent report;
-        Display *dpy;
 
         if(!(dpy=XOpenDisplay(NULL))) {
             fprintf(stderr, "ERROR: Could not open display\n");
@@ -111,8 +109,10 @@ namespace cairo_plot {
                     xContext->set_source( surface, 0, 0 );
                     break;
                 case Expose:
-                    if (report.xexpose.count<1)
+                    if (report.xexpose.count<1) {
+                        //XClearWindow( dpy, win );
                         xContext->paint();
+                    }
                     break;
             }
             /*xContext->paint();
@@ -128,5 +128,9 @@ namespace cairo_plot {
 		context->rectangle( pixel_coord.x, pixel_coord.y, 1, 1 );
 		context->stroke();
 		context->set_source_rgb(1, 1, 1);
+        //if (dpy != NULL) {
+            //XClearArea( dpy, win, 0,0,0,0, True );
+            //XPutBackEvent( dpy, &anExposeEvent );
+        //}
 	}
 }
