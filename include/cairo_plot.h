@@ -19,8 +19,8 @@ namespace cairo_plot {
             
             //set default values
             PlotConfig() {
-                pixel_width = 400;
-                pixel_height = 400;
+                pixel_width = 800;
+                pixel_height = 600;
                 origin_x = 20;
                 origin_y = 20;
                 min_x = 0;

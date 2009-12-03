@@ -97,27 +97,33 @@ namespace cairo_plot {
         /*xSurface->set_size( 100, 100 );
           xContext->scale(0.5,0.5);
           xContext->set_source( surface, 0, 0 );*/
-        while(1) {
-            XNextEvent( dpy, &report ); 
-            switch( report.type ) {
-                case ConfigureNotify:
-                    xSurface->set_size( report.xconfigure.width,
-                            report.xconfigure.height );
-                    xContext = Cairo::Context::create( xSurface );
-                    xContext->scale( xSurface->get_width()/surface->get_width(),
-                            xSurface->get_height()/surface->get_height() );
-                    xContext->set_source( surface, 0, 0 );
-                    break;
-                case Expose:
-                    if (report.xexpose.count<1) {
-                        //XClearWindow( dpy, win );
-                        xContext->paint();
-                    }
-                    break;
-            }
-            /*xContext->paint();
-            sleep(1);*/
-        }
+				while(1) {
+					//At least draw three times a second
+					if (XPending(dpy)>0) {
+						XNextEvent( dpy, &report ); 
+						switch( report.type ) {
+							case ConfigureNotify:
+								xSurface->set_size( report.xconfigure.width,
+										report.xconfigure.height );
+								std::cout << report.xconfigure.width << std::endl;
+								std::cout << report.xconfigure.height << std::endl;
+								xContext = Cairo::Context::create( xSurface );
+								xContext->scale( float(xSurface->get_width())/surface->get_width(),
+										float(xSurface->get_height())/surface->get_height() );
+								xContext->set_source( surface, 0, 0 );
+								break;
+							case Expose:
+								if (report.xexpose.count<1) {
+									xContext->paint();
+								}
+								break;
+						}
+					} else {
+						usleep(300000);
+						XClearWindow( dpy, win );
+						xContext->paint();
+					}
+				}
         XCloseDisplay(dpy);
     }
 
@@ -128,9 +134,5 @@ namespace cairo_plot {
 		context->rectangle( pixel_coord.x, pixel_coord.y, 1, 1 );
 		context->stroke();
 		context->set_source_rgb(1, 1, 1);
-        //if (dpy != NULL) {
-            //XClearArea( dpy, win, 0,0,0,0, True );
-            //XPutBackEvent( dpy, &anExposeEvent );
-        //}
 	}
 }
