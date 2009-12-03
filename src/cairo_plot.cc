@@ -16,22 +16,31 @@ namespace cairo_plot {
      * Should draw axes, now drawing just a box
      */
 
-    void PlotSurface::paint( Cairo::RefPtr<Cairo::Context> pContext ) {
-   		pContext->set_source_rgb(0, 0, 0);
-		pContext->rectangle( config.origin_x, 0,
-                this->get_pixel_width(), 
-                this->get_pixel_height() );
-		pContext->stroke();
-		pContext->set_source_rgb(1, 1, 1);
-    }
+		void PlotSurface::paint( Cairo::RefPtr<Cairo::Context> pContext ) {
+			pContext->set_source_rgb(0, 0, 0);
+			pContext->rectangle( config.origin_x, 0,
+					this->get_pixel_width(), 
+					this->get_pixel_height() );
 
-    int PlotSurface::get_pixel_width() {
-        return pSurface->get_width() - config.origin_x;
-    }
-    
-    int PlotSurface::get_pixel_height() {
-        return pSurface->get_height() - config.origin_y;
-    }
+			for (int i=0; i<config.nr_of_ticks; ++i) {
+				Coord coord_x = to_pixel_coord( Coord( i*(config.max_x-config.min_x)/(config.nr_of_ticks-1), 0 ) );
+				pContext->move_to( coord_x.x, coord_x.y );
+				pContext->line_to( coord_x.x, coord_x.y-config.ticks_length );
+				Coord coord_y = to_pixel_coord( Coord( 0, i*(config.max_y-config.min_y)/(config.nr_of_ticks-1) ) );
+				pContext->move_to( coord_y.x, coord_y.y );
+				pContext->line_to( coord_y.x+config.ticks_length, coord_y.y );
+			}
+			pContext->stroke();
+			pContext->set_source_rgb(1, 1, 1);
+		}
+
+		int PlotSurface::get_pixel_width() {
+			return pSurface->get_width() - config.origin_x;
+		}
+
+		int PlotSurface::get_pixel_height() {
+			return pSurface->get_height() - config.origin_y;
+		}
 
     Coord PlotSurface::to_pixel_coord( Coord plot_coords ) {
         Coord pixel_coord = Coord( 

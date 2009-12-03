@@ -14,6 +14,7 @@ namespace cairo_plot {
         public:
             int pixel_width, pixel_height;
             int origin_x, origin_y;
+						int nr_of_ticks, ticks_length;
             float min_x, max_x;
             float min_y, max_y;
             
@@ -21,12 +22,14 @@ namespace cairo_plot {
             PlotConfig() {
                 pixel_width = 800;
                 pixel_height = 600;
-                origin_x = 20;
-                origin_y = 20;
+                origin_x = 50;
+                origin_y = 50;
                 min_x = 0;
                 max_x = 100;
                 min_y = 0;
                 max_y = 50;
+								nr_of_ticks = 11;
+								ticks_length = 7;
             }
     };
 
