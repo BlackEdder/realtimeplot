@@ -15,7 +15,6 @@ namespace cairo_plot {
     /*
      * Should draw axes, now drawing just a box
      */
-
 		void PlotSurface::paint( Cairo::RefPtr<Cairo::Context> pContext ) {
 			Cairo::RefPtr<Cairo::ToyFontFace> font =
 				Cairo::ToyFontFace::create("Bitstream Charter",
@@ -43,6 +42,14 @@ namespace cairo_plot {
 				pContext->show_text(stringify(config.min_y+i*(config.max_y-config.min_y)/(config.nr_of_ticks-1)));
 			}
 
+			//plot labels
+			Coord tmp_coord = to_pixel_coord( Coord( config.min_x, (config.max_y-config.min_y)/2.0+config.min_y ));
+			pContext->move_to( tmp_coord.x-5*config.ticks_length, tmp_coord.y  );
+			pContext->show_text( config.ylabel );
+			tmp_coord = to_pixel_coord( Coord( (config.max_x-config.min_x)/2.0+config.min_x , config.min_y ));
+			pContext->move_to( tmp_coord.x, tmp_coord.y+5*config.ticks_length  );
+			pContext->show_text( config.xlabel );
+
 			pContext->stroke();
 			pContext->set_source_rgb(1, 1, 1);
 		}
@@ -65,7 +72,6 @@ namespace cairo_plot {
     /*
      * Implementation of Plot class
      */
-
     Plot::Plot( PlotConfig conf ) {
         config = conf;
 

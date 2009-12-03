@@ -28,6 +28,7 @@ namespace cairo_plot {
 						int nr_of_ticks, ticks_length;
             float min_x, max_x;
             float min_y, max_y;
+						std::string xlabel, ylabel;
             
             //set default values
             PlotConfig() {
@@ -41,6 +42,8 @@ namespace cairo_plot {
                 max_y = 40;
 								nr_of_ticks = 11;
 								ticks_length = 7;
+								xlabel = "x";
+								ylabel = "y";
             }
     };
 
