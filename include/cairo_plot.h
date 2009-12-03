@@ -1,5 +1,8 @@
 #ifndef CAIRO_PLOT_H
 #define CAIRO_PLOT_H
+#include <iostream>
+#include <sstream>
+#include <string>
 
 #include <cairomm/context.h>
 #include <cairomm/xlib_surface.h>
@@ -10,9 +13,17 @@
 
 namespace cairo_plot {
 
-    class PlotConfig {
-        public:
-            int pixel_width, pixel_height;
+	inline std::string stringify(double x)
+	{
+		std::ostringstream o;
+		o << x;
+		return o.str();
+	}   
+
+
+	class PlotConfig {
+		public:
+			int pixel_width, pixel_height;
             int origin_x, origin_y;
 						int nr_of_ticks, ticks_length;
             float min_x, max_x;
@@ -24,10 +35,10 @@ namespace cairo_plot {
                 pixel_height = 600;
                 origin_x = 50;
                 origin_y = 50;
-                min_x = 0;
-                max_x = 100;
-                min_y = 0;
-                max_y = 50;
+                min_x = -10;
+                max_x = 90;
+                min_y = -10;
+                max_y = 40;
 								nr_of_ticks = 11;
 								ticks_length = 7;
             }
