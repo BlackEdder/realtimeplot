@@ -143,10 +143,11 @@ namespace cairo_plot {
 								break;
 						}
 					} else {
-						//Draw at least three times a second
+						//Not sure why needed, but else won't refresh correctly
 						usleep(300000);
-						XClearWindow( dpy, win );
-						xContext->paint();
+						//xSurface->flush();
+						//XClearWindow( dpy, win );
+						//xContext->paint();
 					}
 				}
         XCloseDisplay(dpy);
@@ -159,5 +160,6 @@ namespace cairo_plot {
 		context->rectangle( pixel_coord.x, pixel_coord.y, 1, 1 );
 		context->stroke();
 		context->set_source_rgb(1, 1, 1);
+						XClearArea( dpy, win,0,0,0,0,True );
 	}
 }
