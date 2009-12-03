@@ -33,7 +33,7 @@ namespace cairo_plot {
 		pSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 100, 100);
 		pContext = Cairo::Context::create( pSurface );
 
-        event_thrd = boost::thread( boost::bind( &cairo_plot::Plot::event_loop, this ) );
+        pEvent_thrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::Plot::event_loop, this ) ) );
 
 		pContext->save(); // save the state of the context
         pContext->set_source_rgb(0.86, 0.85, 0.47);
@@ -42,7 +42,7 @@ namespace cairo_plot {
     }
 
     Plot::~Plot() { 
-        event_thrd.join(); 
+        pEvent_thrd->join(); 
     }
 
     void Plot::event_loop() {
@@ -50,7 +50,6 @@ namespace cairo_plot {
         while(1) {
             XNextEvent(dpy, &e);
             if(e.type==Expose && e.xexpose.count<1) {
-                pContext->paint();
             } else if(e.type==ButtonPress) break;
         }
 

@@ -1,4 +1,31 @@
-#include <X11/Xlib.h>
+#include <cairomm/context.h>
+#include <cairomm/xlib_surface.h>
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+#ifndef CAIRO_PLOT_H
+#define CAIRO_PLOT_H
+
+namespace cairo_plot {
+	/*
+	 * Class controls the plotting
+	 */
+	class Plot {
+		public:
+			Cairo::RefPtr<Cairo::XlibSurface> pSurface;
+			Cairo::RefPtr<Cairo::Context> pContext;
+            Display *dpy;
+            boost::shared_ptr<boost::thread> pEvent_thrd;
+			// Should open cairo surface
+			Plot( float max_x, float max_y );
+            ~Plot();
+			// Plots a point to the surface
+			void plot_point( float x, float y );
+            void event_loop();
+	};
+}
+#endif
+
+/*#include <X11/Xlib.h>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <cairomm/context.h>
@@ -7,9 +34,9 @@
 #define CAIRO_PLOT_H
 
 namespace cairo_plot {
-	/*
-	 * Class controls the plotting
-	 */
+	
+	 Class controls the plotting
+	
 	class Plot {
 		public:
             // Should open cairo surface
@@ -27,4 +54,4 @@ namespace cairo_plot {
             void event_loop();
 	};
 }
-#endif
+#endif*/
