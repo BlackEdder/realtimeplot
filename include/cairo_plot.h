@@ -29,6 +29,8 @@ namespace cairo_plot {
             float min_x, max_x;
             float min_y, max_y;
             std::string xlabel, ylabel;
+            bool update_rolling;
+            float rolling_overlap;
 
             //set default values
             PlotConfig() {
@@ -44,6 +46,8 @@ namespace cairo_plot {
                 ticks_length = 7;
                 xlabel = "x";
                 ylabel = "y";
+                update_rolling = True;
+                rolling_overlap = 0.1;
             }
     };
 
@@ -72,13 +76,13 @@ namespace cairo_plot {
             int pixel_widht, pixel_height;
             float min_x, max_x;
             float min_y, max_y;
-            PlotConfig config;
+            PlotConfig *config;
             Cairo::RefPtr<Cairo::ImageSurface> pSurface;
 
             //Dummy to allow PlotSurface plot_surface
             PlotSurface() {};
 
-            PlotSurface( PlotConfig config, 
+            PlotSurface( PlotConfig *config, 
                     Cairo::RefPtr<Cairo::ImageSurface> pSurface );
 
             //Draws axes etc
@@ -95,10 +99,16 @@ namespace cairo_plot {
      */
     class Plot {
         public:
+           // Should open cairo surface
+            Plot( PlotConfig *conf );
+            ~Plot();
+            // Plots a point to the surface
+            void plot_point( float x, float y );
+        private:
             Cairo::RefPtr<Cairo::ImageSurface> surface;
             Cairo::RefPtr<Cairo::Context> context;
             PlotSurface plot_surface;
-            PlotConfig config;
+            PlotConfig *config;
 
             Display *dpy;
             Window win;
@@ -109,14 +119,14 @@ namespace cairo_plot {
             int width;
             int height;
 
-            // Should open cairo surface
-            Plot( PlotConfig conf );
-            ~Plot();
-            // Plots a point to the surface
-            void plot_point( float x, float y );
-            void event_loop();
-        private:
             bool loop_started;
+            void event_loop();
+
+            //Check if a point falls within bounds
+            bool check_bounds( Coord crd );
+
+            //Roll the bounds to include crd
+            void update_bounds_rolling( Coord crd );
     };
 }
 #endif
