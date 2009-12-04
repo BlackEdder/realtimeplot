@@ -247,6 +247,10 @@ namespace cairo_plot {
                 config->pixel_width, config->pixel_height );
         Cairo::RefPtr<Cairo::Context> new_context = Cairo::Context::create(new_surface);
 
+        new_context->set_source_rgb(1, 1, 1);
+        new_context->rectangle(0,0,surface_new_x, surface_new_y);
+        new_context->fill();
+        new_context->stroke();
         new_context->set_source( surface, surface_new_x, surface_new_y );
         new_context->paint();
         
