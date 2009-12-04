@@ -162,10 +162,13 @@ namespace cairo_plot {
                 }
             } else {
                 if (updated) {
+                    xContext->set_source_rgb(1,1,1);
+                    xContext->rectangle(0,0, xSurface->get_width(), xSurface->get_height() );
+                    xContext->fill();
+                    usleep(100000); //would think this should be after paint, but no!?!
                     xContext->set_source( surface, 0, 0 );
                     xContext->paint();
                     updated = false;
-                    usleep(100000); 
                 } else {
                     usleep(100000);
                 }
@@ -247,10 +250,9 @@ namespace cairo_plot {
                 config->pixel_width, config->pixel_height );
         Cairo::RefPtr<Cairo::Context> new_context = Cairo::Context::create(new_surface);
 
-        new_context->set_source_rgb(1, 1, 1);
-        new_context->rectangle(0,0,surface_new_x, surface_new_y);
+        new_context->set_source_rgb(1,1,1);
+        new_context->rectangle(0,0,new_surface->get_width(), new_surface->get_height());
         new_context->fill();
-        new_context->stroke();
         new_context->set_source( surface, surface_new_x, surface_new_y );
         new_context->paint();
         
