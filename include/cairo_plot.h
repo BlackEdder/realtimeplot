@@ -41,7 +41,7 @@ namespace cairo_plot {
                 min_x = -10;
                 max_x = 90;
                 min_y = -10;
-                max_y = 40;
+                max_y = 1000;
                 nr_of_ticks = 11;
                 ticks_length = 7;
                 xlabel = "x";
@@ -118,7 +118,8 @@ namespace cairo_plot {
 
             int width;
             int height;
-
+            
+            bool updated;
             bool loop_started;
             void event_loop();
 

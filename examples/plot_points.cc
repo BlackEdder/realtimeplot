@@ -14,5 +14,4 @@ int main() {
 	pl.plot_point( 50, 60 );
 	pl.plot_point( 50, 80 );
 	return 0;
-
 }

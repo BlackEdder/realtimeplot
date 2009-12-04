@@ -161,9 +161,14 @@ namespace cairo_plot {
                         break;
                 }
             } else {
-                //Not sure why needed, but else won't refresh correctly
-                //(threading issues)?
-                usleep(300000);
+                if (updated) {
+                    xContext->set_source( surface, 0, 0 );
+                    xContext->paint();
+                    updated = false;
+                    usleep(100000); 
+                } else {
+                    usleep(100000);
+                }
             }
         }
         XCloseDisplay(dpy);
@@ -186,8 +191,7 @@ namespace cairo_plot {
             context->rectangle( pixel_coord.x, pixel_coord.y, 1, 1 );
             context->stroke();
             context->set_source_rgb(1, 1, 1);
-            if (loop_started)
-                XClearArea( dpy, win,0,0,0,0,True );
+            updated = true;
         }
     }
 
@@ -252,8 +256,6 @@ namespace cairo_plot {
 
         //Plot new bounding box
         plot_surface.paint( context );
-        if (loop_started)
-            XClearArea( dpy, win,0,0,0,0,True );
-
+        updated = true;
     }
 }
