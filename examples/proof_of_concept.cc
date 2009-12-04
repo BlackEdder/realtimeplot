@@ -15,6 +15,11 @@
 Cairo::RefPtr<Cairo::ImageSurface> surface;
 Cairo::RefPtr<Cairo::Context> context;
 
+float min_x = -10;
+float max_x = 40;
+float min_y = -20;
+float max_y = 80;
+
 void expose_pixmap() {
     Window rootwin;
     int scr, white, black;
@@ -53,9 +58,33 @@ void expose_pixmap() {
     }
 }
 
+void draw_point(float x, float y) {
+    double dx = 1;
+    double dy = 1;
+    context->device_to_user_distance(dx,dy);
+    //not sure what is going wrong, dx and dy are translated correctly
+    context->rectangle(x,y,dx,dy);
+}
+
 int main() {
     surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 200, 200);
-    context = Cairo::Context::create(surface); 
+    context = Cairo::Context::create(surface);
+    
+    context->set_source_rgb(0.5,0.5,0);
+    context->rectangle(0,0,surface->get_width(),surface->get_height());
+    context->stroke();
+
+    //transform data range
+    context->scale( surface->get_width()/(max_x-min_x),
+            -surface->get_height()/(max_y-min_y) );
+    context->translate( -min_x, -max_y );
+    
+    context->set_source_rgb(0,0,0);
+    draw_point(0,0);
+    draw_point(max_x, max_y);
+    draw_point(min_x, min_y);
+    context->stroke();
+
     boost::thread thrd( &expose_pixmap );
     thrd.join();
     return 0;
