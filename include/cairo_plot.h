@@ -13,23 +13,23 @@
 
 namespace cairo_plot {
 
-	inline std::string stringify(double x)
-	{
-		std::ostringstream o;
-		o << x;
-		return o.str();
-	}   
+    inline std::string stringify(double x)
+    {
+        std::ostringstream o;
+        o << x;
+        return o.str();
+    }   
 
 
-	class PlotConfig {
-		public:
-			int pixel_width, pixel_height;
+    class PlotConfig {
+        public:
+            int pixel_width, pixel_height;
             int origin_x, origin_y;
-						int nr_of_ticks, ticks_length;
+            int nr_of_ticks, ticks_length;
             float min_x, max_x;
             float min_y, max_y;
-						std::string xlabel, ylabel;
-            
+            std::string xlabel, ylabel;
+
             //set default values
             PlotConfig() {
                 pixel_width = 800;
@@ -40,10 +40,10 @@ namespace cairo_plot {
                 max_x = 90;
                 min_y = -10;
                 max_y = 40;
-								nr_of_ticks = 11;
-								ticks_length = 7;
-								xlabel = "x";
-								ylabel = "y";
+                nr_of_ticks = 11;
+                ticks_length = 7;
+                xlabel = "x";
+                ylabel = "y";
             }
     };
 
@@ -90,10 +90,10 @@ namespace cairo_plot {
             Coord to_pixel_coord( Coord plot_coords );
     };
 
-	/*
-	 * Class controls the plotting
-	 */
-	class Plot {
+    /*
+     * Class controls the plotting
+     */
+    class Plot {
         public:
             Cairo::RefPtr<Cairo::ImageSurface> surface;
             Cairo::RefPtr<Cairo::Context> context;
@@ -115,8 +115,8 @@ namespace cairo_plot {
             // Plots a point to the surface
             void plot_point( float x, float y );
             void event_loop();
-				private:
-						bool loop_started;
+        private:
+            bool loop_started;
     };
 }
 #endif
