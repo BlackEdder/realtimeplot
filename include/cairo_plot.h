@@ -123,6 +123,9 @@ namespace cairo_plot {
             bool loop_started;
             void event_loop();
 
+            //Repaints surface to xlib
+            void paint( Cairo::RefPtr<Cairo::XlibSurface> xSurface, Cairo::RefPtr<Cairo::Context> xContext );
+
             //Check if a point falls within bounds
             bool check_bounds( Coord crd );
 
