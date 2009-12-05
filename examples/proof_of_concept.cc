@@ -116,6 +116,15 @@ int main() {
     draw_point(-5,-5);
     draw_point(5,5);
     context->stroke();
+		sleep(5);
+
+    surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 5000, 5000);
+    context = Cairo::Context::create(surface);
+		context->set_source_rgb(1,1,1);
+    context->rectangle(0,0,surface->get_width(),surface->get_height());
+    context->fill();
+
+		sleep(5);
 
 		//now work on the clipping
 

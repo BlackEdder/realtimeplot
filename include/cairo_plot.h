@@ -13,124 +13,109 @@
 
 namespace cairo_plot {
 
-    inline std::string stringify(double x)
-    {
-        std::ostringstream o;
-        o << x;
-        return o.str();
-    }   
+	inline std::string stringify(double x)
+	{
+		std::ostringstream o;
+		o << x;
+		return o.str();
+	}   
 
+	/*
+	 * Class keeps track of all the config variables
+	 */
 
-    class PlotConfig {
-        public:
-            int pixel_width, pixel_height;
-            int origin_x, origin_y;
-            int nr_of_ticks, ticks_length;
-            float min_x, max_x;
-            float min_y, max_y;
-            std::string xlabel, ylabel;
-            bool update_rolling;
-            float rolling_overlap;
+	class PlotConfig {
+		public:
+			//all the needed variables
+			int pixel_width, pixel_height;
+			int origin_x, origin_y;
+			int nr_of_ticks, ticks_length;
+			float min_x, max_x;
+			float min_y, max_y;
+			std::string xlabel, ylabel;
 
-            //set default values
-            PlotConfig() {
-                pixel_width = 800;
-                pixel_height = 600;
-                origin_x = 50;
-                origin_y = 50;
-                min_x = -10;
-                max_x = 90;
-                min_y = -10;
-                max_y = 1000;
-                nr_of_ticks = 11;
-                ticks_length = 7;
-                xlabel = "x";
-                ylabel = "y";
-                update_rolling = True;
-                rolling_overlap = 0.1;
-            }
-    };
+			//Constructor that sets default values
+			PlotConfig() {
+				origin_x = 50;
+				origin_y = 50;
+				min_x = -10;
+				max_x = 90;
+				min_y = -10;
+				max_y = 50;
+				nr_of_ticks = 11;
+				ticks_length = 7;
+				xlabel = "x";
+				ylabel = "y";
+			}
+	};
 
-    class Coord {
-        public:
-            float x, y;
-            Coord( float tmp_x, float tmp_y ) {
-                x = tmp_x;
-                y = tmp_y;
-            }
-    };
+	/*
+	 * Main class to control the plotting
+	 */
+	class Plot {
+		public:
+			/*
+			 * Instance methods
+			 */
+			//plot_surface, an imagesurface that contains the plotted points
+			//plot_context, the corresponding context
+			Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
+			Cairo::RefPtr<Cairo::Context> plot_context;
 
-    /*
-     * Class that keeps track of the Plot area
-     * i.e. its location and width and also
-     * its xrange etc
-     *
-     * Is needed to translate x,y coordinates to pixel coordinates
-     *
-     * Watch out, cairo coordinates are from upper left corner instead
-     * of lower left corner
-     */
-    class PlotSurface {
-        public:
-            int origin_x, origin_y;
-            int pixel_widht, pixel_height;
-            float min_x, max_x;
-            float min_y, max_y;
-            PlotConfig *config;
-            Cairo::RefPtr<Cairo::ImageSurface> pSurface;
+			//axes_surface, surface that contains the axes + labels, used as a mask on the plot_surface when showing the plot
+			//axes_context, the corresponding context
+			Cairo::RefPtr<Cairo::ImageSurface> axes_surface;
+			Cairo::RefPtr<Cairo::Context> axes_context;
 
-            //Dummy to allow PlotSurface plot_surface
-            PlotSurface() {};
+			//config, pointer to config class, that keeps track op min_x etc
+			PlotConfig *pConf;
 
-            PlotSurface( PlotConfig *config, 
-                    Cairo::RefPtr<Cairo::ImageSurface> pSurface );
+			//Thread that contains the event loop
+			boost::shared_ptr<boost::thread> pEvent_thrd;
 
-            //Draws axes etc
-            void paint( Cairo::RefPtr<Cairo::Context> pContext );
+			/*
+			 * Methods
+			 */
 
-            int get_pixel_width();
-            int get_pixel_height();
+			//Constructor, takes a config pointer
+			//creates the surfaces and contexts
+			//starts the event_loop
+			Plot( PlotConfig *config );
 
-            Coord to_pixel_coord( Coord plot_coords );
-    };
+			//Destructor, wait for event_loop thread to finish (join)
+			~Plot();
 
-    /*
-     * Class controls the plotting
-     */
-    class Plot {
-        public:
-           // Should open cairo surface
-            Plot( PlotConfig *conf );
-            ~Plot();
-            // Plots a point to the surface
-            void plot_point( float x, float y );
-        private:
-            Cairo::RefPtr<Cairo::ImageSurface> surface;
-            Cairo::RefPtr<Cairo::Context> context;
-            PlotSurface plot_surface;
-            PlotConfig *config;
+			//event_loop, draws plot to screen (and keeps redrawing it)
+			void event_loop();
 
-            Display *dpy;
-            Window win;
-            //XEvent anExposeEvent;
+			//transform_to_plot_units
+			//rescale image to plot scale, basically calls transform_to_plot_units_with_origin
+			//with origin (0,0)
+			void transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext );
 
-            boost::shared_ptr<boost::thread> pEvent_thrd;
+			//transform_to_plot_units_with_origin
+			//rescale image to plot scale, taking into account the origin
+			//Used for axes, and keeping 50 device pixels at each side for the axes + labels
+			void transform_to_plot_units_with_origin( Cairo::RefPtr<Cairo::Context> pContext,
+					int origin_x, int origin_y );
 
-            int width;
-            int height;
-            
-            bool updated;
-            bool loop_started;
-            void event_loop();
+			//transform_to_device_units
+			//rescales context to device units
+			void transform_to_device_units( Cairo::RefPtr<Cairo::Context> pContext );
 
-            //Repaints surface to xlib
-            void paint( Cairo::RefPtr<Cairo::XlibSurface> xSurface, Cairo::RefPtr<Cairo::Context> xContext );
+			//draw_axes_surface
+			//Draws the axes_surface (also used as a mask)
+			void draw_axes_surface();
 
-            //Check if a point falls within bounds
-            bool check_bounds( Coord crd );
+			//set_background_color
+			//takes the context to do it to
+			void set_background_color( Cairo::RefPtr<Cairo::Context> pContext );
 
-            //Roll the bounds to include crd
-            void update_bounds_rolling( Coord crd );
-    };
-}
+			//set_foreground_color
+			void set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext );
+
+			//point
+			//draw point on surface
+			void point( float x, float y);
+	};
 #endif
