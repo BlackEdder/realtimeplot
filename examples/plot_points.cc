@@ -5,7 +5,7 @@ using namespace cairo_plot;
 int main() {
 	PlotConfig config = PlotConfig();
 	config.min_x = -10;
-	config.max_x = 100;
+	config.max_x = 90;
 	config.min_y = -20;
 	config.max_y = 30;
 

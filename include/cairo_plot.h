@@ -42,7 +42,7 @@ namespace cairo_plot {
 				max_x = 90;
 				min_y = -10;
 				max_y = 50;
-				nr_of_ticks = 11;
+				nr_of_ticks = 10;
 				ticks_length = 7;
 				xlabel = "x";
 				ylabel = "y";
