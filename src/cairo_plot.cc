@@ -2,268 +2,119 @@
 
 namespace cairo_plot {
 
-    /*
-     * Implementation of PlotSurface class
-     */
+	Plot::Plot(PlotConfig *config) {
+		pConf = config;
+		//create the surfaces and contexts
+		//
+		//plot_surface, the shown part of this surface is 500 by 500
+		//The rest is for when plotting outside of the area
+		plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+				2500, 2500 );
+		plot_context = Cairo::Context::create(plot_surface);
+		//give the plot its background color
+		set_background_color( plot_context );
+		plot_context->rectangle( 0, 0, plot_surface->get_width(), plot_surface->get_height() );
+		plot_context->fill();
 
-    PlotSurface::PlotSurface( PlotConfig *conf,
-            Cairo::RefPtr<Cairo::ImageSurface> surface ) {
-        pSurface = surface;
-        config = conf;
-    }
+		//axes_surface, extra 50 pixels for axes and labels
+		axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+				550, 550 );
+		axes_context = Cairo::Context::create(axes_surface);
 
-    /*
-     * Draws the axes
-     */
-    void PlotSurface::paint( Cairo::RefPtr<Cairo::Context> pContext ) {
-        Cairo::RefPtr<Cairo::ToyFontFace> font =
-            Cairo::ToyFontFace::create("Bitstream Charter",
-                    Cairo::FONT_SLANT_ITALIC,
-                    Cairo::FONT_WEIGHT_BOLD);
-        //empty outside of bounding box
-        pContext->set_source_rgb(1, 1, 1);
-        pContext->rectangle( 0, config->pixel_height-config->origin_y, config->pixel_width, config->origin_y );
-        pContext->fill();
-        pContext->rectangle( 0, 0, config->origin_x, config->pixel_height );
-        pContext->fill();
- 
-        
-        //bounding box
-        pContext->set_source_rgb(0, 0, 0);
-        pContext->rectangle( config->origin_x, 0,
-                this->get_pixel_width(), 
-                this->get_pixel_height() );
+		//draw initial axes etc
+		draw_axes_surface();
 
-        //ticks
-        pContext->set_font_face(font);
-        pContext->set_font_size(10);
-        for (int i=0; i<config->nr_of_ticks; ++i) {
-            Coord coord_x = to_pixel_coord( 
-                    Coord( config->min_x+i*(config->max_x-config->min_x)/(config->nr_of_ticks-1), config->min_y ) );
-            pContext->move_to( coord_x.x, coord_x.y );
-            pContext->line_to( coord_x.x, coord_x.y-config->ticks_length );
-            pContext->move_to( coord_x.x, coord_x.y+3*config->ticks_length);
-            pContext->show_text(
-                    stringify(config->min_x+i*(config->max_x-config->min_x)/(config->nr_of_ticks-1)));
-            Coord coord_y = to_pixel_coord( 
-                    Coord( config->min_x, config->min_y+i*(config->max_y-config->min_y)/(config->nr_of_ticks-1) ) );
-            pContext->move_to( coord_y.x, coord_y.y );
-            pContext->line_to( coord_y.x+config->ticks_length, coord_y.y );
-            pContext->move_to( coord_y.x-3*config->ticks_length, coord_y.y );
-            pContext->show_text(stringify(config->min_y+i*(config->max_y-config->min_y)/(config->nr_of_ticks-1)));
-        }
+		//starts the event_loop
+		pEvent_thrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::Plot::event_loop, this ) ) );
+	}
 
-        //plot labels
-        Coord tmp_coord = to_pixel_coord( 
-                Coord( config->min_x, (config->max_y-config->min_y)/2.0+config->min_y ));
-        pContext->move_to( tmp_coord.x-5*config->ticks_length, tmp_coord.y  );
-        pContext->show_text( config->ylabel );
-        tmp_coord = to_pixel_coord( 
-                Coord( (config->max_x-config->min_x)/2.0+config->min_x , config->min_y ));
-        pContext->move_to( tmp_coord.x, tmp_coord.y+5*config->ticks_length  );
-        pContext->show_text( config->xlabel );
+	Plot::~Plot() { 
+		pEvent_thrd->join(); 
+	}
 
-        pContext->stroke();
-        pContext->set_source_rgb(1, 1, 1);
-    }
+	void Plot::event_loop() {
+		Window rootwin, win;
+		Display *dpy;
+		int scr, white, black;
+		Cairo::RefPtr<Cairo::XlibSurface> xSurface;
+		Cairo::RefPtr<Cairo::Context> xContext;
+		XEvent report;
 
-    int PlotSurface::get_pixel_width() {
-        return pSurface->get_width() - config->origin_x;
-    }
+		if(!(dpy=XOpenDisplay(NULL))) {
+			fprintf(stderr, "ERROR: Could not open display\n");
+			throw;
+		}
 
-    int PlotSurface::get_pixel_height() {
-        return pSurface->get_height() - config->origin_y;
-    }
+		scr = DefaultScreen(dpy);
+		rootwin = RootWindow(dpy, scr);
+		white = WhitePixel(dpy,scr);
+		black = BlackPixel(dpy,scr);
+		win = XCreateSimpleWindow(dpy,
+				rootwin,
+				0, 0,   // origin
+				550, 550, // size
+				0, black, // border
+				white );
+		XStoreName(dpy, win, "hello");
+		XMapWindow(dpy, win);
+		XSelectInput( dpy, win, StructureNotifyMask | ExposureMask );
+		xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
+				550, 550);
+		xContext = Cairo::Context::create( xSurface );
 
-    Coord PlotSurface::to_pixel_coord( Coord plot_coords ) {
-        Coord pixel_coord = Coord( 
-                this->get_pixel_width()*(plot_coords.x-config->min_x)/(config->max_x-config->min_x)+config->origin_x,
-                pSurface->get_height()-(config->origin_y+this->get_pixel_height()*(plot_coords.y-config->min_y)/(config->max_y-config->min_y) ));
-        return pixel_coord;
-    }
+		xContext->set_source( plot_surface, 0, 0 );
 
-    /*
-     * Implementation of Plot class
-     */
-    Plot::Plot( PlotConfig *conf ) {
-        loop_started = False;
-        config = conf;
+		while(1) {
+			xContext->rectangle(50,0, xSurface->get_width(), xSurface->get_height()-50);
+			xContext->clip();
+			//This needs to be adaptive using pConf->min_x etc
+			//maybe transform plot_surface to plot units and then plot_surface.user_to_device( pConf->min_x, pConf->max_x )
+			xContext->set_source( plot_surface, -950, -1500 );
+			xContext->paint();
+			xContext->reset_clip();
+			sleep(1);	
+		}
+		XCloseDisplay(dpy);
+	}
 
-        surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-                config->pixel_width, config->pixel_height );
-        context = Cairo::Context::create(surface);
+	void Plot::transform_to_plot_units( ) {
+		transform_to_plot_units_with_origin( plot_surface, plot_context, 1000, 1000 );
+	}
+	
+	void Plot::transform_to_plot_units_with_origin( 
+			Cairo::RefPtr<Cairo::ImageSurface> pSurface, 
+			Cairo::RefPtr<Cairo::Context> pContext, int origin_x, int origin_y ) {
+		transform_to_device_units( pContext );
+		pContext->translate( origin_x, pSurface->get_height()-origin_y );
+		pContext->scale( pSurface->get_width()/(5*(pConf->max_x-pConf->min_x)),
+				-pSurface->get_height()/(5*(pConf->max_y-pConf->min_y)) );
+		pContext->translate( -pConf->min_x, -pConf->max_y );
+	}
 
-        plot_surface = PlotSurface( config, surface );
-        plot_surface.paint( context );
+	void Plot::transform_to_device_units(Cairo::RefPtr<Cairo::Context> pContext) {
+		pContext->set_identity_matrix();
+	}
 
-        pEvent_thrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::Plot::event_loop, this ) ) );
-    }
+	void Plot::draw_axes_surface() {
+	};
 
-    Plot::~Plot() { 
-        pEvent_thrd->join(); 
-    }
+	void Plot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
+		pContext->set_source_rgb(1,1,1);
+	}
 
-    void Plot::event_loop() {
-        Window rootwin;
-        int scr, white, black;
-        Cairo::RefPtr<Cairo::XlibSurface> xSurface;
-        Cairo::RefPtr<Cairo::Context> xContext;
-        XEvent report;
+	void Plot::set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext ) {
+		pContext->set_source_rgb(0,0,0);
+	}
 
-        if(!(dpy=XOpenDisplay(NULL))) {
-            fprintf(stderr, "ERROR: Could not open display\n");
-            throw;
-        }
+	void Plot::point( float x, float y) {
+		double dx = 1;
+		double dy = 1;
+		set_foreground_color( plot_context );
+		transform_to_plot_units(); 
+		plot_context->device_to_user_distance(dx,dy);
+		plot_context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
+		transform_to_device_units( plot_context );
+		plot_context->stroke();
+	}
 
-        scr = DefaultScreen(dpy);
-        rootwin = RootWindow(dpy, scr);
-        white = WhitePixel(dpy,scr);
-        black = BlackPixel(dpy,scr);
-        win = XCreateSimpleWindow(dpy,
-                rootwin,
-                0, 0,   // origin
-                config->pixel_width, config->pixel_height, // size
-                0, black, // border
-                white );
-        XStoreName(dpy, win, "hello");
-        XMapWindow(dpy, win);
-        XSelectInput( dpy, win, StructureNotifyMask | ExposureMask );
-        //nu snap ik het weer. Maar bovenstaande kan mooier
-
-        xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
-                config->pixel_width, config->pixel_height);
-        xContext = Cairo::Context::create( xSurface );
-
-        xContext->set_source( surface, 0, 0 );
-
-        loop_started = True;
-
-        while(1) {
-            if (XPending(dpy)>0) {
-                XNextEvent( dpy, &report ); 
-                switch( report.type ) {
-                    case ConfigureNotify:
-                        xSurface->set_size( report.xconfigure.width,
-                                report.xconfigure.height );
-                        //std::cout << report.xconfigure.width << std::endl;
-                        //std::cout << report.xconfigure.height << std::endl;
-                        xContext = Cairo::Context::create( xSurface );
-                        xContext->scale( float(xSurface->get_width())/surface->get_width(),
-                                float(xSurface->get_height())/surface->get_height() );
-                        paint( xSurface, xContext );
-                        break;
-                    case Expose:
-                        if (report.xexpose.count<1) {
-                            paint( xSurface, xContext );
-                        }
-                        break;
-                }
-            } else {
-                if (updated) {
-                    paint( xSurface, xContext );
-                } else {
-                    usleep(100000);
-                }
-            }
-        }
-        XCloseDisplay(dpy);
-    }
-
-    /*
-     * Method should only be called from xlib loop
-     */
-    void Plot::paint( Cairo::RefPtr<Cairo::XlibSurface> xSurface, Cairo::RefPtr<Cairo::Context> xContext ) {
-        xContext->set_source_rgb(1,1,1);
-        xContext->rectangle(0,0, xSurface->get_width(), xSurface->get_height() );
-        xContext->fill();
-        usleep(100000); //would think this should be after paint, but no!?!
-        xContext->set_source( surface, 0, 0 );
-        xContext->paint();
-        updated = false;
-    }
-
-
-    void Plot::plot_point( float x, float y ) {
-        bool draw = true;
-        if (!check_bounds( Coord(x,y) )) {
-            if (!config->update_rolling)
-                draw = false;
-            else {
-                update_bounds_rolling( Coord(x,y) );
-            }
-        } 
-        
-        if (draw) {
-            Coord pixel_coord = plot_surface.to_pixel_coord( Coord(x, y) );
-            context->set_source_rgb(0, 0, 0);
-            context->rectangle( pixel_coord.x, pixel_coord.y, 1, 1 );
-            context->stroke();
-            context->set_source_rgb(1, 1, 1);
-            updated = true;
-        }
-    }
-
-    bool Plot::check_bounds( Coord crd ) {
-        if ( crd.x < config->min_x || crd.x > config->max_x ||
-                crd.y < config->min_y || crd.y > config->max_y )
-            return false;
-        else
-            return true;
-    }
-
-    /*
-     * Method responsible to set new bounds and redraw picture to include crd
-     */
-    void Plot::update_bounds_rolling( Coord crd ) {
-        float range;
-        float old_max_y = config->max_y;
-        float old_min_x = config->min_x;
-        float surface_new_x = 0;
-        float surface_new_y = 0;
-        //set new bounds
-        //For now don't worry about case that point is twice as far away,
-        //i.e. an update of bounds in the new direction will include crd
-        if (crd.x > config->max_x) {
-            range = config->max_x-config->min_x;
-            config->min_x = config->max_x - config->rolling_overlap*range;
-            config->max_x = config->min_x + range;
-            surface_new_x = plot_surface.to_pixel_coord( 
-                    Coord( old_min_x, config->min_y ) ).x-config->origin_x;
-        } else if (crd.x < config->min_x) {
-            range = config->max_x-config->min_x;
-            config->max_x = config->min_x + config->rolling_overlap*range;
-            config->min_x = config->max_x - range;
-            surface_new_x = plot_surface.to_pixel_coord( 
-                    Coord( old_min_x, config->min_y ) ).x-config->origin_x;
-         }
-        if (crd.y > config->max_y) {
-            range = config->max_y-config->min_y;
-            config->min_y = config->max_y - config->rolling_overlap*range;
-            config->max_y = config->min_y + range;
-            surface_new_y = plot_surface.to_pixel_coord( 
-                    Coord( config->min_x, old_max_y ) ).y;
-        } else if (crd.y < config->min_y) {
-            range = config->max_y-config->min_y;
-            config->max_y = config->min_y + config->rolling_overlap*range;
-            config->min_y = config->max_y - range;
-            surface_new_y = plot_surface.to_pixel_coord( 
-                    Coord( config->min_x, old_max_y ) ).y;
-        }
-
-        //Create new surface, with part of old surface showing
-        Cairo::RefPtr<Cairo::ImageSurface> new_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-                config->pixel_width, config->pixel_height );
-        Cairo::RefPtr<Cairo::Context> new_context = Cairo::Context::create(new_surface);
-
-        new_context->set_source( surface, surface_new_x, surface_new_y );
-        new_context->paint();
-        
-        surface = new_surface;
-        context = new_context;
-
-
-        //Plot new bounding box
-        plot_surface.paint( context );
-        updated = true;
-    }
 }

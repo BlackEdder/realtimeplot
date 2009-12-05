@@ -90,13 +90,14 @@ namespace cairo_plot {
 
 			//transform_to_plot_units
 			//rescale image to plot scale, basically calls transform_to_plot_units_with_origin
-			//with origin (0,0)
-			void transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext );
+			//with origin (1000,1000) (should be used for plot_context only)!
+			void transform_to_plot_units( );
 
 			//transform_to_plot_units_with_origin
 			//rescale image to plot scale, taking into account the origin
 			//Used for axes, and keeping 50 device pixels at each side for the axes + labels
-			void transform_to_plot_units_with_origin( Cairo::RefPtr<Cairo::Context> pContext,
+			void transform_to_plot_units_with_origin( Cairo::RefPtr<Cairo::ImageSurface> pSurface,
+					Cairo::RefPtr<Cairo::Context> pContext,
 					int origin_x, int origin_y );
 
 			//transform_to_device_units
@@ -118,4 +119,5 @@ namespace cairo_plot {
 			//draw point on surface
 			void point( float x, float y);
 	};
+}
 #endif

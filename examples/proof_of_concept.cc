@@ -116,6 +116,16 @@ int main() {
     draw_point(-5,-5);
     draw_point(5,5);
     context->stroke();
+		context->set_identity_matrix();
+		double x = 1.0;
+		double y = 1.0;
+		context->device_to_user( x, y );
+		std::cout << x << std::endl;
+		std::cout << y << std::endl;
+    context->device_to_user_distance(x,y);
+		std::cout << x << std::endl;
+		std::cout << y << std::endl;
+		
 		sleep(5);
 
     surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 5000, 5000);
