@@ -16,11 +16,6 @@ namespace cairo_plot {
 		plot_context->rectangle( 0, 0, plot_surface->get_width(), plot_surface->get_height() );
 		plot_context->fill();
 
-		//axes_surface, extra 50 pixels for axes and labels
-		axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-				550, 550 );
-		axes_context = Cairo::Context::create(axes_surface);
-
 		//draw initial axes etc
 		draw_axes_surface();
 
@@ -69,7 +64,8 @@ namespace cairo_plot {
 			xContext->clip();
 			//This needs to be adaptive using pConf->min_x etc
 			//maybe transform plot_surface to plot units and then plot_surface.user_to_device( pConf->min_x, pConf->max_x )
-			xContext->set_source( plot_surface, -950, -1500 );
+			xContext->set_source( plot_surface, -950, -1000 );
+			//xContext->set_source( axes_surface, 0, 0 );
 			xContext->paint();
 			xContext->reset_clip();
 			sleep(1);	
@@ -86,9 +82,9 @@ namespace cairo_plot {
 			Cairo::RefPtr<Cairo::Context> pContext, int origin_x, int origin_y ) {
 		transform_to_device_units( pContext );
 		pContext->translate( origin_x, pSurface->get_height()-origin_y );
-		pContext->scale( pSurface->get_width()/(5*(pConf->max_x-pConf->min_x)),
-				-pSurface->get_height()/(5*(pConf->max_y-pConf->min_y)) );
-		pContext->translate( -pConf->min_x, -pConf->max_y );
+		pContext->scale( 500/((pConf->max_x-pConf->min_x)),
+				-500/((pConf->max_y-pConf->min_y)) );
+		pContext->translate( -pConf->min_x, -pConf->min_y );
 	}
 
 	void Plot::transform_to_device_units(Cairo::RefPtr<Cairo::Context> pContext) {
@@ -96,7 +92,19 @@ namespace cairo_plot {
 	}
 
 	void Plot::draw_axes_surface() {
-	};
+		//axes_surface, extra 50 pixels for axes and labels
+		axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+				550, 550 );
+		axes_context = Cairo::Context::create(axes_surface);
+		set_foreground_color( axes_context );
+		transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
+		axes_context->move_to( pConf->min_x, pConf->min_y );
+		axes_context->line_to( pConf->min_x, pConf->max_y );
+		axes_context->move_to( pConf->min_x, pConf->min_y );
+		axes_context->line_to( pConf->max_x, pConf->min_y );
+		transform_to_device_units( axes_context );
+		axes_context->stroke();
+	}
 
 	void Plot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
 		pContext->set_source_rgb(1,1,1);
