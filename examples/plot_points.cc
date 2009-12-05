@@ -15,7 +15,5 @@ int main() {
 		sleep(1);
 	}
 	pl.point( 10, 10 );
-	pl.plot_surface->write_to_png("test.png");
-	std::cout << "Written" << std::endl;
 	return 0;
 }
