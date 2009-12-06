@@ -76,13 +76,20 @@ namespace cairo_plot {
 				}
 			}
 			if (plot_surface_update) {
+				//race conditions exist here, but they should at most lead to a 
+				//wrong visualisation not to the wrong data being written 
+				//(and therefore only appear one frame)
 				plot_surface_update = false;
+				
 				//calculate plot coordinates to use with xContext
+				//this is dangerous, since this transform could happen,
+				//while the other thread expects a untransformed plot_context. 
+				//Still at most leads to thicker lines etc.
 				transform_to_plot_units();
 				double x = pConf->min_x;
 				double y = pConf->max_y;
 				plot_context->user_to_device( x, y );
-				transform_to_device_units(plot_context);
+
 				xContext->rectangle(50,0,plot_area_width, plot_area_height);
 				xContext->set_source( plot_surface, -x+50, -y );
 				xContext->fill();
