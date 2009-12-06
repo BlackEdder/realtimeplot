@@ -55,19 +55,39 @@ namespace cairo_plot {
 		xContext->paint();
 		sleep(1);
 		while(1) {
+			if (XPending( dpy ) > 0) {
+				XNextEvent( dpy, &report ); 
+				switch( report.type ) {
+					case ConfigureNotify:
+						xSurface->set_size( report.xconfigure.width,
+								report.xconfigure.height );
+						//std::cout << report.xconfigure.width << std::endl;
+						//std::cout << report.xconfigure.height << std::endl;
+						xContext = Cairo::Context::create( xSurface );
+						xContext->scale( float(xSurface->get_width())/(plot_area_width+50),
+								float(xSurface->get_height())/(plot_area_height+50) );
+						plot_surface_update = true;
+						break;
+					case Expose:
+						if (report.xexpose.count<1) {
+							plot_surface_update = true;
+						}
+						break;
+				}
+			}
 			if (plot_surface_update) {
-				xContext->set_source( axes_surface, 0, 0 );
-				xContext->paint(); 
 				//calculate plot coordinates to use with xContext
 				transform_to_plot_units();
 				double x = pConf->min_x;
 				double y = pConf->max_y;
 				plot_context->user_to_device( x, y );
 				transform_to_device_units(plot_context);
-				xContext->rectangle(50,0,xSurface->get_width(), xSurface->get_height()-50);
+				xContext->rectangle(50,0,plot_area_width, plot_area_height);
 				xContext->set_source( plot_surface, -x+50, -y );
 				xContext->fill();
-			usleep(100000);	
+				xContext->set_source( axes_surface, 0, 0 );
+				xContext->paint(); 
+				usleep(100000);	
 				plot_surface_update = false;
 			}	else {
 				usleep(100000);	
@@ -185,6 +205,8 @@ namespace cairo_plot {
 		axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+25 );
 		axes_context->show_text( pConf->xlabel );
 		axes_context->stroke();
+		
+		plot_surface_update = true;
 	}
 
 	void Plot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
@@ -197,7 +219,8 @@ namespace cairo_plot {
 
 	void Plot::point( float x, float y) {
 		if (!within_plot_bounds(x,y)) {
-			rolling_update(x, y);
+			if (!pConf->fixed_plot_area)
+				rolling_update(x, y);
 		}
 		double dx = 5;
 		double dy = 5;
@@ -207,18 +230,21 @@ namespace cairo_plot {
 		plot_context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
 		transform_to_device_units( plot_context );
 		plot_context->stroke();
+	
 		plot_surface_update = true;
 	}
 
 	void Plot::number( float x, float y, float i) {
 		if (!within_plot_bounds(x,y)) {
-			rolling_update(x, y);
+			if (!pConf->fixed_plot_area)
+				rolling_update(x, y);
 		}
 		transform_to_plot_units(); 
 		plot_context->move_to( x, y );
 		transform_to_device_units( plot_context );
 		set_foreground_color( plot_context );
 		plot_context->show_text( stringify( i ) );
+	
 		plot_surface_update = true;
 	}
 

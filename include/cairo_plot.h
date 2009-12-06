@@ -35,6 +35,7 @@ namespace cairo_plot {
 			float overlap;
 			float aspect_ratio;
 			std::string xlabel, ylabel;
+			bool fixed_plot_area;
 
 			//Constructor that sets default values
 			PlotConfig() {
@@ -50,6 +51,7 @@ namespace cairo_plot {
 				ylabel = "y";
 				overlap = 0.1;
 				aspect_ratio = 1;
+				fixed_plot_area = false;
 			}
 	};
 

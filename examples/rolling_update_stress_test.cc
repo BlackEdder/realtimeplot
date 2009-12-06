@@ -8,6 +8,7 @@ int main() {
 	config.max_x = 1000;
 	config.min_y = 0;
 	config.max_y = 1000;
+	config.fixed_plot_area = true;
 
   Plot pl = Plot( &config );
     for (int y=0; y<10000; ++y) {
