@@ -72,6 +72,9 @@ namespace cairo_plot {
 			//config, pointer to config class, that keeps track op min_x etc
 			PlotConfig *pConf;
 
+			//keep track when plot_surface was updated:
+			bool plot_surface_update;
+
 			//Thread that contains the event loop
 			boost::shared_ptr<boost::thread> pEvent_thrd;
 
@@ -129,6 +132,10 @@ namespace cairo_plot {
 			//draw point on surface
 			void point( float x, float y);
 
+			//number
+			//draws a number as text on the surface
+			void number( float x, float y, float i );
+
 			//rolling_update
 			//moves the plot bounds to include the point x, y
 			void rolling_update( float x, float y );
@@ -137,9 +144,9 @@ namespace cairo_plot {
 			//check that a point lies within the bounds of the plot
 			bool within_plot_bounds( float x, float y );
 			
-			//within_surface_bounds
-			//check that a point lies within the bounds of the surface
-			bool within_surface_bounds( float x, float y );
+			//plot_bounds_within_surface_bounds
+			//check that the plot bounds are within surface bounds of the surface
+			bool plot_bounds_within_surface_bounds( );
 
 };
 }

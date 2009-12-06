@@ -51,23 +51,27 @@ namespace cairo_plot {
 
 		xContext->set_source( plot_surface, 0, 0 );
 
+		xContext->set_source( axes_surface, 0, 0 );
+		xContext->paint();
+		sleep(1);
 		while(1) {
-			//xContext->rectangle(0,0, xSurface->get_width(), xSurface->get_height()-0);
-			//xContext->clip();
-			
-			//calculate plot coordinates to use with xContext
-			transform_to_plot_units();
-			double x = pConf->min_x;
-			double y = pConf->max_y;
-			plot_context->user_to_device( x, y );
-			transform_to_device_units(plot_context);
-
-			xContext->set_source( plot_surface, -x+50, -y );
-			//xContext->set_source( axes_surface, 0, 0 );
-			xContext->paint();
-			sleep(1);	
-			xContext->set_source( axes_surface, 0, 0 );
-			xContext->paint();
+			if (plot_surface_update) {
+				xContext->set_source( axes_surface, 0, 0 );
+				xContext->paint(); 
+				//calculate plot coordinates to use with xContext
+				transform_to_plot_units();
+				double x = pConf->min_x;
+				double y = pConf->max_y;
+				plot_context->user_to_device( x, y );
+				transform_to_device_units(plot_context);
+				xContext->rectangle(50,0,xSurface->get_width(), xSurface->get_height()-50);
+				xContext->set_source( plot_surface, -x+50, -y );
+				xContext->fill();
+			usleep(100000);	
+				plot_surface_update = false;
+			}	else {
+				usleep(100000);	
+			}
 		}
 		XCloseDisplay(dpy);
 	}
@@ -199,18 +203,64 @@ namespace cairo_plot {
 		plot_context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
 		transform_to_device_units( plot_context );
 		plot_context->stroke();
+		plot_surface_update = true;
 	}
 
+	void Plot::number( float x, float y, float i) {
+		if (!within_plot_bounds(x,y)) {
+			rolling_update(x, y);
+		}
+		transform_to_plot_units(); 
+		plot_context->move_to( x, y );
+		transform_to_device_units( plot_context );
+		set_foreground_color( plot_context );
+		plot_context->show_text( stringify( i ) );
+		plot_surface_update = true;
+	}
+
+
 	void Plot::rolling_update( float x, float y ) {
-		if (within_surface_bounds(x, y)) {
-			if (x>pConf->max_x) {
-				double xrange = pConf->max_x-pConf->min_x;
-				pConf->min_x += xrange*(1-pConf->overlap);
-				pConf->max_x = pConf->min_x+xrange;
-			}
+		std::vector<int> direction;
+		direction.push_back( 0 );
+		direction.push_back( 0 );
+		if (x>pConf->max_x) {
+			direction[0] = 1;
+		} else if (x<pConf->min_x) {
+			direction[0] = -1;
+		} else if (y>pConf->max_y) {
+			direction[1] = 1;
+		} else if (y<pConf->min_y) {
+			direction[1] = -1;
+		}
+
+		//update min_x etc
+		double xrange = pConf->max_x-pConf->min_x;
+		pConf->min_x += direction[0]*xrange*(1-pConf->overlap);
+		pConf->max_x = pConf->min_x+xrange;
+		double yrange = pConf->max_y-pConf->min_y;
+		pConf->min_y += direction[1]*yrange*(1-pConf->overlap);
+		pConf->max_y = pConf->min_y+yrange;
+		
+		if (!plot_bounds_within_surface_bounds()) {
+			//copy old plot surface
+			Cairo::RefPtr<Cairo::ImageSurface> old_plot_surface = plot_surface;
+			double old_plot_max_y = plot_surface_max_y;
+			double old_plot_min_x = plot_surface_min_x;
+			//create new plot surface
+			create_plot_surface();
+			//copy old plot surface onto new plot surface
+			transform_to_plot_units();
+			plot_context->user_to_device( old_plot_min_x, old_plot_max_y );
+			transform_to_device_units( plot_context );
+			plot_context->set_source( old_plot_surface, old_plot_min_x, old_plot_max_y );
+			plot_context->reset_clip();
+			plot_context->paint();
+		}
+		//be recursive about it :)
+		if (within_plot_bounds( x, y )) {
 			draw_axes_surface();
 		} else {
-			std::cout << "I'm not implemented yet!" << std::endl;
+			rolling_update( x, y );
 		}
 	}
 
@@ -222,9 +272,9 @@ namespace cairo_plot {
 			return true;
 	}
 
-	bool Plot::within_surface_bounds( float x, float y ) {
-		if ( x < plot_surface_min_x || x > plot_surface_max_x ||
-				y < plot_surface_min_y || y > plot_surface_max_y )
+	bool Plot::plot_bounds_within_surface_bounds( ) {
+		if ( pConf->min_x <= plot_surface_min_x || pConf->max_x >= plot_surface_max_x ||
+				pConf->min_y <= plot_surface_min_y || pConf->max_y >= plot_surface_max_y )
 			return false;
 		else
 			return true;

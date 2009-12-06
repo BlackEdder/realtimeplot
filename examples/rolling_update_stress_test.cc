@@ -4,12 +4,17 @@ using namespace cairo_plot;
 
 int main() {
 	PlotConfig config = PlotConfig();
-    Plot pl = Plot( &config );
+ 	config.min_x = 0;
+	config.max_x = 1000;
+	config.min_y = 0;
+	config.max_y = 1000;
+
+  Plot pl = Plot( &config );
     for (int y=0; y<10000; ++y) {
         if (float(std::rand())/RAND_MAX < 0.01) {
             usleep(100000);
         }
-        pl.plot_point( 50+10*float(std::rand())/RAND_MAX, y );
+        pl.point( -y, 50+950*float(std::rand())/RAND_MAX );
     }
 	return 0;
 }
