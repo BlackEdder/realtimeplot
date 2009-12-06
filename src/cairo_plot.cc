@@ -4,18 +4,10 @@ namespace cairo_plot {
 
 	Plot::Plot(PlotConfig *config) {
 		pConf = config;
-		//create the surfaces and contexts
-		//
-		//plot_surface, the shown part of this surface is 500 by 500
-		//The rest is for when plotting outside of the area
-		plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-				2500, 2500 );
-		plot_context = Cairo::Context::create(plot_surface);
-		//give the plot its background color
-		set_background_color( plot_context );
-		plot_context->rectangle( 0, 0, plot_surface->get_width(), plot_surface->get_height() );
-		plot_context->fill();
 
+		//create the surface to draw on
+		create_plot_surface();
+		
 		//draw initial axes etc
 		draw_axes_surface();
 
@@ -80,8 +72,33 @@ namespace cairo_plot {
 		XCloseDisplay(dpy);
 	}
 
+	void Plot::create_plot_surface() {
+		//create the surfaces and contexts
+		//
+		//plot_surface, the shown part of this surface is 500 by 500
+		//The rest is for when plotting outside of the area
+		plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+				2500, 2500 );
+		plot_context = Cairo::Context::create(plot_surface);
+		//give the plot its background color
+		set_background_color( plot_context );
+		plot_context->rectangle( 0, 0,
+				plot_surface->get_width(), plot_surface->get_height() );
+		plot_context->fill();
+
+		//set helper variables
+		plot_surface_min_x = pConf->min_x-2*(pConf->max_x-pConf->min_x);
+		plot_surface_max_x = pConf->max_x+2*(pConf->max_x-pConf->min_x);
+		plot_surface_min_y = pConf->min_y-2*(pConf->max_y-pConf->min_y);
+		plot_surface_max_y = pConf->max_y+2*(pConf->max_y-pConf->min_y);
+	}
+
 	void Plot::transform_to_plot_units( ) {
-		transform_to_plot_units_with_origin( plot_surface, plot_context, 1000, 1000 );
+		transform_to_device_units( plot_context );
+		plot_context->translate( 0, plot_surface->get_height() );
+		plot_context->scale( plot_surface->get_width()/(plot_surface_max_x-plot_surface_min_x),
+				-plot_surface->get_height()/(plot_surface_max_y-plot_surface_min_y) );
+		plot_context->translate( -plot_surface_min_x, -plot_surface_min_y );
 	}
 	
 	void Plot::transform_to_plot_units_with_origin( 
@@ -171,8 +188,11 @@ namespace cairo_plot {
 	}
 
 	void Plot::point( float x, float y) {
-		double dx = 1;
-		double dy = 1;
+		if (!within_plot_bounds(x,y)) {
+			rolling_update(x, y);
+		}
+		double dx = 5;
+		double dy = 5;
 		set_foreground_color( plot_context );
 		transform_to_plot_units(); 
 		plot_context->device_to_user_distance(dx,dy);
@@ -181,4 +201,32 @@ namespace cairo_plot {
 		plot_context->stroke();
 	}
 
+	void Plot::rolling_update( float x, float y ) {
+		if (within_surface_bounds(x, y)) {
+			if (x>pConf->max_x) {
+				double xrange = pConf->max_x-pConf->min_x;
+				pConf->min_x += xrange*(1-pConf->overlap);
+				pConf->max_x = pConf->min_x+xrange;
+			}
+			draw_axes_surface();
+		} else {
+			std::cout << "I'm not implemented yet!" << std::endl;
+		}
+	}
+
+	bool Plot::within_plot_bounds( float x, float y ) {
+		if ( x < pConf->min_x || x > pConf->max_x ||
+				y < pConf->min_y || y > pConf->max_y )
+			return false;
+		else
+			return true;
+	}
+
+	bool Plot::within_surface_bounds( float x, float y ) {
+		if ( x < plot_surface_min_x || x > plot_surface_max_x ||
+				y < plot_surface_min_y || y > plot_surface_max_y )
+			return false;
+		else
+			return true;
+	}
 }

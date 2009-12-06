@@ -32,6 +32,7 @@ namespace cairo_plot {
 			int nr_of_ticks, ticks_length;
 			float min_x, max_x;
 			float min_y, max_y;
+			float overlap;
 			std::string xlabel, ylabel;
 
 			//Constructor that sets default values
@@ -46,6 +47,7 @@ namespace cairo_plot {
 				ticks_length = 7;
 				xlabel = "x";
 				ylabel = "y";
+				overlap = 0.1;
 			}
 	};
 
@@ -73,6 +75,10 @@ namespace cairo_plot {
 			//Thread that contains the event loop
 			boost::shared_ptr<boost::thread> pEvent_thrd;
 
+			//Keep track of the maximum/minimum values of the plot_surface in plot units
+			float plot_surface_max_x, plot_surface_min_x;
+			float plot_surface_max_y, plot_surface_min_y;
+
 			/*
 			 * Methods
 			 */
@@ -87,6 +93,10 @@ namespace cairo_plot {
 
 			//event_loop, draws plot to screen (and keeps redrawing it)
 			void event_loop();
+
+			//create_plot_surface
+			//creates a new plot surface and sets helper variables such as plot_surface_min_x
+			void create_plot_surface();
 
 			//transform_to_plot_units
 			//rescale image to plot scale, basically calls transform_to_plot_units_with_origin
@@ -118,6 +128,19 @@ namespace cairo_plot {
 			//point
 			//draw point on surface
 			void point( float x, float y);
-	};
+
+			//rolling_update
+			//moves the plot bounds to include the point x, y
+			void rolling_update( float x, float y );
+
+			//within_plot_bounds
+			//check that a point lies within the bounds of the plot
+			bool within_plot_bounds( float x, float y );
+			
+			//within_surface_bounds
+			//check that a point lies within the bounds of the surface
+			bool within_surface_bounds( float x, float y );
+
+};
 }
 #endif
