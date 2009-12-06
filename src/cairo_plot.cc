@@ -76,6 +76,7 @@ namespace cairo_plot {
 				}
 			}
 			if (plot_surface_update) {
+				plot_surface_update = false;
 				//calculate plot coordinates to use with xContext
 				transform_to_plot_units();
 				double x = pConf->min_x;
@@ -88,7 +89,6 @@ namespace cairo_plot {
 				xContext->set_source( axes_surface, 0, 0 );
 				xContext->paint(); 
 				usleep(100000);	
-				plot_surface_update = false;
 			}	else {
 				usleep(100000);	
 			}
