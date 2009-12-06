@@ -8,12 +8,12 @@ int main() {
 	config.max_x = 1000;
 	config.min_y = 0;
 	config.max_y = 1000;
-	config.fixed_plot_area = true;
+	config.fixed_plot_area = false;
 
   Plot pl = Plot( &config );
     for (int y=0; y<10000; ++y) {
         if (float(std::rand())/RAND_MAX < 0.01) {
-            usleep(100000);
+            usleep(10000);
         }
         pl.point( -y, 50+950*float(std::rand())/RAND_MAX );
     }
