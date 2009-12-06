@@ -33,6 +33,7 @@ namespace cairo_plot {
 			float min_x, max_x;
 			float min_y, max_y;
 			float overlap;
+			float aspect_ratio;
 			std::string xlabel, ylabel;
 
 			//Constructor that sets default values
@@ -48,6 +49,7 @@ namespace cairo_plot {
 				xlabel = "x";
 				ylabel = "y";
 				overlap = 0.1;
+				aspect_ratio = 1;
 			}
 	};
 
@@ -63,6 +65,9 @@ namespace cairo_plot {
 			//plot_context, the corresponding context
 			Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
 			Cairo::RefPtr<Cairo::Context> plot_context;
+
+			//keep track of plot area pixels
+			int plot_area_width, plot_area_height;
 
 			//axes_surface, surface that contains the axes + labels, used as a mask on the plot_surface when showing the plot
 			//axes_context, the corresponding context

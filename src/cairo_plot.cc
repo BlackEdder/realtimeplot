@@ -39,14 +39,14 @@ namespace cairo_plot {
 		win = XCreateSimpleWindow(dpy,
 				rootwin,
 				0, 0,   // origin
-				550, 550, // size
+				plot_area_width+50, plot_area_height+50, // size
 				0, black, // border
 				white );
 		XStoreName(dpy, win, "hello");
 		XMapWindow(dpy, win);
 		XSelectInput( dpy, win, StructureNotifyMask | ExposureMask );
 		xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
-				550, 550);
+				plot_area_width+50, plot_area_height+50);
 		xContext = Cairo::Context::create( xSurface );
 
 		xContext->set_source( plot_surface, 0, 0 );
@@ -77,12 +77,16 @@ namespace cairo_plot {
 	}
 
 	void Plot::create_plot_surface() {
+		//calculate minimum plot area width/height based on aspect ratio
+		double x = 500/sqrt(pConf->aspect_ratio);
+		plot_area_width = round( pConf->aspect_ratio*x );
+		plot_area_height = round( x );
 		//create the surfaces and contexts
 		//
 		//plot_surface, the shown part of this surface is 500 by 500
 		//The rest is for when plotting outside of the area
 		plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-				2500, 2500 );
+				5*plot_area_width, 5*plot_area_height );
 		plot_context = Cairo::Context::create(plot_surface);
 		//give the plot its background color
 		set_background_color( plot_context );
@@ -110,8 +114,8 @@ namespace cairo_plot {
 			Cairo::RefPtr<Cairo::Context> pContext, int origin_x, int origin_y ) {
 		transform_to_device_units( pContext );
 		pContext->translate( origin_x, pSurface->get_height()-origin_y );
-		pContext->scale( 500/((pConf->max_x-pConf->min_x)),
-				-500/((pConf->max_y-pConf->min_y)) );
+		pContext->scale( plot_area_width/((pConf->max_x-pConf->min_x)),
+				-plot_area_height/((pConf->max_y-pConf->min_y)) );
 		pContext->translate( -pConf->min_x, -pConf->min_y );
 	}
 
@@ -126,7 +130,7 @@ namespace cairo_plot {
 					Cairo::FONT_WEIGHT_BOLD);
 		//axes_surface, extra 50 pixels for axes and labels
 		axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-				550, 550 );
+				plot_area_width+50, plot_area_height+50 );
 		axes_context = Cairo::Context::create(axes_surface);
 		transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
 		//Plot background for axes (remember this will be used as a mask and plotted points
@@ -176,9 +180,9 @@ namespace cairo_plot {
  
 		transform_to_device_units( axes_context );
 		
-		axes_context->move_to( 20, 275 );
+		axes_context->move_to( 20, round(0.5*plot_area_height+25) );
 		axes_context->show_text( pConf->ylabel );
-		axes_context->move_to( 275, 525 );
+		axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+25 );
 		axes_context->show_text( pConf->xlabel );
 		axes_context->stroke();
 	}
