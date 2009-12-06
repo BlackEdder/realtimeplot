@@ -63,9 +63,14 @@ namespace cairo_plot {
 			//xContext->rectangle(0,0, xSurface->get_width(), xSurface->get_height()-0);
 			//xContext->clip();
 			
-			//This needs to be adaptive using pConf->min_x etc
-			//maybe transform plot_surface to plot units and then plot_surface.user_to_device( pConf->min_x, pConf->max_x )
-			xContext->set_source( plot_surface, -950, -1000 );
+			//calculate plot coordinates to use with xContext
+			transform_to_plot_units();
+			double x = pConf->min_x;
+			double y = pConf->max_y;
+			plot_context->user_to_device( x, y );
+			transform_to_device_units(plot_context);
+
+			xContext->set_source( plot_surface, -x+50, -y );
 			//xContext->set_source( axes_surface, 0, 0 );
 			xContext->paint();
 			sleep(1);	
