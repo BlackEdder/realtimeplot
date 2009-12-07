@@ -25,6 +25,8 @@ namespace cairo_plot {
 		int scr, white, black;
 		Cairo::RefPtr<Cairo::XlibSurface> xSurface;
 		Cairo::RefPtr<Cairo::Context> xContext;
+		
+        Cairo::RefPtr<Cairo::Context> xlib_plot_context;
 		XEvent report;
 
 		if(!(dpy=XOpenDisplay(NULL))) {
@@ -53,24 +55,23 @@ namespace cairo_plot {
 
 		xContext->set_source( axes_surface, 0, 0 );
 		xContext->paint();
-		sleep(1);
 		while(1) {
 			if (XPending( dpy ) > 0) {
-				XNextEvent( dpy, &report ); 
-				switch( report.type ) {
-					case ConfigureNotify:
-						xSurface->set_size( report.xconfigure.width,
-								report.xconfigure.height );
-						//std::cout << report.xconfigure.width << std::endl;
-						//std::cout << report.xconfigure.height << std::endl;
-						xContext = Cairo::Context::create( xSurface );
-						xContext->scale( float(xSurface->get_width())/(plot_area_width+50),
-								float(xSurface->get_height())/(plot_area_height+50) );
-						plot_surface_update = true;
-						break;
-					case Expose:
-						if (report.xexpose.count<1) {
-							plot_surface_update = true;
+                XNextEvent( dpy, &report ); 
+                switch( report.type ) {
+                    case ConfigureNotify:
+                        xSurface->set_size( report.xconfigure.width,
+                                report.xconfigure.height );
+                        //std::cout << report.xconfigure.width << std::endl;
+                        //std::cout << report.xconfigure.height << std::endl;
+                        xContext = Cairo::Context::create( xSurface );
+                        xContext->scale( float(xSurface->get_width())/(plot_area_width+50),
+                                float(xSurface->get_height())/(plot_area_height+50) );
+                        plot_surface_update = true;
+                        break;
+                    case Expose:
+                        if (report.xexpose.count<1) {
+                            plot_surface_update = true;
 						}
 						break;
 				}
@@ -85,16 +86,20 @@ namespace cairo_plot {
 				//this is dangerous, since this transform could happen,
 				//while the other thread expects a untransformed plot_context. 
 				//Still at most leads to thicker lines etc.
-				transform_to_plot_units();
+				
+                xlib_plot_context = Cairo::Context::create( plot_surface );
+                transform_to_plot_units( xlib_plot_context );
+                //double x = 10;
+                //double y = 10;
 				double x = pConf->min_x;
 				double y = pConf->max_y;
-				plot_context->user_to_device( x, y );
+				xlib_plot_context->user_to_device( x, y );
 
 				xContext->rectangle(50,0,plot_area_width, plot_area_height);
 				xContext->set_source( plot_surface, -x+50, -y );
 				xContext->fill();
 				xContext->set_source( axes_surface, 0, 0 );
-				xContext->paint(); 
+				xContext->paint();
 				usleep(100000);	
 			}	else {
 				usleep(100000);	
@@ -129,13 +134,17 @@ namespace cairo_plot {
 	}
 
 	void Plot::transform_to_plot_units( ) {
-		transform_to_device_units( plot_context );
-		plot_context->translate( 0, plot_surface->get_height() );
-		plot_context->scale( plot_surface->get_width()/(plot_surface_max_x-plot_surface_min_x),
-				-plot_surface->get_height()/(plot_surface_max_y-plot_surface_min_y) );
-		plot_context->translate( -plot_surface_min_x, -plot_surface_min_y );
+        transform_to_plot_units( plot_context );
 	}
-	
+
+	void Plot::transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext ) {
+		transform_to_device_units( pContext );
+		pContext->translate( 0, plot_area_height*5 );
+		pContext->scale( plot_area_width*5/(plot_surface_max_x-plot_surface_min_x),
+				-plot_area_height*5/(plot_surface_max_y-plot_surface_min_y) );
+		pContext->translate( -plot_surface_min_x, -plot_surface_min_y );
+	}
+		
 	void Plot::transform_to_plot_units_with_origin( 
 			Cairo::RefPtr<Cairo::ImageSurface> pSurface, 
 			Cairo::RefPtr<Cairo::Context> pContext, int origin_x, int origin_y ) {
@@ -292,6 +301,7 @@ namespace cairo_plot {
 			plot_context->set_source( old_plot_surface, old_plot_min_x, old_plot_max_y );
 			plot_context->reset_clip();
 			plot_context->paint();
+            set_background_color( plot_context );
 		}
 		//be recursive about it :)
 		if (within_plot_bounds( x, y )) {

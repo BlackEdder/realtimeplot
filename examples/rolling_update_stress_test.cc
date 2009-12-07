@@ -9,13 +9,16 @@ int main() {
 	config.min_y = 0;
 	config.max_y = 1000;
 	config.fixed_plot_area = false;
+    config.overlap = 0.99;
 
   Plot pl = Plot( &config );
-    for (int y=0; y<10000; ++y) {
+  int y = 0;
+  while (1) {
         if (float(std::rand())/RAND_MAX < 0.01) {
-            usleep(10000);
+            ////usleep(10000);
         }
         pl.point( -y, 50+900*float(std::rand())/RAND_MAX );
-    }
+        ++y;
+  }
 	return 0;
 }

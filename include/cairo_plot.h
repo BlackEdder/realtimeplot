@@ -107,9 +107,9 @@ namespace cairo_plot {
 			void create_plot_surface();
 
 			//transform_to_plot_units
-			//rescale image to plot scale, basically calls transform_to_plot_units_with_origin
-			//with origin (1000,1000) (should be used for plot_context only)!
-			void transform_to_plot_units( );
+			//rescale image to plot scale
+            void transform_to_plot_units( );
+            void transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext );
 
 			//transform_to_plot_units_with_origin
 			//rescale image to plot scale, taking into account the origin
