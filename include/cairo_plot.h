@@ -39,11 +39,9 @@ namespace cairo_plot {
 
 			//Constructor that sets default values
 			PlotConfig() {
-				origin_x = 50;
-				origin_y = 50;
-				min_x = -10;
+				min_x = 0;
 				max_x = 90;
-				min_y = -10;
+				min_y = 0;
 				max_y = 50;
 				nr_of_ticks = 10;
 				ticks_length = 7;
