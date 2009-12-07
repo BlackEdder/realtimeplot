@@ -19,7 +19,7 @@ namespace cairo_plot {
     };
 
     //Event that draws a point at x,y
-    class PointEvent : Event {
+    class PointEvent : public Event {
         public:
             PointEvent( float x, float y );
             virtual void execute( BackendPlot *bPl );

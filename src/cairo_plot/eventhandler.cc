@@ -1,25 +1,27 @@
-#include "eventhandler.h"
+#include "cairo_plot/eventhandler.h"
+#include "cairo_plot/plot.h"
 
 namespace cairo_plot {
-    PointEvent::Pointevent( float x, float y ) {
+    PointEvent::PointEvent( float x, float y ) {
         x_crd = x;
         y_crd = y;
     }
 
-    void PointEvent::execute( BackendPlot *pBPl ) {
-        pBPl->point( x, y );
+    void PointEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->point( x_crd, y_crd );
     }
 
     EventHandler::EventHandler( PlotConfig config ) {
         //create a backend plot
-        pBPl = &BackendPlot( config, this );
+        pBPlot = new BackendPlot( config, this );
 
         //start processing thread
-		pEvent_Processing_thrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::EventHandler::process_events, this ) ) );
+		pEventProcessingThrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::EventHandler::process_events, this ) ) );
     }
 
     EventHandler::~EventHandler() {
-        pEvent_Processing_thrd.join();
+        pEventProcessingThrd.join();
+        delete pBPL;
     }
 
     void EventHandler::add_event( Event *pEvent ) {
@@ -39,7 +41,7 @@ namespace cairo_plot {
                 usleep(100000);
             else {
                 Event *pEvent = event_queue.front();
-                pEvent->execute( pBPl );
+                pEvent->execute( pBPlot );
                 event_queue.pop_front();
                 delete pEvent;
             }

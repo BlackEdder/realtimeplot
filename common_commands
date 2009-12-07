@@ -1,8 +1,4 @@
-#compile and run examples/plot_points.cc
- g++ examples/plot_points.cc src/cairo_plot.cc -lcairomm-1.0 -I./include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -lboost_thread && ./a.out
-
 #zelfde voor cairo 1.8
-g++ examples/plot_points.cc src/cairo_plot.cc -lcairomm-1.0 -I./include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -lboost_thread && ./a.out
-
+g++ examples/plot_points.cc src/cairo_plot/plot.cc src/cairo_plot/eventhandler.cc -lcairomm-1.0 -I./include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -lboost_thread -pg && ./a.out
 #compile proof of concept
 g++ examples/proof_of_concept.cc -I/usr/include/cairomm-1.0/ -I/usr/include/cairo -I/usr/include/sigc++-2.0 -I/usr/include/freetype2 -I/usr/lib/sigc++-2.0/include -lcairo -lcairomm-1.0 -lboost_thread && ./a.out

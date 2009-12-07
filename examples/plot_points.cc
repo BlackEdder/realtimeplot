@@ -1,4 +1,4 @@
-#include "cairo_plot.h"
+#include "cairo_plot/plot.h"
 
 using namespace cairo_plot;
 

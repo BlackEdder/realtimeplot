@@ -1,4 +1,4 @@
-#include "cairo_plot.h"
+#include "cairo_plot/plot.h"
 
 namespace cairo_plot {
 
@@ -11,7 +11,8 @@ namespace cairo_plot {
     }
 
     void Plot::point( float x, float y ) {
-        pEvent_Handler->add_queue( new PointEvent( x, y ) );
+        Event *pEvent = new PointEvent( x, y );
+        pEvent_Handler->add_event( pEvent );
     }
 
     /*
@@ -215,8 +216,6 @@ namespace cairo_plot {
         axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+25 );
         axes_context->show_text( config.xlabel );
         axes_context->stroke();
-
-        plot_surface_update = true;
     }
 
     void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
@@ -241,7 +240,7 @@ namespace cairo_plot {
         transform_to_device_units( plot_context );
         plot_context->stroke();
 
-        plot_surface_update = true;
+        display();
     }
 
     void BackendPlot::number( float x, float y, float i) {
@@ -255,7 +254,7 @@ namespace cairo_plot {
         set_foreground_color( plot_context );
         plot_context->show_text( stringify( i ) );
 
-        plot_surface_update = true;
+        display();
     }
 
 
