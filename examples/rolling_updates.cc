@@ -1,4 +1,4 @@
-#include "cairo_plot.h"
+#include "cairo_plot/plot.h"
 
 using namespace cairo_plot;
 
@@ -9,15 +9,11 @@ int main() {
 	config.min_y = -20;
 	config.max_y = 30;
 
-	Plot pl = Plot( &config );
-	pl.axes_surface->write_to_png("axes.png");
+	Plot pl = Plot( config );
 	pl.point( 80, 0 );
-	std::cout << "Written" << std::endl;
 	for (int i=0; i<30;++i) {
 		pl.number( 10+10*float(std::rand())/RAND_MAX, (i)*10, i );
 		usleep(500000);
 	}
-	pl.plot_surface->write_to_png("plot.png");
-	std::cout << "Written" << std::endl;
 	return 0;
 }

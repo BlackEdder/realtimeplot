@@ -27,6 +27,14 @@ namespace cairo_plot {
             float x_crd, y_crd;
     };
 
+    class NumberEvent : public Event {
+        public:
+            NumberEvent( float x, float y, float i );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            float x_crd, y_crd, nr;
+    };
+
     //EventHandler
     //Accepts events and starts a thread which handles those events
     class EventHandler {
@@ -41,6 +49,7 @@ namespace cairo_plot {
             friend class BackendPlot;
 
             BackendPlot *pBPlot;
+			boost::shared_ptr<boost::thread> pEventProcessingThrd;
             std::list<Event*> event_queue;
 
             void process_events();

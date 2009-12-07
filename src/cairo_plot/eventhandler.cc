@@ -11,6 +11,17 @@ namespace cairo_plot {
         pBPlot->point( x_crd, y_crd );
     }
 
+    NumberEvent::NumberEvent( float x, float y, float i ) {
+        x_crd = x;
+        y_crd = y;
+        nr = i;
+    }
+
+    void NumberEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->number( x_crd, y_crd, nr );
+    }
+
+
     EventHandler::EventHandler( PlotConfig config ) {
         //create a backend plot
         pBPlot = new BackendPlot( config, this );
@@ -20,8 +31,8 @@ namespace cairo_plot {
     }
 
     EventHandler::~EventHandler() {
-        pEventProcessingThrd.join();
-        delete pBPL;
+        pEventProcessingThrd->join();
+        delete pBPlot;
     }
 
     void EventHandler::add_event( Event *pEvent ) {
@@ -37,13 +48,17 @@ namespace cairo_plot {
     void EventHandler::process_events() {
         //Ideally event queue would have a blocking get function
         while (1) {
-            if (event_queue.size()==0) 
+            if (event_queue.size()==0 && XPending(pBPlot->dpy) == 0) 
                 usleep(100000);
-            else {
+            else if ( event_queue.size()>0 ) {
                 Event *pEvent = event_queue.front();
                 pEvent->execute( pBPlot );
                 event_queue.pop_front();
                 delete pEvent;
+            } else {
+                XEvent report;
+                XNextEvent( pBPlot->dpy, &report );
+                pBPlot->handle_xevent( report ); 
             }
         }
     }

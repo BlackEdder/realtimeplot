@@ -60,6 +60,7 @@ namespace cairo_plot {
             Plot( PlotConfig conf );
             ~Plot();
             void point( float x, float y );
+            void number( float x, float y, float i );
         private:
             EventHandler *pEvent_Handler;
     };
@@ -77,6 +78,8 @@ namespace cairo_plot {
             Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
             Cairo::RefPtr<Cairo::Context> plot_context;
 
+            Cairo::RefPtr<Cairo::XlibSurface> xSurface;
+            Cairo::RefPtr<Cairo::Context> xContext;
             Window win;
             Display *dpy;
 
@@ -149,6 +152,10 @@ namespace cairo_plot {
             //point
             //draw point on surface
             void point( float x, float y);
+
+            //handle_xevent
+            //Called by event handler when an xevent happens
+            void handle_xevent( XEvent report );
 
             //number
             //draws a number as text on the surface

@@ -15,6 +15,11 @@ namespace cairo_plot {
         pEvent_Handler->add_event( pEvent );
     }
 
+    void Plot::number( float x, float y, float i ) {
+        Event *pEvent = new NumberEvent( x, y, i );
+        pEvent_Handler->add_event( pEvent );
+    }
+
     /*
      * BackendPlot
      */
@@ -31,6 +36,8 @@ namespace cairo_plot {
 
         //create_xlib_window
         create_xlib_window();
+
+        display();
     }
 
     BackendPlot::~BackendPlot() {
@@ -39,42 +46,38 @@ namespace cairo_plot {
 
     void BackendPlot::display() {
         //Only do this if event queue is empty
-        if (pEventHandler->event_queue.size() == 0) {
-            Cairo::RefPtr<Cairo::XlibSurface> xSurface;
-            Cairo::RefPtr<Cairo::Context> xContext;
-            XEvent report;
-
-            xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
-                    plot_area_width+50, plot_area_height+50);
-            xContext = Cairo::Context::create( xSurface );
-
-            while (XPending(dpy)>1) {
-                XNextEvent( dpy, &report ); 
-                switch( report.type ) {
-                    case ConfigureNotify:
-                        xSurface->set_size( report.xconfigure.width,
-                                report.xconfigure.height );
-                        //std::cout << report.xconfigure.width << std::endl;
-                        //std::cout << report.xconfigure.height << std::endl;
-                        xContext = Cairo::Context::create( xSurface );
-                        xContext->scale( float(xSurface->get_width())/(plot_area_width+50),
-                                float(xSurface->get_height())/(plot_area_height+50) );
-                        break;
-                    case Expose:
-                        break;
-                }
-            }
-
+        //std::cout << pEventHandler->event_queue.size() << std::endl;
+        //if (pEventHandler->event_queue.size() < 1)  {
             transform_to_plot_units();
             double x = config.min_x;
             double y = config.max_y;
             plot_context->user_to_device( x, y );
+            xContext->set_source( axes_surface, 0, 0 );
+            xContext->paint();
             xContext->rectangle(50,0,plot_area_width, plot_area_height);
             xContext->set_source( plot_surface, -x+50, -y );
             xContext->fill();
             xContext->set_source( axes_surface, 0, 0 );
             xContext->paint();
             usleep(100000);	
+        //}
+    }
+
+    void BackendPlot::handle_xevent( XEvent report ) {
+        switch( report.type ) {
+            case ConfigureNotify:
+                xSurface->set_size( report.xconfigure.width,
+                        report.xconfigure.height );
+                //std::cout << report.xconfigure.width << std::endl;
+                //std::cout << report.xconfigure.height << std::endl;
+                xContext = Cairo::Context::create( xSurface );
+                xContext->scale( float(xSurface->get_width())/(plot_area_width+50),
+                        float(xSurface->get_height())/(plot_area_height+50) );
+                display();
+                break;
+            case Expose:
+                display();
+                break;
         }
     }
 
@@ -122,10 +125,13 @@ namespace cairo_plot {
                 plot_area_width+50, plot_area_height+50, // size
                 0, black, // border
                 white );
+        
         XStoreName(dpy, win, "hello");
         XMapWindow(dpy, win);
         XSelectInput( dpy, win, StructureNotifyMask | ExposureMask );
-
+        xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
+                plot_area_width+50, plot_area_height+50);
+        xContext = Cairo::Context::create( xSurface );
     }
 
     void BackendPlot::transform_to_plot_units( ) {
