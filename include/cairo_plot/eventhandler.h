@@ -3,6 +3,9 @@
 
 #include <list>
 
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+
 namespace cairo_plot {
     class PlotConfig;
     class BackendPlot;

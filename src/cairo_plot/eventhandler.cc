@@ -10,12 +10,16 @@ namespace cairo_plot {
         pBPl->point( x, y );
     }
 
-    void EventHandler::EventHandler( PlotConfig config ) {
+    EventHandler::EventHandler( PlotConfig config ) {
         //create a backend plot
-        pBPl = &BackendPlot( config );
+        pBPl = &BackendPlot( config, this );
 
         //start processing thread
 		pEvent_Processing_thrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::EventHandler::process_events, this ) ) );
+    }
+
+    EventHandler::~EventHandler() {
+        pEvent_Processing_thrd.join();
     }
 
     void EventHandler::add_event( Event *pEvent ) {
@@ -34,8 +38,10 @@ namespace cairo_plot {
             if (event_queue.size()==0) 
                 usleep(100000);
             else {
-                event_queue.front.execute( pBPl );
+                Event *pEvent = event_queue.front();
+                pEvent->execute( pBPl );
                 event_queue.pop_front();
+                delete pEvent;
             }
         }
     }
