@@ -1,0 +1,46 @@
+#ifndef CAIRO_PLOT_EVENTHANDLER_H
+#define CAIRO_PLOT_EVENTHANDLER_H
+
+#include <list>
+
+namespace cairo_plot {
+    class PlotConfig;
+    class BackendPlot;
+    class EventHandler;
+
+    //General event class that all events should inherit
+    class Event {
+        public:
+            Event() {}
+            virtual void execute( BackendPlot *bPl ) {}
+    };
+
+    //Event that draws a point at x,y
+    class PointEvent : Event {
+        public:
+            PointEvent( float x, float y );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            float x_crd, y_crd;
+    };
+
+    //EventHandler
+    //Accepts events and starts a thread which handles those events
+    class EventHandler {
+        public:
+            //Only three public methods
+            //Constructor
+            EventHandler( PlotConfig config );
+            ~EventHandler();
+            //Add an event to the event queue
+            void add_event( Event *pEvent );
+        private:
+            friend class BackendPlot;
+
+            BackendPlot *pBPlot;
+            std::list<Event*> event_queue;
+
+            void process_events();
+    };
+}
+#endif
