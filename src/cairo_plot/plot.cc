@@ -48,7 +48,7 @@ namespace cairo_plot {
 
     void BackendPlot::display() {
         //Only do this if event queue is empty or last update was more than a second ago
-        if (pEventHandler->event_queue.size() < 1 
+        if (pEventHandler->get_queue_size() < 1 
                 || (time(0)-time_of_last_update)>=1)  {
             transform_to_plot_units();
             double x = config.min_x;
@@ -63,7 +63,7 @@ namespace cairo_plot {
             xContext->paint();
             time_of_last_update = time(0);
             //only sleep if no more events are coming
-            if (pEventHandler->event_queue.size() < 1) {
+            if (pEventHandler->get_queue_size() < 1) {
                usleep(100000);
             }
         }

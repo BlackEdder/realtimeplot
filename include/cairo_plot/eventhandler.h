@@ -42,19 +42,20 @@ namespace cairo_plot {
         public:
             //Only three public methods
             //Constructor
-            EventHandler( PlotConfig config );
-            ~EventHandler();
-            //Add an event to the event queue
-            void add_event( Event *pEvent );
-        private:
-            friend class BackendPlot;
+					EventHandler( PlotConfig config );
+					~EventHandler();
+					//Add an event to the event queue
+					void add_event( Event *pEvent );
+					int get_queue_size();
 
-            BackendPlot *pBPlot;
-			boost::shared_ptr<boost::thread> pEventProcessingThrd;
-            boost::mutex m_mutex;
-            std::list<Event*> event_queue;
+				private:
+					BackendPlot *pBPlot;
+					boost::shared_ptr<boost::thread> pEventProcessingThrd;
+					boost::mutex m_mutex;
+					std::list<Event*> event_queue;
+					int queue_size;
 
-            void process_events();
-    };
+					void process_events();
+		};
 }
 #endif
