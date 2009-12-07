@@ -37,12 +37,14 @@ namespace cairo_plot {
 
     void EventHandler::add_event( Event *pEvent ) {
         //block if many events are present
-        if (event_queue.size()>50) {
-            while (event_queue.size()>0) {
+        if (event_queue.size()>1000) {
+            while (event_queue.size()>100) {
                 usleep(10000);
             }
         }
+        m_mutex.lock();
         event_queue.push_back( pEvent );
+        m_mutex.unlock();
     }
 
     void EventHandler::process_events() {
@@ -50,16 +52,19 @@ namespace cairo_plot {
         while (1) {
             if (event_queue.size()==0 && XPending(pBPlot->dpy) == 0) 
                 usleep(100000);
-            else if ( event_queue.size()>0 ) {
-                Event *pEvent = event_queue.front();
-                pEvent->execute( pBPlot );
-                event_queue.pop_front();
-                delete pEvent;
-            } else {
+            else if ( XPending(pBPlot->dpy) > 0 ) {
                 XEvent report;
                 XNextEvent( pBPlot->dpy, &report );
                 pBPlot->handle_xevent( report ); 
             }
+            else if ( event_queue.size()>0 ) {
+                Event *pEvent = event_queue.front();
+                pEvent->execute( pBPlot );
+                m_mutex.lock();
+                event_queue.pop_front();
+                m_mutex.unlock();
+                delete pEvent;
+            } else {}
         }
     }
 }

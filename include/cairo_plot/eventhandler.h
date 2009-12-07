@@ -4,6 +4,7 @@
 #include <list>
 
 #include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 #include <boost/bind.hpp>
 
 namespace cairo_plot {
@@ -50,6 +51,7 @@ namespace cairo_plot {
 
             BackendPlot *pBPlot;
 			boost::shared_ptr<boost::thread> pEventProcessingThrd;
+            boost::mutex m_mutex;
             std::list<Event*> event_queue;
 
             void process_events();

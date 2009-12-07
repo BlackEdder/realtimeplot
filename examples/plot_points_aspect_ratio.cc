@@ -1,4 +1,4 @@
-#include "cairo_plot.h"
+#include "cairo_plot/plot.h"
 
 using namespace cairo_plot;
 
@@ -10,15 +10,11 @@ int main() {
 	config.max_y = 30;
 	config.aspect_ratio = 0.8;
 
-	Plot pl = Plot( &config );
-	pl.axes_surface->write_to_png("axes.png");
-	std::cout << "Written" << std::endl;
+	Plot pl = Plot( config );
 	for (int i=0; i<10;++i) {
 		pl.point( (i-1)*10, (i-4)*5 );
 		sleep(1);
 	}
 	pl.point( 10, 10 );
-	pl.plot_surface->write_to_png("plot.png");
-	std::cout << "Written" << std::endl;
 	return 0;
 }

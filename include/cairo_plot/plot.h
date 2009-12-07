@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <time.h>
 
 #include <cairomm/context.h>
 #include <cairomm/xlib_surface.h>
@@ -100,6 +101,9 @@ namespace cairo_plot {
             //Keep track of the maximum/minimum values of the plot_surface in plot units
             float plot_surface_max_x, plot_surface_min_x;
             float plot_surface_max_y, plot_surface_min_y;
+
+            //last_update_time (display at least every second)
+            int time_of_last_update;
 
             /*
              * Methods
