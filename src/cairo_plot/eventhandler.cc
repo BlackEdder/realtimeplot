@@ -7,10 +7,10 @@ namespace cairo_plot {
         //create a backend plot
         pBPlot = new BackendPlot( config, this );
 
-				queue_size = 0;
+        queue_size = 0;
 
         //start processing thread
-		pEventProcessingThrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::EventHandler::process_events, this ) ) );
+        pEventProcessingThrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::EventHandler::process_events, this ) ) );
     }
 
     EventHandler::~EventHandler() {
