@@ -10,7 +10,7 @@ int main() {
 	config.max_y = 30;
 
 	Plot pl = Plot( config );
-	for (int i=0; i<10;++i) {
+	for (int i=0; i<50;++i) {
 		pl.line_add( (i-1)*10, (i-4)*5  );
 		sleep(1);
 	}

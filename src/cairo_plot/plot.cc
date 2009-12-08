@@ -334,8 +334,6 @@ namespace cairo_plot {
             line_context = Cairo::Context::create( plot_surface );
             set_foreground_color( line_context );
             transform_to_plot_units( line_context );
-            std::cout << x << " " << line_old_x << std::endl;
-            std::cout << y << " " << line_old_y << std::endl;
             line_context->move_to( line_old_x, line_old_y );
             line_context->line_to( x, y );
             transform_to_device_units( line_context );
