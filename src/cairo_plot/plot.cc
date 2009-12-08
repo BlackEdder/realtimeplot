@@ -205,6 +205,12 @@ namespace cairo_plot {
     }
 
     void BackendPlot::draw_axes_surface() {
+        //draw them non transparent (else we get weird interactions that when 
+        //drawing a transparent point and a rolling update happens the axes 
+        //become transparent as well)
+        float old_alpha = alpha;
+        alpha = 1;
+
         Cairo::RefPtr<Cairo::ToyFontFace> font =
             Cairo::ToyFontFace::create("Bitstream Charter",
                     Cairo::FONT_SLANT_ITALIC,
@@ -266,6 +272,7 @@ namespace cairo_plot {
         axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+25 );
         axes_context->show_text( config.xlabel );
         axes_context->stroke();
+        alpha = old_alpha;
     }
 
     void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
