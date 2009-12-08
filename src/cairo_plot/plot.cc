@@ -2,6 +2,38 @@
 
 namespace cairo_plot {
 
+    PointEvent::PointEvent( float x, float y ) {
+        x_crd = x;
+        y_crd = y;
+    }
+
+    void PointEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->point( x_crd, y_crd );
+    }
+
+    NumberEvent::NumberEvent( float x, float y, float i ) {
+        x_crd = x;
+        y_crd = y;
+        nr = i;
+    }
+
+    void NumberEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->number( x_crd, y_crd, nr );
+    }
+
+    PointTransparentEvent::PointTransparentEvent( float x, float y, float a ) {
+        x_crd = x;
+        y_crd = y;
+        alpha = a;
+    }
+
+    void PointTransparentEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->set_alpha( alpha );
+        pBPlot->point( x_crd, y_crd );
+        pBPlot->set_alpha( 1 );
+    }
+
+
     Plot::Plot( PlotConfig conf ) {
         pEvent_Handler = new EventHandler( conf );
     }
@@ -20,12 +52,18 @@ namespace cairo_plot {
         pEvent_Handler->add_event( pEvent );
     }
 
+    void Plot::point_transparent( float x, float y, float a ) {
+        Event *pEvent = new PointTransparentEvent( x, y, a );
+        pEvent_Handler->add_event( pEvent );
+    }
+
     /*
      * BackendPlot
      */
 
     BackendPlot::BackendPlot(PlotConfig conf, EventHandler *pEH) {
         config = conf;
+        alpha = 1;
         pEventHandler = pEH;
 
         //create the surface to draw on
@@ -231,11 +269,15 @@ namespace cairo_plot {
     }
 
     void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
-        pContext->set_source_rgb(1,1,1);
+        pContext->set_source_rgba(1, 1, 1, 1);
     }
 
     void BackendPlot::set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext ) {
-        pContext->set_source_rgb(0,0,0);
+        pContext->set_source_rgba(0,0,0, alpha);
+    }
+    
+    void BackendPlot::set_alpha( float a ) {
+        alpha = a;
     }
 
     void BackendPlot::point( float x, float y) {
@@ -243,14 +285,14 @@ namespace cairo_plot {
             if (!config.fixed_plot_area)
                 rolling_update(x, y);
         }
-        double dx = 5;
-        double dy = 5;
+        double dx = 4;
+        double dy = 4;
         set_foreground_color( plot_context );
         transform_to_plot_units(); 
         plot_context->device_to_user_distance(dx,dy);
         plot_context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
         transform_to_device_units( plot_context );
-        plot_context->stroke();
+        plot_context->fill();
 
         display();
     }

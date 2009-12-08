@@ -19,23 +19,6 @@ namespace cairo_plot {
             virtual void execute( BackendPlot *bPl ) {}
     };
 
-    //Event that draws a point at x,y
-    class PointEvent : public Event {
-        public:
-            PointEvent( float x, float y );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            float x_crd, y_crd;
-    };
-
-    class NumberEvent : public Event {
-        public:
-            NumberEvent( float x, float y, float i );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            float x_crd, y_crd, nr;
-    };
-
     //EventHandler
     //Accepts events and starts a thread which handles those events
     class EventHandler {

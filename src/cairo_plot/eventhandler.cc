@@ -2,25 +2,6 @@
 #include "cairo_plot/plot.h"
 
 namespace cairo_plot {
-    PointEvent::PointEvent( float x, float y ) {
-        x_crd = x;
-        y_crd = y;
-    }
-
-    void PointEvent::execute( BackendPlot *pBPlot ) {
-        pBPlot->point( x_crd, y_crd );
-    }
-
-    NumberEvent::NumberEvent( float x, float y, float i ) {
-        x_crd = x;
-        y_crd = y;
-        nr = i;
-    }
-
-    void NumberEvent::execute( BackendPlot *pBPlot ) {
-        pBPlot->number( x_crd, y_crd, nr );
-    }
-
 
     EventHandler::EventHandler( PlotConfig config ) {
         //create a backend plot

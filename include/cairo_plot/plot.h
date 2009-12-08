@@ -52,6 +52,32 @@ namespace cairo_plot {
             }
     };
 
+    //Event that draws a point at x,y
+    class PointEvent : public Event {
+        public:
+            PointEvent( float x, float y );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            float x_crd, y_crd;
+    };
+
+    class NumberEvent : public Event {
+        public:
+            NumberEvent( float x, float y, float i );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            float x_crd, y_crd, nr;
+    };
+
+    class PointTransparentEvent : public Event {
+        public:
+            PointTransparentEvent( float x, float y, float a );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            float x_crd, y_crd, alpha;
+    };
+
+
     /*
      * This is a "frontend" plotting class, that sends events to the "backend"
      * Backend runs in a separate thread
@@ -62,6 +88,7 @@ namespace cairo_plot {
             ~Plot();
             void point( float x, float y );
             void number( float x, float y, float i );
+            void point_transparent( float x, float y, float a );
         private:
             EventHandler *pEvent_Handler;
     };
@@ -101,6 +128,7 @@ namespace cairo_plot {
             //Keep track of the maximum/minimum values of the plot_surface in plot units
             float plot_surface_max_x, plot_surface_min_x;
             float plot_surface_max_y, plot_surface_min_y;
+            float alpha;
 
             //last_update_time (display at least every second)
             int time_of_last_update;
@@ -152,6 +180,8 @@ namespace cairo_plot {
 
             //set_foreground_color
             void set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext );
+
+            void set_alpha( float alpha );
 
             //point
             //draw point on surface
