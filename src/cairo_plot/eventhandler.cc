@@ -27,15 +27,15 @@ namespace cairo_plot {
         }
         m_mutex.lock();
         event_queue.push_back( pEvent );
-				++queue_size;
+        ++queue_size;
         m_mutex.unlock();
     }
 
-		int EventHandler::get_queue_size() {
-			return queue_size;
-		}
+    int EventHandler::get_queue_size() {
+        return queue_size;
+    }
 
-		void EventHandler::process_events() {
+    void EventHandler::process_events() {
         //Ideally event queue would have a blocking get function
         while (1) {
             if (queue_size==0 && XPending(pBPlot->dpy) == 0) 
@@ -50,7 +50,7 @@ namespace cairo_plot {
                 pEvent->execute( pBPlot );
                 m_mutex.lock();
                 event_queue.pop_front();
-								--queue_size;
+                --queue_size;
                 m_mutex.unlock();
                 delete pEvent;
             } else {}
