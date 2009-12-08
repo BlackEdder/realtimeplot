@@ -61,6 +61,14 @@ namespace cairo_plot {
             float x_crd, y_crd;
     };
 
+    class LineAddEvent : public Event {
+        public:
+            LineAddEvent( float x, float y );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            float x_crd, y_crd;
+    };
+
     class NumberEvent : public Event {
         public:
             NumberEvent( float x, float y, float i );
@@ -87,6 +95,7 @@ namespace cairo_plot {
             Plot( PlotConfig conf );
             ~Plot();
             void point( float x, float y );
+            void line_add( float x, float y );
             void number( float x, float y, float i );
             void point_transparent( float x, float y, float a );
         private:
@@ -105,6 +114,9 @@ namespace cairo_plot {
             //plot_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
             Cairo::RefPtr<Cairo::Context> plot_context;
+            
+            //context used for drawing lines
+            Cairo::RefPtr<Cairo::Context> line_context;
 
             Cairo::RefPtr<Cairo::XlibSurface> xSurface;
             Cairo::RefPtr<Cairo::Context> xContext;
@@ -187,6 +199,10 @@ namespace cairo_plot {
             //draw point on surface
             void point( float x, float y);
 
+            //line_add
+            //start a line at x, y or add to a current line
+            void line_add( float x, float y);
+
             //handle_xevent
             //Called by event handler when an xevent happens
             void handle_xevent( XEvent report );
@@ -206,6 +222,10 @@ namespace cairo_plot {
             //plot_bounds_within_surface_bounds
             //check that the plot bounds are within surface bounds of the surface
             bool plot_bounds_within_surface_bounds( );
+
+        private:
+            //previous x and y coordinate of the line point
+            float line_old_x, line_old_y;
     };
 }
 #endif

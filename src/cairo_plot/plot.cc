@@ -11,6 +11,16 @@ namespace cairo_plot {
         pBPlot->point( x_crd, y_crd );
     }
 
+    LineAddEvent::LineAddEvent( float x, float y ) {
+        x_crd = x;
+        y_crd = y;
+    }
+
+    void LineAddEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->line_add( x_crd, y_crd );
+    }
+
+
     NumberEvent::NumberEvent( float x, float y, float i ) {
         x_crd = x;
         y_crd = y;
@@ -44,6 +54,11 @@ namespace cairo_plot {
 
     void Plot::point( float x, float y ) {
         Event *pEvent = new PointEvent( x, y );
+        pEvent_Handler->add_event( pEvent );
+    }
+
+    void Plot::line_add( float x, float y ) {
+        Event *pEvent = new LineAddEvent( x, y );
         pEvent_Handler->add_event( pEvent );
     }
 
@@ -303,6 +318,34 @@ namespace cairo_plot {
 
         display();
     }
+
+    void BackendPlot::line_add( float x, float y ) {
+        if (!within_plot_bounds(x,y)) {
+            if (!config.fixed_plot_area)
+                rolling_update(x, y);
+        }
+        if (line_context == NULL) {
+            line_context = Cairo::Context::create( plot_surface );
+            line_old_x = x;
+            line_old_y = y;
+        } else {
+            //plot_surface might have been updated, by other actions
+            transform_to_device_units( line_context );
+            line_context = Cairo::Context::create( plot_surface );
+            set_foreground_color( line_context );
+            transform_to_plot_units( line_context );
+            std::cout << x << " " << line_old_x << std::endl;
+            std::cout << y << " " << line_old_y << std::endl;
+            line_context->move_to( line_old_x, line_old_y );
+            line_context->line_to( x, y );
+            transform_to_device_units( line_context );
+            line_context->stroke();
+            line_old_x = x;
+            line_old_y = y;
+            display();
+        }
+    }
+
 
     void BackendPlot::number( float x, float y, float i) {
         if (!within_plot_bounds(x,y)) {
