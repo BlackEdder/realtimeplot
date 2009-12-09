@@ -37,6 +37,7 @@ namespace cairo_plot {
 					boost::mutex m_mutex;
 					std::list<Event*> event_queue;
 					int queue_size;
+					int xevent_queue_size;
 
 					void process_events();
 		};

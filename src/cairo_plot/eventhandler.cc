@@ -8,6 +8,7 @@ namespace cairo_plot {
         pBPlot = new BackendPlot( config, this );
 
         queue_size = 0;
+        xevent_queue_size = 0;
 
         //start processing thread
         pEventProcessingThrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::EventHandler::process_events, this ) ) );
@@ -32,7 +33,7 @@ namespace cairo_plot {
     }
 
     int EventHandler::get_queue_size() {
-        return queue_size;
+        return queue_size + xevent_queue_size;
     }
 
     void EventHandler::process_events() {
@@ -41,6 +42,7 @@ namespace cairo_plot {
             if (queue_size==0 && XPending(pBPlot->dpy) == 0) 
                 usleep(100000);
             else if ( XPending(pBPlot->dpy) > 0 ) {
+                xevent_queue_size = XPending(pBPlot->dpy) - 1; 
                 XEvent report;
                 XNextEvent( pBPlot->dpy, &report );
                 pBPlot->handle_xevent( report ); 
