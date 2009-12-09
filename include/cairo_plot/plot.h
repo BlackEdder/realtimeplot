@@ -226,6 +226,9 @@ namespace cairo_plot {
         private:
             //previous x and y coordinate of the line point
             float line_old_x, line_old_y;
+
+            //set a flag when display shouldn't be updated (plotting still runs on)
+            bool pause_display;
     };
 }
 #endif

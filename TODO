@@ -1,2 +1,2 @@
-* add support for pausing
-* properly justify tick labels
+* properly justify tick labels (pango support?)
+* remove flickering (could be done by drawing axes and plots to another (intermediate) imagesurface and then draw that on xlibsurface in one go)

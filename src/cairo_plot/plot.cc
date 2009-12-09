@@ -92,6 +92,8 @@ namespace cairo_plot {
 
         time_of_last_update = time(0)-2;
 
+        pause_display = false;
+
         display();
     }
 
@@ -101,8 +103,9 @@ namespace cairo_plot {
 
     void BackendPlot::display() {
         //Only do this if event queue is empty or last update was more than a second ago
-        if (pEventHandler->get_queue_size() < 1 
-                || (time(0)-time_of_last_update)>=1)  {
+        if (!pause_display && 
+                (pEventHandler->get_queue_size() < 1 
+                || (time(0)-time_of_last_update)>=1))  {
             transform_to_plot_units();
             double x = config.min_x;
             double y = config.max_y;
@@ -136,6 +139,16 @@ namespace cairo_plot {
                 break;
             case Expose:
                 display();
+                break;
+            case KeyPress:
+                if (XLookupKeysym(&report.xkey, 0) == XK_space)  {
+                    if (pause_display) {
+                        pause_display = false;
+                        display();
+                    }
+                    else
+                        pause_display = true;
+                }
                 break;
         }
     }
@@ -187,7 +200,7 @@ namespace cairo_plot {
         
         XStoreName(dpy, win, "hello");
         XMapWindow(dpy, win);
-        XSelectInput( dpy, win, StructureNotifyMask | ExposureMask );
+        XSelectInput( dpy, win, KeyPressMask | StructureNotifyMask | ExposureMask );
         xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
                 plot_area_width+50, plot_area_height+50);
         xContext = Cairo::Context::create( xSurface );
