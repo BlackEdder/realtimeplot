@@ -8,6 +8,7 @@ int main() {
 	config.max_x = 90;
 	config.min_y = -20;
 	config.max_y = 30;
+    config.aspect_ratio = 0.5;
 
 	Plot pl = Plot( config );
 	for (int i=0; i<10;++i) {

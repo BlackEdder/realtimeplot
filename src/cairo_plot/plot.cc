@@ -224,6 +224,8 @@ namespace cairo_plot {
         //drawing a transparent point and a rolling update happens the axes 
         //become transparent as well)
         float old_alpha = alpha;
+        Cairo::Matrix y_font_matrix;
+        Cairo::Matrix x_font_matrix;
         alpha = 1;
 
         Cairo::RefPtr<Cairo::ToyFontFace> font =
@@ -257,6 +259,12 @@ namespace cairo_plot {
         axes_context->move_to( config.min_x, config.min_y );
         axes_context->line_to( config.max_x, config.min_y );
 
+        axes_context->get_font_matrix(x_font_matrix);
+        //this might be technically wrong, (.yy and .xx reversed) but normally
+        //.xx==.yy so it doesn't matter
+        y_font_matrix = Cairo::Matrix( 0, -x_font_matrix.yy, x_font_matrix.xx, 0, 0, 0 );
+
+
         //Plot the ticks + tick labels
         double dtick_x = (config.max_x-config.min_x)/config.nr_of_ticks;
         double dtick_y = (config.max_y-config.min_y)/config.nr_of_ticks;
@@ -268,13 +276,15 @@ namespace cairo_plot {
             axes_context->line_to( config.min_x+i*(dtick_x), config.min_y+length_tick_y );
             axes_context->move_to( config.min_x+i*(dtick_x), config.min_y-2*length_tick_y );
             transform_to_device_units( axes_context );
+            axes_context->set_font_matrix( x_font_matrix );
             axes_context->show_text( stringify( config.min_x+i*dtick_x ) );
             transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
 
             axes_context->move_to( config.min_x, config.min_y+i*(dtick_y) );
             axes_context->line_to( config.min_x+length_tick_x, config.min_y+i*(dtick_y) );
-            axes_context->move_to( config.min_x-3*length_tick_x, config.min_y+i*(dtick_y) );
+            axes_context->move_to( config.min_x-2*length_tick_x, config.min_y+i*(dtick_y) );
             transform_to_device_units( axes_context );
+            axes_context->set_font_matrix( y_font_matrix );
             axes_context->show_text( stringify( config.min_y+i*dtick_y ) );
             transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
 
@@ -283,8 +293,10 @@ namespace cairo_plot {
         transform_to_device_units( axes_context );
 
         axes_context->move_to( 20, round(0.5*plot_area_height+25) );
+        axes_context->set_font_matrix( y_font_matrix );
         axes_context->show_text( config.ylabel );
         axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+25 );
+        axes_context->set_font_matrix( x_font_matrix );
         axes_context->show_text( config.xlabel );
         axes_context->stroke();
         alpha = old_alpha;
