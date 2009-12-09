@@ -3,12 +3,13 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <time.h>
 
 #include <cairomm/context.h>
 #include <cairomm/xlib_surface.h>
 
 #include "cairo_plot/eventhandler.h"
+
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 namespace cairo_plot {
 
@@ -143,7 +144,7 @@ namespace cairo_plot {
             float alpha;
 
             //last_update_time (display at least every second)
-            int time_of_last_update;
+            boost::posix_time::ptime time_of_last_update;
 
             /*
              * Methods

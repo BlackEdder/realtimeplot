@@ -90,7 +90,7 @@ namespace cairo_plot {
         //create_xlib_window
         create_xlib_window();
 
-        time_of_last_update = time(0)-2;
+        time_of_last_update = boost::posix_time::microsec_clock::local_time() - boost::posix_time::microseconds(200000);
 
         pause_display = false;
 
@@ -103,24 +103,26 @@ namespace cairo_plot {
 
     void BackendPlot::display() {
         //Only do this if event queue is empty or last update was more than a second ago
-        if (!pause_display && 
-                (pEventHandler->get_queue_size() < 1 
-                || (time(0)-time_of_last_update)>=1))  {
-            transform_to_plot_units();
-            double x = config.min_x;
-            double y = config.max_y;
-            plot_context->user_to_device( x, y );
-            //xContext->set_source( axes_surface, 0, 0 );
-            //xContext->paint();
-            xContext->rectangle(50,0,plot_area_width, plot_area_height);
-            xContext->set_source( plot_surface, -x+50, -y );
-            xContext->fill();
-            xContext->set_source( axes_surface, 0, 0 );
-            xContext->paint();
-            time_of_last_update = time(0);
-            //only sleep if no more events are coming
-            if (pEventHandler->get_queue_size() < 1) {
-               usleep(100000);
+        if (!pause_display ) {
+            boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
+            if  (pEventHandler->get_queue_size() < 1 
+                    || (( now-time_of_last_update )>( boost::posix_time::microseconds(100000))))  {
+                transform_to_plot_units();
+                double x = config.min_x;
+                double y = config.max_y;
+                plot_context->user_to_device( x, y );
+                //xContext->set_source( axes_surface, 0, 0 );
+                //xContext->paint();
+                xContext->rectangle(50,0,plot_area_width, plot_area_height);
+                xContext->set_source( plot_surface, -x+50, -y );
+                xContext->fill();
+                xContext->set_source( axes_surface, 0, 0 );
+                xContext->paint();
+                time_of_last_update = boost::posix_time::microsec_clock::local_time();
+                //only sleep if no more events are coming
+                if (pEventHandler->get_queue_size() < 1) {
+                    usleep(100000);
+                }
             }
         }
     }
