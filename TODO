@@ -1,2 +1,3 @@
 * add support for pausing
 * properly justify tick labels
+* Resize properly (only resize when no more resize calls are waiting)
