@@ -2,4 +2,3 @@
 * Use mouse to drag around (a paused) image
 * Use a key to start (and stop) recording to a png file
 * Allow zoom in/zoom out
-* Better x/y tick labels choices (best approach is probably to first calculate the power (range of 0.1 is power -1 etc) and then use that to do smart multiplication or so)

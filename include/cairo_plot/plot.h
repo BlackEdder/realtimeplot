@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <cairomm/context.h>
 #include <cairomm/xlib_surface.h>
@@ -230,6 +231,9 @@ namespace cairo_plot {
 
             //set a flag when display shouldn't be updated (plotting still runs on)
             bool pause_display;
+
+            //function to calculate the "optimal" tick values/positions
+            std::vector<float> axes_ticks( float min, float max, int nr );
     };
 }
 #endif
