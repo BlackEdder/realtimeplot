@@ -107,17 +107,27 @@ namespace cairo_plot {
             boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
             if  (pEventHandler->get_queue_size() < 1 
                     || (( now-time_of_last_update )>( boost::posix_time::microseconds(100000))))  {
+                //Create an temporary imagesurface (using a temp surface gets rid of
+                //flickering we get if we plot plot_surface and then axes_surface
+                //directly onto xlibsurface
+                Cairo::RefPtr<Cairo::ImageSurface> final_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 50+plot_area_width, 50+plot_area_height );
+                Cairo::RefPtr<Cairo::Context> final_context = Cairo::Context::create( final_surface );
+                
                 transform_to_plot_units();
                 double x = config.min_x;
                 double y = config.max_y;
                 plot_context->user_to_device( x, y );
-                //xContext->set_source( axes_surface, 0, 0 );
-                //xContext->paint();
-                xContext->rectangle(50,0,plot_area_width, plot_area_height);
-                xContext->set_source( plot_surface, -x+50, -y );
-                xContext->fill();
-                xContext->set_source( axes_surface, 0, 0 );
+                //copy the plot onto our temporary image surface
+                final_context->set_source( plot_surface, -x+50, -y );
+                final_context->paint();
+                //copy the axes onto our temporary image surface
+                final_context->set_source( axes_surface, 0, 0 );
+                final_context->paint();
+
+                //copy the temporary surface onto the xlib surface
+                xContext->set_source( final_surface, 0, 0 );
                 xContext->paint();
+
                 time_of_last_update = boost::posix_time::microsec_clock::local_time();
                 //only sleep if no more events are coming
                 if (pEventHandler->get_queue_size() < 1) {
