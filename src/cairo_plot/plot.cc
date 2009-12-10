@@ -285,26 +285,27 @@ namespace cairo_plot {
         xaxis_ticks = axes_ticks( config.min_x, config.max_x, 10 );
         yaxis_ticks = axes_ticks( config.min_y, config.max_y, config.nr_of_ticks );
         
-        double dtick_x = (config.max_x-config.min_x)/config.nr_of_ticks;
-        double dtick_y = (config.max_y-config.min_y)/config.nr_of_ticks;
         double length_tick_x = config.ticks_length;
         double length_tick_y = -config.ticks_length;
         axes_context->device_to_user_distance( length_tick_x, length_tick_y );
-        for (int i = 0; i < config.nr_of_ticks; ++i) {
-            axes_context->move_to( config.min_x+i*(dtick_x), config.min_y );
-            axes_context->line_to( config.min_x+i*(dtick_x), config.min_y+length_tick_y );
-            axes_context->move_to( config.min_x+i*(dtick_x), config.min_y-2*length_tick_y );
+
+        for (int i = 0; i < xaxis_ticks.size(); ++i) {
+            axes_context->move_to( xaxis_ticks[i], config.min_y );
+            axes_context->line_to( xaxis_ticks[i], config.min_y+length_tick_y );
+            axes_context->move_to( xaxis_ticks[i], config.min_y-2*length_tick_y );
             transform_to_device_units( axes_context );
             axes_context->set_font_matrix( x_font_matrix );
-            axes_context->show_text( stringify( config.min_x+i*dtick_x ) );
+            axes_context->show_text( stringify( xaxis_ticks[i] ) );
             transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
+         }
 
-            axes_context->move_to( config.min_x, config.min_y+i*(dtick_y) );
-            axes_context->line_to( config.min_x+length_tick_x, config.min_y+i*(dtick_y) );
-            axes_context->move_to( config.min_x-2*length_tick_x, config.min_y+i*(dtick_y) );
+        for (int i = 0; i < yaxis_ticks.size(); ++i) {
+            axes_context->move_to( config.min_x, yaxis_ticks[i] );
+            axes_context->line_to( config.min_x+length_tick_x, yaxis_ticks[i] );
+            axes_context->move_to( config.min_x-2*length_tick_x, yaxis_ticks[i] );
             transform_to_device_units( axes_context );
             axes_context->set_font_matrix( y_font_matrix );
-            axes_context->show_text( stringify( config.min_y+i*dtick_y ) );
+            axes_context->show_text( stringify( yaxis_ticks[i] ) );
             transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
 
         }
@@ -454,22 +455,35 @@ namespace cairo_plot {
     }
 
     std::vector<float> BackendPlot::axes_ticks( float min, float max, int nr ) {
-        std::cout << min << " " << max << " " << nr << std::endl;
-
-        float step = (max-min)/nr;
-        std::cout << step << std::endl;
         std::vector<float> ticks;
-        /*for (int i=0; i<nr; ++i) {
-            float tmp = min+i*(max-min)/nr;
-            tmp = tmp*10/(max-min);
-            std::cout << "Bla: " << tmp << std::endl;
-            tmp = ceil(tmp);
-            std::cout << tmp << std::endl;
-            tmp = tmp*(max-min)/10; 
-            if (tmp>=min && tmp<=max)
-                ticks.push_back( tmp );
-            std::cout << tmp << std::endl;
-        }*/
+        int power = 0;
+        float tick;
+        float step = (max-min)/nr;
+
+        //Calculate power of step (i.e. 0.01 -> power is -2)
+        //Using straightforward method. Is probably much easier way
+        if (step <= 1) {
+            while (step/pow(10,power)<=1) {
+                --power;
+            }
+        } else if (step >=10) {
+            while (step/pow(10,power)<=1) {
+                ++power;
+            }
+        }
+
+        //round our step
+        step = round(step/pow(10,power))*pow(10,power);
+
+        //first tick is rounded version of min
+        tick = round(min/pow(10,power))*pow(10,power);
+
+        while (tick <= max ) {
+            if (tick>=min) {
+                ticks.push_back( tick );
+            }
+            tick += step;
+        }
         return ticks;
     }
 }

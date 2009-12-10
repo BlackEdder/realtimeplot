@@ -3,4 +3,3 @@
 * Use mouse to drag around (a paused) image
 * Use a key to start (and stop) recording to a png file
 * Allow zoom in/zoom out
-* Better x/y tick labels choices (probably with a smart multiplication and round.. i.e if range is 1 from (0.01,..,0.99)*10, round(0.1,1.1,..) -> (1,2,3,4,..)/10 ->0.1,0.2,...)
