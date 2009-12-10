@@ -241,6 +241,8 @@ namespace cairo_plot {
         float old_alpha = alpha;
         Cairo::Matrix y_font_matrix;
         Cairo::Matrix x_font_matrix;
+        std::vector<float> xaxis_ticks;
+        std::vector<float> yaxis_ticks;
         alpha = 1;
 
         Cairo::RefPtr<Cairo::ToyFontFace> font =
@@ -252,8 +254,7 @@ namespace cairo_plot {
                 plot_area_width+50, plot_area_height+50 );
         axes_context = Cairo::Context::create(axes_surface);
         transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
-        //Plot background for axes (remember this will be used as a mask and plotted points
-        //should not appear outside the axes
+        //plot background color outside the axes (to cover points plotted outside)
         set_background_color( axes_context );
         double dx=50;
         double dy=-50;
@@ -281,6 +282,9 @@ namespace cairo_plot {
 
 
         //Plot the ticks + tick labels
+        xaxis_ticks = axes_ticks( config.min_x, config.max_x, 10 );
+        yaxis_ticks = axes_ticks( config.min_y, config.max_y, config.nr_of_ticks );
+        
         double dtick_x = (config.max_x-config.min_x)/config.nr_of_ticks;
         double dtick_y = (config.max_y-config.min_y)/config.nr_of_ticks;
         double length_tick_x = config.ticks_length;
@@ -447,5 +451,25 @@ namespace cairo_plot {
             return false;
         else
             return true;
+    }
+
+    std::vector<float> BackendPlot::axes_ticks( float min, float max, int nr ) {
+        std::cout << min << " " << max << " " << nr << std::endl;
+
+        float step = (max-min)/nr;
+        std::cout << step << std::endl;
+        std::vector<float> ticks;
+        /*for (int i=0; i<nr; ++i) {
+            float tmp = min+i*(max-min)/nr;
+            tmp = tmp*10/(max-min);
+            std::cout << "Bla: " << tmp << std::endl;
+            tmp = ceil(tmp);
+            std::cout << tmp << std::endl;
+            tmp = tmp*(max-min)/10; 
+            if (tmp>=min && tmp<=max)
+                ticks.push_back( tmp );
+            std::cout << tmp << std::endl;
+        }*/
+        return ticks;
     }
 }

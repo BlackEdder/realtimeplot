@@ -4,8 +4,8 @@ using namespace cairo_plot;
 
 int main() {
 	PlotConfig config = PlotConfig();
-	config.min_x = -10;
-	config.max_x = 90;
+	config.min_x = -0.11;
+	config.max_x = 0.91;
 	config.min_y = -20;
 	config.max_y = 30;
     config.aspect_ratio = 0.5;
