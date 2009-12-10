@@ -19,6 +19,7 @@
 #endif
 int main()
 {
+		int a, b;
     Cairo::RefPtr<Cairo::ImageSurface> surface =
         Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 600, 400);
 
@@ -30,15 +31,21 @@ int main()
 		Pango::init();
 		Glib::RefPtr<Pango::Layout> pangoLayout = Pango::Layout::create (cr);
 		cr->move_to(300,200);
+    cr->set_source_rgb(0, 0, 0);
 		pangoLayout->set_text("text");
+		pangoLayout->get_pixel_size( a, b );
+		std::cout << a << " " << b << std::endl;
 		pangoLayout->update_from_cairo_context(cr);  //gets cairo cursor position
-		std::cout << "bla" << std::endl;
 		pangoLayout->add_to_cairo_context(cr);       //adds text to cairos stack of stuff to be drawn
-		std::cout << "bla" << std::endl;
-		cr->stroke();
-
-
-		cr->paint();
+		//pangoLayout->set_alignment( Pango::ALIGN_CENTER );
+		cr->move_to(300,220);
+		pangoLayout->set_text("centered");
+		pangoLayout->get_pixel_size( a, b );
+		pangoLayout->set_text("");
+		std::cout << a << " " << b << std::endl;
+		pangoLayout->update_from_cairo_context(cr);  //gets cairo cursor position
+		pangoLayout->add_to_cairo_context(cr);       //adds text to cairos stack of stuff to be drawn
+			cr->stroke();
 
 
 #ifdef CAIRO_HAS_PNG_FUNCTIONS
