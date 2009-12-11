@@ -1,1 +1,5 @@
 g++ examples/plot_points.cc  src/cairo_plot/plot.cc src/cairo_plot/eventhandler.cc -lcairomm-1.0 -I./include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -lboost_thread -lboost_date_time -pg && ./a.out
+
+#test_cairo.cc
+g++ examples/test_cairo.cc -lcairomm-1.0 -lpangomm-1.4 -lglib-2.0 -I/usr/include/pangomm-1.4 -I/usr/include/pango-1.0 -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -pg && ./a.out 
+
