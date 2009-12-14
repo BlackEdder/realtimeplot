@@ -31,6 +31,7 @@ namespace cairo_plot {
             int pixel_width, pixel_height;
             int origin_x, origin_y;
             int nr_of_ticks, ticks_length;
+            int point_size;
             float min_x, max_x;
             float min_y, max_y;
             float overlap;
@@ -51,6 +52,7 @@ namespace cairo_plot {
                 overlap = 0.1;
                 aspect_ratio = 1;
                 fixed_plot_area = false;
+                point_size = 4;
             }
     };
 

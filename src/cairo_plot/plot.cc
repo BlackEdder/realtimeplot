@@ -351,8 +351,8 @@ namespace cairo_plot {
             if (!config.fixed_plot_area)
                 rolling_update(x, y);
         }
-        double dx = 4;
-        double dy = 4;
+        double dx = config.point_size;
+        double dy = config.point_size;
         set_foreground_color( plot_context );
         transform_to_plot_units(); 
         plot_context->device_to_user_distance(dx,dy);

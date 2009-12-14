@@ -9,6 +9,7 @@ int main() {
 	config.min_y = -20;
 	config.max_y = 30;
     config.aspect_ratio = 0.5;
+    config.point_size = 2;
 
 	Plot pl = Plot( config );
 	for (int i=0; i<10;++i) {
