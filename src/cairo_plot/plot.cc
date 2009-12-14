@@ -43,6 +43,14 @@ namespace cairo_plot {
         pBPlot->set_alpha( 1 );
     }
 
+    SaveEvent::SaveEvent( std::string fn ) {
+        filename = fn;
+    }
+
+    void SaveEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->save(filename);
+    }
+
 
     Plot::Plot( PlotConfig conf ) {
         pEvent_Handler = new EventHandler( conf );
@@ -69,6 +77,11 @@ namespace cairo_plot {
 
     void Plot::point_transparent( float x, float y, float a ) {
         Event *pEvent = new PointTransparentEvent( x, y, a );
+        pEvent_Handler->add_event( pEvent );
+    }
+
+    void Plot::save( std::string filename ) {
+        Event *pEvent = new SaveEvent( filename );
         pEvent_Handler->add_event( pEvent );
     }
 
@@ -492,7 +505,9 @@ namespace cairo_plot {
         //Create an temporary imagesurface (using a temp surface gets rid of
         //flickering we get if we plot plot_surface and then axes_surface
         //directly onto xlibsurface
-        Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 50+plot_area_width, 50+plot_area_height );
+        Cairo::RefPtr<Cairo::ImageSurface> surface = 
+            Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+                    50+plot_area_width, 50+plot_area_height );
         Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
 
         transform_to_plot_units();

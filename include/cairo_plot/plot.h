@@ -89,6 +89,14 @@ namespace cairo_plot {
             float x_crd, y_crd, alpha;
     };
 
+    class SaveEvent : public Event {
+        public:
+            SaveEvent( std::string filename );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            std::string filename;
+    };
+
 
     /*
      * This is a "frontend" plotting class, that sends events to the "backend"
@@ -102,6 +110,7 @@ namespace cairo_plot {
             void line_add( float x, float y );
             void number( float x, float y, float i );
             void point_transparent( float x, float y, float a );
+            void save( std::string filename );
         private:
             EventHandler *pEvent_Handler;
     };
