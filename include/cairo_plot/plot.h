@@ -207,6 +207,8 @@ namespace cairo_plot {
             //start a line at x, y or add to a current line
             void line_add( float x, float y);
 
+            void save( std::string fn );
+
             //handle_xevent
             //Called by event handler when an xevent happens
             void handle_xevent( XEvent report );
@@ -236,6 +238,8 @@ namespace cairo_plot {
 
             //function to calculate the "optimal" tick values/positions
             std::vector<float> axes_ticks( float min, float max, int nr );
+
+            Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
     };
 }
 #endif

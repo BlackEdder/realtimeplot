@@ -108,26 +108,10 @@ namespace cairo_plot {
             //Only do this if event queue is empty 
             //or last update was more than a 0.1 seconds ago
             if  (pEventHandler->get_queue_size() < 1 
-                    || (( now-time_of_last_update )>( boost::posix_time::microseconds(100000))))  {
-                //Create an temporary imagesurface (using a temp surface gets rid of
-                //flickering we get if we plot plot_surface and then axes_surface
-                //directly onto xlibsurface
-                Cairo::RefPtr<Cairo::ImageSurface> final_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 50+plot_area_width, 50+plot_area_height );
-                Cairo::RefPtr<Cairo::Context> final_context = Cairo::Context::create( final_surface );
-                
-                transform_to_plot_units();
-                double x = config.min_x;
-                double y = config.max_y;
-                plot_context->user_to_device( x, y );
-                //copy the plot onto our temporary image surface
-                final_context->set_source( plot_surface, -x+50, -y );
-                final_context->paint();
-                //copy the axes onto our temporary image surface
-                final_context->set_source( axes_surface, 0, 0 );
-                final_context->paint();
-
+                    || (( now-time_of_last_update )>( boost::posix_time::microseconds(200000))))  {
+                Cairo::RefPtr<Cairo::ImageSurface> surface = create_temporary_surface();
                 //copy the temporary surface onto the xlib surface
-                xContext->set_source( final_surface, 0, 0 );
+                xContext->set_source( surface, 0, 0 );
                 xContext->paint();
 
                 time_of_last_update = boost::posix_time::microsec_clock::local_time();
@@ -388,6 +372,11 @@ namespace cairo_plot {
         }
     }
 
+    void BackendPlot::save( std::string fn ) {
+        Cairo::RefPtr<Cairo::ImageSurface> surface = create_temporary_surface();
+        surface->write_to_png( fn );
+    }
+
 
     void BackendPlot::number( float x, float y, float i) {
         if (!within_plot_bounds(x,y)) {
@@ -497,5 +486,25 @@ namespace cairo_plot {
             tick += step;
         }
         return ticks;
+    }
+
+    Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_temporary_surface() {
+        //Create an temporary imagesurface (using a temp surface gets rid of
+        //flickering we get if we plot plot_surface and then axes_surface
+        //directly onto xlibsurface
+        Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 50+plot_area_width, 50+plot_area_height );
+        Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
+
+        transform_to_plot_units();
+        double x = config.min_x;
+        double y = config.max_y;
+        plot_context->user_to_device( x, y );
+        //copy the plot onto our temporary image surface
+        context->set_source( plot_surface, -x+50, -y );
+        context->paint();
+        //copy the axes onto our temporary image surface
+        context->set_source( axes_surface, 0, 0 );
+        context->paint();
+        return surface;
     }
 }
