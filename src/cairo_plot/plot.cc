@@ -122,9 +122,9 @@ namespace cairo_plot {
             //or last update was more than a 0.1 seconds ago
             if  (pEventHandler->get_queue_size() < 1 
                     || (( now-time_of_last_update )>( boost::posix_time::microseconds(200000))))  {
-                Cairo::RefPtr<Cairo::ImageSurface> surface = create_temporary_surface();
+                temporary_display_surface = create_temporary_surface();
                 //copy the temporary surface onto the xlib surface
-                xContext->set_source( surface, 0, 0 );
+                xContext->set_source( temporary_display_surface, 0, 0 );
                 xContext->paint();
 
                 time_of_last_update = boost::posix_time::microsec_clock::local_time();
@@ -159,7 +159,9 @@ namespace cairo_plot {
                     }
                     else
                         pause_display = true;
-                }
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_space)  {
+									save( "cairo_plot.png", temporary_display_surface );
+								}
                 break;
         }
     }
@@ -387,8 +389,14 @@ namespace cairo_plot {
 
     void BackendPlot::save( std::string fn ) {
         Cairo::RefPtr<Cairo::ImageSurface> surface = create_temporary_surface();
-        surface->write_to_png( fn );
+				save(fn, surface );
     }
+
+    void BackendPlot::save( std::string fn, 
+				Cairo::RefPtr<Cairo::ImageSurface> pSurface ) {
+        pSurface->write_to_png( fn );
+		}
+
 
 
     void BackendPlot::number( float x, float y, float i) {

@@ -131,7 +131,9 @@ namespace cairo_plot {
             //context used for drawing lines
             Cairo::RefPtr<Cairo::Context> line_context;
 
-            Cairo::RefPtr<Cairo::XlibSurface> xSurface;
+            //temporary surface used when plotting stuff
+						Cairo::RefPtr<Cairo::ImageSurface> tmp_display_surface;
+						Cairo::RefPtr<Cairo::XlibSurface> xSurface;
             Cairo::RefPtr<Cairo::Context> xContext;
             Window win;
             Display *dpy;
@@ -217,6 +219,7 @@ namespace cairo_plot {
             void line_add( float x, float y);
 
             void save( std::string fn );
+            void save( std::string fn, Cairo::RefPtr<Cairo::ImageSurface> pSurface );
 
             //handle_xevent
             //Called by event handler when an xevent happens
