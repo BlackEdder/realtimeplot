@@ -159,9 +159,17 @@ namespace cairo_plot {
                     }
                     else
                         pause_display = true;
-                } else if (XLookupKeysym(&report.xkey, 0) == XK_space)  {
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_w)  {
 									save( "cairo_plot.png", temporary_display_surface );
-								}
+								} /*else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_left) {
+										move( -1, 0 );
+								} else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_right) {
+										move( 1, 0 );
+								} else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_up) {
+										move( 0, 1 );
+								} else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_down) {
+										move( 0, -1 );
+								}*/
                 break;
         }
     }
@@ -530,4 +538,31 @@ namespace cairo_plot {
         context->paint();
         return surface;
     }
+
+		void move( int direction_x, int direction_y ) {
+      double xrange = config.max_x-config.min_x;
+			config.min_x += 0.05*direction_x*xrange;
+			config.max_x = config.min_x+xrange;
+      double yrange = config.max_y-config.min_y;
+			config.min_y += 0.05*direction_y*yrange;
+			config.max_y = config.min_y+yrange;
+			
+			//don't move outside of the plot_surface, since we don't have that data anymore
+			if (config.max_x>plot_surface_max_x) {
+				config.max_x = plot_surface_max_x;
+				config.min_x = config.max_x-xrange;
+			} else if (config.min_x<plot_surface_min_x) {
+				config.min_x = plot_surface_min_x;
+				config.max_x = config.min_x+xrange;
+			}
+			if (config.max_y>plot_surface_max_y) {
+				config.max_y = plot_surface_max_y;
+				config.min_y = config.max_y-yrange;
+			} else if (config.min_y<plot_surface_min_y) {
+				config.min_y = plot_surface_min_y;
+				config.max_y = config.min_y+yrange;
+			}
+
+			display();
+		}
 }

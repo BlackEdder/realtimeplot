@@ -252,6 +252,9 @@ namespace cairo_plot {
             std::vector<float> axes_ticks( float min, float max, int nr );
 
             Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
+
+						//move the plotting area around in increments of 5%
+						void move( int direction_x, int direction_y );
     };
 }
 #endif
