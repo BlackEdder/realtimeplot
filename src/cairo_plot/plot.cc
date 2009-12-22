@@ -539,7 +539,7 @@ namespace cairo_plot {
         return surface;
     }
 
-		void move( int direction_x, int direction_y ) {
+		void BackendPlot::move( int direction_x, int direction_y ) {
       double xrange = config.max_x-config.min_x;
 			config.min_x += 0.05*direction_x*xrange;
 			config.max_x = config.min_x+xrange;

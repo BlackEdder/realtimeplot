@@ -132,7 +132,7 @@ namespace cairo_plot {
             Cairo::RefPtr<Cairo::Context> line_context;
 
             //temporary surface used when plotting stuff
-						Cairo::RefPtr<Cairo::ImageSurface> tmp_display_surface;
+						Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
 						Cairo::RefPtr<Cairo::XlibSurface> xSurface;
             Cairo::RefPtr<Cairo::Context> xContext;
             Window win;
