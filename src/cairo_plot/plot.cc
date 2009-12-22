@@ -161,15 +161,15 @@ namespace cairo_plot {
                         pause_display = true;
                 } else if (XLookupKeysym(&report.xkey, 0) == XK_w)  {
 									save( "cairo_plot.png", temporary_display_surface );
-								} /*else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_left) {
+								} else if (XLookupKeysym(&report.xkey, 0) == XK_Left) {
 										move( -1, 0 );
-								} else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_right) {
+								} else if (XLookupKeysym(&report.xkey, 0) == XK_Right) {
 										move( 1, 0 );
-								} else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_up) {
+								} else if (XLookupKeysym(&report.xkey, 0) == XK_Up) {
 										move( 0, 1 );
-								} else if (XLookupKeysym(&report.xkey, 0) == XK_arrow_down) {
+								} else if (XLookupKeysym(&report.xkey, 0) == XK_Down) {
 										move( 0, -1 );
-								}*/
+								}
                 break;
         }
     }
@@ -563,6 +563,7 @@ namespace cairo_plot {
 				config.max_y = config.min_y+yrange;
 			}
 
+			draw_axes_surface();
 			display();
 		}
 }
