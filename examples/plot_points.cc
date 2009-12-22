@@ -17,6 +17,6 @@ int main() {
 		sleep(1);
 	}
 	pl.point( 0.02, 10 );
-    pl.save( "bla.png" );
+    pl.save( "plot_points.png" );
 	return 0;
 }
