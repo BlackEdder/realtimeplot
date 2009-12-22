@@ -31,6 +31,7 @@ namespace cairo_plot {
             int pixel_width, pixel_height;
             int origin_x, origin_y;
             int nr_of_ticks, ticks_length;
+            int point_size;
             float min_x, max_x;
             float min_y, max_y;
             float overlap;
@@ -51,6 +52,7 @@ namespace cairo_plot {
                 overlap = 0.1;
                 aspect_ratio = 1;
                 fixed_plot_area = false;
+                point_size = 4;
             }
     };
 
@@ -87,6 +89,14 @@ namespace cairo_plot {
             float x_crd, y_crd, alpha;
     };
 
+    class SaveEvent : public Event {
+        public:
+            SaveEvent( std::string filename );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            std::string filename;
+    };
+
 
     /*
      * This is a "frontend" plotting class, that sends events to the "backend"
@@ -100,6 +110,7 @@ namespace cairo_plot {
             void line_add( float x, float y );
             void number( float x, float y, float i );
             void point_transparent( float x, float y, float a );
+            void save( std::string filename );
         private:
             EventHandler *pEvent_Handler;
     };
@@ -120,7 +131,9 @@ namespace cairo_plot {
             //context used for drawing lines
             Cairo::RefPtr<Cairo::Context> line_context;
 
-            Cairo::RefPtr<Cairo::XlibSurface> xSurface;
+            //temporary surface used when plotting stuff
+						Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
+						Cairo::RefPtr<Cairo::XlibSurface> xSurface;
             Cairo::RefPtr<Cairo::Context> xContext;
             Window win;
             Display *dpy;
@@ -205,6 +218,9 @@ namespace cairo_plot {
             //start a line at x, y or add to a current line
             void line_add( float x, float y);
 
+            void save( std::string fn );
+            void save( std::string fn, Cairo::RefPtr<Cairo::ImageSurface> pSurface );
+
             //handle_xevent
             //Called by event handler when an xevent happens
             void handle_xevent( XEvent report );
@@ -234,6 +250,11 @@ namespace cairo_plot {
 
             //function to calculate the "optimal" tick values/positions
             std::vector<float> axes_ticks( float min, float max, int nr );
+
+            Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
+
+						//move the plotting area around in increments of 5%
+						void move( int direction_x, int direction_y );
     };
 }
 #endif
