@@ -155,7 +155,7 @@ namespace cairo_plot {
         plot_context->rectangle( 0, 0,
                 plot_surface->get_width(), plot_surface->get_height() );
         plot_context->fill();
-
+        display();
     }
 
     void BackendPlot::handle_xevent( XEvent report ) {
@@ -209,11 +209,11 @@ namespace cairo_plot {
                 5*plot_area_width, 5*plot_area_height );
         plot_context = Cairo::Context::create(plot_surface);
         //give the plot its background color
-        /*set_background_color( plot_context );
+        set_background_color( plot_context );
         plot_context->rectangle( 0, 0,
                 plot_surface->get_width(), plot_surface->get_height() );
-        plot_context->fill();*/
-        clear();
+        plot_context->fill();
+        //clear();
 
         //set helper variables
         plot_surface_min_x = config.min_x-2*(config.max_x-config.min_x);
