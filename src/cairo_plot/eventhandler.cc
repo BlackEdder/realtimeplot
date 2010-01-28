@@ -49,11 +49,11 @@ namespace cairo_plot {
             }
             else if ( queue_size>0 ) {
                 Event *pEvent = event_queue.front();
-                pEvent->execute( pBPlot );
                 m_mutex.lock();
                 event_queue.pop_front();
                 --queue_size;
                 m_mutex.unlock();
+                pEvent->execute( pBPlot );
                 delete pEvent;
             } else {}
         }
