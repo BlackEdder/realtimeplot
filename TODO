@@ -1,4 +1,3 @@
 * properly justify tick labels (pango support?)
-* Use mouse to drag around (a paused) image
 * Use a key to start (and stop) recording to a png file
 * Allow zoom in/zoom out

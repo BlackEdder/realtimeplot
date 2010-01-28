@@ -51,6 +51,13 @@ namespace cairo_plot {
         pBPlot->save(filename);
     }
 
+    ClearEvent::ClearEvent() {
+    }
+
+    void ClearEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->clear();
+    }
+
 
     Plot::Plot( PlotConfig conf ) {
         pEvent_Handler = new EventHandler( conf );
@@ -82,6 +89,11 @@ namespace cairo_plot {
 
     void Plot::save( std::string filename ) {
         Event *pEvent = new SaveEvent( filename );
+        pEvent_Handler->add_event( pEvent );
+    }
+
+    void Plot::clear() {
+        Event *pEvent = new ClearEvent();
         pEvent_Handler->add_event( pEvent );
     }
 
@@ -136,6 +148,16 @@ namespace cairo_plot {
         }
     }
 
+    void BackendPlot::clear() {
+        //give the plot its background color
+        transform_to_device_units(plot_context);
+        set_background_color( plot_context );
+        plot_context->rectangle( 0, 0,
+                plot_surface->get_width(), plot_surface->get_height() );
+        plot_context->fill();
+
+    }
+
     void BackendPlot::handle_xevent( XEvent report ) {
         switch( report.type ) {
             case ConfigureNotify:
@@ -187,10 +209,11 @@ namespace cairo_plot {
                 5*plot_area_width, 5*plot_area_height );
         plot_context = Cairo::Context::create(plot_surface);
         //give the plot its background color
-        set_background_color( plot_context );
+        /*set_background_color( plot_context );
         plot_context->rectangle( 0, 0,
                 plot_surface->get_width(), plot_surface->get_height() );
-        plot_context->fill();
+        plot_context->fill();*/
+        clear();
 
         //set helper variables
         plot_surface_min_x = config.min_x-2*(config.max_x-config.min_x);

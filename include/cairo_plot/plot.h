@@ -97,6 +97,12 @@ namespace cairo_plot {
             std::string filename;
     };
 
+    //Event that clears the plot
+    class ClearEvent : public Event {
+        public:
+            ClearEvent();
+            virtual void execute( BackendPlot *bPl );
+    };
 
     /*
      * This is a "frontend" plotting class, that sends events to the "backend"
@@ -111,6 +117,7 @@ namespace cairo_plot {
             void number( float x, float y, float i );
             void point_transparent( float x, float y, float a );
             void save( std::string filename );
+            void clear();
         private:
             EventHandler *pEvent_Handler;
     };
@@ -184,6 +191,9 @@ namespace cairo_plot {
 
             //display the surface on xlib surface
             void display();
+
+            //clears the plot
+            void clear();
 
             //transform_to_plot_units
             //rescale image to plot scale
