@@ -182,16 +182,16 @@ namespace cairo_plot {
                     else
                         pause_display = true;
                 } else if (XLookupKeysym(&report.xkey, 0) == XK_w)  {
-									save( "cairo_plot.png", temporary_display_surface );
-								} else if (XLookupKeysym(&report.xkey, 0) == XK_Left) {
-										move( -1, 0 );
-								} else if (XLookupKeysym(&report.xkey, 0) == XK_Right) {
-										move( 1, 0 );
-								} else if (XLookupKeysym(&report.xkey, 0) == XK_Up) {
-										move( 0, 1 );
-								} else if (XLookupKeysym(&report.xkey, 0) == XK_Down) {
-										move( 0, -1 );
-								}
+                    save( "cairo_plot.png", temporary_display_surface );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Left) {
+                    move( -1, 0 );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Right) {
+                    move( 1, 0 );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Up) {
+                    move( 0, 1 );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Down) {
+                    move( 0, -1 );
+                }
                 break;
         }
     }
@@ -241,7 +241,7 @@ namespace cairo_plot {
                 plot_area_width+50, plot_area_height+50, // size
                 0, black, // border
                 white );
-        
+
         XStoreName(dpy, win, "hello");
         XMapWindow(dpy, win);
         XSelectInput( dpy, win, KeyPressMask | StructureNotifyMask | ExposureMask );
@@ -326,7 +326,7 @@ namespace cairo_plot {
         //Plot the ticks + tick labels
         xaxis_ticks = axes_ticks( config.min_x, config.max_x, 10 );
         yaxis_ticks = axes_ticks( config.min_y, config.max_y, config.nr_of_ticks );
-        
+
         double length_tick_x = config.ticks_length;
         double length_tick_y = -config.ticks_length;
         axes_context->device_to_user_distance( length_tick_x, length_tick_y );
@@ -339,7 +339,7 @@ namespace cairo_plot {
             axes_context->set_font_matrix( x_font_matrix );
             axes_context->show_text( stringify( xaxis_ticks[i] ) );
             transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
-         }
+        }
 
         for (int i = 0; i < yaxis_ticks.size(); ++i) {
             axes_context->move_to( config.min_x, yaxis_ticks[i] );
@@ -371,7 +371,7 @@ namespace cairo_plot {
     void BackendPlot::set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext ) {
         pContext->set_source_rgba(0,0,0, alpha);
     }
-    
+
     void BackendPlot::set_alpha( float a ) {
         alpha = a;
     }
@@ -420,13 +420,13 @@ namespace cairo_plot {
 
     void BackendPlot::save( std::string fn ) {
         Cairo::RefPtr<Cairo::ImageSurface> surface = create_temporary_surface();
-				save(fn, surface );
+        save(fn, surface );
     }
 
     void BackendPlot::save( std::string fn, 
-				Cairo::RefPtr<Cairo::ImageSurface> pSurface ) {
+            Cairo::RefPtr<Cairo::ImageSurface> pSurface ) {
         pSurface->write_to_png( fn );
-		}
+    }
 
 
 
@@ -562,31 +562,31 @@ namespace cairo_plot {
         return surface;
     }
 
-		void BackendPlot::move( int direction_x, int direction_y ) {
-      double xrange = config.max_x-config.min_x;
-			config.min_x += 0.05*direction_x*xrange;
-			config.max_x = config.min_x+xrange;
-      double yrange = config.max_y-config.min_y;
-			config.min_y += 0.05*direction_y*yrange;
-			config.max_y = config.min_y+yrange;
-			
-			//don't move outside of the plot_surface, since we don't have that data anymore
-			if (config.max_x>plot_surface_max_x) {
-				config.max_x = plot_surface_max_x;
-				config.min_x = config.max_x-xrange;
-			} else if (config.min_x<plot_surface_min_x) {
-				config.min_x = plot_surface_min_x;
-				config.max_x = config.min_x+xrange;
-			}
-			if (config.max_y>plot_surface_max_y) {
-				config.max_y = plot_surface_max_y;
-				config.min_y = config.max_y-yrange;
-			} else if (config.min_y<plot_surface_min_y) {
-				config.min_y = plot_surface_min_y;
-				config.max_y = config.min_y+yrange;
-			}
+    void BackendPlot::move( int direction_x, int direction_y ) {
+        double xrange = config.max_x-config.min_x;
+        config.min_x += 0.05*direction_x*xrange;
+        config.max_x = config.min_x+xrange;
+        double yrange = config.max_y-config.min_y;
+        config.min_y += 0.05*direction_y*yrange;
+        config.max_y = config.min_y+yrange;
 
-			draw_axes_surface();
-			display();
-		}
+        //don't move outside of the plot_surface, since we don't have that data anymore
+        if (config.max_x>plot_surface_max_x) {
+            config.max_x = plot_surface_max_x;
+            config.min_x = config.max_x-xrange;
+        } else if (config.min_x<plot_surface_min_x) {
+            config.min_x = plot_surface_min_x;
+            config.max_x = config.min_x+xrange;
+        }
+        if (config.max_y>plot_surface_max_y) {
+            config.max_y = plot_surface_max_y;
+            config.min_y = config.max_y-yrange;
+        } else if (config.min_y<plot_surface_min_y) {
+            config.min_y = plot_surface_min_y;
+            config.max_y = config.min_y+yrange;
+        }
+
+        draw_axes_surface();
+        display();
+    }
 }

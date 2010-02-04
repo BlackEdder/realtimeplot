@@ -134,13 +134,13 @@ namespace cairo_plot {
             //plot_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
             Cairo::RefPtr<Cairo::Context> plot_context;
-            
+
             //context used for drawing lines
             Cairo::RefPtr<Cairo::Context> line_context;
 
             //temporary surface used when plotting stuff
-						Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
-						Cairo::RefPtr<Cairo::XlibSurface> xSurface;
+            Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
+            Cairo::RefPtr<Cairo::XlibSurface> xSurface;
             Cairo::RefPtr<Cairo::Context> xContext;
             Window win;
             Display *dpy;
@@ -202,8 +202,10 @@ namespace cairo_plot {
 
             //transform_to_plot_units_with_origin
             //rescale image to plot scale, taking into account the origin
-            //Used for axes, and keeping 50 device pixels at each side for the axes + labels
-            void transform_to_plot_units_with_origin( Cairo::RefPtr<Cairo::ImageSurface> pSurface,
+            //Used for axes, and keeping 50 device pixels at each side 
+            //for the axes + labels
+            void transform_to_plot_units_with_origin( 
+                    Cairo::RefPtr<Cairo::ImageSurface> pSurface,
                     Cairo::RefPtr<Cairo::Context> pContext,
                     int origin_x, int origin_y );
 
@@ -263,8 +265,8 @@ namespace cairo_plot {
 
             Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
 
-						//move the plotting area around in increments of 5%
-						void move( int direction_x, int direction_y );
+            //move the plotting area around in increments of 5%
+            void move( int direction_x, int direction_y );
     };
 }
 #endif
