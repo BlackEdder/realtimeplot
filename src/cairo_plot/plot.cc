@@ -369,7 +369,7 @@ namespace cairo_plot {
         pango_layout->set_text( config.ylabel );
         pango_layout->get_pixel_size( text_width, text_height );
 
-        axes_context->move_to( 50-3*text_height, round(0.5*plot_area_height+25) );
+        axes_context->move_to( 50-3*text_height, 0.5*plot_area_height+0.5*text_width );
         axes_context->save();
         axes_context->rotate_degrees( -90 );
         pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
@@ -377,7 +377,7 @@ namespace cairo_plot {
         
         pango_layout->set_text( config.xlabel );
         pango_layout->get_pixel_size( text_width, text_height );
-        axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+2*text_height );
+        axes_context->move_to( 50+0.5*plot_area_width-0.5*text_width, plot_area_height+2*text_height );
         pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
         
         axes_context->stroke();

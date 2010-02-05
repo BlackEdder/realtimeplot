@@ -10,6 +10,7 @@ int main() {
 	config.max_y = 30;
     config.aspect_ratio = 0.5;
     config.point_size = 2;
+    config.xlabel = "Very Long Long label";
 
 	Plot pl = Plot( config );
 	for (int i=0; i<10;++i) {
