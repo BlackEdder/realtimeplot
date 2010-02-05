@@ -5,6 +5,11 @@
 #include <string>
 #include <vector>
 
+//Needs to be before cairomm, due to Xlib.h macros
+#include <pangomm/init.h>
+#include <pangomm/context.h>
+#include <pangomm/layout.h>
+
 #include <cairomm/context.h>
 #include <cairomm/xlib_surface.h>
 

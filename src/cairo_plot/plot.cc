@@ -287,14 +287,26 @@ namespace cairo_plot {
         std::vector<float> yaxis_ticks;
         alpha = 1;
 
-        Cairo::RefPtr<Cairo::ToyFontFace> font =
-            Cairo::ToyFontFace::create("Bitstream Charter",
-                    Cairo::FONT_SLANT_ITALIC,
-                    Cairo::FONT_WEIGHT_BOLD);
+        Pango::init();
+        
         //axes_surface, extra 50 pixels for axes and labels
         axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
                 plot_area_width+50, plot_area_height+50 );
         axes_context = Cairo::Context::create(axes_surface);
+
+        int text_width, text_height;
+        Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(axes_context);
+        Pango::FontDescription pango_font = Pango::FontDescription("verdana 8");
+        pango_font.set_weight( Pango::WEIGHT_ULTRALIGHT );
+        pango_layout->set_font_description( pango_font );
+
+        /*Cairo::FontOptions font_options = Cairo::FontOptions();
+        font_options.set_hint_metrics( Cairo::HINT_METRICS_OFF );
+        font_options.set_hint_style( Cairo::HINT_STYLE_NONE );
+        font_options.set_antialias( Cairo::ANTIALIAS_NONE );
+        pango_layout->get_context()->set_cairo_font_options( font_options );*/
+
+
         transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
         //plot background color outside the axes (to cover points plotted outside)
         set_background_color( axes_context );
@@ -317,12 +329,6 @@ namespace cairo_plot {
         axes_context->move_to( config.min_x, config.min_y );
         axes_context->line_to( config.max_x, config.min_y );
 
-        axes_context->get_font_matrix(x_font_matrix);
-        //this might be technically wrong, (.yy and .xx reversed) but normally
-        //.xx==.yy so it doesn't matter
-        y_font_matrix = Cairo::Matrix( 0, -x_font_matrix.yy, x_font_matrix.xx, 0, 0, 0 );
-
-
         //Plot the ticks + tick labels
         xaxis_ticks = axes_ticks( config.min_x, config.max_x, 10 );
         yaxis_ticks = axes_ticks( config.min_y, config.max_y, config.nr_of_ticks );
@@ -333,33 +339,47 @@ namespace cairo_plot {
 
         for (int i = 0; i < xaxis_ticks.size(); ++i) {
             axes_context->move_to( xaxis_ticks[i], config.min_y );
-            axes_context->line_to( xaxis_ticks[i], config.min_y+length_tick_y );
-            axes_context->move_to( xaxis_ticks[i], config.min_y-2*length_tick_y );
+            axes_context->rel_line_to( 0, length_tick_y );
             transform_to_device_units( axes_context );
-            axes_context->set_font_matrix( x_font_matrix );
-            axes_context->show_text( stringify( xaxis_ticks[i] ) );
+            pango_layout->set_text( stringify( xaxis_ticks[i] ) );
+            pango_layout->get_pixel_size( text_width, text_height );
+            axes_context->rel_move_to( -0.5*text_width, 1.5*text_height );
+		    pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
             transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
         }
 
         for (int i = 0; i < yaxis_ticks.size(); ++i) {
             axes_context->move_to( config.min_x, yaxis_ticks[i] );
-            axes_context->line_to( config.min_x+length_tick_x, yaxis_ticks[i] );
-            axes_context->move_to( config.min_x-2*length_tick_x, yaxis_ticks[i] );
+            axes_context->rel_line_to( length_tick_x, 0 );
+            
             transform_to_device_units( axes_context );
-            axes_context->set_font_matrix( y_font_matrix );
-            axes_context->show_text( stringify( yaxis_ticks[i] ) );
+            axes_context->rotate_degrees( -90 );
+
+            pango_layout->set_text( stringify( yaxis_ticks[i] ) );
+            pango_layout->get_pixel_size( text_width, text_height );
+            axes_context->rel_move_to( -0.5*text_width, -2*text_height );
+		    pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
+            axes_context->rotate_degrees( 90 ); //think the tranform_to_plot_units also unrotates
             transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
 
         }
 
         transform_to_device_units( axes_context );
+        
+        pango_layout->set_text( config.ylabel );
+        pango_layout->get_pixel_size( text_width, text_height );
 
-        axes_context->move_to( 20, round(0.5*plot_area_height+25) );
-        axes_context->set_font_matrix( y_font_matrix );
-        axes_context->show_text( config.ylabel );
-        axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+25 );
-        axes_context->set_font_matrix( x_font_matrix );
-        axes_context->show_text( config.xlabel );
+        axes_context->move_to( 50-3*text_height, round(0.5*plot_area_height+25) );
+        axes_context->save();
+        axes_context->rotate_degrees( -90 );
+        pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
+        axes_context->restore();
+        
+        pango_layout->set_text( config.xlabel );
+        pango_layout->get_pixel_size( text_width, text_height );
+        axes_context->move_to( round(0.5*plot_area_width+25), plot_area_height+2*text_height );
+        pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
+        
         axes_context->stroke();
         alpha = old_alpha;
     }
