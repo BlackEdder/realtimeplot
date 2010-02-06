@@ -294,7 +294,7 @@ namespace cairo_plot {
 
 		int text_width, text_height;
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(axes_context);
-		Pango::FontDescription pango_font = Pango::FontDescription("verdana 8");
+		Pango::FontDescription pango_font = Pango::FontDescription("sans 8");
 		pango_font.set_weight( Pango::WEIGHT_ULTRALIGHT );
 		pango_layout->set_font_description( pango_font );
 
