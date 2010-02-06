@@ -57,7 +57,11 @@ namespace cairo_plot {
 	void ClearEvent::execute( BackendPlot *pBPlot ) {
 		pBPlot->clear();
 	}
-
+    
+    Plot::Plot() {
+        PlotConfig conf = PlotConfig();
+		pEvent_Handler = new EventHandler( conf );
+    }
 
 	Plot::Plot( PlotConfig conf ) {
 		pEvent_Handler = new EventHandler( conf );

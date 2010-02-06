@@ -115,8 +115,10 @@ namespace cairo_plot {
      */
     class Plot {
         public:
+            Plot();
             Plot( PlotConfig conf );
             ~Plot();
+
             void point( float x, float y );
             void line_add( float x, float y );
             void number( float x, float y, float i );
