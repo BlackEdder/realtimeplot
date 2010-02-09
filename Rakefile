@@ -50,7 +50,8 @@ task :build => ["lib/libcairo_plot.so"]
 
 task :install => :build do
 	sh "cp lib/libcairo_plot.so /usr/lib"
-	sh "cp -r include/* /usr/include/"
+	sh "mkdir -p /usr/include/cairo_plot/"
+	sh "cp include/cairo_plot/* /usr/include/cairo_plot/"
 end
 
 task :default => :plot_points
