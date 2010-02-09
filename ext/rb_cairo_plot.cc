@@ -15,6 +15,7 @@ void Init_rb_cairo_plot()
     //.define_method("hello", &Test::hello);
     //
     Data_Type<Plot> rb_cPlot =
-        define_class<Plot>("Plot")
-        .define_constructor(Constructor<Plot>());
+        define_class<cairo_plot::Plot>("Plot")
+        .define_constructor(Constructor<cairo_plot::Plot>())
+				.define_method("clear", &cairo_plot::Plot::clear);
 }
