@@ -46,4 +46,10 @@ FileList['examples/plot_*.cc'].each do |fn|
 	end
 end
 
+task :build => ["lib/libcairo_plot.so"]
+
+task :install => :build do
+	sh "cp lib/libcairo_plot.so /usr/local/lib"
+end
+
 task :default => :plot_points
