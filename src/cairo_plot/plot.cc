@@ -335,7 +335,7 @@ namespace cairo_plot {
 		double length_tick_y = -config.ticks_length;
 		axes_context->device_to_user_distance( length_tick_x, length_tick_y );
 
-		for (int i = 0; i < xaxis_ticks.size(); ++i) {
+		for (unsigned int i = 0; i < xaxis_ticks.size(); ++i) {
 			axes_context->move_to( xaxis_ticks[i], config.min_y );
 			axes_context->rel_line_to( 0, length_tick_y );
 			transform_to_device_units( axes_context );
@@ -347,7 +347,7 @@ namespace cairo_plot {
 			transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
 		}
 
-		for (int i = 0; i < yaxis_ticks.size(); ++i) {
+		for (unsigned int i = 0; i < yaxis_ticks.size(); ++i) {
 			axes_context->move_to( config.min_x, yaxis_ticks[i] );
 			axes_context->rel_line_to( length_tick_x, 0 );
 
