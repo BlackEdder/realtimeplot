@@ -35,14 +35,15 @@ file "lib/libcairo_plot.so" => ["src/cairo_plot/eventhandler.o",
     sh "g++ -shared -o #{t.name} #{t.prerequisites.to_text}"
 end
 
-file "bin/plot_points" => ["examples/plot_points.cc", 
-    "lib/libcairo_plot.so" ] do |t|
-    sh "g++ -o bin/plot_points examples/plot_points.cc #{EXAMPLE_PARS}"
-end
-
-task :plot_points => ["bin/plot_points"] do
+FileList['examples/plot_*.cc'].each do |fn|
+	name = File.basename(fn).sub('.cc','')
+	file "bin/#{name}" => [fn, "lib/libcairo_plot.so"] do |t|
+    sh "g++ -o #{t.name} #{fn} #{EXAMPLE_PARS}"
+	end
+	task name => "bin/#{name}" do |t|
     ENV['LD_LIBRARY_PATH']="lib"
-    sh "bin/plot_points"
+		sh "bin/#{name}"
+	end
 end
 
 task :default => :plot_points
