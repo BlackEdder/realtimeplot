@@ -112,6 +112,11 @@ namespace cairo_plot {
 
 	void Histogram::set_data( std::vector<double> the_data ) {
 		data = the_data;
+		fill_bins();
+		plot();
+	}
+
+	void Histogram::fill_bins() {
 		sort( data.begin(), data.end() );
 	
 		bins_x.clear();
@@ -134,6 +139,18 @@ namespace cairo_plot {
 			if (bins_y[current_bin]>max_y)
 				max_y = bins_y[current_bin];
 		}
+	}
+
+	void Histogram::set_counts_data( std::vector<double> values,
+			std::vector<int> counts ) {
+		std::cout << "Called" << std::endl;
+		data.clear();
+		for (int i=0;i<values.size();++i) {
+			for (int j=0;j<counts[i];++j) {
+				data.push_back( values[i] );
+			}
+		}
+		fill_bins();
 		plot();
 	}
 

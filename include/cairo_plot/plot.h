@@ -149,6 +149,10 @@ namespace cairo_plot {
 
 				Histogram();
 				void set_data( std::vector<double> data );
+				void set_counts_data( std::vector<double> values, 
+						std::vector<int> counts );
+			private:
+				void fill_bins();
 				void plot();
 		};
 
