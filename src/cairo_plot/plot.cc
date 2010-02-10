@@ -147,7 +147,6 @@ namespace cairo_plot {
 
 	void Histogram::set_counts_data( std::vector<double> values,
 			std::vector<int> counts ) {
-		std::cout << "Called" << std::endl;
 		data.clear();
 		for (unsigned int i=0;i<values.size();++i) {
 			for (int j=0;j<counts[i];++j) {
@@ -268,6 +267,10 @@ namespace cairo_plot {
 					move( 0, -1 );
 				}
 				break;
+			//close window
+			case ClientMessage:
+				XCloseDisplay(dpy);
+				break;
 		}
 	}
 
@@ -300,8 +303,7 @@ namespace cairo_plot {
 	void BackendPlot::create_xlib_window() {
 		Window rootwin;
 		int scr, white, black;
-
-		if(!(dpy=XOpenDisplay(NULL))) {
+			if(!(dpy=XOpenDisplay(NULL))) {
 			fprintf(stderr, "ERROR: Could not open display\n");
 			throw;
 		}
@@ -320,6 +322,9 @@ namespace cairo_plot {
 		XStoreName(dpy, win, "hello");
 		XMapWindow(dpy, win);
 		XSelectInput( dpy, win, KeyPressMask | StructureNotifyMask | ExposureMask );
+	
+		Atom wmDelete=XInternAtom(dpy, "WM_DELETE_WINDOW", True);
+		XSetWMProtocols(dpy, win, &wmDelete, 1);
 		xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
 				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 		xContext = Cairo::Context::create( xSurface );
