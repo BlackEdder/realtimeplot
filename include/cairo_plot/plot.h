@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 //Needs to be before cairomm, due to Xlib.h macros
 #include <pangomm/init.h>
@@ -118,6 +119,7 @@ namespace cairo_plot {
      */
     class Plot {
         public:
+						Plot();
             Plot( PlotConfig conf );
             ~Plot();
             void point( float x, float y );
@@ -129,6 +131,26 @@ namespace cairo_plot {
         private:
             EventHandler *pEvent_Handler;
     };
+
+		/*
+		 * Histogram produces histograms from data, will calculate range etc
+		 */
+
+		class Histogram {
+			public:
+				int no_bins, max_y;
+				std::vector<double> data;
+				std::vector<double> bins_x;
+				std::vector<double> bins_y;
+				double bin_width;
+
+				PlotConfig config;
+				//Plot histogram;
+
+				Histogram();
+				void set_data( std::vector<double> data );
+				void plot();
+		};
 
     /*
      * BackendPlot that waits for events and then plots them

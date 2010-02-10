@@ -58,6 +58,10 @@ namespace cairo_plot {
 		pBPlot->clear();
 	}
 
+	Plot::Plot() {
+		PlotConfig conf = PlotConfig();
+		pEvent_Handler = new EventHandler( conf );
+	}
 
 	Plot::Plot( PlotConfig conf ) {
 		pEvent_Handler = new EventHandler( conf );
@@ -95,6 +99,56 @@ namespace cairo_plot {
 	void Plot::clear() {
 		Event *pEvent = new ClearEvent();
 		pEvent_Handler->add_event( pEvent );
+	}
+
+	/*
+	 * Histogram
+	 */
+
+	Histogram::Histogram() {
+		no_bins = 4;
+		max_y = 0;
+	}
+
+	void Histogram::set_data( std::vector<double> the_data ) {
+		data = the_data;
+		sort( data.begin(), data.end() );
+	
+		bins_x.clear();
+		bins_y.clear();
+		max_y = 0;
+
+		bin_width = (data.back()-data.front())/(no_bins-1);
+		for (int i=0; i<no_bins; ++i) {
+			bins_x.push_back( data.front()+i*bin_width );
+			bins_y.push_back( 0 );
+		}
+
+		int current_bin = 0;
+		//should use iterator
+		for (int i=0; i<data.size(); ++i) {
+			while (data[i] > bins_x[current_bin]+0.5*bin_width) {
+				++current_bin;
+			}
+			++bins_y[current_bin];
+			if (bins_y[current_bin]>max_y)
+				max_y = bins_y[current_bin];
+		}
+		plot();
+	}
+
+	void Histogram::plot() {
+		config = PlotConfig();
+		config.min_x = bins_x.front()-bin_width;
+		config.max_x = bins_x.back()+bin_width;
+		config.max_y = 1.1*max_y;
+		Plot histogram = Plot( config );
+		for (int i=0; i<bins_x.size(); ++i) {
+			histogram.line_add( bins_x[i]-0.5*bin_width, 0 );
+			histogram.line_add( bins_x[i]-0.5*bin_width, bins_y[i] );
+			histogram.line_add( bins_x[i]+0.5*bin_width, bins_y[i] );
+			histogram.line_add( bins_x[i]+0.5*bin_width, 0 );
+		}
 	}
 
 	/*
