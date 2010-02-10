@@ -325,7 +325,7 @@ namespace cairo_plot {
 	
 		Atom wmDelete=XInternAtom(dpy, "WM_DELETE_WINDOW", True);
 		XSetWMProtocols(dpy, win, &wmDelete, 1);
-		xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
+		xSurface = Cairo::XlibSurface::create( dpy, win, DefaultVisual(dpy, 0), 
 				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 		xContext = Cairo::Context::create( xSurface );
 	}
