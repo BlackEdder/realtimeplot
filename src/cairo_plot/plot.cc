@@ -135,7 +135,7 @@ namespace cairo_plot {
 
 		int current_bin = 0;
 		//should use iterator
-		for (int i=0; i<data.size(); ++i) {
+		for (unsigned int i=0; i<data.size(); ++i) {
 			while (data[i] > bins_x[current_bin]+0.5*bin_width) {
 				++current_bin;
 			}
@@ -149,7 +149,7 @@ namespace cairo_plot {
 			std::vector<int> counts ) {
 		std::cout << "Called" << std::endl;
 		data.clear();
-		for (int i=0;i<values.size();++i) {
+		for (unsigned int i=0;i<values.size();++i) {
 			for (int j=0;j<counts[i];++j) {
 				data.push_back( values[i] );
 			}
@@ -164,7 +164,7 @@ namespace cairo_plot {
 		config.max_x = bins_x.back()+bin_width;
 		config.max_y = 1.1*max_y;
 		pHistogram = new Plot( config );
-		for (int i=0; i<bins_x.size(); ++i) {
+		for (unsigned int i=0; i<bins_x.size(); ++i) {
 			pHistogram->line_add( bins_x[i]-0.5*bin_width, 0 );
 			pHistogram->line_add( bins_x[i]-0.5*bin_width, bins_y[i] );
 			pHistogram->line_add( bins_x[i]+0.5*bin_width, bins_y[i] );
