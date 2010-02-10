@@ -145,9 +145,10 @@ namespace cairo_plot {
 				double bin_width;
 
 				PlotConfig config;
-				//Plot histogram;
+				Plot *pHistogram;
 
 				Histogram();
+				~Histogram();
 				void set_data( std::vector<double> data );
 				void set_counts_data( std::vector<double> values, 
 						std::vector<int> counts );

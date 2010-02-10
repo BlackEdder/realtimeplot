@@ -110,6 +110,10 @@ namespace cairo_plot {
 		max_y = 0;
 	}
 
+	Histogram::~Histogram() {
+		delete pHistogram;
+	}
+
 	void Histogram::set_data( std::vector<double> the_data ) {
 		data = the_data;
 		fill_bins();
@@ -159,12 +163,12 @@ namespace cairo_plot {
 		config.min_x = bins_x.front()-bin_width;
 		config.max_x = bins_x.back()+bin_width;
 		config.max_y = 1.1*max_y;
-		Plot histogram = Plot( config );
+		pHistogram = new Plot( config );
 		for (int i=0; i<bins_x.size(); ++i) {
-			histogram.line_add( bins_x[i]-0.5*bin_width, 0 );
-			histogram.line_add( bins_x[i]-0.5*bin_width, bins_y[i] );
-			histogram.line_add( bins_x[i]+0.5*bin_width, bins_y[i] );
-			histogram.line_add( bins_x[i]+0.5*bin_width, 0 );
+			pHistogram->line_add( bins_x[i]-0.5*bin_width, 0 );
+			pHistogram->line_add( bins_x[i]-0.5*bin_width, bins_y[i] );
+			pHistogram->line_add( bins_x[i]+0.5*bin_width, bins_y[i] );
+			pHistogram->line_add( bins_x[i]+0.5*bin_width, 0 );
 		}
 	}
 
