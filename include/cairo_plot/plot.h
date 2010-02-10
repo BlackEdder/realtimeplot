@@ -41,7 +41,7 @@ namespace cairo_plot {
             float min_y, max_y;
             float overlap;
             float aspect_ratio;
-            std::string xlabel, ylabel;
+            std::string xlabel, ylabel, font;
             bool fixed_plot_area;
 
             //Constructor that sets default values
@@ -56,6 +56,7 @@ namespace cairo_plot {
                 ticks_length = 7;
                 xlabel = "x";
                 ylabel = "y";
+								font = "sans 8";
                 overlap = 0.1;
                 aspect_ratio = 1;
                 fixed_plot_area = false;
