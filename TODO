@@ -2,5 +2,6 @@
 * Allow zoom in/zoom out
 * Subplot (show two image surfaces in the xwindow?)
 * Comments
-* Histogram
+* Add new data to existing histogram
+* Gracefully close plots
 * Multiple lines
