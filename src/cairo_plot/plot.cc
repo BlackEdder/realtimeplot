@@ -166,8 +166,8 @@ namespace cairo_plot {
 				//std::cout << report.xconfigure.width << std::endl;
 				//std::cout << report.xconfigure.height << std::endl;
 				xContext = Cairo::Context::create( xSurface );
-				xContext->scale( float(xSurface->get_width())/(plot_area_width+50),
-						float(xSurface->get_height())/(plot_area_height+50) );
+				xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
+						float(xSurface->get_height())/(plot_area_height+config.margin_x) );
 				display();
 				break;
 			case Expose:
@@ -203,7 +203,7 @@ namespace cairo_plot {
 		plot_area_height = round( x );
 		//create the surfaces and contexts
 		//
-		//plot_surface, the shown part of this surface is 500 by 500
+		//plot_surface, the shown part of this surface is 250000 pixels (default 500x500)
 		//The rest is for when plotting outside of the area
 		plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 				5*plot_area_width, 5*plot_area_height );
@@ -238,7 +238,7 @@ namespace cairo_plot {
 		win = XCreateSimpleWindow(dpy,
 				rootwin,
 				0, 0,   // origin
-				plot_area_width+50, plot_area_height+50, // size
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x, // size
 				0, black, // border
 				white );
 
@@ -246,7 +246,7 @@ namespace cairo_plot {
 		XMapWindow(dpy, win);
 		XSelectInput( dpy, win, KeyPressMask | StructureNotifyMask | ExposureMask );
 		xSurface = Cairo::XlibSurface::create( dpy, win , DefaultVisual(dpy, 0), 
-				plot_area_width+50, plot_area_height+50);
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 		xContext = Cairo::Context::create( xSurface );
 	}
 
@@ -264,9 +264,9 @@ namespace cairo_plot {
 
 	void BackendPlot::transform_to_plot_units_with_origin( 
 			Cairo::RefPtr<Cairo::ImageSurface> pSurface, 
-			Cairo::RefPtr<Cairo::Context> pContext, int origin_x, int origin_y ) {
+			Cairo::RefPtr<Cairo::Context> pContext, int margin_x, int margin_y ) {
 		transform_to_device_units( pContext );
-		pContext->translate( origin_x, pSurface->get_height()-origin_y );
+		pContext->translate( margin_y, pSurface->get_height()-margin_x );
 		pContext->scale( plot_area_width/((config.max_x-config.min_x)),
 				-plot_area_height/((config.max_y-config.min_y)) );
 		pContext->translate( -config.min_x, -config.min_y );
@@ -287,9 +287,9 @@ namespace cairo_plot {
 
 		Pango::init();
 
-		//axes_surface, extra 50 pixels for axes and labels
+		//axes_surface, extra margin_x/margin_y pixels for axes and labels
 		axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-				plot_area_width+50, plot_area_height+50 );
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x );
 		axes_context = Cairo::Context::create(axes_surface);
 
 		int text_width, text_height;
@@ -305,11 +305,12 @@ namespace cairo_plot {
 			pango_layout->get_context()->set_cairo_font_options( font_options );*/
 
 
-		transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
+		transform_to_plot_units_with_origin( axes_surface, axes_context, 
+				config.margin_x, config.margin_y );
 		//plot background color outside the axes (to cover points plotted outside)
 		set_background_color( axes_context );
-		double dx=50;
-		double dy=-50;
+		double dx=config.margin_x;
+		double dy=-config.margin_y;
 		axes_context->device_to_user_distance( dx, dy );
 		axes_context->move_to( config.min_x, config.min_y );
 		axes_context->line_to( config.min_x, config.max_y );
@@ -328,7 +329,7 @@ namespace cairo_plot {
 		axes_context->line_to( config.max_x, config.min_y );
 
 		//Plot the ticks + tick labels
-		xaxis_ticks = axes_ticks( config.min_x, config.max_x, 10 );
+		xaxis_ticks = axes_ticks( config.min_x, config.max_x, config.nr_of_ticks );
 		yaxis_ticks = axes_ticks( config.min_y, config.max_y, config.nr_of_ticks );
 
 		double length_tick_x = config.ticks_length;
@@ -344,7 +345,8 @@ namespace cairo_plot {
 			axes_context->rel_move_to( -0.5*text_width, 1*text_height );
 			//pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
             pango_layout->show_in_cairo_context( axes_context );
-			transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
+			transform_to_plot_units_with_origin( axes_surface, axes_context, 
+					config.margin_x, config.margin_y );
 		}
 
 		for (unsigned int i = 0; i < yaxis_ticks.size(); ++i) {
@@ -359,8 +361,8 @@ namespace cairo_plot {
 			axes_context->rel_move_to( -0.5*text_width, -2*text_height );
             pango_layout->show_in_cairo_context( axes_context );
 			axes_context->rotate_degrees( 90 ); //think the tranform_to_plot_units also unrotates
-			transform_to_plot_units_with_origin( axes_surface, axes_context, 50, 50 );
-
+			transform_to_plot_units_with_origin( axes_surface, axes_context, 
+					config.margin_x, config.margin_y );
 		}
 
 		transform_to_device_units( axes_context );
@@ -368,7 +370,8 @@ namespace cairo_plot {
 		pango_layout->set_text( config.ylabel );
 		pango_layout->get_pixel_size( text_width, text_height );
 
-		axes_context->move_to( 50-3*text_height, 0.5*plot_area_height+0.5*text_width );
+		axes_context->move_to( config.margin_y-3*text_height, 
+				0.5*plot_area_height+0.5*text_width );
 		axes_context->save();
 		axes_context->rotate_degrees( -90 );
         pango_layout->show_in_cairo_context( axes_context );
@@ -376,8 +379,9 @@ namespace cairo_plot {
 
 		pango_layout->set_text( config.xlabel );
 		pango_layout->get_pixel_size( text_width, text_height );
-		axes_context->move_to( 50+0.5*plot_area_width-0.5*text_width, plot_area_height+1.5*text_height );
-        pango_layout->show_in_cairo_context( axes_context );
+		axes_context->move_to( config.margin_y+0.5*plot_area_width-0.5*text_width, 
+				plot_area_height+1.5*text_height );
+    pango_layout->show_in_cairo_context( axes_context );
 
 		axes_context->stroke();
 		alpha = old_alpha;
@@ -565,7 +569,7 @@ namespace cairo_plot {
 		//directly onto xlibsurface
 		Cairo::RefPtr<Cairo::ImageSurface> surface = 
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					50+plot_area_width, 50+plot_area_height );
+					config.margin_y+plot_area_width, config.margin_x+plot_area_height );
 		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
 
 		transform_to_plot_units();
@@ -573,7 +577,7 @@ namespace cairo_plot {
 		double y = config.max_y;
 		plot_context->user_to_device( x, y );
 		//copy the plot onto our temporary image surface
-		context->set_source( plot_surface, -x+50, -y );
+		context->set_source( plot_surface, -x+config.margin_y, -y );
 		context->paint();
 		//copy the axes onto our temporary image surface
 		context->set_source( axes_surface, 0, 0 );

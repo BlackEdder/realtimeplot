@@ -8,6 +8,7 @@ int main() {
 	config.max_x = 1.04;
 	config.min_y = -20;
 	config.max_y = 30;
+	config.margin_x = 200;
     config.aspect_ratio = 0.5;
     config.point_size = 2;
     config.xlabel = "Very Long Long label";

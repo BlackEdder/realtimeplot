@@ -34,7 +34,7 @@ namespace cairo_plot {
         public:
             //all the needed variables
             int pixel_width, pixel_height;
-            int origin_x, origin_y;
+            int margin_x, margin_y;
             int nr_of_ticks, ticks_length;
             int point_size;
             float min_x, max_x;
@@ -46,6 +46,8 @@ namespace cairo_plot {
 
             //Constructor that sets default values
             PlotConfig() {
+								margin_x = 50;
+								margin_y = 50;
                 min_x = 0;
                 max_x = 90;
                 min_y = 0;

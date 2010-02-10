@@ -1,2 +1,7 @@
 * Use a key to start (and stop) recording to a png file
 * Allow zoom in/zoom out
+* Subplot (show two image surfaces in the xwindow?)
+* Comments
+* Histogram
+* Multiple lines
+* Font parameter
