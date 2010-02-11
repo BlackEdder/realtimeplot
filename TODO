@@ -3,4 +3,6 @@
 * Subplot (show two image surfaces in the xwindow?)
 * Comments
 * Add new data to existing histogram
+* Only open one plot window for histogram
+* Add ability to close a plot explicitely
 * Multiple lines
