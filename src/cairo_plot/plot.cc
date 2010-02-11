@@ -60,45 +60,45 @@ namespace cairo_plot {
 
 	Plot::Plot() {
 		PlotConfig conf = PlotConfig();
-		pEvent_Handler = new EventHandler( conf );
+		pEventHandler = new EventHandler( conf );
 	}
 
 	Plot::Plot( PlotConfig conf ) {
-		pEvent_Handler = new EventHandler( conf );
+		pEventHandler = new EventHandler( conf );
 	}
 
 	Plot::~Plot() {
-		delete pEvent_Handler;
+		delete pEventHandler;
 	}
 
 	void Plot::point( float x, float y ) {
 		Event *pEvent = new PointEvent( x, y );
-		pEvent_Handler->add_event( pEvent );
+		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::line_add( float x, float y ) {
 		Event *pEvent = new LineAddEvent( x, y );
-		pEvent_Handler->add_event( pEvent );
+		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::number( float x, float y, float i ) {
 		Event *pEvent = new NumberEvent( x, y, i );
-		pEvent_Handler->add_event( pEvent );
+		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::point_transparent( float x, float y, float a ) {
 		Event *pEvent = new PointTransparentEvent( x, y, a );
-		pEvent_Handler->add_event( pEvent );
+		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::save( std::string filename ) {
 		Event *pEvent = new SaveEvent( filename );
-		pEvent_Handler->add_event( pEvent );
+		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::clear() {
 		Event *pEvent = new ClearEvent();
-		pEvent_Handler->add_event( pEvent );
+		pEventHandler->add_event( pEvent );
 	}
 
 	/*
@@ -197,6 +197,7 @@ namespace cairo_plot {
 	}
 
 	BackendPlot::~BackendPlot() {
+		//delete pEventHandler;
 		XCloseDisplay(dpy);
 	}
 
@@ -269,7 +270,8 @@ namespace cairo_plot {
 				break;
 			//close window
 			case ClientMessage:
-				XCloseDisplay(dpy);
+				pEventHandler->plot_closed();
+				//XCloseDisplay(dpy);
 				break;
 		}
 	}

@@ -27,6 +27,8 @@ namespace cairo_plot {
             //Constructor
 					EventHandler( PlotConfig config );
 					~EventHandler();
+					//If the plot is closed (normally only called from backendplot
+					void plot_closed();
 					//Add an event to the event queue
 					void add_event( Event *pEvent );
 					int get_queue_size();

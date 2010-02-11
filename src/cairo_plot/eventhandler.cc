@@ -16,21 +16,31 @@ namespace cairo_plot {
 
     EventHandler::~EventHandler() {
         pEventProcessingThrd->join();
-        delete pBPlot;
+        if (pBPlot)
+					delete pBPlot;
     }
 
-    void EventHandler::add_event( Event *pEvent ) {
-        //block if many events are present
-        if (queue_size>1000) {
-            while (queue_size>100) {
-                usleep(10000);
-            }
-        }
-        m_mutex.lock();
-        event_queue.push_back( pEvent );
-        ++queue_size;
-        m_mutex.unlock();
-    }
+		void EventHandler::plot_closed() {
+			delete pBPlot;
+			pBPlot = NULL;
+		}
+
+		void EventHandler::add_event( Event *pEvent ) {
+			//ignore if no plot present (for example because plot window was closed)
+			//->EventHandler shouldn't crash because it isn't plotting anywhere
+			if (pBPlot!=NULL) {
+				//block if many events are present
+				if (queue_size>1000) {
+					while (queue_size>100) {
+						usleep(10000);
+					}
+				}
+				m_mutex.lock();
+				event_queue.push_back( pEvent );
+				++queue_size;
+				m_mutex.unlock();
+			}
+		}
 
     int EventHandler::get_queue_size() {
         return queue_size + xevent_queue_size;
@@ -38,7 +48,7 @@ namespace cairo_plot {
 
     void EventHandler::process_events() {
         //Ideally event queue would have a blocking get function
-        while (1) {
+        while (pBPlot!=NULL) {
             if (queue_size==0 && XPending(pBPlot->dpy) == 0) 
                 usleep(100000);
             else if ( XPending(pBPlot->dpy) > 0 ) {

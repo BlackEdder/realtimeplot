@@ -129,7 +129,7 @@ namespace cairo_plot {
             void save( std::string filename );
             void clear();
         private:
-            EventHandler *pEvent_Handler;
+            EventHandler *pEventHandler;
     };
 
 		/*
