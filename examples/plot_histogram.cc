@@ -25,4 +25,5 @@ int main() {
 	counts.push_back( 10 );
 
 	hist.set_counts_data( values, counts );
+	sleep( 2 );
 }

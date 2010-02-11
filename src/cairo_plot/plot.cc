@@ -68,6 +68,8 @@ namespace cairo_plot {
 	}
 
 	Plot::~Plot() {
+		//To get non persistent plot uncomment the following:
+		//pEventHandler->plot_closed();
 		delete pEventHandler;
 	}
 
