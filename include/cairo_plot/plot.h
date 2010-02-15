@@ -136,8 +136,8 @@ namespace cairo_plot {
 		/**
 		 \brief Event that plots an transparent point
 		 
-		 Transparency (alpha) takes  a value between 0 and 1, 
-		 with 0 completely transparent and 1 not transparent at all.
+		 @param alpha takes  a value between 0 and 1, with 0 completely 
+		 transparent and 1 not transparent at all.
 
 		 \future Separate event to set transparency and plot a point. This depends on
 		 the ability to lock the eventhandler, so we can be certain events are done in
@@ -145,7 +145,7 @@ namespace cairo_plot {
 		 */ 
     class PointTransparentEvent : public Event {
         public:
-            PointTransparentEvent( float x, float y, float a );
+            PointTransparentEvent( float x, float y, float alpha );
             virtual void execute( BackendPlot *bPl );
         private:
             float x_crd, y_crd, alpha;
