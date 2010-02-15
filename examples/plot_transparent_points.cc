@@ -34,7 +34,7 @@ int main() {
 
 	Plot pl = Plot( config );
 	for (int i=0; i<10;++i) {
-		pl.point_transparent( 10, 5, 0.1 );
+		pl.point_transparent( 10, 5, 0.1*i );
 		sleep(1);
 	}
 	pl.point( 10, 10 );

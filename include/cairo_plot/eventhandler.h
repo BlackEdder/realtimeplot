@@ -42,8 +42,14 @@ namespace cairo_plot {
             virtual void execute( BackendPlot *bPl ) {}
     };
 
-    //EventHandler
-    //Accepts events and starts a thread which handles those events
+    /**
+    \brief Accepts events and starts a thread which handles those events
+
+		\future Implement a lock, so that one can send a number of events and be certain
+		they will be processed directly after each other. Important for example if we set
+		transparency, plot point, unset transparency. Or want to plot a line in a specific
+		order.
+		*/
     class EventHandler {
         public:
             //Only three public methods
