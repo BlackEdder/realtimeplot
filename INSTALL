@@ -1,0 +1,10 @@
+Basic Installation
+==================
+
+Run:
+rake install
+
+Installation Names
+==================
+
+By default, `rake install' will install the package's files under /usr (/usr/lib)

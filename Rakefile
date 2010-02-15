@@ -54,4 +54,9 @@ task :install => :build do
 	sh "cp include/cairo_plot/* /usr/include/cairo_plot/"
 end
 
+desc "Generate documentation using doxygen"
+task :doc do
+	sh "doxygen doc/cairo_plot/Doxyfile"
+end
+
 task :default => :plot_points

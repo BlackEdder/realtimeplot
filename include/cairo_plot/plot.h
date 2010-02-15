@@ -1,11 +1,39 @@
+/*
+  -------------------------------------------------------------------
+  
+  Copyright (C) 2010, Edwin van Leeuwen
+  
+  This file is part of CairoPlot.
+  
+  CairoPlot is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  CairoPlot is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with CairoPlot. If not, see <http://www.gnu.org/licenses/>.
+
+  -------------------------------------------------------------------
+*/
 #ifndef CAIRO_PLOT_PLOT_H
 #define CAIRO_PLOT_PLOT_H
+
+/** \file plot.h
+	 	\brief File containing frontend and backend plotting classes
+*/
+
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
-//Needs to be before cairomm, due to Xlib.h macros
+/// Needs to be before cairomm, due to Xlib.h macros
 #include <pangomm/init.h>
 #include <pangomm/context.h>
 #include <pangomm/layout.h>
@@ -18,6 +46,11 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 namespace cairo_plot {
 
+	/**
+	 	\brief Util function to turn doubles into strings
+
+		\future Move to util file at some point?
+	 */
     inline std::string stringify(double x)
     {
         std::ostringstream o;
@@ -25,26 +58,27 @@ namespace cairo_plot {
         return o.str();
     }   
 
-    /*
-     * Class keeps track of all the config variables
+    /**
+		 \brief Class that keeps track of all the config variables used in a plot
      */
-
     class PlotConfig {
         public:
-            //all the needed variables
+            /// All the needed variables
             int pixel_width, pixel_height;
-            int origin_x, origin_y;
+            int margin_x, margin_y;
             int nr_of_ticks, ticks_length;
             int point_size;
             float min_x, max_x;
             float min_y, max_y;
             float overlap;
             float aspect_ratio;
-            std::string xlabel, ylabel;
+            std::string xlabel, ylabel, font;
             bool fixed_plot_area;
 
-            //Constructor that sets default values
+            /// Constructor that sets default values
             PlotConfig() {
+								margin_x = 50;
+								margin_y = 50;
                 min_x = 0;
                 max_x = 90;
                 min_y = 0;
@@ -53,6 +87,7 @@ namespace cairo_plot {
                 ticks_length = 7;
                 xlabel = "x";
                 ylabel = "y";
+								font = "sans 8";
                 overlap = 0.1;
                 aspect_ratio = 1;
                 fixed_plot_area = false;
@@ -60,7 +95,9 @@ namespace cairo_plot {
             }
     };
 
-    //Event that draws a point at x,y
+		/**
+		 \brief Event that draws a point at x, y
+		 */
     class PointEvent : public Event {
         public:
             PointEvent( float x, float y );
@@ -69,7 +106,14 @@ namespace cairo_plot {
             float x_crd, y_crd;
     };
 
-    class LineAddEvent : public Event {
+ 		/**
+		 \brief Event that adds a point to an existing line
+
+		 If no line exists yet a new one will be started with starting point x, y
+
+		 \future Allow to specify which line, so that one can draw multiple lines
+		 */
+     class LineAddEvent : public Event {
         public:
             LineAddEvent( float x, float y );
             virtual void execute( BackendPlot *bPl );
@@ -77,6 +121,9 @@ namespace cairo_plot {
             float x_crd, y_crd;
     };
 
+		/**
+		 \brief Event that plots a number (float) at the specified x,y coordinate
+		 */
     class NumberEvent : public Event {
         public:
             NumberEvent( float x, float y, float i );
@@ -85,14 +132,27 @@ namespace cairo_plot {
             float x_crd, y_crd, nr;
     };
 
+		/**
+		 \brief Event that plots an transparent point
+		 
+		 @param alpha takes  a value between 0 and 1, with 0 completely 
+		 transparent and 1 not transparent at all.
+
+		 \future Separate event to set transparency and plot a point. This depends on
+		 the ability to lock the eventhandler, so we can be certain events are done in
+		 a specific order
+		 */ 
     class PointTransparentEvent : public Event {
         public:
-            PointTransparentEvent( float x, float y, float a );
+            PointTransparentEvent( float x, float y, float alpha );
             virtual void execute( BackendPlot *bPl );
         private:
             float x_crd, y_crd, alpha;
     };
 
+		/**
+		 \brief Event to save the current plot to the specified file
+		 */
     class SaveEvent : public Event {
         public:
             SaveEvent( std::string filename );
@@ -101,20 +161,30 @@ namespace cairo_plot {
             std::string filename;
     };
 
-    //Event that clears the plot
+		/**
+		 \brief Event to clear the current plot
+		 */
     class ClearEvent : public Event {
         public:
             ClearEvent();
             virtual void execute( BackendPlot *bPl );
     };
 
-    /*
-     * This is a "frontend" plotting class, that sends events to the "backend"
-     * Backend runs in a separate thread
+    /**
+		 \brief Frontend class that opens a plot
+
+		 This is the main class people will use. Most functions will create an event
+		 that will be added to the event queue managed by the event handler. Then this
+		 event will be executed by the backend plotting object, which is running in a 
+		 separate process.
      */
     class Plot {
         public:
+<<<<<<< HEAD
             Plot();
+=======
+						Plot();
+>>>>>>> master
             Plot( PlotConfig conf );
             ~Plot();
 
@@ -125,17 +195,52 @@ namespace cairo_plot {
             void save( std::string filename );
             void clear();
         private:
-            EventHandler *pEvent_Handler;
+            EventHandler *pEventHandler;
     };
 
-    /*
-     * BackendPlot that waits for events and then plots them
+		/**
+		 \brief Class to produce histograms from data, will calculate range etc
+
+		 Currently calls plot itself. It might be better to actually just integrate it
+		 into the plot class itself or to inherit the plot class.
+		 */
+		class Histogram {
+			public:
+				int no_bins, max_y;
+				std::vector<double> data;
+				std::vector<double> bins_x;
+				std::vector<double> bins_y;
+				double bin_width;
+
+				PlotConfig config;
+				Plot *pHistogram;
+
+				Histogram();
+				~Histogram();
+				void set_data( std::vector<double> data );
+				void set_counts_data( std::vector<double> values, 
+						std::vector<int> counts );
+			private:
+				void fill_bins();
+				void plot();
+		};
+
+    /**
+		\brief BackendPlot that waits for events and then plots them
+
+		Users should almost never create an object based on this class themself, but
+		should use a frontend class or if they need more flexibility create a event 
+		handler and send that custom events.
+
+		Large parts of the class are accessible from events (including the image 
+		surfaces), which should allow one to do everything possible they want using
+		custom events (as long as one knows what's going on in this class :) )
+
+		\future Document the way the plot works (with the different plotting surfaces etc)
+		
      */
     class BackendPlot {
         public:
-            /*
-             * Instance methods
-             */
             //plot_surface, an imagesurface that contains the plotted points
             //plot_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
@@ -154,7 +259,8 @@ namespace cairo_plot {
             //keep track of plot area pixels
             int plot_area_width, plot_area_height;
 
-            //axes_surface, surface that contains the axes + labels, used as a mask on the plot_surface when showing the plot
+            //axes_surface, surface that contains the axes + labels, 
+						//used as a mask on the plot_surface when showing the plot
             //axes_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> axes_surface;
             Cairo::RefPtr<Cairo::Context> axes_context;

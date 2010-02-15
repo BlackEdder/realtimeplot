@@ -1,3 +1,26 @@
+/*
+  -------------------------------------------------------------------
+  
+  Copyright (C) 2010, Edwin van Leeuwen
+  
+  This file is part of CairoPlot.
+  
+  CairoPlot is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+  
+  CairoPlot is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with CairoPlot. If not, see <http://www.gnu.org/licenses/>.
+
+  -------------------------------------------------------------------
+*/
+
 #include "cairo_plot/eventhandler.h"
 #include "cairo_plot/plot.h"
 
@@ -16,21 +39,31 @@ namespace cairo_plot {
 
     EventHandler::~EventHandler() {
         pEventProcessingThrd->join();
-        delete pBPlot;
+        if (pBPlot)
+					delete pBPlot;
     }
 
-    void EventHandler::add_event( Event *pEvent ) {
-        //block if many events are present
-        if (queue_size>1000) {
-            while (queue_size>100) {
-                usleep(10000);
-            }
-        }
-        m_mutex.lock();
-        event_queue.push_back( pEvent );
-        ++queue_size;
-        m_mutex.unlock();
-    }
+		void EventHandler::plot_closed() {
+			delete pBPlot;
+			pBPlot = NULL;
+		}
+
+		void EventHandler::add_event( Event *pEvent ) {
+			//ignore if no plot present (for example because plot window was closed)
+			//->EventHandler shouldn't crash because it isn't plotting anywhere
+			if (pBPlot!=NULL) {
+				//block if many events are present
+				if (queue_size>1000) {
+					while (queue_size>100) {
+						usleep(10000);
+					}
+				}
+				m_mutex.lock();
+				event_queue.push_back( pEvent );
+				++queue_size;
+				m_mutex.unlock();
+			}
+		}
 
     int EventHandler::get_queue_size() {
         return queue_size + xevent_queue_size;
@@ -38,7 +71,7 @@ namespace cairo_plot {
 
     void EventHandler::process_events() {
         //Ideally event queue would have a blocking get function
-        while (1) {
+        while (pBPlot!=NULL) {
             if (queue_size==0 && XPending(pBPlot->dpy) == 0) 
                 usleep(100000);
             else if ( XPending(pBPlot->dpy) > 0 ) {
