@@ -35,7 +35,15 @@ namespace cairo_plot {
     class BackendPlot;
     class EventHandler;
 
-    //General event class that all events should inherit
+    /**
+		 \brief General event class that all events should inherit
+
+		 The BackendPlot object calls the method execute, when it wants to handle
+		 the event and it passes a pointer of itself, such that the event can call
+		 the BackendPlot methods to edit/add to the plot (like adding a point)
+
+		 \future Why a pointer and not just pass by reference?
+		 */
     class Event {
         public:
             Event() {}
@@ -44,6 +52,10 @@ namespace cairo_plot {
 
     /**
     \brief Accepts events and starts a thread which handles those events
+
+		In theory the event class should almost never slow down the main program, but
+		currently if the queueu gets to big (>1000) add_event will block, so that 
+		backenplot has time to clear some events.
 
 		\future Implement a lock, so that one can send a number of events and be certain
 		they will be processed directly after each other. Important for example if we set
