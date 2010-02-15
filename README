@@ -1,0 +1,6 @@
+Read the INSTALL file for installation instructions.
+
+A good way to learn how to use the library is to have a look at the examples in the examples directory. To build and run an example use:
+rake <example name>
+e.g.
+rake plot_points
