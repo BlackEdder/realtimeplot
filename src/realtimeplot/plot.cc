@@ -190,10 +190,10 @@ namespace realtimeplot {
 		config.max_y = 1.1*max_y;
 		pHistogram = new Plot( config );
 		for (unsigned int i=0; i<bins_x.size(); ++i) {
-			pHistogram->line_add( bins_x[i]-0.5*bin_width, 0, 1 );
-			pHistogram->line_add( bins_x[i]-0.5*bin_width, bins_y[i], 1 );
-			pHistogram->line_add( bins_x[i]+0.5*bin_width, bins_y[i], 1 );
-			pHistogram->line_add( bins_x[i]+0.5*bin_width, 0, 1 );
+			pHistogram->line_add( bins_x[i]-0.5*bin_width, 0, -1 );
+			pHistogram->line_add( bins_x[i]-0.5*bin_width, bins_y[i], -1 );
+			pHistogram->line_add( bins_x[i]+0.5*bin_width, bins_y[i], -1 );
+			pHistogram->line_add( bins_x[i]+0.5*bin_width, 0, -1 );
 		}
 	}
 
@@ -530,13 +530,13 @@ namespace realtimeplot {
 				rolling_update(x, y);
 		}
 
-        LineAttributes line = LineAttributes( x, y, id );
+        LineAttributes *line = new LineAttributes( x, y, id );
 
         //check if line already exists
         bool exists = false;
-        std::list<LineAttributes>::iterator i;
+        std::list<LineAttributes*>::iterator i;
         for (i=lines.begin(); i != lines.end(); ++i) {
-            if ((*i).id == id) {
+            if ((*i)->id == id) {
                 line = (*i);
                 exists = true;
                 break;
@@ -545,22 +545,22 @@ namespace realtimeplot {
         
 		if (!exists) {
             //create line context, but don't draw anything yet
-			line.context = Cairo::Context::create( plot_surface );
+			line->context = Cairo::Context::create( plot_surface );
             //Push to the front assuming that new lines are more likely to added to
             //and the check if line already exists will be quicker
             lines.push_front( line );
 		} else {
 			//plot_surface might have been updated, by other actions
-			transform_to_device_units( line.context );
+			transform_to_device_units( line->context );
 			//line_context = Cairo::Context::create( plot_surface );
-			set_foreground_color( line.context );
-			transform_to_plot_units( line.context );
-			line.context->move_to( line.current_x, line.current_y );
-			line.context->line_to( x, y );
-			transform_to_device_units( line.context );
-			line.context->stroke();
-			line.current_x = x;
-			line.current_y = y;
+			set_foreground_color( line->context );
+			transform_to_plot_units( line->context );
+			line->context->move_to( line->current_x, line->current_y );
+			line->context->line_to( x, y );
+			transform_to_device_units( line->context );
+			line->context->stroke();
+			line->current_x = x;
+			line->current_y = y;
 			display();
 		}
 	}
