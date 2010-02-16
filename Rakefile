@@ -63,6 +63,8 @@ task :default => :plot_points
 
 
 #### Ruby
+RUBYLIBPATH="/usr/lib/ruby/site_ruby/1.8/x86_64-linux/"
+
 file "ext/rb_cairo_plot.o" => [:build, "ext/rb_cairo_plot.cc"] do |t|
     sh "g++ -c -fPIC -o #{t.name} ext/rb_cairo_plot.cc -I/usr/lib64/ruby/1.8/x86_64-linux -I/usr/lib64/ruby/gems/1.8/gems/rice-1.3.1/ruby/lib/include  #{LIBRARY_PARS}"
 end
@@ -76,5 +78,11 @@ task :ruby_extension => ["ext/rb_cairo_plot.so"]
 
 task :ruby_example => :ruby_extension do |t|
     sh "ruby -Iext examples/ruby_example.rb"
+end
+
+#Should find the path to install it to, but not sure how
+desc "Install ruby extension to #{RUBYLIBPATH}"
+task :ruby_install => :ruby_extension do |t|
+    sh "cp ext/rb_cairo_plot.so #{RUBYLIBPATH}"
 end
 
