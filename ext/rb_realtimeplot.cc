@@ -21,32 +21,25 @@
   -------------------------------------------------------------------
 */
 
+#include "rice/Data_Type.hpp"
+#include "rice/Constructor.hpp"
+
 #include "realtimeplot/plot.h"
 
+using namespace Rice;
 using namespace realtimeplot;
 
-int main() {
-	std::vector<double> data;
-	for (int i=0; i<10; ++i) {
-		data.push_back( 1 );
-		data.push_back( 2 );
-		data.push_back( 2.1 );
-	}
-
-	Histogram hist = Histogram();
-	hist.set_data( data );
-
-	sleep( 1 );
-
-	std::vector<double> values;
-	std::vector<int> counts;
-	values.push_back( 1 );
-	values.push_back( 2 );
-	values.push_back( 2.1 );
-	counts.push_back( 15 );
-	counts.push_back( 10 );
-	counts.push_back( 10 );
-
-	hist.set_counts_data( values, counts );
-	sleep( 2 );
+extern "C"
+void Init_rb_realtimeplot()
+{
+    /*Data_Type<PlotConfig> rb_cPlotConfig =
+    define_class<PlotConfig>("PlotConfig")
+    .define_constructor(Constructor<PlotConfig>());*/
+    //.define_method("hello", &Test::hello);
+    //
+    Data_Type<Plot> rb_cPlot =
+        define_class<Plot>("Plot")
+        .define_constructor(Constructor<Plot>())
+            .define_method("clear", &Plot::clear)
+            .define_method("point", &Plot::point);
 }

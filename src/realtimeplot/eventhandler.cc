@@ -3,28 +3,28 @@
   
   Copyright (C) 2010, Edwin van Leeuwen
   
-  This file is part of CairoPlot.
+  This file is part of RealTimePlot.
   
-  CairoPlot is free software; you can redistribute it and/or modify
+  RealTimePlot is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 3 of the License, or
   (at your option) any later version.
   
-  CairoPlot is distributed in the hope that it will be useful,
+  RealTimePlot is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
   
   You should have received a copy of the GNU General Public License
-  along with CairoPlot. If not, see <http://www.gnu.org/licenses/>.
+  along with RealTimePlot. If not, see <http://www.gnu.org/licenses/>.
 
   -------------------------------------------------------------------
 */
 
-#include "cairo_plot/eventhandler.h"
-#include "cairo_plot/plot.h"
+#include "realtimeplot/eventhandler.h"
+#include "realtimeplot/plot.h"
 
-namespace cairo_plot {
+namespace realtimeplot {
 
     EventHandler::EventHandler( PlotConfig config ) {
         //create a backend plot
@@ -34,7 +34,7 @@ namespace cairo_plot {
         xevent_queue_size = 0;
 
         //start processing thread
-        pEventProcessingThrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &cairo_plot::EventHandler::process_events, this ) ) );
+        pEventProcessingThrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &realtimeplot::EventHandler::process_events, this ) ) );
     }
 
     EventHandler::~EventHandler() {

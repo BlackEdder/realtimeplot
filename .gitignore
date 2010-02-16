@@ -1,6 +1,7 @@
 *.png
 *.old
 *.o
+*.so
 *.out
 *.swp
 *.swo
