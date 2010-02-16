@@ -7,3 +7,4 @@
 * Only open one plot window for histogram
 * Add ability to close a plot explicitely
 * Multiple lines
+* Check for presence of dependencies (Rakefile)
