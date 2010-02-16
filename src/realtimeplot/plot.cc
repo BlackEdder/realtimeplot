@@ -544,15 +544,14 @@ namespace realtimeplot {
         }
         
 		if (!exists) {
-            //create line context, but don't draw anything yet
-			line->context = Cairo::Context::create( plot_surface );
             //Push to the front assuming that new lines are more likely to added to
             //and the check if line already exists will be quicker
             lines.push_front( line );
 		} else {
-			//plot_surface might have been updated, by other actions
-			transform_to_device_units( line->context );
-			//line_context = Cairo::Context::create( plot_surface );
+			//plot_surface might have been updated, for example due to rolling_update
+			line->context = Cairo::Context::create( plot_surface );
+			
+            transform_to_device_units( line->context );
 			set_foreground_color( line->context );
 			transform_to_plot_units( line->context );
 			line->context->move_to( line->current_x, line->current_y );
