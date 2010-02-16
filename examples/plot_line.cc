@@ -34,9 +34,10 @@ int main() {
 
 	Plot pl = Plot( config );
 	for (int i=0; i<50;++i) {
-		pl.line_add( (i-1)*10, (i-4)*5  );
+		pl.line_add( (i-1)*10, (i-4)*5, 5  );
+		pl.line_add( (i-1)*10, (i-5)*5, 2  );
 		sleep(1);
 	}
-	pl.line_add( 10, 10 );
+	pl.line_add( 10, 10, 2 );
 	return 0;
 }

@@ -31,6 +31,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <list>
 #include <algorithm>
 
 /// Needs to be before cairomm, due to Xlib.h macros
@@ -110,15 +111,16 @@ namespace realtimeplot {
 		 \brief Event that adds a point to an existing line
 
 		 If no line exists yet a new one will be started with starting point x, y
+         @param id can be any int and identifies to which line a point belongs
 
-		 \future Allow to specify which line, so that one can draw multiple lines
 		 */
      class LineAddEvent : public Event {
         public:
-            LineAddEvent( float x, float y );
+            LineAddEvent( float x, float y, int id );
             virtual void execute( BackendPlot *bPl );
         private:
             float x_crd, y_crd;
+            int id;
     };
 
 		/**
@@ -185,7 +187,7 @@ namespace realtimeplot {
             ~Plot();
 
             void point( float x, float y );
-            void line_add( float x, float y );
+            void line_add( float x, float y, int id );
             void number( float x, float y, float i );
             void point_transparent( float x, float y, float a );
             void save( std::string filename );
@@ -221,6 +223,24 @@ namespace realtimeplot {
 				void plot();
 		};
 
+
+    /**
+     * \brief Class that is used to keep stats of existing lines
+     */
+        class LineAttributes {
+            public:
+                int id;
+                float current_x, current_y;
+
+                //context used for drawing lines
+                Cairo::RefPtr<Cairo::Context> context;
+
+                LineAttributes( float x, float y, int id_value ) {
+                    id = id_value;
+                    current_x = x;
+                    current_y = y;
+                }
+        };
     /**
 		\brief BackendPlot that waits for events and then plots them
 
@@ -241,9 +261,6 @@ namespace realtimeplot {
             //plot_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
             Cairo::RefPtr<Cairo::Context> plot_context;
-
-            //context used for drawing lines
-            Cairo::RefPtr<Cairo::Context> line_context;
 
             //temporary surface used when plotting stuff
             Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
@@ -334,9 +351,12 @@ namespace realtimeplot {
             //draw point on surface
             void point( float x, float y);
 
-            //line_add
-            //start a line at x, y or add to a current line
-            void line_add( float x, float y);
+            /**
+            \brief Add a point to a line 
+
+            If no line exists with the specified id a new line will be added
+            */
+            void line_add( float x, float y, int id );
 
             void save( std::string fn );
             void save( std::string fn, Cairo::RefPtr<Cairo::ImageSurface> pSurface );
@@ -362,8 +382,8 @@ namespace realtimeplot {
             bool plot_bounds_within_surface_bounds( );
 
         private:
-            //previous x and y coordinate of the line point
-            float line_old_x, line_old_y;
+            //Keep track to lines
+            std::list<LineAttributes*> lines;
 
             //set a flag when display shouldn't be updated (plotting still runs on)
             bool pause_display;

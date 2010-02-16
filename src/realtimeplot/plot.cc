@@ -34,13 +34,14 @@ namespace realtimeplot {
 		pBPlot->point( x_crd, y_crd );
 	}
 
-	LineAddEvent::LineAddEvent( float x, float y ) {
+	LineAddEvent::LineAddEvent( float x, float y, int id_value ) {
 		x_crd = x;
 		y_crd = y;
+        id = id_value;
 	}
 
 	void LineAddEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->line_add( x_crd, y_crd );
+		pBPlot->line_add( x_crd, y_crd, id );
 	}
 
 
@@ -101,8 +102,8 @@ namespace realtimeplot {
 		pEventHandler->add_event( pEvent );
 	}
 
-	void Plot::line_add( float x, float y ) {
-		Event *pEvent = new LineAddEvent( x, y );
+	void Plot::line_add( float x, float y, int id ) {
+		Event *pEvent = new LineAddEvent( x, y, id );
 		pEventHandler->add_event( pEvent );
 	}
 
@@ -189,10 +190,10 @@ namespace realtimeplot {
 		config.max_y = 1.1*max_y;
 		pHistogram = new Plot( config );
 		for (unsigned int i=0; i<bins_x.size(); ++i) {
-			pHistogram->line_add( bins_x[i]-0.5*bin_width, 0 );
-			pHistogram->line_add( bins_x[i]-0.5*bin_width, bins_y[i] );
-			pHistogram->line_add( bins_x[i]+0.5*bin_width, bins_y[i] );
-			pHistogram->line_add( bins_x[i]+0.5*bin_width, 0 );
+			pHistogram->line_add( bins_x[i]-0.5*bin_width, 0, 1 );
+			pHistogram->line_add( bins_x[i]-0.5*bin_width, bins_y[i], 1 );
+			pHistogram->line_add( bins_x[i]+0.5*bin_width, bins_y[i], 1 );
+			pHistogram->line_add( bins_x[i]+0.5*bin_width, 0, 1 );
 		}
 	}
 
@@ -523,27 +524,45 @@ namespace realtimeplot {
 		display();
 	}
 
-	void BackendPlot::line_add( float x, float y ) {
+	void BackendPlot::line_add( float x, float y, int id ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);
 		}
-		if (line_context == NULL) {
-			line_context = Cairo::Context::create( plot_surface );
-			line_old_x = x;
-			line_old_y = y;
+
+        LineAttributes *line = new LineAttributes( x, y, id );
+
+        //check if line already exists
+        bool exists = false;
+        std::list<LineAttributes*>::iterator i;
+        for (i=lines.begin(); i != lines.end(); ++i) {
+            if ((*i)->id == line->id) {
+                line = (*i);
+               exists = true;
+                break;
+            }
+        }
+
+        std::cout << lines.size() << std::endl;
+        
+		if (!exists) {
+            //create line context, but don't draw anything yet
+			line->context = Cairo::Context::create( plot_surface );
+            //Push to the front assuming that new lines are more likely to added to
+            //and the check if line already exists will be quicker
+            lines.push_front( line );
 		} else {
 			//plot_surface might have been updated, by other actions
-			transform_to_device_units( line_context );
-			line_context = Cairo::Context::create( plot_surface );
-			set_foreground_color( line_context );
-			transform_to_plot_units( line_context );
-			line_context->move_to( line_old_x, line_old_y );
-			line_context->line_to( x, y );
-			transform_to_device_units( line_context );
-			line_context->stroke();
-			line_old_x = x;
-			line_old_y = y;
+			transform_to_device_units( line->context );
+			//line_context = Cairo::Context::create( plot_surface );
+			set_foreground_color( line->context );
+			transform_to_plot_units( line->context );
+			line->context->move_to( line->current_x, line->current_y );
+			line->context->line_to( x, y );
+			transform_to_device_units( line->context );
+			line->context->stroke();
+			line->current_x = x;
+			line->current_y = y;
 			display();
 		}
 	}
