@@ -11,8 +11,8 @@ class Array
 end
 
 CLEAN.include("**/*.o")
+CLEAN.include("**/*.so")
 CLEAN.include("bin/*")
-CLEAN.include("lib/*")
 
 CFLAGS="-O2 -pipe -ffast-math"
 EXAMPLE_PARS = " -L./lib -lcairo_plot -lcairomm-1.0 -lglib-2.0 -lpangomm-1.4 -I/usr/include/pangomm-1.4 -I/usr/include/pango-1.0 -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I./include -lboost_thread -lboost_date_time #{CFLAGS}"
@@ -60,3 +60,21 @@ task :doc do
 end
 
 task :default => :plot_points
+
+
+#### Ruby
+file "ext/rb_cairo_plot.o" => [:build, "ext/rb_cairo_plot.cc"] do |t|
+    sh "g++ -c -fPIC -o #{t.name} ext/rb_cairo_plot.cc -I/usr/lib64/ruby/1.8/x86_64-linux -I/usr/lib64/ruby/gems/1.8/gems/rice-1.3.1/ruby/lib/include  #{LIBRARY_PARS}"
+end
+
+file "ext/rb_cairo_plot.so" => [:build, "ext/rb_cairo_plot.o"] do |t|
+    sh "g++ -shared -o #{t.name} ext/rb_cairo_plot.o  -L/usr/lib64/ruby/gems/1.8/gems/rice-1.3.1/ruby/lib/lib -lrice -lruby18 -lrt -ldl -lcrypt -lm -lc #{EXAMPLE_PARS}"
+end
+
+desc "Build ruby extension"
+task :ruby_extension => ["ext/rb_cairo_plot.so"]
+
+task :ruby_example => :ruby_extension do |t|
+    sh "ruby -Iext examples/ruby_example.rb"
+end
+
