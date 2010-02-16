@@ -180,11 +180,7 @@ namespace cairo_plot {
      */
     class Plot {
         public:
-<<<<<<< HEAD
             Plot();
-=======
-						Plot();
->>>>>>> master
             Plot( PlotConfig conf );
             ~Plot();
 
