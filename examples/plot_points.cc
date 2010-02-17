@@ -46,6 +46,8 @@ int main() {
             sleep(1);
         }
 	}
+    pl.config.xlabel = "bla";
+    pl.update_config();
 	pl.point( 0.02, 10 );
     pl.save( "plot_points.png" );
 	return 0;

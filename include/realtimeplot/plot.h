@@ -96,6 +96,18 @@ namespace realtimeplot {
             }
     };
 
+    /**
+     * \brief Event that is send when the config gets updated
+     */
+    class ConfigEvent : public Event {
+        public:
+            ConfigEvent( PlotConfig new_config );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            PlotConfig config;
+     };
+
+
 		/**
 		 \brief Event that draws a point at x, y
 		 */
@@ -182,6 +194,8 @@ namespace realtimeplot {
      */
     class Plot {
         public:
+            PlotConfig config;
+
             Plot();
             Plot( PlotConfig conf );
             ~Plot();
@@ -192,6 +206,12 @@ namespace realtimeplot {
             void point_transparent( float x, float y, float a );
             void save( std::string filename );
             void clear();
+            /**
+             * \brief Call this when config is updated
+             *
+             * Would be better to do it automatically, but this works for now
+             */
+            void update_config();
         private:
             EventHandler *pEventHandler;
     };
@@ -381,7 +401,13 @@ namespace realtimeplot {
             //check that the plot bounds are within surface bounds of the surface
             bool plot_bounds_within_surface_bounds( );
 
-        private:
+            /**
+             * \brief Call this when config is updated
+             *
+             * Would be better to do it automatically, but this works for now
+             */
+            void update_config();
+     private:
             //Keep track to lines
             std::list<LineAttributes*> lines;
 

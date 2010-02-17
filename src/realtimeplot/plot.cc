@@ -25,6 +25,15 @@
 
 namespace realtimeplot {
 
+    ConfigEvent::ConfigEvent( PlotConfig new_config ) {
+        config = new_config;
+    }
+
+    void ConfigEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->config = config;
+        pBPlot->update_config();
+    }
+
 	PointEvent::PointEvent( float x, float y ) {
 		x_crd = x;
 		y_crd = y;
@@ -83,12 +92,13 @@ namespace realtimeplot {
 	}
 
 	Plot::Plot() {
-		PlotConfig conf = PlotConfig();
-		pEventHandler = new EventHandler( conf );
+		config = PlotConfig();
+		pEventHandler = new EventHandler( config );
 	}
 
 	Plot::Plot( PlotConfig conf ) {
-		pEventHandler = new EventHandler( conf );
+        config = conf;
+		pEventHandler = new EventHandler( config );
 	}
 
 	Plot::~Plot() {
@@ -126,6 +136,11 @@ namespace realtimeplot {
 		Event *pEvent = new ClearEvent();
 		pEventHandler->add_event( pEvent );
 	}
+
+    void Plot::update_config() {
+		Event *pEvent = new ConfigEvent( config );
+		pEventHandler->add_event( pEvent );
+    }
 
 	/*
 	 * Histogram
@@ -215,7 +230,8 @@ namespace realtimeplot {
 		//create_xlib_window
 		create_xlib_window();
 
-		time_of_last_update = boost::posix_time::microsec_clock::local_time() - boost::posix_time::microseconds(200000);
+		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
+            boost::posix_time::microseconds(200000);
 
 		pause_display = false;
 
@@ -735,4 +751,9 @@ namespace realtimeplot {
 		draw_axes_surface();
 		display();
 	}
+
+    void BackendPlot::update_config() {
+        draw_axes_surface();
+        display();
+    }
 }
