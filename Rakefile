@@ -20,6 +20,9 @@ CFLAGS="-O2 -pipe -ffast-math"
 EXAMPLE_PARS = " -L./lib -lrealtimeplot -lcairomm-1.0 -lglib-2.0 -lpangomm-1.4 -I/usr/include/pangomm-1.4 -I/usr/include/pango-1.0 -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I./include -lboost_thread -lboost_date_time #{CFLAGS}"
 LIBRARY_PARS = " -Wall -I/usr/include/pangomm-1.4 -I/usr/include/pango-1.0 -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I./include #{CFLAGS}"
 
+directory "lib"
+directory "bin"
+
 file "src/realtimeplot/plot.o" => ["src/realtimeplot/plot.cc",
     "include/realtimeplot/plot.h",
     "include/realtimeplot/eventhandler.h"] do |t|
@@ -33,13 +36,13 @@ file "src/realtimeplot/eventhandler.o" => ["src/realtimeplot/eventhandler.cc",
 end
 
 file "lib/librealtimeplot.so" => ["src/realtimeplot/eventhandler.o", 
-    "src/realtimeplot/plot.o"] do |t|
-    sh "g++ -shared -o #{t.name} #{t.prerequisites.to_text}"
+    "src/realtimeplot/plot.o", "lib"] do |t|
+    sh "g++ -shared -o #{t.name} src/realtimeplot/eventhandler.o src/realtimeplot/plot.o"
 end
 
 FileList['examples/plot_*.cc'].each do |fn|
 	name = File.basename(fn).sub('.cc','')
-	file "bin/#{name}" => [fn, "lib/librealtimeplot.so"] do |t|
+	file "bin/#{name}" => ["bin", fn, "lib/librealtimeplot.so"] do |t|
     sh "g++ -o #{t.name} #{fn} #{EXAMPLE_PARS}"
 	end
 	task name => "bin/#{name}" do |t|
