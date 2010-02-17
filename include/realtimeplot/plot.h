@@ -207,9 +207,12 @@ namespace realtimeplot {
             void save( std::string filename );
             void clear();
             /**
-             * \brief Call this when config is updated
+             * \brief Call this when config is updated (BROKEN/DANGEROUS
              *
-             * Would be better to do it automatically, but this works for now
+             * Would be better to do it automatically, but this works for now.
+             *
+             * Is currently only save for changing labels etc. Changing max_x etc will
+             * lead to wrong plots
              */
             void update_config();
         private:
