@@ -275,42 +275,58 @@ namespace realtimeplot {
 		display();
 	}
 
-	void BackendPlot::handle_xevent( XEvent report ) {
-		switch( report.type ) {
+    void BackendPlot::handle_xevent( XEvent report ) {
+        switch( report.type ) {
             case ConfigureNotify:
                 scale_xsurface( report.xconfigure.width, report.xconfigure.height );
                 display();
                 break;
             case Expose:
-				display();
-				break;
-			case KeyPress:
-				if (XLookupKeysym(&report.xkey, 0) == XK_space)  {
-					if (pause_display) {
-						pause_display = false;
-						display();
-					}
-					else
-						pause_display = true;
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_w)  {
-					save( "realtimeplot.png", temporary_display_surface );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Left) {
-					move( -1, 0 );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Right) {
-					move( 1, 0 );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Up) {
-					move( 0, 1 );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Down) {
-					move( 0, -1 );
-				}
-				break;
-			//close window
-			case ClientMessage:
-				pEventHandler->plot_closed();
-				//XCloseDisplay(dpy);
-				break;
-		}
-	}
+                display();
+                break;
+            case KeyPress:
+                if (XLookupKeysym(&report.xkey, 0) == XK_space)  {
+                    if (pause_display) {
+                        pause_display = false;
+                        display();
+                    }
+                    else
+                        pause_display = true;
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_w)  {
+                    save( "realtimeplot.png", temporary_display_surface );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Left) {
+                    move( -1, 0 );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Right) {
+                    move( 1, 0 );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Up) {
+                    move( 0, 1 );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_Down) {
+                    move( 0, -1 );
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_KP_Add) { 
+                    double xrange = config.max_x-config.min_x;
+                    config.min_x+=0.05*xrange;
+                    config.max_x-=0.05*xrange;
+                    double yrange = config.max_y-config.min_y;
+                    config.min_y+=0.05*yrange;
+                    config.max_y-=0.05*yrange;
+                    update_config();
+                } else if (XLookupKeysym(&report.xkey, 0) == XK_KP_Subtract) { 
+                    double xrange = config.max_x-config.min_x;
+                    config.min_x-=0.05*xrange;
+                    config.max_x+=0.05*xrange;
+                    double yrange = config.max_y-config.min_y;
+                    config.min_y-=0.05*yrange;
+                    config.max_y+=0.05*yrange;
+                    update_config();
+                 }
+                break;
+                //close window
+            case ClientMessage:
+                pEventHandler->plot_closed();
+                //XCloseDisplay(dpy);
+                break;
+        }
+    }
 
 	void BackendPlot::create_plot_surface() {
 		//calculate minimum plot area width/height based on aspect ratio
