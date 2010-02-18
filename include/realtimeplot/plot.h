@@ -310,6 +310,8 @@ namespace realtimeplot {
             //Keep track of the maximum/minimum values of the plot_surface in plot units
             float plot_surface_max_x, plot_surface_min_x;
             float plot_surface_max_y, plot_surface_min_y;
+            /// Device units (pixels)
+            float plot_surface_width, plot_surface_height;
             float alpha;
 
             //last_update_time (display at least every second)
@@ -410,6 +412,11 @@ namespace realtimeplot {
              * Would be better to do it automatically, but this works for now
              */
             void update_config();
+
+            /**
+             * \brief Call when xwindow changes size to scale it up or down
+             */
+            void scale_xsurface( double width, double height );
      private:
             //Keep track to lines
             std::list<LineAttributes*> lines;

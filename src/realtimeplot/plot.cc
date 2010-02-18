@@ -277,17 +277,11 @@ namespace realtimeplot {
 
 	void BackendPlot::handle_xevent( XEvent report ) {
 		switch( report.type ) {
-			case ConfigureNotify:
-				xSurface->set_size( report.xconfigure.width,
-						report.xconfigure.height );
-				//std::cout << report.xconfigure.width << std::endl;
-				//std::cout << report.xconfigure.height << std::endl;
-				xContext = Cairo::Context::create( xSurface );
-				xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
-						float(xSurface->get_height())/(plot_area_height+config.margin_x) );
-				display();
-				break;
-			case Expose:
+            case ConfigureNotify:
+                scale_xsurface( report.xconfigure.width, report.xconfigure.height );
+                display();
+                break;
+            case Expose:
 				display();
 				break;
 			case KeyPress:
@@ -327,8 +321,11 @@ namespace realtimeplot {
 		//
 		//plot_surface, the shown part of this surface is 250000 pixels (default 500x500)
 		//The rest is for when plotting outside of the area
+        plot_surface_width = 5*plot_area_width;
+        plot_surface_height = 5*plot_area_height;
+
 		plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-				5*plot_area_width, 5*plot_area_height );
+				plot_surface_width, plot_surface_height );
 		plot_context = Cairo::Context::create(plot_surface);
 		//give the plot its background color
 		set_background_color( plot_context );
@@ -380,9 +377,9 @@ namespace realtimeplot {
 
 	void BackendPlot::transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext ) {
 		transform_to_device_units( pContext );
-		pContext->translate( 0, plot_area_height*5 );
-		pContext->scale( plot_area_width*5/(plot_surface_max_x-plot_surface_min_x),
-				-plot_area_height*5/(plot_surface_max_y-plot_surface_min_y) );
+		pContext->translate( 0, plot_surface_height );
+		pContext->scale( plot_surface_width/(plot_surface_max_x-plot_surface_min_x),
+				-plot_surface_height/(plot_surface_max_y-plot_surface_min_y) );
 		pContext->translate( -plot_surface_min_x, -plot_surface_min_y );
 	}
 
@@ -503,12 +500,12 @@ namespace realtimeplot {
 
 		pango_layout->set_text( config.xlabel );
 		pango_layout->get_pixel_size( text_width, text_height );
-		axes_context->move_to( config.margin_y+0.5*plot_area_width-0.5*text_width, 
-				plot_area_height+1.5*text_height );
-    pango_layout->show_in_cairo_context( axes_context );
+        axes_context->move_to( config.margin_y+0.5*plot_area_width-0.5*text_width, 
+                plot_area_height+1.5*text_height );
+        pango_layout->show_in_cairo_context( axes_context );
 
-		axes_context->stroke();
-		alpha = old_alpha;
+        axes_context->stroke();
+        alpha = old_alpha;
 	}
 
 	void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
@@ -702,20 +699,23 @@ namespace realtimeplot {
 		return ticks;
 	}
 
-	Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_temporary_surface() {
-		//Create an temporary imagesurface (using a temp surface gets rid of
-		//flickering we get if we plot plot_surface and then axes_surface
-		//directly onto xlibsurface
-		Cairo::RefPtr<Cairo::ImageSurface> surface = 
-			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					config.margin_y+plot_area_width, config.margin_x+plot_area_height );
-		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
+		/** \brief Create an temporary imagesurface 
+         *
+         * (using a temp surface gets rid of flickering we get if we 
+         * plot plot_surface and then axes_surface
+         * directly onto xlibsurface
+         */
+    Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_temporary_surface() {
+        Cairo::RefPtr<Cairo::ImageSurface> surface = 
+            Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+                    config.margin_y+plot_area_width, config.margin_x+plot_area_height );
+        Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
 
-		transform_to_plot_units();
-		double x = config.min_x;
-		double y = config.max_y;
-		plot_context->user_to_device( x, y );
-		//copy the plot onto our temporary image surface
+        transform_to_plot_units();
+        double x = config.min_x;
+        double y = config.max_y;
+        plot_context->user_to_device( x, y );
+        //copy the plot onto our temporary image surface
 		context->set_source( plot_surface, -x+config.margin_y, -y );
 		context->paint();
 		//copy the axes onto our temporary image surface
@@ -762,9 +762,20 @@ namespace realtimeplot {
         plot_context->user_to_device_distance( width, height );
         transform_to_device_units( plot_context );
         plot_area_width = round(width);
-        plot_area_height = round(height);
-        //EndTemporary
+        plot_area_height = round(-height);
+        width = xSurface->get_width();
+        height = xSurface->get_height();
+		xSurface = Cairo::XlibSurface::create( dpy, win, DefaultVisual(dpy, 0), 
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+        scale_xsurface( width, height );
         draw_axes_surface();
         display();
+    }
+
+    void BackendPlot::scale_xsurface( double width, double height ) {
+        xSurface->set_size( width, height );
+        xContext = Cairo::Context::create( xSurface );
+        xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
+                float(xSurface->get_height())/(plot_area_height+config.margin_x) );
     }
 }
