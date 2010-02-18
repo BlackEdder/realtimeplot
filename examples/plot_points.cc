@@ -40,13 +40,14 @@ int main() {
 	Plot pl = Plot( config );
 	for (int i=0; i<10;++i) {
 		pl.point( (i-1)*0.1, (i-4)*5 );
-		sleep(1);
+		//sleep(1);
         if (i==5) {
             pl.clear();
-            sleep(1);
+            //sleep(1);
         }
 	}
     pl.config.xlabel = "bla";
+    pl.config.max_x = 0.7;
     pl.update_config();
 	pl.point( 0.02, 10 );
     pl.save( "plot_points.png" );

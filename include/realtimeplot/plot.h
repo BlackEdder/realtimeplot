@@ -296,7 +296,7 @@ namespace realtimeplot {
             int plot_area_width, plot_area_height;
 
             //axes_surface, surface that contains the axes + labels, 
-						//used as a mask on the plot_surface when showing the plot
+            //used as a mask on the plot_surface when showing the plot
             //axes_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> axes_surface;
             Cairo::RefPtr<Cairo::Context> axes_context;

@@ -752,7 +752,18 @@ namespace realtimeplot {
 		display();
 	}
 
-    void BackendPlot::update_config() {
+    void BackendPlot::update_config() { 
+        //Temporary put here, should only be done when min_x/max_x change
+        //recalculate plot_area_width
+        transform_to_plot_units( plot_context );
+        double width,height;
+        width = config.max_x-config.min_x;
+        height = config.max_y-config.min_y;
+        plot_context->user_to_device_distance( width, height );
+        transform_to_device_units( plot_context );
+        plot_area_width = round(width);
+        plot_area_height = round(height);
+        //EndTemporary
         draw_axes_surface();
         display();
     }
