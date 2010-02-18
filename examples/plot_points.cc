@@ -49,9 +49,9 @@ int main() {
     pl.config.xlabel = "bla";
     pl.config.max_x = 0.9;
     pl.update_config();
-	pl.point( 0.02, 10 );
-	pl.point( 0.02, 10 );
-	pl.point( 0.2, -15 );
+	//For some reason this one doesn't get shown until another action is performed
+    //like move the plot (arrow keys)
+    pl.point( 0.2, -15 );
     pl.save( "plot_points.png" );
 	return 0;
 }

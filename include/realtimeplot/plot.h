@@ -410,6 +410,8 @@ namespace realtimeplot {
              * \brief Call this when config is updated
              *
              * Would be better to do it automatically, but this works for now
+             *
+             * Needs more safety checks to see if the new values aren't bogus
              */
             void update_config();
 
