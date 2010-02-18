@@ -25,8 +25,16 @@ directory "bin"
 
 file "src/realtimeplot/plot.o" => ["src/realtimeplot/plot.cc",
     "include/realtimeplot/plot.h",
+    "include/realtimeplot/events.h",
     "include/realtimeplot/eventhandler.h"] do |t|
     sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/plot.cc #{LIBRARY_PARS}"
+end
+
+file "src/realtimeplot/events.o" => ["src/realtimeplot/events.cc",
+    "include/realtimeplot/events.h",
+    "include/realtimeplot/plot.h",
+    "include/realtimeplot/eventhandler.h"] do |t|
+    sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/events.cc #{LIBRARY_PARS}"
 end
 
 file "src/realtimeplot/eventhandler.o" => ["src/realtimeplot/eventhandler.cc",
@@ -36,8 +44,9 @@ file "src/realtimeplot/eventhandler.o" => ["src/realtimeplot/eventhandler.cc",
 end
 
 file "lib/librealtimeplot.so" => ["src/realtimeplot/eventhandler.o", 
-    "src/realtimeplot/plot.o", "lib"] do |t|
-    sh "g++ -shared -o #{t.name} src/realtimeplot/eventhandler.o src/realtimeplot/plot.o"
+    "src/realtimeplot/plot.o", "src/realtimeplot/events.o", "lib"] do |t|
+    sh "g++ -shared -o #{t.name} src/realtimeplot/events.o \
+        src/realtimeplot/eventhandler.o src/realtimeplot/plot.o"
 end
 
 FileList['examples/plot_*.cc'].each do |fn|

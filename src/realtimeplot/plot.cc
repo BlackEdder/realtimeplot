@@ -22,74 +22,9 @@
 */
 
 #include "realtimeplot/plot.h"
+#include "realtimeplot/events.h"
 
 namespace realtimeplot {
-
-    ConfigEvent::ConfigEvent( PlotConfig new_config ) {
-        config = new_config;
-    }
-
-    void ConfigEvent::execute( BackendPlot *pBPlot ) {
-        pBPlot->config = config;
-        pBPlot->update_config();
-    }
-
-	PointEvent::PointEvent( float x, float y ) {
-		x_crd = x;
-		y_crd = y;
-	}
-
-	void PointEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->point( x_crd, y_crd );
-	}
-
-	LineAddEvent::LineAddEvent( float x, float y, int id_value ) {
-		x_crd = x;
-		y_crd = y;
-        id = id_value;
-	}
-
-	void LineAddEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->line_add( x_crd, y_crd, id );
-	}
-
-
-	NumberEvent::NumberEvent( float x, float y, float i ) {
-		x_crd = x;
-		y_crd = y;
-		nr = i;
-	}
-
-	void NumberEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->number( x_crd, y_crd, nr );
-	}
-
-	PointTransparentEvent::PointTransparentEvent( float x, float y, float a ) {
-		x_crd = x;
-		y_crd = y;
-		alpha = a;
-	}
-
-	void PointTransparentEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->set_alpha( alpha );
-		pBPlot->point( x_crd, y_crd );
-		pBPlot->set_alpha( 1 );
-	}
-
-	SaveEvent::SaveEvent( std::string fn ) {
-		filename = fn;
-	}
-
-	void SaveEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->save(filename);
-	}
-
-	ClearEvent::ClearEvent() {
-	}
-
-	void ClearEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->clear();
-	}
 
 	Plot::Plot() {
 		config = PlotConfig();

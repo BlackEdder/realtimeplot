@@ -42,9 +42,10 @@
 #include <cairomm/context.h>
 #include <cairomm/xlib_surface.h>
 
+#include "boost/date_time/posix_time/posix_time.hpp"
+
 #include "realtimeplot/eventhandler.h"
 
-#include "boost/date_time/posix_time/posix_time.hpp"
 namespace realtimeplot {
 
 	/**
@@ -96,95 +97,7 @@ namespace realtimeplot {
             }
     };
 
-    /**
-     * \brief Event that is send when the config gets updated
-     */
-    class ConfigEvent : public Event {
-        public:
-            ConfigEvent( PlotConfig new_config );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            PlotConfig config;
-     };
-
-
-		/**
-		 \brief Event that draws a point at x, y
-		 */
-    class PointEvent : public Event {
-        public:
-            PointEvent( float x, float y );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            float x_crd, y_crd;
-    };
-
- 		/**
-		 \brief Event that adds a point to an existing line
-
-		 If no line exists yet a new one will be started with starting point x, y
-         @param id can be any int and identifies to which line a point belongs
-
-		 */
-     class LineAddEvent : public Event {
-        public:
-            LineAddEvent( float x, float y, int id );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            float x_crd, y_crd;
-            int id;
-    };
-
-		/**
-		 \brief Event that plots a number (float) at the specified x,y coordinate
-		 */
-    class NumberEvent : public Event {
-        public:
-            NumberEvent( float x, float y, float i );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            float x_crd, y_crd, nr;
-    };
-
-		/**
-		 \brief Event that plots an transparent point
-		 
-		 @param alpha takes  a value between 0 and 1, with 0 completely 
-		 transparent and 1 not transparent at all.
-
-		 \future Separate event to set transparency and plot a point. This depends on
-		 the ability to lock the eventhandler, so we can be certain events are done in
-		 a specific order
-		 */ 
-    class PointTransparentEvent : public Event {
-        public:
-            PointTransparentEvent( float x, float y, float alpha );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            float x_crd, y_crd, alpha;
-    };
-
-		/**
-		 \brief Event to save the current plot to the specified file
-		 */
-    class SaveEvent : public Event {
-        public:
-            SaveEvent( std::string filename );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            std::string filename;
-    };
-
-		/**
-		 \brief Event to clear the current plot
-		 */
-    class ClearEvent : public Event {
-        public:
-            ClearEvent();
-            virtual void execute( BackendPlot *bPl );
-    };
-
-    /**
+   /**
 		 \brief Frontend class that opens a plot
 
 		 This is the main class people will use. Most functions will create an event
