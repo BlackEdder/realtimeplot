@@ -156,6 +156,17 @@ namespace realtimeplot {
 		alpha = 1;
 		pEventHandler = pEH;
 
+		//calculate minimum plot area width/height based on aspect ratio
+		double x = 500/sqrt(config.aspect_ratio);
+		plot_area_width = round( config.aspect_ratio*x );
+		plot_area_height = round( x );
+		//create the surfaces and contexts
+		//
+		//plot_surface, the shown part of this surface is 250000 pixels (default 500x500)
+		//The rest is for when plotting outside of the area
+        plot_surface_width = 5*plot_area_width;
+        plot_surface_height = 5*plot_area_height;
+
 		//create the surface to draw on
 		create_plot_surface();
 
@@ -263,18 +274,8 @@ namespace realtimeplot {
         }
     }
 
-	void BackendPlot::create_plot_surface() {
-		//calculate minimum plot area width/height based on aspect ratio
-		double x = 500/sqrt(config.aspect_ratio);
-		plot_area_width = round( config.aspect_ratio*x );
-		plot_area_height = round( x );
-		//create the surfaces and contexts
-		//
-		//plot_surface, the shown part of this surface is 250000 pixels (default 500x500)
-		//The rest is for when plotting outside of the area
-        plot_surface_width = 5*plot_area_width;
-        plot_surface_height = 5*plot_area_height;
 
+	void BackendPlot::create_plot_surface() {
 		plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 				plot_surface_width, plot_surface_height );
 		plot_context = Cairo::Context::create(plot_surface);
@@ -286,10 +287,12 @@ namespace realtimeplot {
 		//clear();
 
 		//set helper variables
-		plot_surface_min_x = config.min_x-2*(config.max_x-config.min_x);
-		plot_surface_max_x = config.max_x+2*(config.max_x-config.min_x);
-		plot_surface_min_y = config.min_y-2*(config.max_y-config.min_y);
-		plot_surface_max_y = config.max_y+2*(config.max_y-config.min_y);
+        double xratio = ((double(plot_surface_width)/plot_area_width)-1)/2.0;
+        double yratio = ((double(plot_surface_height)/plot_area_height)-1)/2.0;
+		plot_surface_min_x = config.min_x-xratio*(config.max_x-config.min_x);
+		plot_surface_max_x = config.max_x+xratio*(config.max_x-config.min_x);
+		plot_surface_min_y = config.min_y-yratio*(config.max_y-config.min_y);
+		plot_surface_max_y = config.max_y+yratio*(config.max_y-config.min_y);
 	}
 
 	void BackendPlot::create_xlib_window() {
