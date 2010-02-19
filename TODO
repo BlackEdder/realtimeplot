@@ -1,5 +1,4 @@
 * Use a key to start (and stop) recording to a png file
-* Make axes always unzoomed in/scale axes according to xsurface instead of plot_surface
 * Subplot (show two image surfaces in the xwindow?)
 * Comments
 * Add new data to existing histogram

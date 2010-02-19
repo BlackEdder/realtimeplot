@@ -460,7 +460,6 @@ namespace realtimeplot {
         pango_layout->show_in_cairo_context( axes_context );
 
         axes_context->stroke();
-        axes_surface->write_to_png("axes.png");
         alpha = old_alpha;
 	}
 
@@ -665,18 +664,23 @@ namespace realtimeplot {
         
         Cairo::RefPtr<Cairo::ImageSurface> surface = 
             Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-                    config.margin_y+xSurface->get_width(), 
-                    config.margin_x+xSurface->get_height() );
+                    xSurface->get_width(), xSurface->get_height() );
         Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
-        std::cout << xSurface->get_width() << std::endl;
-        std::cout << xSurface->get_height() << std::endl;
 
-        transform_to_plot_units();
-        transform_to_plot_units_with_origin( surface, context,
-                config.margin_x, config.margin_y );
         
+        double x = plot_surface_min_x;
+        double y = plot_surface_max_y;
+        transform_to_plot_units_with_origin( surface, context,
+               config.margin_x, config.margin_y );
+        context->user_to_device( x, y );
+        
+        transform_to_device_units( context );
+        context->translate( x, y );
+        context->scale( double(xSurface->get_width()-config.margin_y)/plot_area_width,
+                double(xSurface->get_height()-config.margin_x)/plot_area_height );
+
         //copy the plot onto our temporary image surface
-		context->set_source( plot_surface, config.min_x, config.max_y );
+		context->set_source( plot_surface, 0, 0 );
     	context->paint();
 		//copy the axes onto our temporary image surface
         transform_to_device_units( context );

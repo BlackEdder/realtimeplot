@@ -100,3 +100,9 @@ task :ruby_install => :ruby_extension do |t|
     sh "cp ext/rb_realtimeplot.so #{RUBYLIBPATH}"
 end
 
+#### Utils etc.
+desc "File used for testing cairo/pango behaviour"
+task :test_cairo do |t|
+    sh "g++ -o bin/test_cairo examples/test_cairo.cc #{EXAMPLE_PARS}"
+    sh "bin/test_cairo"
+end
