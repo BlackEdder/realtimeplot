@@ -339,8 +339,8 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::Context> pContext, int margin_x, int margin_y ) {
 		transform_to_device_units( pContext );
 		pContext->translate( margin_y, pSurface->get_height()-margin_x );
-		pContext->scale( plot_area_width/((config.max_x-config.min_x)),
-				-plot_area_height/((config.max_y-config.min_y)) );
+		pContext->scale( (pSurface->get_width()-margin_y)/((config.max_x-config.min_x)),
+				-(pSurface->get_height()-margin_x)/((config.max_y-config.min_y)) );
 		pContext->translate( -config.min_x, -config.min_y );
 	}
 
