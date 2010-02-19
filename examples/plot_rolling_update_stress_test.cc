@@ -40,7 +40,7 @@ int main() {
         if (float(std::rand())/RAND_MAX < 0.01) {
             //usleep(10000);
         }
-        pl.point( -y, 50+900*float(std::rand())/RAND_MAX );
+        pl.point( -y, y+50+900*float(std::rand())/RAND_MAX );
         ++y;
     }
     return 0;

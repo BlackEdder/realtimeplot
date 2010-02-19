@@ -721,6 +721,15 @@ namespace realtimeplot {
 	}
 
     void BackendPlot::update_config() { 
+        //Check that it can be done:
+        if (config.max_x > plot_surface_max_x)
+            config.max_x = plot_surface_max_x;
+        if (config.min_x < plot_surface_min_x)
+            config.min_x = plot_surface_min_x;
+        if (config.max_y > plot_surface_max_y)
+            config.max_y = plot_surface_max_y;
+        if (config.min_y < plot_surface_min_y)
+            config.min_y = plot_surface_min_y;
         //Temporary put here, should only be done when min_x/max_x change
         //recalculate plot_area_width
         transform_to_plot_units( plot_context );
