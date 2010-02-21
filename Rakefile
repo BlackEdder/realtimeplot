@@ -16,7 +16,9 @@ CLEAN.include("bin/*")
 CLEAN.include("doc/realtimeplot/html/*")
 CLEAN.include("doc/realtimeplot/latex/*")
 
+
 CFLAGS="-O2 -pipe -ffast-math -fomit-frame-pointer"
+#CFLAGS="-O0 -pg"
 EXAMPLE_PARS = " -L./lib -lrealtimeplot -lcairomm-1.0 -lglib-2.0 -lpangomm-1.4 -I/usr/include/pangomm-1.4 -I/usr/include/pango-1.0 -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I./include -lboost_thread -lboost_date_time #{CFLAGS}"
 LIBRARY_PARS = " -Wall -I/usr/include/pangomm-1.4 -I/usr/include/pango-1.0 -I/usr/include/glibmm-2.4 -I/usr/lib/glibmm-2.4/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/cairomm-1.0 -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/sigc++-2.0 -I/usr/lib/sigc++-2.0/include -I./include #{CFLAGS}"
 
