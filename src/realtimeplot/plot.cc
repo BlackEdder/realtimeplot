@@ -177,7 +177,7 @@ namespace realtimeplot {
 		draw_axes_surface();
 
 		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
-            boost::posix_time::microseconds(200000);
+            boost::posix_time::microseconds(500000);
 
 		pause_display = false;
 
@@ -194,9 +194,9 @@ namespace realtimeplot {
 		if (!pause_display ) {
 			boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
 			//Only do this if event queue is empty 
-			//or last update was more than a 0.1 seconds ago
+			//or last update was more than a 0.5 seconds ago
 			if  (pEventHandler->get_queue_size() < 1 
-					|| (( now-time_of_last_update )>( boost::posix_time::microseconds(200000))))  {
+					|| (( now-time_of_last_update )>( boost::posix_time::microseconds(500000))))  {
 				temporary_display_surface = create_temporary_surface();
 				//copy the temporary surface onto the xlib surface
 				xContext->set_source( temporary_display_surface, 0, 0 );
