@@ -26,6 +26,33 @@
 
 namespace realtimeplot {
 
+    Color::Color( double red, double green, double blue, double alpha ) {
+        r = r;
+        g = g;
+        b = b;
+        a = a;
+    }
+
+    Color Color::black() {
+        return Color( 1, 1, 1, 1 );
+    }
+
+    Color Color::white() {
+        return Color( 0, 0, 0, 1 );
+    }
+
+    Color Color::red() {
+        return Color( 1, 0, 0, 1 );
+    }
+
+    Color Color::green() {
+        return Color( 0, 1, 0, 1 );
+    }
+
+    Color Color::blue() {
+        return Color( 0, 0, 1, 1 );
+    }
+
 	Plot::Plot() {
 		config = PlotConfig();
 		pEventHandler = new EventHandler( config );

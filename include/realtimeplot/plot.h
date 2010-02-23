@@ -61,6 +61,23 @@ namespace realtimeplot {
     }   
 
     /**
+     * \brief Class used to set color data
+     */
+
+    class Color {
+        public:
+        double r, g, b, a;
+        Color( double red, double green, double blue, double alpha );
+        ~Color() {};
+        static Color black();
+        static Color white();
+        static Color red();
+        static Color green();
+        static Color blue();
+    };
+
+
+    /**
 		 \brief Class that keeps track of all the config variables used in a plot
      */
     class PlotConfig {
