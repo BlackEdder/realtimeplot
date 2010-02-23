@@ -42,14 +42,17 @@ namespace realtimeplot {
 
 
 		/**
-		 \brief Event that draws a point at x, y
+		 \brief Event that draws a point at x, y with Color color
+
+         \future Separate event to set a color (and unset it?)
 		 */
     class PointEvent : public Event {
         public:
-            PointEvent( float x, float y );
+            PointEvent( float x, float y, Color color );
             virtual void execute( BackendPlot *bPl );
         private:
             float x_crd, y_crd;
+            Color colour;
     };
 
  		/**

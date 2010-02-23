@@ -67,6 +67,10 @@ namespace realtimeplot {
     class Color {
         public:
         double r, g, b, a;
+        /**
+         * \brief Default constructer, sets a white/transparent color
+         */
+        Color();
         Color( double red, double green, double blue, double alpha );
         ~Color() {};
         static Color black();
@@ -130,7 +134,7 @@ namespace realtimeplot {
             Plot( PlotConfig conf );
             ~Plot();
 
-            void point( float x, float y );
+            void point( float x, float y, Color color=Color::black() );
             void line_add( float x, float y, int id=-1 );
             void number( float x, float y, float i );
             void point_transparent( float x, float y, float a );
@@ -304,7 +308,7 @@ namespace realtimeplot {
 
             //point
             //draw point on surface
-            void point( float x, float y);
+            void point( float x, float y, Color color );
 
             /**
             \brief Add a point to a line 

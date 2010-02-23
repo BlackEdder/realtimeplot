@@ -26,19 +26,26 @@
 
 namespace realtimeplot {
 
+    Color::Color() {
+        r = 1;
+        g = 1;
+        b = 1;
+        a = 0;
+    }
+
     Color::Color( double red, double green, double blue, double alpha ) {
-        r = r;
-        g = g;
-        b = b;
-        a = a;
+        r = red;
+        g = green;
+        b = blue;
+        a = alpha;
     }
 
     Color Color::black() {
-        return Color( 1, 1, 1, 1 );
+        return Color( 0, 0, 0, 1 );
     }
 
     Color Color::white() {
-        return Color( 0, 0, 0, 1 );
+        return Color( 1, 1, 1, 1 );
     }
 
     Color Color::red() {
@@ -69,8 +76,8 @@ namespace realtimeplot {
 		delete pEventHandler;
 	}
 
-	void Plot::point( float x, float y ) {
-		Event *pEvent = new PointEvent( x, y );
+	void Plot::point( float x, float y, Color color ) {
+		Event *pEvent = new PointEvent( x, y, color );
 		pEventHandler->add_event( pEvent );
 	}
 
@@ -505,20 +512,21 @@ namespace realtimeplot {
 		alpha = a;
 	}
 
-	void BackendPlot::point( float x, float y) {
+	void BackendPlot::point( float x, float y, Color color ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);
 		}
 		double dx = config.point_size;
 		double dy = config.point_size;
-		set_foreground_color( plot_context );
+        plot_context->save();
+        plot_context->set_source_rgba( color.r, color.g, color.b, color.a );
 		transform_to_plot_units(); 
 		plot_context->device_to_user_distance(dx,dy);
 		plot_context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
-		transform_to_device_units( plot_context );
+		//transform_to_device_units( plot_context );
 		plot_context->fill();
-
+        plot_context->restore();
 		display();
 	}
 

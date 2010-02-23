@@ -33,13 +33,14 @@ namespace realtimeplot {
         pBPlot->update_config();
     }
 
-	PointEvent::PointEvent( float x, float y ) {
+	PointEvent::PointEvent( float x, float y, Color color ) {
 		x_crd = x;
 		y_crd = y;
+        colour = color;
 	}
 
 	void PointEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->point( x_crd, y_crd );
+		pBPlot->point( x_crd, y_crd, colour );
 	}
 
 	LineAddEvent::LineAddEvent( float x, float y, int id_value ) {
@@ -70,8 +71,9 @@ namespace realtimeplot {
 	}
 
 	void PointTransparentEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->set_alpha( alpha );
-		pBPlot->point( x_crd, y_crd );
+        Color color = Color::black();
+        color.a = alpha;
+		pBPlot->point( x_crd, y_crd, color );
 		pBPlot->set_alpha( 1 );
 	}
 

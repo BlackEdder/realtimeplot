@@ -38,13 +38,21 @@ int main() {
 	config.xlabel = "Very Long Long label";
 
 	Plot pl = Plot( config );
+
+    Color color = Color::black();
 	for (int i=0; i<10;++i) {
-		pl.point( (i-1)*0.1, (i-4)*5 );
+		pl.point( (i-1)*0.1, (i-4)*5, color );
 		sleep(1);
         if (i==2) {
             pl.clear();
+            color = Color::red();
             //sleep(1);
         }
+        if (i==3)
+            color = Color::blue();
+        if (i==4)
+            color = Color::green();
+
 	}
     pl.config.xlabel = "bla";
     pl.config.max_x = 0.9;
