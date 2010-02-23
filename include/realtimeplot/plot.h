@@ -114,7 +114,7 @@ namespace realtimeplot {
             ~Plot();
 
             void point( float x, float y );
-            void line_add( float x, float y, int id );
+            void line_add( float x, float y, int id=-1 );
             void number( float x, float y, float i );
             void point_transparent( float x, float y, float a );
             void save( std::string filename );
