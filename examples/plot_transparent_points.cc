@@ -33,8 +33,10 @@ int main() {
 	config.max_y = 30;
 
 	Plot pl = Plot( config );
+    Color black = Color::black();
 	for (int i=0; i<10;++i) {
-		pl.point_transparent( 10, 5, 0.1*i );
+        black.a = 0.1*i;
+		pl.point( 10, 5, black );
 		sleep(1);
 	}
 	pl.point( 10, 10 );
