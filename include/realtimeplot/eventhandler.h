@@ -56,11 +56,6 @@ namespace realtimeplot {
 		In theory the event class should almost never slow down the main program, but
 		currently if the queueu gets to big (>1000) add_event will block, so that 
 		backendplot has time to clear some events.
-
-		\future Implement a lock, so that one can send a number of events and be certain
-		they will be processed directly after each other. Important for example if we set
-		transparency, plot point, unset transparency. Or want to plot a line in a specific
-		order.
 		*/
     class EventHandler {
         public:

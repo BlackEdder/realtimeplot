@@ -88,10 +88,8 @@ namespace realtimeplot {
 		 @param alpha takes  a value between 0 and 1, with 0 completely 
 		 transparent and 1 not transparent at all.
 
-		 \future Separate event to set transparency and plot a point. This depends on
-		 the ability to lock the eventhandler, so we can be certain events are done in
-		 a specific order
-		 */ 
+		 \future Separate event to set transparency and plot a point.
+         */ 
     class PointTransparentEvent : public Event {
         public:
             PointTransparentEvent( float x, float y, float alpha );
