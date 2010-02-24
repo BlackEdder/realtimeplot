@@ -85,12 +85,11 @@ namespace realtimeplot {
      * that these events are processed directly following each other (thread
      * safety).
      */
-
 	void Plot::point( float x, float y, Color color ) {
-        std::vector<Event*> events;
-        events.push_back( new SetColorEvent( color ) );
-        events.push_back( new PointEvent( x, y ) );
-        events.push_back( new RestoreEvent() );
+        std::vector<Event*> events(3);
+        events[0] = new SetColorEvent( color );
+        events[1] = new PointEvent( x, y );
+        events[2] = new RestoreEvent();
 		pEventHandler->add_events( events );
 	}
 
@@ -246,9 +245,9 @@ namespace realtimeplot {
 
 				time_of_last_update = boost::posix_time::microsec_clock::local_time();
 				//only sleep if no more events are coming
-				if (pEventHandler->get_queue_size() < 1) {
-					usleep(100000);
-				}
+				//if (pEventHandler->get_queue_size() < 1) {
+				//	usleep(100000);
+				//}
 			}
 		}
 	}

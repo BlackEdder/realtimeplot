@@ -211,7 +211,8 @@ namespace realtimeplot {
 		surfaces), which should allow one to do everything possible they want using
 		custom events (as long as one knows what's going on in this class :) )
 
-		\future Document the way the plot works (with the different plotting surfaces etc)
+		\future Document the way the plot works (with the different plotting 
+        surfaces etc)
 		
      */
     class BackendPlot {
