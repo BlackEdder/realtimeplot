@@ -306,6 +306,22 @@ namespace realtimeplot {
 
             void set_alpha( float alpha );
 
+            /**
+             * \brief Set the foreground color of the plot area
+             *
+             * Should often be followed by a restore, such that the color is changed
+             * back
+             */
+            void set_color( Color color );
+
+            /**
+             * \brief Restores settings such as color
+             *
+             * Is called by many events after set_color, to change the color back
+             * to the previous value.
+             */
+            void restore();
+
             //point
             //draw point on surface
             void point( float x, float y, Color color );

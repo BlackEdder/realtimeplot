@@ -40,6 +40,27 @@ namespace realtimeplot {
             PlotConfig config;
      };
 
+    /**
+     * \brief Sets the color used to draw on the plot
+     *
+     * Can be followed by a restore event to restore the color to its previous value
+     */
+    class SetColorEvent : public Event {
+        public:
+            SetColorEvent( Color color );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            Color color;
+    };
+
+    /**
+     * \brief Restores the plot to former settings, such as color
+     */
+    class RestoreEvent : public Event {
+        public:
+            RestoreEvent() {}
+            virtual void execute( BackendPlot *bPl ) {bPl->restore();}
+    };
 
 		/**
 		 \brief Event that draws a point at x, y with Color color

@@ -512,6 +512,15 @@ namespace realtimeplot {
 		alpha = a;
 	}
 
+    void BackendPlot::set_color( Color color ) {
+        plot_context->save();
+        plot_context->set_source_rgba( color.r, color.g, color.b, color.a );
+    }
+
+    void BackendPlot::restore() {
+        plot_context->restore();
+    }
+
 	void BackendPlot::point( float x, float y, Color color ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)
@@ -791,4 +800,5 @@ namespace realtimeplot {
         //xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
         //        float(xSurface->get_height())/(plot_area_height+config.margin_x) );
     }
+
 }

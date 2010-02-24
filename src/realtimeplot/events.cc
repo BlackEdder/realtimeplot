@@ -33,6 +33,14 @@ namespace realtimeplot {
         pBPlot->update_config();
     }
 
+    SetColorEvent::SetColorEvent( Color colour ) {
+        color = colour;
+    }
+
+    void SetColorEvent::execute( BackendPlot *pBPlot ) {
+        pBPlot->set_color( color );
+    }
+
 	PointEvent::PointEvent( float x, float y, Color color ) {
 		x_crd = x;
 		y_crd = y;
