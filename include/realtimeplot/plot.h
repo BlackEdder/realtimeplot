@@ -321,6 +321,10 @@ namespace realtimeplot {
              *
              * Should often be followed by a restore, such that the color is changed
              * back
+             *
+             * Currently, the color change doesn't survive a rolling update where a
+             * new plot_context is set and the color is set to foreground_color().
+             * We would need keep track of current and old color to get around this.
              */
             void set_color( Color color );
 
