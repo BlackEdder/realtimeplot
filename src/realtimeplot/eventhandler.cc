@@ -34,43 +34,56 @@ namespace realtimeplot {
         xevent_queue_size = 0;
 
         //start processing thread
-        pEventProcessingThrd = boost::shared_ptr<boost::thread>( new boost::thread( boost::bind( &realtimeplot::EventHandler::process_events, this ) ) );
+        pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
+                new boost::thread( boost::bind( 
+                        &realtimeplot::EventHandler::process_events, this ) ) );
     }
 
     EventHandler::~EventHandler() {
         pEventProcessingThrd->join();
         if (pBPlot)
-					delete pBPlot;
+            delete pBPlot;
     }
 
-		void EventHandler::plot_closed() {
-			delete pBPlot;
-			pBPlot = NULL;
-		}
+    void EventHandler::plot_closed() {
+        delete pBPlot;
+        pBPlot = NULL;
+    }
 
-		void EventHandler::add_event( Event *pEvent ) {
-			//ignore if no plot present (for example because plot window was closed)
-			//->EventHandler shouldn't crash because it isn't plotting anywhere
-			if (pBPlot!=NULL) {
-				//block if many events are present
-				if (queue_size>1000) {
-					while (queue_size>100) {
-						usleep(10000);
-					}
-				}
-				m_mutex.lock();
-				event_queue.push_back( pEvent );
-				++queue_size;
-				m_mutex.unlock();
-			}
-		}
+    void EventHandler::add_event( Event *pEvent ) {
+        //ignore if no plot present (for example because plot window was closed)
+        //->EventHandler shouldn't crash because it isn't plotting anywhere
+        if (pBPlot!=NULL) {
+            //block if many events are present
+            if (queue_size>1000) {
+                while (queue_size>100) {
+                    usleep(10000);
+                }
+            }
+            m_mutex.lock();
+            event_queue.push_back( pEvent );
+            ++queue_size;
+            m_mutex.unlock();
+        }
+    }
 
-        void EventHandler::add_events( std::vector<Event*> events ) {
+    void EventHandler::add_events( std::vector<Event*> events ) {
+        if (pBPlot!=NULL) {
+            //block if many events are present
+            if (queue_size>1000) {
+                while (queue_size>100) {
+                    usleep(10000);
+                }
+            }
+            m_mutex.lock();
             for (std::vector<Event*>::iterator it = events.begin(); 
                     it!=events.end(); ++it) {
-                add_event(*it);
+                event_queue.push_back( (*it) );
+                ++queue_size;
             }
+            m_mutex.unlock();
         }
+    }
 
     int EventHandler::get_queue_size() {
         return queue_size + xevent_queue_size;

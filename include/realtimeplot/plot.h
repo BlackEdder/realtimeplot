@@ -217,6 +217,7 @@ namespace realtimeplot {
      */
     class BackendPlot {
         public:
+            int count, count_axes;
             //plot_surface, an imagesurface that contains the plotted points
             //plot_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> plot_surface;

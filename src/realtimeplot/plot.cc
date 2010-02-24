@@ -491,9 +491,12 @@ namespace realtimeplot {
 
 		axes_context->move_to( config.margin_y-3*text_height, 
 				0.5*axes_surface->get_height()+0.5*text_width );
+        ++count_axes;
+        std::cout << "save axes " << count_axes << std::endl;
 		axes_context->save();
 		axes_context->rotate_degrees( -90 );
         pango_layout->show_in_cairo_context( axes_context );
+        std::cout << "restore axes " << count_axes << std::endl;
 		axes_context->restore();
 
 		pango_layout->set_text( config.xlabel );
@@ -520,11 +523,14 @@ namespace realtimeplot {
 	}
 
     void BackendPlot::set_color( Color color ) {
+        ++count;
+        std::cout << "save " << count << std::endl;
         plot_context->save();
         plot_context->set_source_rgba( color.r, color.g, color.b, color.a );
     }
 
     void BackendPlot::restore() {
+        std::cout << "restore " << count << std::endl;
         plot_context->restore();
     }
 
