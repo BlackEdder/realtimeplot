@@ -41,14 +41,13 @@ namespace realtimeplot {
         pBPlot->set_color( color );
     }
 
-	PointEvent::PointEvent( float x, float y, Color color ) {
+	PointEvent::PointEvent( float x, float y ) {
 		x_crd = x;
 		y_crd = y;
-        colour = color;
 	}
 
 	void PointEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->point( x_crd, y_crd, colour );
+		pBPlot->point( x_crd, y_crd );
 	}
 
 	LineAddEvent::LineAddEvent( float x, float y, int id_value ) {
@@ -70,19 +69,6 @@ namespace realtimeplot {
 
 	void NumberEvent::execute( BackendPlot *pBPlot ) {
 		pBPlot->number( x_crd, y_crd, nr );
-	}
-
-	PointTransparentEvent::PointTransparentEvent( float x, float y, float a ) {
-		x_crd = x;
-		y_crd = y;
-		alpha = a;
-	}
-
-	void PointTransparentEvent::execute( BackendPlot *pBPlot ) {
-        Color color = Color::black();
-        color.a = alpha;
-		pBPlot->point( x_crd, y_crd, color );
-		pBPlot->set_alpha( 1 );
 	}
 
 	SaveEvent::SaveEvent( std::string fn ) {

@@ -62,18 +62,15 @@ namespace realtimeplot {
             virtual void execute( BackendPlot *bPl ) {bPl->restore();}
     };
 
-		/**
-		 \brief Event that draws a point at x, y with Color color
-
-         \future Separate event to set a color (and unset it?)
-		 */
+    /**
+      \brief Event that draws a point at x, y with Color color
+      */
     class PointEvent : public Event {
         public:
-            PointEvent( float x, float y, Color color );
+            PointEvent( float x, float y );
             virtual void execute( BackendPlot *bPl );
         private:
             float x_crd, y_crd;
-            Color colour;
     };
 
  		/**
@@ -103,25 +100,9 @@ namespace realtimeplot {
             float x_crd, y_crd, nr;
     };
 
-		/**
-		 \brief Event that plots an transparent point
-		 
-		 @param alpha takes  a value between 0 and 1, with 0 completely 
-		 transparent and 1 not transparent at all.
-
-		 \future Separate event to set transparency and plot a point.
-         */ 
-    class PointTransparentEvent : public Event {
-        public:
-            PointTransparentEvent( float x, float y, float alpha );
-            virtual void execute( BackendPlot *bPl );
-        private:
-            float x_crd, y_crd, alpha;
-    };
-
-		/**
-		 \brief Event to save the current plot to the specified file
-		 */
+    /**
+      \brief Event to save the current plot to the specified file
+      */
     class SaveEvent : public Event {
         public:
             SaveEvent( std::string filename );

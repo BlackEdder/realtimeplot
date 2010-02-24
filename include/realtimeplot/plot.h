@@ -62,7 +62,10 @@ namespace realtimeplot {
 
     /**
      * \brief Class used to set color data
-     */
+     
+        @param alpha takes  a value between 0 and 1, with 0 completely 
+		transparent and 1 not transparent at all.
+    */
 
     class Color {
         public:
@@ -137,7 +140,6 @@ namespace realtimeplot {
             void point( float x, float y, Color color=Color::black() );
             void line_add( float x, float y, int id=-1 );
             void number( float x, float y, float i );
-            void point_transparent( float x, float y, float a );
             void save( std::string filename );
             void clear();
             /**
@@ -324,7 +326,7 @@ namespace realtimeplot {
 
             //point
             //draw point on surface
-            void point( float x, float y, Color color );
+            void point( float x, float y );
 
             /**
             \brief Add a point to a line 

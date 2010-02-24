@@ -77,8 +77,11 @@ namespace realtimeplot {
 	}
 
 	void Plot::point( float x, float y, Color color ) {
-		Event *pEvent = new PointEvent( x, y, color );
-		pEventHandler->add_event( pEvent );
+        std::vector<Event*> events;
+        events.push_back( new SetColorEvent( color ) );
+        events.push_back( new PointEvent( x, y ) );
+        events.push_back( new RestoreEvent() );
+		pEventHandler->add_events( events );
 	}
 
 	void Plot::line_add( float x, float y, int id ) {
@@ -88,11 +91,6 @@ namespace realtimeplot {
 
 	void Plot::number( float x, float y, float i ) {
 		Event *pEvent = new NumberEvent( x, y, i );
-		pEventHandler->add_event( pEvent );
-	}
-
-	void Plot::point_transparent( float x, float y, float a ) {
-		Event *pEvent = new PointTransparentEvent( x, y, a );
 		pEventHandler->add_event( pEvent );
 	}
 
@@ -521,21 +519,18 @@ namespace realtimeplot {
         plot_context->restore();
     }
 
-	void BackendPlot::point( float x, float y, Color color ) {
+	void BackendPlot::point( float x, float y ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);
 		}
 		double dx = config.point_size;
 		double dy = config.point_size;
-        plot_context->save();
-        plot_context->set_source_rgba( color.r, color.g, color.b, color.a );
 		transform_to_plot_units(); 
 		plot_context->device_to_user_distance(dx,dy);
 		plot_context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
-		//transform_to_device_units( plot_context );
+		transform_to_device_units( plot_context );
 		plot_context->fill();
-        plot_context->restore();
 		display();
 	}
 
