@@ -95,7 +95,7 @@ namespace realtimeplot {
         events[0] = new SetColorEvent( color );
         events[1] = new PointEvent( x, y );
         events[2] = new RestoreColorEvent();
-        pEventHandler->add_events( events );
+        pEventHandler->add_event( new MultipleEvents( events ));
     }
 
 	void Plot::line_add( float x, float y, int id ) {

@@ -67,24 +67,6 @@ namespace realtimeplot {
         }
     }
 
-    void EventHandler::add_events( std::vector<Event*> events ) {
-        if (pBPlot!=NULL) {
-            //block if many events are present
-            if (queue_size>1000) {
-                while (queue_size>100) {
-                    usleep(10000);
-                }
-            }
-            m_mutex.lock();
-            for (std::vector<Event*>::iterator it = events.begin(); 
-                    it!=events.end(); ++it) {
-                event_queue.push_back( (*it) );
-                ++queue_size;
-            }
-            m_mutex.unlock();
-        }
-    }
-
     int EventHandler::get_queue_size() {
         return queue_size + xevent_queue_size;
     }

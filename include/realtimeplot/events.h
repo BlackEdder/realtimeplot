@@ -41,6 +41,23 @@ namespace realtimeplot {
      };
 
     /**
+     * \brief Event that can contain multiple events
+     *
+     * Should be used when one wants to be certain that the events
+     * added are processed directly after each other. For example if
+     * one wants to set a color, plot a point and unset the color, 
+     * without the danger that another process suddenly plots something
+     * else in the mean time.
+     */
+    class MultipleEvents : public Event {
+        public:
+            MultipleEvents( std::vector<Event*> events );
+            virtual void execute( BackendPlot *bPl );
+        private:
+            std::vector<Event*> events;
+    };
+
+    /**
      * \brief Sets the color used to draw on the plot
      *
      * Can be followed by a restore event to restore the color to its previous value
