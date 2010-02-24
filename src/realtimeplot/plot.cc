@@ -76,6 +76,16 @@ namespace realtimeplot {
 		delete pEventHandler;
 	}
 
+    /**
+     * \brief Function to plot a point of a specific color
+     *
+     * Default color of the point is black.
+     * We send a vector of the events needed (set the color, plot the point
+     * and restore color to its former value). A vector is used to make sure
+     * that these events are processed directly following each other (thread
+     * safety).
+     */
+
 	void Plot::point( float x, float y, Color color ) {
         std::vector<Event*> events;
         events.push_back( new SetColorEvent( color ) );

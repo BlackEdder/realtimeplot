@@ -6,3 +6,4 @@
 * Add ability to close a plot explicitely
 * Multiple lines
 * Check for presence of dependencies (Rakefile)
+*! Fix bug, where if the last event in the queue doesn't call display the display won't be refreshed. This can either be done by calling display after each event regardless, or in some other way.
