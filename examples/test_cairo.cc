@@ -73,6 +73,13 @@ int main()
     cr->set_source( surface1, 10, 10 );
     cr->paint();
 
+    for (int i=0; i<5000; ++i) {
+        std::cout << i << std::endl;
+        cr->save();
+        cr->set_source_rgba( 1,1,1,1);
+        cr->restore();
+    }
+
 
     std::string filename = "image.png";
     surface->write_to_png(filename);

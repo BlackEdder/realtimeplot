@@ -137,7 +137,8 @@ namespace realtimeplot {
             Plot( PlotConfig conf );
             ~Plot();
 
-            void point( float x, float y, Color color=Color::black() );
+            void point( float x, float y );
+            void point( float x, float y, Color color );
             void line_add( float x, float y, int id=-1 );
             void number( float x, float y, float i );
             void save( std::string filename );
@@ -217,7 +218,6 @@ namespace realtimeplot {
      */
     class BackendPlot {
         public:
-            int count, count_axes;
             //plot_surface, an imagesurface that contains the plotted points
             //plot_context, the corresponding context
             Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
@@ -250,8 +250,7 @@ namespace realtimeplot {
             float plot_surface_max_y, plot_surface_min_y;
             /// Device units (pixels)
             float plot_surface_width, plot_surface_height;
-            float alpha;
-
+            
             //last_update_time (display at least every second)
             boost::posix_time::ptime time_of_last_update;
 
@@ -305,8 +304,15 @@ namespace realtimeplot {
             //takes the context to do it to
             void set_background_color( Cairo::RefPtr<Cairo::Context> pContext );
 
-            //set_foreground_color
+            /**
+             * \brief Set default foreground color on any pContext
+             */
             void set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext );
+            
+            /**
+             * \brief Set default foreground color on plot_context
+             */
+             void set_foreground_color();
 
             void set_alpha( float alpha );
 
@@ -319,12 +325,12 @@ namespace realtimeplot {
             void set_color( Color color );
 
             /**
-             * \brief Restores settings such as color
+             * \brief Restores previous color
              *
              * Is called by many events after set_color, to change the color back
              * to the previous value.
              */
-            void restore();
+            void restore_color();
 
             //point
             //draw point on surface

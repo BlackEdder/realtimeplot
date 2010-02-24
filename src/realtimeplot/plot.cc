@@ -76,6 +76,11 @@ namespace realtimeplot {
 		delete pEventHandler;
 	}
 
+    
+    void Plot::point( float x, float y ) {
+        pEventHandler->add_event( new PointEvent(x, y) ); 
+    }
+
     /**
      * \brief Function to plot a point of a specific color
      *
@@ -85,13 +90,13 @@ namespace realtimeplot {
      * that these events are processed directly following each other (thread
      * safety).
      */
-	void Plot::point( float x, float y, Color color ) {
+    void Plot::point( float x, float y, Color color ) {
         std::vector<Event*> events(3);
         events[0] = new SetColorEvent( color );
         events[1] = new PointEvent( x, y );
-        events[2] = new RestoreEvent();
-		pEventHandler->add_events( events );
-	}
+        events[2] = new RestoreColorEvent();
+        pEventHandler->add_events( events );
+    }
 
 	void Plot::line_add( float x, float y, int id ) {
 		Event *pEvent = new LineAddEvent( x, y, id );
@@ -194,7 +199,6 @@ namespace realtimeplot {
 
 	BackendPlot::BackendPlot(PlotConfig conf, EventHandler *pEH) {
 		config = conf;
-		alpha = 1;
 		pEventHandler = pEH;
 
 		//calculate minimum plot area width/height based on aspect ratio
@@ -254,11 +258,12 @@ namespace realtimeplot {
 
 	void BackendPlot::clear() {
 		//give the plot its background color
-		transform_to_device_units(plot_context);
+		transform_to_device_units( plot_context );
 		set_background_color( plot_context );
 		plot_context->rectangle( 0, 0,
 				plot_surface->get_width(), plot_surface->get_height() );
 		plot_context->fill();
+		set_foreground_color( plot_context );
 		display();
 	}
 
@@ -325,7 +330,9 @@ namespace realtimeplot {
 		plot_context->rectangle( 0, 0,
 				plot_surface->get_width(), plot_surface->get_height() );
 		plot_context->fill();
-		//clear();
+
+        //set it to the foreground color
+		set_foreground_color();
 
 		//set helper variables
         double xratio = ((double(plot_surface_width)/plot_area_width)-1)/2.0;
@@ -398,10 +405,8 @@ namespace realtimeplot {
 		//draw them non transparent (else we get weird interactions that when 
 		//drawing a transparent point and a rolling update happens the axes 
 		//become transparent as well)
-		float old_alpha = alpha;
 		std::vector<float> xaxis_ticks;
 		std::vector<float> yaxis_ticks;
-		alpha = 1;
 
 		Pango::init();
 
@@ -491,12 +496,9 @@ namespace realtimeplot {
 
 		axes_context->move_to( config.margin_y-3*text_height, 
 				0.5*axes_surface->get_height()+0.5*text_width );
-        ++count_axes;
-        std::cout << "save axes " << count_axes << std::endl;
 		axes_context->save();
 		axes_context->rotate_degrees( -90 );
         pango_layout->show_in_cairo_context( axes_context );
-        std::cout << "restore axes " << count_axes << std::endl;
 		axes_context->restore();
 
 		pango_layout->set_text( config.xlabel );
@@ -507,31 +509,21 @@ namespace realtimeplot {
         pango_layout->show_in_cairo_context( axes_context );
 
         axes_context->stroke();
-        alpha = old_alpha;
 	}
 
 	void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
 		pContext->set_source_rgba(1, 1, 1, 1);
 	}
 
-	void BackendPlot::set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext ) {
-		pContext->set_source_rgba(0,0,0, alpha);
+	void BackendPlot::set_foreground_color() {
+        set_foreground_color( plot_context );
 	}
-
-	void BackendPlot::set_alpha( float a ) {
-		alpha = a;
+    void BackendPlot::set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext ) {
+		pContext->set_source_rgba(0, 0, 0, 1);
 	}
 
     void BackendPlot::set_color( Color color ) {
-        ++count;
-        std::cout << "save " << count << std::endl;
-        plot_context->save();
         plot_context->set_source_rgba( color.r, color.g, color.b, color.a );
-    }
-
-    void BackendPlot::restore() {
-        std::cout << "restore " << count << std::endl;
-        plot_context->restore();
     }
 
 	void BackendPlot::point( float x, float y ) {
@@ -652,7 +644,7 @@ namespace realtimeplot {
 			plot_context->set_source( old_plot_surface, old_plot_min_x, old_plot_max_y );
 			plot_context->reset_clip();
 			plot_context->paint();
-			set_background_color( plot_context );
+            set_foreground_color();
 		}
 		//be recursive about it :)
 		if (within_plot_bounds( x, y )) {

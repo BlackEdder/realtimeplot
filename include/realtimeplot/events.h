@@ -54,12 +54,12 @@ namespace realtimeplot {
     };
 
     /**
-     * \brief Restores the plot to former settings, such as color
+     * \brief Restores the plot to former color setting
      */
-    class RestoreEvent : public Event {
+    class RestoreColorEvent : public Event {
         public:
-            RestoreEvent() {}
-            virtual void execute( BackendPlot *bPl ) {bPl->restore();}
+            RestoreColorEvent() {}
+            virtual void execute( BackendPlot *bPl ) {bPl->set_foreground_color();}
     };
 
     /**

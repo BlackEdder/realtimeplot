@@ -37,9 +37,9 @@ int main() {
     Plot pl = Plot( config );
     int y = 0;
     while (1) {
-        if (float(std::rand())/RAND_MAX < 0.01) {
-            usleep(10000);
-        }
+        //if (float(std::rand())/RAND_MAX < 0.1) {
+        //    usleep(10000);
+        //}
         pl.point( -y, y+50+900*float(std::rand())/RAND_MAX );
         ++y;
     }
