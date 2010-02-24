@@ -65,6 +65,13 @@ namespace realtimeplot {
 			}
 		}
 
+        void EventHandler::add_events( std::vector<Event*> events ) {
+            for (std::vector<Event*>::iterator it = events.begin(); 
+                    it!=events.end(); ++it) {
+                add_event(*it);
+            }
+        }
+
     int EventHandler::get_queue_size() {
         return queue_size + xevent_queue_size;
     }

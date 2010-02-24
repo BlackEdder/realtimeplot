@@ -72,6 +72,16 @@ namespace realtimeplot {
 					void plot_closed();
 					//Add an event to the event queue
 					void add_event( Event *pEvent );
+                    /**
+                     * \brief Add multiple events to the queue
+                     *
+                     * Should be used when one wants to be certain that the events
+                     * added are processed directly after each other. For example if
+                     * one wants to set a color, plot a point and unset the color, 
+                     * without the danger that another process suddenly plots something
+                     * else in the mean time.
+                     */
+                    void add_events( std::vector<Event*> events );
 					int get_queue_size();
 
 				private:
