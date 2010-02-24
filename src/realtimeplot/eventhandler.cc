@@ -56,6 +56,7 @@ namespace realtimeplot {
         if (pBPlot!=NULL) {
             //block if many events are present
             if (queue_size>1000) {
+                std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
                 while (queue_size>100) {
                     usleep(10000);
                 }
