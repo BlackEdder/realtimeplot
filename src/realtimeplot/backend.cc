@@ -358,8 +358,15 @@ namespace realtimeplot {
     }
 
     void BackendPlot::set_color( Color color ) {
+        plot_context->save();
         plot_context->set_source_rgba( color.r, color.g, color.b, color.a );
     }
+
+    void BackendPlot::restore() {
+        plot_context->restore();
+    }
+
+
 
     void BackendPlot::point( float x, float y ) {
         if (!within_plot_bounds(x,y)) {

@@ -94,7 +94,7 @@ namespace realtimeplot {
         std::vector<Event*> events(3);
         events[0] = new SetColorEvent( color );
         events[1] = new PointEvent( x, y );
-        events[2] = new RestoreColorEvent();
+        events[2] = new RestoreEvent();
         pEventHandler->add_event( new MultipleEvents( events ));
     }
 
