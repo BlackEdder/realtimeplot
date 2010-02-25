@@ -45,10 +45,18 @@ file "src/realtimeplot/eventhandler.o" => ["src/realtimeplot/eventhandler.cc",
     sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/eventhandler.cc #{LIBRARY_PARS}"
 end
 
+file "src/realtimeplot/backend.o" => ["src/realtimeplot/backend.cc",
+    "include/realtimeplot/backend.h"] do |t|
+    sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/backend.cc #{LIBRARY_PARS}"
+end
+
+
 file "lib/librealtimeplot.so" => ["src/realtimeplot/eventhandler.o", 
-    "src/realtimeplot/plot.o", "src/realtimeplot/events.o", "lib"] do |t|
+    "src/realtimeplot/plot.o", "src/realtimeplot/events.o", 
+    "src/realtimeplot/backend.o", "lib"] do |t|
     sh "g++ -shared -o #{t.name} src/realtimeplot/events.o \
-        src/realtimeplot/eventhandler.o src/realtimeplot/plot.o"
+        src/realtimeplot/eventhandler.o src/realtimeplot/backend.o \
+        src/realtimeplot/plot.o"
 end
 
 FileList['examples/plot_*.cc'].each do |fn|
