@@ -37,6 +37,7 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 
 #include "realtimeplot/plot.h"
+#include "realtimeplot/eventhandler.h"
 
 namespace realtimeplot {
     /**

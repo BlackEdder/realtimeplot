@@ -48,6 +48,7 @@ end
 
 file "src/realtimeplot/backend.o" => ["src/realtimeplot/backend.cc",
     "include/realtimeplot/plot.h",
+    "include/realtimeplot/eventhandler.h",
     "include/realtimeplot/backend.h"] do |t|
     sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/backend.cc #{LIBRARY_PARS}"
 end
