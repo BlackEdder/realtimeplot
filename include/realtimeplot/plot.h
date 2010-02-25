@@ -31,18 +31,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <list>
 #include <algorithm>
-
-/// Needs to be before cairomm, due to Xlib.h macros
-#include <pangomm/init.h>
-#include <pangomm/context.h>
-#include <pangomm/layout.h>
-
-#include <cairomm/context.h>
-#include <cairomm/xlib_surface.h>
-
-#include "boost/date_time/posix_time/posix_time.hpp"
 
 #include "realtimeplot/eventhandler.h"
 
@@ -184,22 +173,5 @@ namespace realtimeplot {
 		};
 
 
-    /**
-     * \brief Class that is used to keep stats of existing lines
-     */
-        class LineAttributes {
-            public:
-                int id;
-                float current_x, current_y;
-
-                //context used for drawing lines
-                Cairo::RefPtr<Cairo::Context> context;
-
-                LineAttributes( float x, float y, int id_value ) {
-                    id = id_value;
-                    current_x = x;
-                    current_y = y;
-                }
-        };
 }
 #endif

@@ -24,22 +24,53 @@
 #ifndef REALTIMEPLOT_BACKEND_H
 #define REALTIMEPLOT_BACKEND_H
 
+#include <vector>
+
+/// Needs to be before cairomm, due to Xlib.h macros
+#include <pangomm/init.h>
+#include <pangomm/context.h>
+#include <pangomm/layout.h>
+
+#include <cairomm/context.h>
+#include <cairomm/xlib_surface.h>
+
+#include "boost/date_time/posix_time/posix_time.hpp"
+
+#include "realtimeplot/plot.h"
+
 namespace realtimeplot {
     /**
-		\brief BackendPlot that waits for events and then plots them
-
-		Users should almost never create an object based on this class themself, but
-		should use a frontend class or if they need more flexibility create a event 
-		handler and send that custom events.
-
-		Large parts of the class are accessible from events (including the image 
-		surfaces), which should allow one to do everything possible they want using
-		custom events (as long as one knows what's going on in this class :) )
-
-		\future Document the way the plot works (with the different plotting 
-        surfaces etc)
-		
+     * \brief Class that is used to keep stats of existing lines
      */
+    class LineAttributes {
+        public:
+            int id;
+            float current_x, current_y;
+
+            //context used for drawing lines
+            Cairo::RefPtr<Cairo::Context> context;
+
+            LineAttributes( float x, float y, int id_value ) {
+                id = id_value;
+                current_x = x;
+                current_y = y;
+            }
+    };
+
+    /**
+      \brief BackendPlot that waits for events and then plots them
+
+      Users should almost never create an object based on this class themself, but
+      should use a frontend class or if they need more flexibility create a event 
+      handler and send that custom events.
+
+      Large parts of the class are accessible from events (including the image 
+      surfaces), which should allow one to do everything possible they want using
+      custom events (as long as one knows what's going on in this class :) )
+
+      \future Document the way the plot works (with the different plotting 
+      surfaces etc)
+      */
     class BackendPlot {
         public:
             //plot_surface, an imagesurface that contains the plotted points
@@ -74,7 +105,7 @@ namespace realtimeplot {
             float plot_surface_max_y, plot_surface_min_y;
             /// Device units (pixels)
             float plot_surface_width, plot_surface_height;
-            
+
             //last_update_time (display at least every second)
             boost::posix_time::ptime time_of_last_update;
 

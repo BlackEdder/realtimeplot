@@ -34,18 +34,20 @@ end
 
 file "src/realtimeplot/events.o" => ["src/realtimeplot/events.cc",
     "include/realtimeplot/events.h",
-    "include/realtimeplot/plot.h",
+    "include/realtimeplot/backend.h",
     "include/realtimeplot/eventhandler.h"] do |t|
     sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/events.cc #{LIBRARY_PARS}"
 end
 
 file "src/realtimeplot/eventhandler.o" => ["src/realtimeplot/eventhandler.cc",
     "include/realtimeplot/plot.h",
+    "include/realtimeplot/backend.h",
     "include/realtimeplot/eventhandler.h"] do |t|
     sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/eventhandler.cc #{LIBRARY_PARS}"
 end
 
 file "src/realtimeplot/backend.o" => ["src/realtimeplot/backend.cc",
+    "include/realtimeplot/plot.h",
     "include/realtimeplot/backend.h"] do |t|
     sh "g++ -c -fPIC -o #{t.name} src/realtimeplot/backend.cc #{LIBRARY_PARS}"
 end

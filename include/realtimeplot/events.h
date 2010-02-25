@@ -23,7 +23,7 @@
 #ifndef REALTIMEPLOT_EVENTS_H
 #define REALTIMEPLOT_EVENTS_H
 #include "realtimeplot/eventhandler.h"
-#include "realtimeplot/plot.h"
+#include "realtimeplot/backend.h"
 
 
 namespace realtimeplot {
