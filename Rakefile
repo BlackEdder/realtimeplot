@@ -114,6 +114,12 @@ task :ruby_install => :ruby_extension do |t|
 end
 
 #### Utils etc.
+task :ctags do
+    sh "exuberant-ctags --languages=C++,Ruby -R"
+    sh "cscope -R -b"
+end
+
+
 desc "File used for testing cairo/pango behaviour"
 task :test_cairo do |t|
     sh "g++ -o bin/test_cairo examples/test_cairo.cc #{EXAMPLE_PARS}"
