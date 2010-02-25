@@ -43,7 +43,7 @@ namespace realtimeplot {
         plot_surface_height = 5*plot_area_height;
 
         //create the surface to draw on
-        create_plot_surface();
+        plot_surface = create_plot_surface();
         plot_context = Cairo::Context::create(plot_surface);
         set_foreground_color();
 
@@ -153,17 +153,19 @@ namespace realtimeplot {
     }
 
 
-    void BackendPlot::create_plot_surface() {
-        plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+    Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_plot_surface() {
+     
+        Cairo::RefPtr<Cairo::ImageSurface> surface = 
+            Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
                 plot_surface_width, plot_surface_height );
 
         //Create context to draw background color
-        Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(plot_surface);
+        Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
         
         //give the plot its background color
         set_background_color( context );
         context->rectangle( 0, 0,
-                plot_surface->get_width(), plot_surface->get_height() );
+                surface->get_width(), surface->get_height() );
         context->fill();
 
         //set helper variables
@@ -173,6 +175,7 @@ namespace realtimeplot {
         plot_surface_max_x = config.max_x+xratio*(config.max_x-config.min_x);
         plot_surface_min_y = config.min_y-yratio*(config.max_y-config.min_y);
         plot_surface_max_y = config.max_y+yratio*(config.max_y-config.min_y);
+        return surface;
     }
 
     void BackendPlot::create_xlib_window() {
@@ -464,20 +467,24 @@ namespace realtimeplot {
 
         if (!plot_bounds_within_surface_bounds()) {
             //copy old plot surface
-            Cairo::RefPtr<Cairo::ImageSurface> old_plot_surface = plot_surface;
             double old_plot_max_y = plot_surface_max_y;
             double old_plot_min_x = plot_surface_min_x;
-            //create new plot surface
-            create_plot_surface();
-            plot_context = Cairo::Context::create(plot_surface);
 
-            //copy old plot surface onto new plot surface
-            transform_to_plot_units();
-            plot_context->user_to_device( old_plot_min_x, old_plot_max_y );
-            transform_to_device_units( plot_context );
-            plot_context->set_source( old_plot_surface, old_plot_min_x, old_plot_max_y );
-            plot_context->reset_clip();
+            //create new blank surface
+            Cairo::RefPtr<Cairo::ImageSurface> surface = create_plot_surface();
+            Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
+
+            //copy old plot surface onto the blank surface
+            transform_to_plot_units( context );
+            context->user_to_device( old_plot_min_x, old_plot_max_y );
+            transform_to_device_units( context );
+            context->set_source( plot_surface, old_plot_min_x, old_plot_max_y );
+            context->paint();
+
+            //copy the newly created surface over the old plot
+            plot_context->set_source( surface, 0, 0 );
             plot_context->paint();
+
             set_foreground_color();
         }
         //be recursive about it :)
