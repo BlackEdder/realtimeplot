@@ -44,6 +44,8 @@ namespace realtimeplot {
 
         //create the surface to draw on
         create_plot_surface();
+        plot_context = Cairo::Context::create(plot_surface);
+        set_foreground_color();
 
         //create_xlib_window
         create_xlib_window();
@@ -154,15 +156,15 @@ namespace realtimeplot {
     void BackendPlot::create_plot_surface() {
         plot_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
                 plot_surface_width, plot_surface_height );
-        plot_context = Cairo::Context::create(plot_surface);
-        //give the plot its background color
-        set_background_color( plot_context );
-        plot_context->rectangle( 0, 0,
-                plot_surface->get_width(), plot_surface->get_height() );
-        plot_context->fill();
 
-        //set it to the foreground color
-        set_foreground_color();
+        //Create context to draw background color
+        Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(plot_surface);
+        
+        //give the plot its background color
+        set_background_color( context );
+        context->rectangle( 0, 0,
+                plot_surface->get_width(), plot_surface->get_height() );
+        context->fill();
 
         //set helper variables
         double xratio = ((double(plot_surface_width)/plot_area_width)-1)/2.0;
@@ -467,6 +469,8 @@ namespace realtimeplot {
             double old_plot_min_x = plot_surface_min_x;
             //create new plot surface
             create_plot_surface();
+            plot_context = Cairo::Context::create(plot_surface);
+
             //copy old plot surface onto new plot surface
             transform_to_plot_units();
             plot_context->user_to_device( old_plot_min_x, old_plot_max_y );
