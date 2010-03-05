@@ -130,16 +130,30 @@ namespace realtimeplot {
 	Histogram::Histogram() {
 		no_bins = 4;
 		max_y = 0;
+		pHistogram = NULL;
 	}
 
 	Histogram::~Histogram() {
 		delete pHistogram;
 	}
 
-	void Histogram::set_data( std::vector<double> the_data ) {
+	void Histogram::set_data( std::vector<double> the_data, bool show ) {
 		data = the_data;
 		fill_bins();
-		plot();
+		if (show)
+			plot();
+	}
+
+	void Histogram::add_data( double data, bool show ) {
+		int current_bin = 0;
+			while (data > bins_x[current_bin]+0.5*bin_width) {
+				++current_bin;
+			}
+			++bins_y[current_bin];
+			if (bins_y[current_bin]>max_y)
+				max_y = bins_y[current_bin];
+			if (show)
+				plot();
 	}
 
 	void Histogram::fill_bins() {
@@ -168,7 +182,7 @@ namespace realtimeplot {
 	}
 
 	void Histogram::set_counts_data( std::vector<double> values,
-			std::vector<int> counts ) {
+			std::vector<int> counts, bool show ) {
 		data.clear();
 		for (unsigned int i=0;i<values.size();++i) {
 			for (int j=0;j<counts[i];++j) {
@@ -176,20 +190,24 @@ namespace realtimeplot {
 			}
 		}
 		fill_bins();
-		plot();
+		if (show)
+			plot();
 	}
 
 	void Histogram::plot() {
-		config = PlotConfig();
-		config.min_x = bins_x.front()-bin_width;
-		config.max_x = bins_x.back()+bin_width;
-		config.max_y = 1.1*max_y;
-		pHistogram = new Plot( config );
+		if (pHistogram == NULL) {
+			config = PlotConfig();
+			config.min_x = bins_x.front()-bin_width;
+			config.max_x = bins_x.back()+bin_width;
+			config.max_y = 1.1*max_y;
+			update_config();
+		}
+		clear();
 		for (unsigned int i=0; i<bins_x.size(); ++i) {
-			pHistogram->line_add( bins_x[i]-0.5*bin_width, 0, -1 );
-			pHistogram->line_add( bins_x[i]-0.5*bin_width, bins_y[i], -1 );
-			pHistogram->line_add( bins_x[i]+0.5*bin_width, bins_y[i], -1 );
-			pHistogram->line_add( bins_x[i]+0.5*bin_width, 0, -1 );
+			line_add( bins_x[i]-0.5*bin_width, 0, -1 );
+			line_add( bins_x[i]-0.5*bin_width, bins_y[i], -1 );
+			line_add( bins_x[i]+0.5*bin_width, bins_y[i], -1 );
+			line_add( bins_x[i]+0.5*bin_width, 0, -1 );
 		}
 	}
 

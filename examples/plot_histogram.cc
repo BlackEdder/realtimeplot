@@ -35,8 +35,9 @@ int main() {
 
 	Histogram hist = Histogram();
 	hist.set_data( data );
+	hist.add_data( 1 );
 
-	sleep( 1 );
+	/*sleep( 1 );
 
 	std::vector<double> values;
 	std::vector<int> counts;
@@ -48,5 +49,5 @@ int main() {
 	counts.push_back( 10 );
 
 	hist.set_counts_data( values, counts );
-	sleep( 2 );
+	sleep( 2 );*/
 }

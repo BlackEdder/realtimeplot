@@ -20,8 +20,8 @@
 
   -------------------------------------------------------------------
 */
-#ifndef CAIRO_PLOT_PLOT_H
-#define CAIRO_PLOT_PLOT_H
+#ifndef REALTIMEPLOT_PLOT_H
+#define REALTIMEPLOT_PLOT_H
 
 /** \file plot.h
 	 	\brief File containing frontend and backend plotting classes
@@ -148,10 +148,10 @@ namespace realtimeplot {
 		/**
 		 \brief Class to produce histograms from data, will calculate range etc
 
-		 Currently calls plot itself. It might be better to actually just integrate it
-		 into the plot class itself or to inherit the plot class.
+		 Will only update/show when one calls Histogram::show
+		 Also allows to add a new data point to the histogram on the fly.
 		 */
-		class Histogram {
+		class Histogram : public Plot {
 			public:
 				int no_bins, max_y;
 				std::vector<double> data;
@@ -164,9 +164,30 @@ namespace realtimeplot {
 
 				Histogram();
 				~Histogram();
-				void set_data( std::vector<double> data );
+				/**
+				 * \brief Set data based on a vector containing all the measurements
+				 *
+				 * Will automatically calculate the ranges. If show == true (default) it will
+				 * immediately show the histogram.
+				 */
+				void set_data( std::vector<double> data, bool show = true );
+				/**
+				 * \brief Set data based on two vectors, one containing values and the other how often those values were founs (counts)
+				 *
+				 * Will automatically calculate the ranges. If show == true (default) it will
+				 * immediately show the histogram.
+				 */
 				void set_counts_data( std::vector<double> values, 
-						std::vector<int> counts );
+						std::vector<int> counts, bool show = true );
+
+				/**
+				 * \brief Add a new measurement/data
+				 *
+				 * Might be usefull to only set show true sometimes, since it can be costly to
+				 * replot every time.
+				 */
+
+				void add_data( double data, bool show = true );
 			private:
 				void fill_bins();
 				void plot();
