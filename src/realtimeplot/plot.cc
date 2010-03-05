@@ -66,7 +66,7 @@ namespace realtimeplot {
 	}
 
 	Plot::Plot( PlotConfig conf ) {
-        config = conf;
+    config = conf;
 		pEventHandler = new EventHandler( config );
 	}
 
@@ -113,15 +113,21 @@ namespace realtimeplot {
 		pEventHandler->add_event( pEvent );
 	}
 
+	void Plot::reset( PlotConfig conf ) {
+		delete pEventHandler;
+		config = conf;
+		pEventHandler = new EventHandler( config );
+	}
+
 	void Plot::clear() {
 		Event *pEvent = new ClearEvent();
 		pEventHandler->add_event( pEvent );
 	}
 
-    void Plot::update_config() {
+	void Plot::update_config() {
 		Event *pEvent = new ConfigEvent( config );
 		pEventHandler->add_event( pEvent );
-    }
+	}
 
 	/*
 	 * Histogram
@@ -193,13 +199,14 @@ namespace realtimeplot {
 	}
 
 	void Histogram::plot() {
-		config = PlotConfig();
-		config.min_x = bins_x.front()-bin_width;
-		config.max_x = bins_x.back()+bin_width;
-		config.max_y = 1.1*max_y;
-		
-		//should be reset(new_config) 
-		update_config();
+		PlotConfig new_config = PlotConfig();
+		new_config.min_x = bins_x.front()-bin_width;
+		new_config.max_x = bins_x.back()+bin_width;
+		new_config.max_y = 1.1*max_y;
+
+		if (config.max_y<new_config.max_y || config.max_x<new_config.max_x || 
+				config.min_x<new_config.min_x)
+			reset( new_config );
 
 		clear();
 		for (unsigned int i=0; i<bins_x.size(); ++i) {

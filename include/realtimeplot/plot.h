@@ -132,6 +132,13 @@ namespace realtimeplot {
             void number( float x, float y, float i );
             void save( std::string filename );
             void clear();
+						/**
+						 * \brief Creates a new plot (new surfaces etc) based on the given config
+						 *
+						 * Used by Histogram whenever a the new histogram is outside the 
+						 * original range.
+						 */
+						void reset( PlotConfig config );
             /**
              * \brief Call this when config is updated (BROKEN/DANGEROUS
              *
