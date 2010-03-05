@@ -130,11 +130,9 @@ namespace realtimeplot {
 	Histogram::Histogram() {
 		no_bins = 4;
 		max_y = 0;
-		pHistogram = NULL;
 	}
 
 	Histogram::~Histogram() {
-		delete pHistogram;
 	}
 
 	void Histogram::set_data( std::vector<double> the_data, bool show ) {
@@ -195,13 +193,14 @@ namespace realtimeplot {
 	}
 
 	void Histogram::plot() {
-		if (pHistogram == NULL) {
-			config = PlotConfig();
-			config.min_x = bins_x.front()-bin_width;
-			config.max_x = bins_x.back()+bin_width;
-			config.max_y = 1.1*max_y;
-			update_config();
-		}
+		config = PlotConfig();
+		config.min_x = bins_x.front()-bin_width;
+		config.max_x = bins_x.back()+bin_width;
+		config.max_y = 1.1*max_y;
+		
+		//should be reset(new_config) 
+		update_config();
+
 		clear();
 		for (unsigned int i=0; i<bins_x.size(); ++i) {
 			line_add( bins_x[i]-0.5*bin_width, 0, -1 );

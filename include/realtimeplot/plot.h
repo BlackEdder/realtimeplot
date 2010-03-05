@@ -95,7 +95,7 @@ namespace realtimeplot {
 								margin_x = 50;
 								margin_y = 50;
                 min_x = 0;
-                max_x = 90;
+                max_x = 10;
                 min_y = 0;
                 max_y = 50;
                 nr_of_ticks = 10;
@@ -158,9 +158,6 @@ namespace realtimeplot {
 				std::vector<double> bins_x;
 				std::vector<double> bins_y;
 				double bin_width;
-
-				PlotConfig config;
-				Plot *pHistogram;
 
 				Histogram();
 				~Histogram();
