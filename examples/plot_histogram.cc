@@ -39,6 +39,12 @@ int main() {
 	hist.add_data( 1 );
 	sleep(1);
 	hist.add_data( 5 );
+	sleep(1);
+	Histogram hist2 = Histogram();
+	hist2.add_data( 1 );
+	sleep(1);
+	hist2.add_data( 5 );
+	sleep(1);
 
 	/*sleep( 1 );
 

@@ -160,7 +160,7 @@ namespace realtimeplot {
 		 */
 		class Histogram : public Plot {
 			public:
-				int no_bins, max_y;
+				int no_bins, max_y, min_x, max_x;
 				std::vector<double> data;
 				std::vector<double> bins_x;
 				std::vector<double> bins_y;

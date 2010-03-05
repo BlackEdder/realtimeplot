@@ -153,8 +153,6 @@ namespace realtimeplot {
 	void Histogram::add_data( double new_data, bool show ) {
 		data.push_back( new_data );
 		//First check that data is not smaller or larger than the current range
-		double max_x = bins_x.back()+bin_width;
-		double min_x = bins_x.front()-bin_width;
 		if (new_data < min_x) {
 			fill_bins();
 		} else if (new_data > max_x) {
@@ -180,12 +178,25 @@ namespace realtimeplot {
 		bins_y.clear();
 		max_y = 0;
 
-		bin_width = (data.back()-data.front())/(no_bins-1);
-		for (int i=0; i<no_bins; ++i) {
-			bins_x.push_back( data.front()+i*bin_width );
-			bins_y.push_back( 0 );
-		}
+		if (data.front() != data.back() ) {
+			bin_width = (data.back()-data.front())/(no_bins-1);
+			for (int i=0; i<no_bins; ++i) {
+				bins_x.push_back( data.front()+i*bin_width );
+				bins_y.push_back( 0 );
+			}
 
+		min_x = data.front()-0.5*bin_width;
+			max_x = data.back()+0.5*bin_width;
+		} else {
+			//choose arbitrary bin_width
+			bin_width = 1;
+			for (int i=0; i<no_bins; ++i) {
+				bins_x.push_back( data.front()+(i-no_bins/2)*bin_width );
+				bins_y.push_back( 0 );
+			}
+			min_x = data.front();
+			max_x = data.front();
+		}
 		int current_bin = 0;
 		//should use iterator
 		for (unsigned int i=0; i<data.size(); ++i) {
@@ -212,14 +223,13 @@ namespace realtimeplot {
 	}
 
 	void Histogram::plot() {
-		double max_x = bins_x.back()+bin_width;
-		double min_x = bins_x.front()-bin_width;
-		if ( !(config.max_y >= max_y && config.max_y <= 2*max_y) ||
+		if ( (min_x == max_x) || 
+				!(config.max_y >= max_y && config.max_y <= 2*max_y) ||
 				!(config.max_x >= max_x && config.max_x <= max_x + 4*bin_width	) ||
 				!(config.min_x <= min_x && config.min_x >= min_x - 4*bin_width	) ) {
 			PlotConfig new_config = PlotConfig();
-			new_config.min_x = min_x;
-			new_config.max_x = max_x;
+			new_config.min_x = bins_x.front()-bin_width;
+			new_config.max_x = bins_x.back()+bin_width;
 			new_config.max_y = 1.1*max_y;
 
 			reset( new_config );
