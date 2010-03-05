@@ -204,8 +204,8 @@ namespace realtimeplot {
 		new_config.max_x = bins_x.back()+bin_width;
 		new_config.max_y = 1.1*max_y;
 
-		if (config.max_y<new_config.max_y || config.max_x<new_config.max_x || 
-				config.min_x<new_config.min_x)
+		if ( config.max_y<max_y || config.max_x<new_config.max_x || 
+				config.min_x>new_config.min_x )
 			reset( new_config );
 
 		clear();
