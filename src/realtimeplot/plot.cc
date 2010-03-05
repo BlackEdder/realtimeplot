@@ -156,10 +156,8 @@ namespace realtimeplot {
 		double max_x = bins_x.back()+bin_width;
 		double min_x = bins_x.front()-bin_width;
 		if (new_data < min_x) {
-			std::cout << "Data falls outside histogram range!" << std::endl;
 			fill_bins();
 		} else if (new_data > max_x) {
-			std::cout << "Data falls outside histogram range!" << std::endl;
 			fill_bins();
 		} else {
 			unsigned int current_bin;
@@ -217,8 +215,8 @@ namespace realtimeplot {
 		double max_x = bins_x.back()+bin_width;
 		double min_x = bins_x.front()-bin_width;
 		if ( !(config.max_y >= max_y && config.max_y <= 2*max_y) ||
-				!(config.max_x >= max_x && config.max_x <= 2*max_x	) ||
-				!(config.min_x <= min_x && config.min_x >= 0.5*min_x	) ) {
+				!(config.max_x >= max_x && config.max_x <= max_x + 4*bin_width	) ||
+				!(config.min_x <= min_x && config.min_x >= min_x - 4*bin_width	) ) {
 			PlotConfig new_config = PlotConfig();
 			new_config.min_x = min_x;
 			new_config.max_x = max_x;
