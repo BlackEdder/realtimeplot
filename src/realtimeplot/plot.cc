@@ -203,15 +203,17 @@ namespace realtimeplot {
 	void Histogram::plot() {
 		double max_x = bins_x.back()+bin_width;
 		double min_x = bins_x.front()-bin_width;
-		if ( (config.max_y < max_y || config.max_y > 0.5*max_y) ||
-				(config.max_x < max_x || config.max_x > 0.5*max_x	) ||
-				(config.min_x > min_x || config.min_x < 0.5*min_x	) ) {
+		if ( !(config.max_y >= max_y && config.max_y <= 2*max_y) ||
+				!(config.max_x >= max_x && config.max_x <= 2*max_x	) ||
+				!(config.min_x <= min_x && config.min_x >= 0.5*min_x	) ) {
 			PlotConfig new_config = PlotConfig();
 			new_config.min_x = min_x;
 			new_config.max_x = max_x;
 			new_config.max_y = 1.1*max_y;
 
 			reset( new_config );
+		} else {
+			clear();
 		}
 		for (unsigned int i=0; i<bins_x.size(); ++i) {
 			line_add( bins_x[i]-0.5*bin_width, 0, -1 );
