@@ -150,16 +150,29 @@ namespace realtimeplot {
 			plot();
 	}
 
-	void Histogram::add_data( double data, bool show ) {
-		int current_bin = 0;
-			while (data > bins_x[current_bin]+0.5*bin_width) {
-				++current_bin;
+	void Histogram::add_data( double new_data, bool show ) {
+		data.push_back( new_data );
+		//First check that data is not smaller or larger than the current range
+		double max_x = bins_x.back()+bin_width;
+		double min_x = bins_x.front()-bin_width;
+		if (new_data < min_x) {
+			std::cout << "Data falls outside histogram range!" << std::endl;
+			fill_bins();
+		} else if (new_data > max_x) {
+			std::cout << "Data falls outside histogram range!" << std::endl;
+			fill_bins();
+		} else {
+			unsigned int current_bin;
+			for (current_bin=0; current_bin<bins_x.size(); ++current_bin) {
+				if (new_data < bins_x[current_bin]+0.5*bin_width)
+					break;
 			}
 			++bins_y[current_bin];
 			if (bins_y[current_bin]>max_y)
 				max_y = bins_y[current_bin];
-			if (show)
-				plot();
+		}
+		if (show)
+			plot();
 	}
 
 	void Histogram::fill_bins() {

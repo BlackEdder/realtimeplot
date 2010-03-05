@@ -37,6 +37,8 @@ int main() {
 	hist.set_data( data );
 	sleep(1);
 	hist.add_data( 1 );
+	sleep(1);
+	hist.add_data( 5 );
 
 	/*sleep( 1 );
 
