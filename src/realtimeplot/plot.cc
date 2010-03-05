@@ -113,7 +113,9 @@ namespace realtimeplot {
 		pEventHandler->add_event( pEvent );
 	}
 
+	//For now just closes old plot window and opens a new one
 	void Plot::reset( PlotConfig conf ) {
+		pEventHandler->add_event( new CloseEvent() );
 		delete pEventHandler;
 		config = conf;
 		pEventHandler = new EventHandler( config );
@@ -199,16 +201,18 @@ namespace realtimeplot {
 	}
 
 	void Histogram::plot() {
-		PlotConfig new_config = PlotConfig();
-		new_config.min_x = bins_x.front()-bin_width;
-		new_config.max_x = bins_x.back()+bin_width;
-		new_config.max_y = 1.1*max_y;
+		double max_x = bins_x.back()+bin_width;
+		double min_x = bins_x.front()-bin_width;
+		if ( (config.max_y < max_y || config.max_y > 0.5*max_y) ||
+				(config.max_x < max_x || config.max_x > 0.5*max_x	) ||
+				(config.min_x > min_x || config.min_x < 0.5*min_x	) ) {
+			PlotConfig new_config = PlotConfig();
+			new_config.min_x = min_x;
+			new_config.max_x = max_x;
+			new_config.max_y = 1.1*max_y;
 
-		if ( config.max_y<max_y || config.max_x<new_config.max_x || 
-				config.min_x>new_config.min_x )
 			reset( new_config );
-
-		clear();
+		}
 		for (unsigned int i=0; i<bins_x.size(); ++i) {
 			line_add( bins_x[i]-0.5*bin_width, 0, -1 );
 			line_add( bins_x[i]-0.5*bin_width, bins_y[i], -1 );

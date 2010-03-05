@@ -40,15 +40,15 @@ namespace realtimeplot {
                         &realtimeplot::EventHandler::process_events, this ) ) );
     }
 
-    EventHandler::~EventHandler() {
-        pEventProcessingThrd->join();
-        if (pBPlot)
-            delete pBPlot;
-    }
+		EventHandler::~EventHandler() {
+			pEventProcessingThrd->join();
+		}
 
     void EventHandler::plot_closed() {
+			if (pBPlot!=NULL) {
         delete pBPlot;
         pBPlot = NULL;
+			}
     }
 
     void EventHandler::add_event( Event *pEvent ) {
@@ -96,7 +96,7 @@ namespace realtimeplot {
                 //doesn't call display. This way the plot will be refreshed anyway
                 //Not an ideal solution, because when the last event called display
                 //this will do refresh twice instead of the needed one.
-                if (queue_size == 0)
+                if (pBPlot != NULL && queue_size == 0)
                     pBPlot->display();
             } else {}
         }

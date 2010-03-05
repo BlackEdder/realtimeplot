@@ -62,7 +62,6 @@ namespace realtimeplot {
     }
 
     BackendPlot::~BackendPlot() {
-        //delete pEventHandler;
         XCloseDisplay(dpy);
     }
 
@@ -151,6 +150,10 @@ namespace realtimeplot {
                 break;
         }
     }
+
+		void BackendPlot::close_window() {
+			pEventHandler->plot_closed();
+		}
 
 
     Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_plot_surface() {

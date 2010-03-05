@@ -59,7 +59,6 @@ namespace realtimeplot {
 		*/
     class EventHandler {
         public:
-            //Only three public methods
             //Constructor
 					EventHandler( PlotConfig config );
 					~EventHandler();

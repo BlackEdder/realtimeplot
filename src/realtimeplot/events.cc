@@ -98,6 +98,13 @@ namespace realtimeplot {
 		pBPlot->clear();
 	}
 
+	CloseEvent::CloseEvent() {
+	}
+	void CloseEvent::execute( BackendPlot *pBPlot ) {
+		pBPlot->close_window();
+	}
+
+
 }
 
 

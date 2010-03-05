@@ -209,6 +209,11 @@ namespace realtimeplot {
             //Called by event handler when an xevent happens
             void handle_xevent( XEvent report );
 
+						/**
+						 * \brief Close the current xwindow
+						 */
+						void close_window();
+
             //number
             //draws a number as text on the surface
             void number( float x, float y, float i );

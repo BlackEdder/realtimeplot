@@ -138,6 +138,15 @@ namespace realtimeplot {
             ClearEvent();
             virtual void execute( BackendPlot *bPl );
     };
+		/**
+		 \brief Event to close the current plot (window)
+		 */
+    class CloseEvent : public Event {
+        public:
+            CloseEvent();
+            virtual void execute( BackendPlot *bPl );
+    };
+
 
  }
 
