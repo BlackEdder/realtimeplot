@@ -1,6 +1,5 @@
 Read the INSTALL file for installation instructions.
 
-A good way to learn how to use the library is to have a look at the examples in the examples directory. To build and run an example use:
-rake <example name>
+A good way to learn how to use the library is to have a look at the examples in the examples directory. For now only one example is build automatically by installation(need to update CMakeList.txt):
 e.g.
-rake plot_points
+bin/plot_points

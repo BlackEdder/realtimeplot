@@ -2,7 +2,8 @@ Basic Installation
 ==================
 
 Run:
-rake install
+cmake .
+make install
 
 Installation Names
 ==================
