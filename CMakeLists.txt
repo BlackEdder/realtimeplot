@@ -3,9 +3,9 @@
 # 
 # Copyright (C) 2010, Edwin van Leeuwen
 # 
-# This file is part of AlonsoOptim.
+# This file is part of RealTimePlot.
 # 
-# AlonsoOptim is free software; you can redistribute it and/or modify
+# RealTimePlot is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
 # (at your option) any later version.
@@ -16,7 +16,7 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with AlonsoOptim. If not, see <http://www.gnu.org/licenses/>.
+# along with RealTimePlot. If not, see <http://www.gnu.org/licenses/>.
 #
 # -------------------------------------------------------------------
 #
