@@ -98,7 +98,7 @@ namespace realtimeplot {
         pEventHandler->add_event( new MultipleEvents( events ));
     }
 
-	void Plot::line_add( float x, float y, int id ) {
+    void Plot::line_add( float x, float y, int id ) {
 		Event *pEvent = new LineAddEvent( x, y, id );
 		pEventHandler->add_event( pEvent );
 	}

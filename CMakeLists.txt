@@ -58,6 +58,10 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 add_executable(plot_points examples/plot_points.cc)
 target_link_libraries(plot_points realtimeplot)
 
+add_executable(plot_line examples/plot_line.cc)
+target_link_libraries(plot_line realtimeplot)
+
+
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
 install (TARGETS realtimeplot DESTINATION lib)
