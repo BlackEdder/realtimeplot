@@ -60,6 +60,14 @@ namespace realtimeplot {
         return Color( 0, 0, 1, 1 );
     }
 
+		Color Color::yellow() {
+        return Color( 1, 1, 0, 1 );
+		}
+
+		Color Color::purple() {
+        return Color( 1, 0, 1, 1 );
+		}
+
 	Plot::Plot() {
 		config = PlotConfig();
 		pEventHandler = new EventHandler( config );
@@ -98,8 +106,12 @@ namespace realtimeplot {
         pEventHandler->add_event( new MultipleEvents( events ));
     }
 
-	void Plot::line_add( float x, float y, int id ) {
-		Event *pEvent = new LineAddEvent( x, y, id );
+	/*void Plot::line_add( float x, float y, int id ) {
+		line_add( x, y, id, Color::black() );
+	}*/
+	
+	void Plot::line_add( float x, float y, int id, Color color ) {
+		Event *pEvent = new LineAddEvent( x, y, id, color );
 		pEventHandler->add_event( pEvent );
 	}
 

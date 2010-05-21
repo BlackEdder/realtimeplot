@@ -101,11 +101,12 @@ namespace realtimeplot {
 		 */
      class LineAddEvent : public Event {
         public:
-            LineAddEvent( float x, float y, int id );
+            LineAddEvent( float x, float y, int id, Color color );
             virtual void execute( BackendPlot *bPl );
         private:
             float x_crd, y_crd;
             int id;
+						Color color;
     };
 
 		/**

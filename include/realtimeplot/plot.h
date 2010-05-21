@@ -70,6 +70,8 @@ namespace realtimeplot {
         static Color red();
         static Color green();
         static Color blue();
+        static Color yellow();
+        static Color purple();
     };
 
 
@@ -128,7 +130,8 @@ namespace realtimeplot {
 
             void point( float x, float y );
             void point( float x, float y, Color color );
-            void line_add( float x, float y, int id=-1 );
+						//void line_add( float x, float y, int id=-1 );
+            void line_add( float x, float y, int id=-1, Color color=Color::black() );
             void number( float x, float y, float i );
             void save( std::string filename );
             void clear();

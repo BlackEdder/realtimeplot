@@ -386,7 +386,7 @@ namespace realtimeplot {
         display();
     }
 
-    void BackendPlot::line_add( float x, float y, int id ) {
+    void BackendPlot::line_add( float x, float y, int id, Color color ) {
         if (!within_plot_bounds(x,y)) {
             if (!config.fixed_plot_area)
                 rolling_update(x, y);
@@ -415,7 +415,8 @@ namespace realtimeplot {
 
             transform_to_device_units( line->context );
             set_foreground_color( line->context );
-            transform_to_plot_units( line->context );
+        		line->context->set_source_rgba( color.r, color.g, color.b, color.a );    
+						transform_to_plot_units( line->context );
             line->context->move_to( line->current_x, line->current_y );
             line->context->line_to( x, y );
             transform_to_device_units( line->context );

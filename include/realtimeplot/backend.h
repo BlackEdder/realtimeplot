@@ -200,7 +200,7 @@ namespace realtimeplot {
 
             If no line exists with the specified id a new line will be added
             */
-            void line_add( float x, float y, int id );
+            void line_add( float x, float y, int id, Color color );
 
             void save( std::string fn );
             void save( std::string fn, Cairo::RefPtr<Cairo::ImageSurface> pSurface );

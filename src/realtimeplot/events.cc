@@ -62,14 +62,15 @@ namespace realtimeplot {
 		pBPlot->point( x_crd, y_crd );
 	}
 
-	LineAddEvent::LineAddEvent( float x, float y, int id_value ) {
+	LineAddEvent::LineAddEvent( float x, float y, int id_value, Color col ) {
 		x_crd = x;
 		y_crd = y;
-        id = id_value;
+    id = id_value;
+		color = col;
 	}
 
 	void LineAddEvent::execute( BackendPlot *pBPlot ) {
-		pBPlot->line_add( x_crd, y_crd, id );
+		pBPlot->line_add( x_crd, y_crd, id, color );
 	}
 
 
