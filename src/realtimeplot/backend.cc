@@ -257,7 +257,7 @@ namespace realtimeplot {
         int text_width, text_height;
         Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(axes_context);
         Pango::FontDescription pango_font = Pango::FontDescription(config.font);
-        pango_font.set_weight( Pango::WEIGHT_ULTRALIGHT );
+        pango_font.set_weight( Pango::WEIGHT_HEAVY );
         pango_layout->set_font_description( pango_font );
 
         /*Cairo::FontOptions font_options = Cairo::FontOptions();

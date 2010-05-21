@@ -95,8 +95,8 @@ namespace realtimeplot {
 
             /// Constructor that sets default values
             PlotConfig() {
-								margin_x = 50;
-								margin_y = 50;
+								margin_x = 60;
+								margin_y = 60;
                 min_x = 0;
                 max_x = 10;
                 min_y = 0;
@@ -105,7 +105,7 @@ namespace realtimeplot {
                 ticks_length = 7;
                 xlabel = "x";
                 ylabel = "y";
-								font = "sans 8";
+								font = "sans 10";
                 overlap = 0.1;
                 aspect_ratio = 1;
                 fixed_plot_area = false;
