@@ -68,6 +68,11 @@ namespace realtimeplot {
         return Color( 1, 0, 1, 1 );
 		}
 
+		Color Color::grey() {
+        return Color( 0.5, 0.5, 0.5, 1 );
+		}
+
+
 	Plot::Plot() {
 		config = PlotConfig();
 		pEventHandler = new EventHandler( config );

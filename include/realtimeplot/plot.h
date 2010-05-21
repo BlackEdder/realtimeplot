@@ -72,6 +72,7 @@ namespace realtimeplot {
         static Color blue();
         static Color yellow();
         static Color purple();
+        static Color grey();
     };
 
 
