@@ -257,7 +257,7 @@ namespace realtimeplot {
         int text_width, text_height;
         Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(axes_context);
         Pango::FontDescription pango_font = Pango::FontDescription(config.font);
-        pango_font.set_weight( Pango::WEIGHT_HEAVY );
+        //pango_font.set_weight( Pango::WEIGHT_HEAVY );
         pango_layout->set_font_description( pango_font );
 
         /*Cairo::FontOptions font_options = Cairo::FontOptions();
@@ -297,6 +297,12 @@ namespace realtimeplot {
         double length_tick_x = config.ticks_length;
         double length_tick_y = -config.ticks_length;
         axes_context->device_to_user_distance( length_tick_x, length_tick_y );
+				
+				//set font size. 
+				//Thought pango_font.set_absolute_size would work, like this 
+				//(i.e. wouldn't need Pango::SCALE, but apparently not)
+				pango_font.set_size( config.numerical_labels_font_size*Pango::SCALE );
+        pango_layout->set_font_description( pango_font );
 
         for (unsigned int i = 0; i < xaxis_ticks.size(); ++i) {
             axes_context->move_to( xaxis_ticks[i], config.min_y );
@@ -328,6 +334,9 @@ namespace realtimeplot {
         }
 
         transform_to_device_units( axes_context );
+				
+				pango_font.set_size( config.label_font_size*Pango::SCALE );
+        pango_layout->set_font_description( pango_font );
 
         pango_layout->set_text( config.ylabel );
         pango_layout->get_pixel_size( text_width, text_height );

@@ -92,6 +92,7 @@ namespace realtimeplot {
             float aspect_ratio;
             std::string xlabel, ylabel, font;
             bool fixed_plot_area;
+						int label_font_size, numerical_labels_font_size;
 
             /// Constructor that sets default values
             PlotConfig() {
@@ -105,7 +106,9 @@ namespace realtimeplot {
                 ticks_length = 7;
                 xlabel = "x";
                 ylabel = "y";
-								font = "sans 10";
+								font = "sans";
+								label_font_size = 12;
+								numerical_labels_font_size = 10;
                 overlap = 0.1;
                 aspect_ratio = 1;
                 fixed_plot_area = false;
