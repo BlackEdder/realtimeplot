@@ -307,30 +307,35 @@ namespace realtimeplot {
         for (unsigned int i = 0; i < xaxis_ticks.size(); ++i) {
             axes_context->move_to( xaxis_ticks[i], config.min_y );
             axes_context->rel_line_to( 0, length_tick_y );
-            transform_to_device_units( axes_context );
-            pango_layout->set_text( stringify( xaxis_ticks[i] ) );
-            pango_layout->get_pixel_size( text_width, text_height );
-            axes_context->rel_move_to( -0.5*text_width, 1*text_height );
-            //pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
-            pango_layout->show_in_cairo_context( axes_context );
-            transform_to_plot_units_with_origin( axes_surface, axes_context, 
-                    config.margin_x, config.margin_y );
+						//Do not add text to last tick (this will be cut off otherwise
+						if (i != xaxis_ticks.size()-1) {
+							transform_to_device_units( axes_context );
+							pango_layout->set_text( stringify( xaxis_ticks[i] ) );
+							pango_layout->get_pixel_size( text_width, text_height );
+							axes_context->rel_move_to( -0.5*text_width, 1*text_height );
+							//pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
+							pango_layout->show_in_cairo_context( axes_context );
+							transform_to_plot_units_with_origin( axes_surface, axes_context, 
+									config.margin_x, config.margin_y );
+						}
         }
 
         for (unsigned int i = 0; i < yaxis_ticks.size(); ++i) {
             axes_context->move_to( config.min_x, yaxis_ticks[i] );
             axes_context->rel_line_to( length_tick_x, 0 );
-
-            transform_to_device_units( axes_context );
-            axes_context->rotate_degrees( -90 );
-
-            pango_layout->set_text( stringify( yaxis_ticks[i] ) );
-            pango_layout->get_pixel_size( text_width, text_height );
-            axes_context->rel_move_to( -0.5*text_width, -2*text_height );
-            pango_layout->show_in_cairo_context( axes_context );
-            axes_context->rotate_degrees( 90 ); //think the tranform_to_plot_units also unrotates
-            transform_to_plot_units_with_origin( axes_surface, axes_context, 
-                    config.margin_x, config.margin_y );
+						
+						//Do not add text to last tick (this will be cut off otherwise
+						if (i != yaxis_ticks.size()-1) {
+							transform_to_device_units( axes_context );
+							axes_context->rotate_degrees( -90 );
+							pango_layout->set_text( stringify( yaxis_ticks[i] ) );
+							pango_layout->get_pixel_size( text_width, text_height );
+							axes_context->rel_move_to( -0.5*text_width, -2*text_height );
+							pango_layout->show_in_cairo_context( axes_context );
+							axes_context->rotate_degrees( 90 ); //think the tranform_to_plot_units also unrotates
+							transform_to_plot_units_with_origin( axes_surface, axes_context, 
+									config.margin_x, config.margin_y );
+						}
         }
 
         transform_to_device_units( axes_context );
