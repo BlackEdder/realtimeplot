@@ -72,6 +72,18 @@ namespace realtimeplot {
         return Color( 0.5, 0.5, 0.5, 1 );
 		}
 
+		Color Color::by_id(size_t id) {
+			std::vector<Color> colors;
+			colors.push_back( Color::black() );
+			colors.push_back( Color::red() );
+			colors.push_back( Color::green() );
+			colors.push_back( Color::blue() );
+			colors.push_back( Color::yellow() );
+			colors.push_back( Color::purple() );
+			colors.push_back( Color::grey() );
+			return colors[ id%colors.size() ];
+		}
+
 
 	Plot::Plot() {
 		config = PlotConfig();

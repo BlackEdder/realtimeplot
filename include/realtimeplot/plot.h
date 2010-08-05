@@ -73,6 +73,16 @@ namespace realtimeplot {
         static Color yellow();
         static Color purple();
         static Color grey();
+				/**
+				 * \brief Gets a color based on an id
+				 *
+				 * Easy if you need to get number of different colors, 
+				 * but don't care which colors they are. 
+				 *
+				 * If id is greater than number of available colors it 
+				 * will loop back to the first color.
+				 */
+				static Color by_id(size_t id);
     };
 
 
