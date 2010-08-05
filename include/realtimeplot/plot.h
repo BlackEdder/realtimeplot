@@ -105,7 +105,7 @@ namespace realtimeplot {
             float min_y, max_y;
             float overlap;
             float aspect_ratio;
-            std::string xlabel, ylabel, font;
+            std::string xlabel, ylabel, font, title;
             bool fixed_plot_area;
 						int label_font_size, numerical_labels_font_size;
 
@@ -128,6 +128,7 @@ namespace realtimeplot {
                 aspect_ratio = 1;
                 fixed_plot_area = false;
                 point_size = 4;
+								title = "RealTimePlot";
             }
     };
 

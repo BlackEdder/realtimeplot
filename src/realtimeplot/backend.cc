@@ -200,7 +200,7 @@ namespace realtimeplot {
                 0, black, // border
                 white );
 
-        XStoreName(dpy, win, "hello");
+        XStoreName(dpy, win, config.title.c_str());
         XMapWindow(dpy, win);
         XSelectInput( dpy, win, KeyPressMask | StructureNotifyMask | ExposureMask );
 
