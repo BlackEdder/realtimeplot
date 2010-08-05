@@ -41,6 +41,7 @@ namespace realtimeplot {
         for (std::vector<Event*>::iterator it = events.begin(); 
                 it!=events.end(); ++it) {
             (*it)->execute( pBPlot );
+						delete (*it);
         }
     }
 
