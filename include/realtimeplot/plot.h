@@ -83,6 +83,11 @@ namespace realtimeplot {
 				 * will loop back to the first color.
 				 */
 				static Color by_id(size_t id);
+
+				/** 
+				 * \brief Gets a vector with available colors
+				 */
+				static std::vector<Color> colors();
     };
 
 
