@@ -72,6 +72,30 @@ namespace realtimeplot {
         return Color( 0.5, 0.5, 0.5, 1 );
 		}
 
+		Color Color::darkblue() {
+        return Color( 0, 0, 0.545098, 1 );
+		}
+
+		Color Color::cyan() {
+        return Color( 0, 1, 1, 1 );
+		}
+
+		Color Color::indigo() {
+        return Color( 0.294118, 0, 0.509804, 1 );
+		}
+
+		Color Color::orange() {
+        return Color( 1, 0.647059, 0, 1 );
+		}
+
+		Color Color::brown() {
+        return Color( 0.647059, 0.164706, 0.164706, 1 );
+		}
+
+		Color Color::cadetblue() {
+        return Color( 0.372549, 0.619608, 0.627451, 1 );
+		}
+
 		Color Color::by_id(size_t id) {
 			std::vector<Color> colors = Color::colors();
 			return colors[ id%colors.size() ];
@@ -86,6 +110,12 @@ namespace realtimeplot {
 			colors.push_back( Color::yellow() );
 			colors.push_back( Color::purple() );
 			colors.push_back( Color::grey() );
+			colors.push_back( Color::brown() );
+			colors.push_back( Color::darkblue() );
+			colors.push_back( Color::cyan() );
+			colors.push_back( Color::indigo() );
+			colors.push_back( Color::orange() );
+			colors.push_back( Color::cadetblue() );
 			return colors;
 		}
 

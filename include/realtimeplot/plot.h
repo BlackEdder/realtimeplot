@@ -61,6 +61,9 @@ namespace realtimeplot {
         double r, g, b, a;
         /**
          * \brief Default constructer, sets a white/transparent color
+				 *
+				 * More colors can be found here: 
+				 * http://www.avatar.se/molscript/doc/colour_names.html
          */
         Color();
         Color( double red, double green, double blue, double alpha );
@@ -73,6 +76,12 @@ namespace realtimeplot {
         static Color yellow();
         static Color purple();
         static Color grey();
+        static Color brown();
+        static Color darkblue();
+        static Color cyan();
+        static Color indigo();
+        static Color orange();
+        static Color cadetblue();
 				/**
 				 * \brief Gets a color based on an id
 				 *
