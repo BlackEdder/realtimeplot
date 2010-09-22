@@ -61,6 +61,8 @@ target_link_libraries(plot_points realtimeplot)
 add_executable(plot_line examples/plot_line.cc)
 target_link_libraries(plot_line realtimeplot)
 
+add_executable(plot_histogram examples/plot_histogram.cc)
+
 
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
