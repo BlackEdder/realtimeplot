@@ -1,11 +1,14 @@
+Dependencies
+==================
+The following are the basic requirements for the library. Also see CMakeLists.txt for a more detailed list.
+pangomm-1.4
+cairomm-1.0
+boost
+
 Basic Installation
 ==================
-
 Run:
 cmake .
 make install
 
-Installation Names
-==================
-
-By default, `rake install' will install the package's files under /usr (/usr/lib)
+The library is currently only tested to build on my gentoo installation, so if you find any problems please contact me and I'll try to address them.
