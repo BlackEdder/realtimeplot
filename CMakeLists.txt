@@ -74,5 +74,6 @@ install (FILES include/realtimeplot/backend.h
 	include/realtimeplot)
 
 #Documentation
+set(DOXYFILE_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/realtimeplot")
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include(UseDoxygen)
