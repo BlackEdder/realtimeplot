@@ -62,6 +62,7 @@ add_executable(plot_line examples/plot_line.cc)
 target_link_libraries(plot_line realtimeplot)
 
 add_executable(plot_histogram examples/plot_histogram.cc)
+target_link_libraries(plot_histogram realtimeplot)
 
 
 #Install the library
