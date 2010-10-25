@@ -83,6 +83,8 @@ include(UseDoxygen)
 #
 #add_custom_target(rb_two_niches.so COMMAND ruby ruby/rb_two_niches.rb DEPENDS
 #    two_niches)
-add_custom_command(TARGET realtimeplot POST_BUILD COMMAND ruby
+add_custom_target(ruby 
+	DEPENDS realtimeplot)
+add_custom_command(TARGET ruby POST_BUILD COMMAND ruby
     ext/rb_realtimeplot.rb COMMAND ${CMAKE_COMMAND} -E copy
     ext/generated/rb_realtimeplot.so ext/rb_realtimeplot.so)

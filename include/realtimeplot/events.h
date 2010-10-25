@@ -48,7 +48,7 @@ namespace realtimeplot {
      * one wants to set a color, plot a point and unset the color, 
      * without the danger that another process suddenly plots something
      * else in the mean time.
-     */
+		 */
     class MultipleEvents : public Event {
         public:
             MultipleEvents( std::vector<boost::shared_ptr<Event> > events );
