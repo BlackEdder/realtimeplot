@@ -26,6 +26,9 @@ project(RealTimePlot)
 
 SET (CMAKE_CXX_FLAGS "-O2 -pipe -ffast-math -fomit-frame-pointer")
 find_library( PANGOMM pangomm )
+if( PANGOMM-NOTFOUND )
+	message( FATAL_ERROR "Could not find pangomm library" )
+	endif()
 
 set(BOOST_LIBS thread date_time)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
