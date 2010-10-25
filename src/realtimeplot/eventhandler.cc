@@ -30,13 +30,11 @@ namespace realtimeplot {
     EventHandler::EventHandler( PlotConfig config )
 			: pBPlot( new BackendPlot( config, this ) ),
 				queue_size( 0 ),
-				xevent_queue_size( 0 )
-		{
-        //start processing thread
-        pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
+				xevent_queue_size( 0 ),
+				pEventProcessingThrd( boost::shared_ptr<boost::thread>( 
                 new boost::thread( boost::bind( 
-                        &realtimeplot::EventHandler::process_events, this ) ) );
-    }
+                        &realtimeplot::EventHandler::process_events, this ) ) ) )
+		{}
 
 		EventHandler::~EventHandler() {
 			pEventProcessingThrd->join();

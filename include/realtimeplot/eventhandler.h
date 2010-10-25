@@ -70,11 +70,11 @@ namespace realtimeplot {
 
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
+					int queue_size;
+					int xevent_queue_size;
 					boost::shared_ptr<boost::thread> pEventProcessingThrd;
 					boost::mutex m_mutex;
 					std::list<boost::shared_ptr<Event> > event_queue;
-					int queue_size;
-					int xevent_queue_size;
 
 					void process_events();
 		};
