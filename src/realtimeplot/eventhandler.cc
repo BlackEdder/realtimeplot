@@ -57,7 +57,7 @@ namespace realtimeplot {
     void EventHandler::add_event( boost::shared_ptr<Event> pEvent ) {
         //ignore if no plot present (for example because plot window was closed)
         //->EventHandler shouldn't crash because it isn't plotting anywhere
-        if (plot_is_closed) {
+        if (!plot_is_closed) {
             //block if many events are present
             if (queue_size>100000) {
                 std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
