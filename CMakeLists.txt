@@ -26,8 +26,9 @@ project(RealTimePlot)
 
 SET (CMAKE_CXX_FLAGS "-O2 -pipe -ffast-math -fomit-frame-pointer")
 find_library( PANGOMM pangomm )
-find_library( BOOST_THREAD boost_thread )
-find_library( BOOST_DATE_TIME boost_date_time )
+
+set(BOOST_LIBS thread date_time)
+find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
 include_directories("include")
 include_directories("/usr/include/pangomm-1.4")
@@ -46,8 +47,7 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 add_library( realtimeplot SHARED src/realtimeplot/plot.cc
 	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
 	src/realtimeplot/events.cc )
-target_link_libraries(realtimeplot ${PANGOMM} ${BOOST_THREAD}
-	${BOOST_DATE_TIME})
+target_link_libraries(realtimeplot ${PANGOMM} ${Boost_LIBRARIES})
 
 #Examples.. should be under own build target -> make examples
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
