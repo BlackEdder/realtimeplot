@@ -28,20 +28,26 @@
 namespace realtimeplot {
 
     EventHandler::EventHandler( PlotConfig config )
-			: pBPlot( new BackendPlot( config, this ) ),
-				queue_size( 0 ),
+			: queue_size( 0 ),
 				xevent_queue_size( 0 ),
-				pEventProcessingThrd( boost::shared_ptr<boost::thread>( 
+				plot_is_closed( false )
+		{
+        //create a backend plot
+        pBPlot.reset( new BackendPlot( config, this ) );
+
+        //start processing thread
+        pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
                 new boost::thread( boost::bind( 
-                        &realtimeplot::EventHandler::process_events, this ) ) ) )
-		{}
+                        &realtimeplot::EventHandler::process_events, this ) ) );
+    }
 
 		EventHandler::~EventHandler() {
 			pEventProcessingThrd->join();
 		}
 
     void EventHandler::plot_closed() {
-			pBPlot = boost::shared_ptr<BackendPlot>();
+			pBPlot.reset();
+			plot_is_closed = true;
 			/*if (pBPlot!=NULL) {
         delete pBPlot;
         pBPlot = NULL;
@@ -51,7 +57,7 @@ namespace realtimeplot {
     void EventHandler::add_event( boost::shared_ptr<Event> pEvent ) {
         //ignore if no plot present (for example because plot window was closed)
         //->EventHandler shouldn't crash because it isn't plotting anywhere
-        if (!pBPlot) {
+        if (plot_is_closed) {
             //block if many events are present
             if (queue_size>100000) {
                 std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
@@ -72,7 +78,7 @@ namespace realtimeplot {
 
     void EventHandler::process_events() {
         //Ideally event queue would have a blocking get function
-        while (!pBPlot) {
+        while (!plot_is_closed) {
             if (queue_size==0 && XPending(pBPlot->dpy) == 0) 
                 usleep(100000);
             else if ( XPending(pBPlot->dpy) > 0 ) {
@@ -92,7 +98,7 @@ namespace realtimeplot {
                 //doesn't call display. This way the plot will be refreshed anyway
                 //Not an ideal solution, because when the last event called display
                 //this will do refresh twice instead of the needed one.
-                if (!pBPlot && queue_size == 0)
+                if (!plot_is_closed && queue_size == 0)
                     pBPlot->display();
             } else {}
         }
