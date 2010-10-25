@@ -25,15 +25,9 @@ cmake_minimum_required(VERSION 2.6)
 project(RealTimePlot)
 
 SET (CMAKE_CXX_FLAGS "-O2 -pipe -ffast-math -fomit-frame-pointer")
-find_library( pangomm-1.4, REQUIRED )
-find_library( pango-1.0, REQUIRED )
-find_library( cairomm-1.0, REQUIRED )
-find_library( glibmm-2.4, REQUIRED )
-find_library( glib-2.0, REQUIRED )
-find_library( freetype2, REQUIRED )
-find_library( sigc++-2.0, REQUIRED )
-find_library( boost_thread, REQUIRED )
-find_library( boost_date_time, REQUIRED )
+find_library( PANGOMM pangomm )
+find_library( BOOST_THREAD boost_thread )
+find_library( BOOST_DATE_TIME boost_date_time )
 
 include_directories("include")
 include_directories("/usr/include/pangomm-1.4")
@@ -47,11 +41,13 @@ include_directories("/usr/include/cairo")
 include_directories("/usr/include/freetype2")
 include_directories("/usr/include/sigc++-2.0")
 include_directories("/usr/lib/sigc++-2.0/include")
+
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 add_library( realtimeplot SHARED src/realtimeplot/plot.cc
 	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
 	src/realtimeplot/events.cc )
-target_link_libraries(realtimeplot pangomm-1.4 boost_thread boost_date_time)
+target_link_libraries(realtimeplot ${PANGOMM} ${BOOST_THREAD}
+	${BOOST_DATE_TIME})
 
 #Examples.. should be under own build target -> make examples
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
