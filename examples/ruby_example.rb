@@ -29,3 +29,10 @@ pl.point_1( 5,80, RealTimePlot::Color.red )
 #    pl.point_0( 45+20*rand(), i*(0.1) )
 #    sleep(0.1)
 #end
+
+sleep( 5 )
+plot_conf = RealTimePlot::PlotConfig.new
+plot_conf.max_x = 1
+plot_conf.max_y = 1
+pl.reset( plot_conf )
+pl.point_0( 0.5, 0.5 )
