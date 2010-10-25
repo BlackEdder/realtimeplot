@@ -83,8 +83,7 @@ include(UseDoxygen)
 #
 #add_custom_target(rb_two_niches.so COMMAND ruby ruby/rb_two_niches.rb DEPENDS
 #    two_niches)
-add_custom_target(ruby ALL 
-	DEPENDS ext/rb_realtimeplot.so )
+add_custom_target(ruby DEPENDS ext/rb_realtimeplot.so )
 
 add_custom_command( OUTPUT ext/rb_realtimeplot.so
 	COMMAND ruby ext/rb_realtimeplot.rb 
