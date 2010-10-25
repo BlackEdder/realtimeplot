@@ -245,7 +245,7 @@ namespace realtimeplot {
             void scale_xsurface( double width, double height );
      private:
             //Keep track to lines
-            std::list<LineAttributes*> lines;
+            std::list<boost::shared_ptr<LineAttributes> > lines;
 
             //set a flag when display shouldn't be updated (plotting still runs on)
             bool pause_display;

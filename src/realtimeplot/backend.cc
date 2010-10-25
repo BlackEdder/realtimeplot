@@ -20,6 +20,7 @@
 
   -------------------------------------------------------------------
 */
+#include <boost/shared_ptr.hpp>
 #include "realtimeplot/backend.h"
 
 namespace realtimeplot {
@@ -406,11 +407,11 @@ namespace realtimeplot {
                 rolling_update(x, y);
         }
 
-        LineAttributes *line = new LineAttributes( x, y, id );
+				boost::shared_ptr<LineAttributes> line( new LineAttributes( x, y, id ) );
 
         //check if line already exists
         bool exists = false;
-        std::list<LineAttributes*>::iterator i;
+        std::list<boost::shared_ptr<LineAttributes> >::iterator i;
         for (i=lines.begin(); i != lines.end(); ++i) {
             if ((*i)->id == id) {
                 line = (*i);
