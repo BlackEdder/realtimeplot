@@ -55,7 +55,7 @@ namespace realtimeplot {
 			}*/
     }
 
-    void EventHandler::add_event( Event *pEvent ) {
+    void EventHandler::add_event( boost::shared_ptr<Event> pEvent ) {
         //ignore if no plot present (for example because plot window was closed)
         //->EventHandler shouldn't crash because it isn't plotting anywhere
         if (!plot_is_closed) {
@@ -89,13 +89,13 @@ namespace realtimeplot {
                 pBPlot->handle_xevent( report ); 
             }
             else if ( queue_size>0 ) {
-                Event *pEvent = event_queue.front();
+								boost::shared_ptr<Event> pEvent( event_queue.front() );
                 m_mutex.lock();
                 event_queue.pop_front();
                 --queue_size;
                 m_mutex.unlock();
                 pEvent->execute( pBPlot );
-                delete pEvent;
+                //delete pEvent;
                 //This is to work around problems when the last event in the queue
                 //doesn't call display. This way the plot will be refreshed anyway
                 //Not an ideal solution, because when the last event called display

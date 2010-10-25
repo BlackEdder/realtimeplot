@@ -119,25 +119,24 @@ namespace realtimeplot {
 			return colors;
 		}
 
-	Plot::Plot() {
-		config = PlotConfig();
-		pEventHandler = new EventHandler( config );
-	}
+	Plot::Plot()
+		: config( PlotConfig() ),
+			pEventHandler( new EventHandler( config ) )
+	{}
 
-	Plot::Plot( PlotConfig conf ) {
-    config = conf;
-		pEventHandler = new EventHandler( config );
-	}
+	Plot::Plot( PlotConfig conf )
+		: config( conf ),
+			pEventHandler( new EventHandler( config ) )
+	{}
 
 	Plot::~Plot() {
 		//To get non persistent plot uncomment the following:
 		//pEventHandler->plot_closed();
-		delete pEventHandler;
 	}
 
     
     void Plot::point( float x, float y ) {
-        pEventHandler->add_event( new PointEvent(x, y) ); 
+        pEventHandler->add_event( boost::shared_ptr<Event>( new PointEvent(x, y) ) ); 
     }
 
     /**
@@ -150,11 +149,12 @@ namespace realtimeplot {
      * safety).
      */
     void Plot::point( float x, float y, Color color ) {
-        std::vector<Event*> events(3);
-        events[0] = new SetColorEvent( color );
-        events[1] = new PointEvent( x, y );
-        events[2] = new RestoreEvent();
-        pEventHandler->add_event( new MultipleEvents( events ));
+        std::vector<boost::shared_ptr<Event> > events(3);
+        events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
+        events[1] = boost::shared_ptr<Event>( new PointEvent( x, y ) );
+        events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
+        pEventHandler->add_event( 
+						boost::shared_ptr<Event>( new MultipleEvents( events ) ));
     }
 
 	/*void Plot::line_add( float x, float y, int id ) {
@@ -162,35 +162,35 @@ namespace realtimeplot {
 	}*/
 	
 	void Plot::line_add( float x, float y, int id, Color color ) {
-		Event *pEvent = new LineAddEvent( x, y, id, color );
+		boost::shared_ptr<Event> pEvent( new LineAddEvent( x, y, id, color ) );
 		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::number( float x, float y, float i ) {
-		Event *pEvent = new NumberEvent( x, y, i );
+		boost::shared_ptr<Event> pEvent( new NumberEvent( x, y, i ) );
 		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::save( std::string filename ) {
-		Event *pEvent = new SaveEvent( filename );
+		boost::shared_ptr<Event> pEvent( new SaveEvent( filename ));
 		pEventHandler->add_event( pEvent );
 	}
 
 	//For now just closes old plot window and opens a new one
 	void Plot::reset( PlotConfig conf ) {
-		pEventHandler->add_event( new CloseEvent() );
-		delete pEventHandler;
+		pEventHandler->add_event( boost::shared_ptr<Event>( new CloseEvent() ));
+		//delete pEventHandler;
 		config = conf;
-		pEventHandler = new EventHandler( config );
+		pEventHandler.reset( new EventHandler( config ) );
 	}
 
 	void Plot::clear() {
-		Event *pEvent = new ClearEvent();
+		boost::shared_ptr<Event> pEvent( new ClearEvent() );
 		pEventHandler->add_event( pEvent );
 	}
 
 	void Plot::update_config() {
-		Event *pEvent = new ConfigEvent( config );
+		boost::shared_ptr<Event> pEvent( new ConfigEvent( config ) );
 		pEventHandler->add_event( pEvent );
 	}
 

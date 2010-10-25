@@ -51,10 +51,10 @@ namespace realtimeplot {
      */
     class MultipleEvents : public Event {
         public:
-            MultipleEvents( std::vector<Event*> events );
+            MultipleEvents( std::vector<boost::shared_ptr<Event> > events );
             virtual void execute( boost::shared_ptr<BackendPlot> bPl );
         private:
-            std::vector<Event*> events;
+            std::vector<boost::shared_ptr<Event> > events;
     };
 
     /**

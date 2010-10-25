@@ -33,15 +33,14 @@ namespace realtimeplot {
         pBPlot->update_config();
     }
 
-    MultipleEvents::MultipleEvents( std::vector<Event*> event_vector ) {
+    MultipleEvents::MultipleEvents( std::vector<boost::shared_ptr<Event> > event_vector ) {
         events = event_vector;
     }
 
     void MultipleEvents::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
-        for (std::vector<Event*>::iterator it = events.begin(); 
+        for (std::vector<boost::shared_ptr<Event> >::iterator it = events.begin(); 
                 it!=events.end(); ++it) {
             (*it)->execute( pBPlot );
-						delete (*it);
         }
     }
 

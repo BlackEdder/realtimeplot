@@ -65,14 +65,14 @@ namespace realtimeplot {
 					//If the plot is closed (normally only called from backendplot
 					void plot_closed();
 					//Add an event to the event queue
-					void add_event( Event *pEvent );
+					void add_event( boost::shared_ptr<Event> pEvent );
 					int get_queue_size();
 
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
 					boost::shared_ptr<boost::thread> pEventProcessingThrd;
 					boost::mutex m_mutex;
-					std::list<Event*> event_queue;
+					std::list<boost::shared_ptr<Event> > event_queue;
 					int queue_size;
 					int xevent_queue_size;
 

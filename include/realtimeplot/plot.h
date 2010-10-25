@@ -181,7 +181,7 @@ namespace realtimeplot {
              */
             void update_config();
         private:
-            EventHandler *pEventHandler;
+						boost::shared_ptr<EventHandler> pEventHandler;
     };
 
 		/**
