@@ -27,8 +27,6 @@ include RbPlusPlus
 
 ROOT = File.expand_path(File.join(File.dirname(__FILE__), ".."))
 
-@bla = nil
-
 Extension.new "rb_realtimeplot" do |e|
 	e.working_dir = File.join( ROOT, "ext", "generated" )
 	e.sources [
