@@ -77,3 +77,12 @@ install (FILES include/realtimeplot/backend.h
 set(DOXYFILE_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/realtimeplot")
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include(UseDoxygen)
+
+#
+# Ruby library
+#
+#add_custom_target(rb_two_niches.so COMMAND ruby ruby/rb_two_niches.rb DEPENDS
+#    two_niches)
+add_custom_command(TARGET realtimeplot POST_BUILD COMMAND ruby
+    ext/rb_realtimeplot.rb COMMAND ${CMAKE_COMMAND} -E copy
+    ext/generated/rb_realtimeplot.so ext/rb_realtimeplot.so)
