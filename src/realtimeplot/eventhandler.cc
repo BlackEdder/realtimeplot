@@ -27,9 +27,11 @@
 
 namespace realtimeplot {
 
-    EventHandler::EventHandler( PlotConfig config ) {
+    EventHandler::EventHandler( PlotConfig config )
+			: plot_is_closed( false )
+		{
         //create a backend plot
-        pBPlot = new BackendPlot( config, this );
+        pBPlot.reset( new BackendPlot( config, this ) );
 
         queue_size = 0;
         xevent_queue_size = 0;
@@ -45,16 +47,18 @@ namespace realtimeplot {
 		}
 
     void EventHandler::plot_closed() {
-			if (pBPlot!=NULL) {
+			pBPlot = boost::shared_ptr<BackendPlot>();
+			plot_is_closed = true;
+			/*if (pBPlot!=NULL) {
         delete pBPlot;
         pBPlot = NULL;
-			}
+			}*/
     }
 
     void EventHandler::add_event( Event *pEvent ) {
         //ignore if no plot present (for example because plot window was closed)
         //->EventHandler shouldn't crash because it isn't plotting anywhere
-        if (pBPlot!=NULL) {
+        if (!plot_is_closed) {
             //block if many events are present
             if (queue_size>100000) {
                 std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
@@ -75,7 +79,7 @@ namespace realtimeplot {
 
     void EventHandler::process_events() {
         //Ideally event queue would have a blocking get function
-        while (pBPlot!=NULL) {
+        while (!plot_is_closed) {
             if (queue_size==0 && XPending(pBPlot->dpy) == 0) 
                 usleep(100000);
             else if ( XPending(pBPlot->dpy) > 0 ) {

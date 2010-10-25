@@ -28,7 +28,7 @@ namespace realtimeplot {
         config = new_config;
     }
 
-    void ConfigEvent::execute( BackendPlot *pBPlot ) {
+    void ConfigEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
         pBPlot->config = config;
         pBPlot->update_config();
     }
@@ -37,7 +37,7 @@ namespace realtimeplot {
         events = event_vector;
     }
 
-    void MultipleEvents::execute( BackendPlot *pBPlot ) {
+    void MultipleEvents::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
         for (std::vector<Event*>::iterator it = events.begin(); 
                 it!=events.end(); ++it) {
             (*it)->execute( pBPlot );
@@ -50,7 +50,7 @@ namespace realtimeplot {
         color = colour;
     }
 
-    void SetColorEvent::execute( BackendPlot *pBPlot ) {
+    void SetColorEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
         pBPlot->set_color( color );
     }
 
@@ -59,7 +59,7 @@ namespace realtimeplot {
 		y_crd = y;
 	}
 
-	void PointEvent::execute( BackendPlot *pBPlot ) {
+	void PointEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
 		pBPlot->point( x_crd, y_crd );
 	}
 
@@ -70,7 +70,7 @@ namespace realtimeplot {
 		color = col;
 	}
 
-	void LineAddEvent::execute( BackendPlot *pBPlot ) {
+	void LineAddEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
 		pBPlot->line_add( x_crd, y_crd, id, color );
 	}
 
@@ -81,7 +81,7 @@ namespace realtimeplot {
 		nr = i;
 	}
 
-	void NumberEvent::execute( BackendPlot *pBPlot ) {
+	void NumberEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
 		pBPlot->number( x_crd, y_crd, nr );
 	}
 
@@ -89,20 +89,20 @@ namespace realtimeplot {
 		filename = fn;
 	}
 
-	void SaveEvent::execute( BackendPlot *pBPlot ) {
+	void SaveEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
 		pBPlot->save(filename);
 	}
 
 	ClearEvent::ClearEvent() {
 	}
 
-	void ClearEvent::execute( BackendPlot *pBPlot ) {
+	void ClearEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
 		pBPlot->clear();
 	}
 
 	CloseEvent::CloseEvent() {
 	}
-	void CloseEvent::execute( BackendPlot *pBPlot ) {
+	void CloseEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
 		pBPlot->close_window();
 	}
 

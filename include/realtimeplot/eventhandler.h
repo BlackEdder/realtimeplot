@@ -47,7 +47,7 @@ namespace realtimeplot {
     class Event {
         public:
             Event() {}
-            virtual void execute( BackendPlot *bPl ) {}
+            virtual void execute( boost::shared_ptr<BackendPlot> bPl ) {}
     };
 
     /**
@@ -64,12 +64,12 @@ namespace realtimeplot {
 					~EventHandler();
 					//If the plot is closed (normally only called from backendplot
 					void plot_closed();
-                    //Add an event to the event queue
-                    void add_event( Event *pEvent );
-                    int get_queue_size();
+					//Add an event to the event queue
+					void add_event( Event *pEvent );
+					int get_queue_size();
 
 				private:
-					BackendPlot *pBPlot;
+					boost::shared_ptr<BackendPlot> pBPlot;
 					boost::shared_ptr<boost::thread> pEventProcessingThrd;
 					boost::mutex m_mutex;
 					std::list<Event*> event_queue;
@@ -77,6 +77,8 @@ namespace realtimeplot {
 					int xevent_queue_size;
 
 					void process_events();
+
+					bool plot_is_closed;
 		};
 }
 #endif
