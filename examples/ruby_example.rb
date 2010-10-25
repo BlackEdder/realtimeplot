@@ -20,12 +20,12 @@
 #
 #  -------------------------------------------------------------------
 #
-require "rb_realtimeplot"
+require "ext/rb_realtimeplot.so"
 
-pl = Plot.new
-pl.point( 10,10 )
-pl.point( 10,80 )
-100.times do |i|
-    pl.point( 45+20*rand(), i*(0.1) )
-    sleep(0.1)
-end
+pl = RealTimePlot::Plot.new
+pl.point_0( 5,50 )
+pl.point_1( 5,80, RealTimePlot::Color.red )
+#100.times do |i|
+#    pl.point_0( 45+20*rand(), i*(0.1) )
+#    sleep(0.1)
+#end
