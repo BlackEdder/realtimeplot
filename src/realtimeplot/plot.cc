@@ -198,10 +198,11 @@ namespace realtimeplot {
 	 * Histogram
 	 */
 
-	Histogram::Histogram() {
-		no_bins = 4;
-		max_y = 0;
-	}
+	Histogram::Histogram()
+		: no_bins( 4 ),
+			max_y( 0 ),
+			frozen_bins_x( false )
+	{ }
 
 	Histogram::~Histogram() {
 	}
@@ -236,49 +237,60 @@ namespace realtimeplot {
 
 	void Histogram::fill_bins() {
 		sort( data.begin(), data.end() );
-	
-		bins_x.clear();
+
+		if (!frozen_bins_x) {
+			bins_x.clear();
+
+			if (data.front() != data.back() ) {
+				bin_width = (data.back()-data.front())/(no_bins-1);
+				for (int i=0; i<no_bins; ++i) {
+					bins_x.push_back( data.front()+i*bin_width );
+				}
+
+				min_x = data.front()-0.5*bin_width;
+				max_x = data.back()+0.5*bin_width;
+			} else {
+				//choose arbitrary bin_width
+				bin_width = 1;
+				for (int i=0; i<no_bins; ++i) {
+					bins_x.push_back( data.front()+(i-no_bins/2)*bin_width );
+				}
+				min_x = data.front();
+				max_x = data.front();
+			}
+		}
 		bins_y.clear();
+
+		for (size_t i=0; i<bins_x.size(); ++i) {
+			bins_y.push_back( 0 );
+		}
 		max_y = 0;
 
-		if (data.front() != data.back() ) {
-			bin_width = (data.back()-data.front())/(no_bins-1);
-			for (int i=0; i<no_bins; ++i) {
-				bins_x.push_back( data.front()+i*bin_width );
-				bins_y.push_back( 0 );
-			}
-
-		min_x = data.front()-0.5*bin_width;
-			max_x = data.back()+0.5*bin_width;
-		} else {
-			//choose arbitrary bin_width
-			bin_width = 1;
-			for (int i=0; i<no_bins; ++i) {
-				bins_x.push_back( data.front()+(i-no_bins/2)*bin_width );
-				bins_y.push_back( 0 );
-			}
-			min_x = data.front();
-			max_x = data.front();
-		}
 		int current_bin = 0;
 		//should use iterator
-		for (unsigned int i=0; i<data.size(); ++i) {
+		for (size_t i=0; i<data.size(); ++i) {
 			while (data[i] > bins_x[current_bin]+0.5*bin_width) {
 				++current_bin;
 			}
-			++bins_y[current_bin];
-			if (bins_y[current_bin]>max_y)
-				max_y = bins_y[current_bin];
+			if (current_bin<bins_x.size()) {
+				++bins_y[current_bin];
+				if (bins_y[current_bin]>max_y)
+					max_y = bins_y[current_bin];
+			}
 		}
 	}
 
 	void Histogram::set_counts_data( std::vector<double> values,
 			std::vector<int> counts, bool show ) {
+		bins_x.clear();
 		for (unsigned int i=0;i<values.size();++i) {
+			bins_x.push_back( values[i] ); //This assumes that values are sorted!
 			for (int j=0;j<counts[i];++j) {
 				data.push_back( values[i] );
 			}
 		}
+		bin_width = bins_x[1]-bins_x[0];
+		frozen_bins_x = true;
 		fill_bins();
 		if (show)
 			plot();

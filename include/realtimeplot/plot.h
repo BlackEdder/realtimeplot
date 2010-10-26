@@ -225,14 +225,6 @@ namespace realtimeplot {
 				 * Will automatically calculate the ranges. If show == true (default) it will
 				 * immediately show the histogram.
 				 *
-				 * WARNING: Discovered important bug, since it calculates it own bin. It should calculate
-				 * bins that are similar to the provided bins. Do not use!
-				 * \todo Fix this.
-				 *
-				 * Also currently not possible to combine with the add_data method, since that might call
-				 * fill_bins()
-				 * \todo Stop fill_bins from recalculating when set_counts_data has been used before
-				 * 
 				 */
 				void set_counts_data( std::vector<double> values, 
 						std::vector<int> counts, bool show = true );
@@ -246,6 +238,15 @@ namespace realtimeplot {
 
 				void add_data( double data, bool show = true );
 			private:
+				bool frozen_bins_x;
+				/**
+				 * \brief Fill bins
+				 *
+				 * Terribly inefficient at the moment, since it always redos all data
+				 * \todo Fix inefficiency.
+				 *
+				 * \todo Fix dropping data outside bin range when frozen_bins_x is set end
+				 */
 				void fill_bins();
 				void plot();
 		};
