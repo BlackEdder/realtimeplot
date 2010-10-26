@@ -274,7 +274,6 @@ namespace realtimeplot {
 
 	void Histogram::set_counts_data( std::vector<double> values,
 			std::vector<int> counts, bool show ) {
-		data.clear();
 		for (unsigned int i=0;i<values.size();++i) {
 			for (int j=0;j<counts[i];++j) {
 				data.push_back( values[i] );

@@ -190,8 +190,17 @@ namespace realtimeplot {
 		/**
 		 \brief Class to produce histograms from data, will calculate range etc
 
-		 Will only update/show when one calls Histogram::show
-		 Also allows to add a new data point to the histogram on the fly.
+		 Also allows to add a new data point to the histogram on the fly. Histograms are 
+		 relatively costly in that they need to redraw everytime a new point is added. As
+		 such it can be usefull to let it redraw every number of points by mostly calling
+		 add_data( new_data, false ) and only calling add_data( new_data, true ) or plot()
+		 when you want to actually redraw.
+
+		 They also need to recalculate the bins everytime a point is added that falls 
+		 outside the current range. Therefore, it also needs to keep around a vector
+		 containing all the old data. Which could in theory lead to memory problems. 
+		 
+		 \todo This could be solved by making an algorithm that updates range until things seem to "quiet" down and from that point onward only keeps bins and total counts around. If a point falls outside the range just or not plot it or add a bin.
 		 */
 		class Histogram : public Plot {
 			public:
@@ -211,7 +220,7 @@ namespace realtimeplot {
 				 */
 				void set_data( std::vector<double> data, bool show = true );
 				/**
-				 * \brief Set data based on two vectors, one containing values and the other how often those values were founs (counts)
+				 * \brief Set data based on two vectors, one containing values and the other how often those values were found (counts)
 				 *
 				 * Will automatically calculate the ranges. If show == true (default) it will
 				 * immediately show the histogram.
