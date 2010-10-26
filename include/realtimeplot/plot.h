@@ -192,12 +192,12 @@ namespace realtimeplot {
 
 		 Also allows to add a new data point to the histogram on the fly. Histograms are 
 		 relatively costly in that they need to redraw everytime a new point is added. As
-		 such it can be usefull to let it redraw every number of points by mostly calling
+		 such it can be usefull to let it redraw sometimes by mostly calling
 		 add_data( new_data, false ) and only calling add_data( new_data, true ) or plot()
 		 when you want to actually redraw.
 
-		 They also need to recalculate the bins everytime a point is added that falls 
-		 outside the current range. Therefore, it also needs to keep around a vector
+		 For the histogram we also need to recalculate the bins everytime a point is added that falls 
+		 outside the current range. Therefore, the class keeps around a vector
 		 containing all the old data. Which could in theory lead to memory problems. 
 		 
 		 \todo This could be solved by making an algorithm that updates range until things seem to "quiet" down and from that point onward only keeps bins and total counts around. If a point falls outside the range just or not plot it or add a bin.
@@ -224,6 +224,15 @@ namespace realtimeplot {
 				 *
 				 * Will automatically calculate the ranges. If show == true (default) it will
 				 * immediately show the histogram.
+				 *
+				 * WARNING: Discovered important bug, since it calculates it own bin. It should calculate
+				 * bins that are similar to the provided bins. Do not use!
+				 * \todo Fix this.
+				 *
+				 * Also currently not possible to combine with the add_data method, since that might call
+				 * fill_bins()
+				 * \todo Stop fill_bins from recalculating when set_counts_data has been used before
+				 * 
 				 */
 				void set_counts_data( std::vector<double> values, 
 						std::vector<int> counts, bool show = true );
