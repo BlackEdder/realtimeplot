@@ -251,6 +251,29 @@ namespace realtimeplot {
 				void plot();
 		};
 
+		/**
+		 * \brief Produce surface plots
+		 *
+		 * For now the implementation is quite limited, with always a gray scale palette.
+		 */
+		class SurfacePlot : public Plot {
+			public:
+				size_t resolution;
+
+				//! Vector containing all the counts/data, with [resolution*x+y]
+				std::vector<size_t> data;
+				
+				size_t max_z;
+
+				SurfacePlot( float min_x, float max_x, float min_y, float max_y );
+				void add_data( float x, float y );
+
+			private:
+				float width_x, width_y;
+				std::vector<float> bins_x;
+				std::vector<float> bins_y;
+		};
+
 
 }
 #endif

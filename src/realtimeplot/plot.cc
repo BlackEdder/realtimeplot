@@ -318,4 +318,25 @@ namespace realtimeplot {
 		}
 	}
 
+	/*
+	 * SurfacePlot
+	 */
+	SurfacePlot::SurfacePlot( float min_x, float max_x, float min_y, float max_y )
+		: resolution( 20 ),
+			max_z( 1 )
+	{ 
+		PlotConfig new_config = PlotConfig();
+		new_config.min_x = min_x;
+		new_config.max_x = max_x;
+		new_config.min_y = min_y;
+		new_config.max_y = max_y;
+		reset( new_config );
+	}
+
+	void SurfacePlot::add_data( float x, float y )
+	{
+	}
+
+
+
 }

@@ -45,7 +45,7 @@ inline double rnorm( double mean, double sigma ) {
 int main() {
 	SurfacePlot pl = SurfacePlot( -1, 1, -1, 1 );
 	for( size_t i=0; i<1000; ++i ) {
-		pl.point( rnorm( 0, 0.1 ), rnorm( 0, 0.2 ) );
+		pl.add_data( rnorm( 0, 0.1 ), rnorm( 0, 0.2 ) );
 		/*std::cout << rnorm( 0, 0.1 ) << std::endl;
 		std::cout << rnorm( 0, 0.2 ) << std::endl;*/
 	}
