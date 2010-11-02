@@ -323,6 +323,7 @@ namespace realtimeplot {
 	 */
 	SurfacePlot::SurfacePlot( float min_x, float max_x, float min_y, float max_y )
 		: resolution( 20 ),
+			data( resolution*resolution ), 
 			max_z( 1 )
 	{ 
 		PlotConfig new_config = PlotConfig();
@@ -331,12 +332,44 @@ namespace realtimeplot {
 		new_config.min_y = min_y;
 		new_config.max_y = max_y;
 		reset( new_config );
+		width_x = (max_x-min_x)/(resolution-1);
+		width_y = (max_y-min_y)/(resolution-1);
+		for (size_t i=0; i<(resolution-2); ++i) {
+			bins_x.push_back( min_x+width_x*i );
+			bins_y.push_back( min_y+width_y*i );
+			for (size_t j=0; j<(resolution-2); ++j) {
+				data[i*resolution+j] = 0;
+			}
+		}
 	}
 
-	void SurfacePlot::add_data( float x, float y )
+	void SurfacePlot::add_data( float x, float y, bool show )
 	{
+		for (size_t i=0; i<bins_x.size(); ++i) {
+			if (x < bins_x[i]) {
+				for (size_t j=0; j<bins_y.size(); ++j) {
+					if (y < bins_y[j]) {
+						++data[(i-1)*resolution+(j-1)];
+						if (data[(i-1)*resolution+(j-1)]>max_z)
+							++max_z;
+						break;
+					}
+				}
+				break;
+			}
+		}
+		if (show)
+			plot();
 	}
 
-
-
+	void SurfacePlot::plot() {
+		for (size_t i=0; i<bins_x.size(); ++i) {
+			for (size_t j=0; j<bins_y.size(); ++j) {
+				float shade = 1-double(data[i*resolution+j])/max_z;
+				Color color = Color( shade, shade, shade, 1 );
+				point( bins_x[i] + 0.5*width_x,
+						bins_y[j] + 0.5*width_y, color);
+			}
+		}
+	}
 }

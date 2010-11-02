@@ -44,10 +44,11 @@ inline double rnorm( double mean, double sigma ) {
 
 int main() {
 	SurfacePlot pl = SurfacePlot( -1, 1, -1, 1 );
-	for( size_t i=0; i<1000; ++i ) {
-		pl.add_data( rnorm( 0, 0.1 ), rnorm( 0, 0.2 ) );
+	for( size_t i=0; i<10000; ++i ) {
+		pl.add_data( rnorm( 0, 0.2 ), rnorm( 0, 0.4 ), false );
 		/*std::cout << rnorm( 0, 0.1 ) << std::endl;
 		std::cout << rnorm( 0, 0.2 ) << std::endl;*/
 	}
+	pl.add_data( rnorm( 0, 0.2 ), rnorm( 0, 0.4 ), true );
 	return 0;
 }

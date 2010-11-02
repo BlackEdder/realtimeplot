@@ -266,10 +266,13 @@ namespace realtimeplot {
 				size_t max_z;
 
 				SurfacePlot( float min_x, float max_x, float min_y, float max_y );
-				void add_data( float x, float y );
+				void add_data( float x, float y, bool show=true );
+
+				void plot();
 
 			private:
 				float width_x, width_y;
+				//! Actually store lower bounds of the bins.
 				std::vector<float> bins_x;
 				std::vector<float> bins_y;
 		};
