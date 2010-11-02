@@ -401,6 +401,26 @@ namespace realtimeplot {
         display();
     }
 
+		void BackendPlot::rectangle( float min_x, float min_y, float width_x, float width_y, 
+				bool fill, Color color ) {
+        if (!within_plot_bounds(min_x,min_y)) {
+            if (!config.fixed_plot_area)
+                rolling_update(min_x, min_y);
+        }
+        /*if (!within_plot_bounds(max_x,max_y)) {
+            if (!config.fixed_plot_area)
+                rolling_update(max_x, max_y);
+        }*/
+        transform_to_plot_units(); 
+        plot_context->rectangle( min_x, min_y, width_x, width_y );
+        transform_to_device_units( plot_context );
+				if (fill) 
+					plot_context->fill_preserve();
+				plot_context->stroke();
+        display();
+   	}
+
+
     void BackendPlot::line_add( float x, float y, int id, Color color ) {
         if (!within_plot_bounds(x,y)) {
             if (!config.fixed_plot_area)

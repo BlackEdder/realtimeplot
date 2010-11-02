@@ -92,6 +92,14 @@ namespace realtimeplot {
             float x_crd, y_crd;
     };
 
+    class RectangleEvent : public Event {
+        public:
+            RectangleEvent( float min_x, float min_y, float width_x, float width_y );
+            virtual void execute( boost::shared_ptr<BackendPlot> bPl );
+        private:
+						float min_x, min_y, width_x, width_y;
+    };
+
  		/**
 		 \brief Event that adds a point to an existing line
 

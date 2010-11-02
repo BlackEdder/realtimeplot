@@ -162,6 +162,8 @@ namespace realtimeplot {
 
             void point( float x, float y );
             void point( float x, float y, Color color );
+						void rectangle( float x, float y, float width_x, float width_y,
+								bool fill = true, Color color = Color::black() );
 						//void line_add( float x, float y, int id=-1 );
             void line_add( float x, float y, int id=-1, Color color=Color::black() );
             void number( float x, float y, float i );
@@ -265,7 +267,8 @@ namespace realtimeplot {
 				
 				size_t max_z;
 
-				SurfacePlot( float min_x, float max_x, float min_y, float max_y );
+				SurfacePlot( float min_x, float max_x, float min_y, float max_y, 
+						size_t resolution = 20 );
 				void add_data( float x, float y, bool show=true );
 
 				void plot();

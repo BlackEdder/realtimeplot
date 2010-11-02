@@ -139,7 +139,7 @@ namespace realtimeplot {
         pEventHandler->add_event( boost::shared_ptr<Event>( new PointEvent(x, y) ) ); 
     }
 
-    /**
+		/**
      * \brief Function to plot a point of a specific color
      *
      * Default color of the point is black.
@@ -157,6 +157,17 @@ namespace realtimeplot {
 						boost::shared_ptr<Event>( new MultipleEvents( events ) ));
     }
 
+		void Plot::rectangle( float min_x, float min_y, float width_x, float width_y,
+				bool fill, Color color ) {
+			std::vector<boost::shared_ptr<Event> > events(3);
+			events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
+			events[1] = boost::shared_ptr<Event>( new RectangleEvent( 
+						min_x, min_y, width_x, width_y ) );
+			events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
+			pEventHandler->add_event( 
+					boost::shared_ptr<Event>( new MultipleEvents( events ) ));
+		}
+	
 	/*void Plot::line_add( float x, float y, int id ) {
 		line_add( x, y, id, Color::black() );
 	}*/
@@ -321,8 +332,9 @@ namespace realtimeplot {
 	/*
 	 * SurfacePlot
 	 */
-	SurfacePlot::SurfacePlot( float min_x, float max_x, float min_y, float max_y )
-		: resolution( 20 ),
+	SurfacePlot::SurfacePlot( float min_x, float max_x, float min_y, float max_y,
+			size_t resolution )
+		: resolution( resolution ),
 			data( resolution*resolution ), 
 			max_z( 1 )
 	{ 
@@ -367,8 +379,8 @@ namespace realtimeplot {
 			for (size_t j=0; j<bins_y.size(); ++j) {
 				float shade = 1-double(data[i*resolution+j])/max_z;
 				Color color = Color( shade, shade, shade, 1 );
-				point( bins_x[i] + 0.5*width_x,
-						bins_y[j] + 0.5*width_y, color);
+				rectangle( bins_x[i], bins_y[j], width_x, width_y, true, color );
+
 			}
 		}
 	}
