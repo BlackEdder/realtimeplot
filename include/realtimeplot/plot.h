@@ -256,6 +256,9 @@ namespace realtimeplot {
 		/**
 		 * \brief Produce surface plots
 		 *
+		 * Currently actually more of a "3d" histogram, where colors indicate number of points
+		 * within a certain "rectangle" of values
+		 *
 		 * For now the implementation is quite limited, with always a gray scale palette.
 		 */
 		class SurfacePlot : public Plot {
