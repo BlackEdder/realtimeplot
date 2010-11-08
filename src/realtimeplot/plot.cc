@@ -343,13 +343,14 @@ namespace realtimeplot {
 		new_config.max_x = max_x;
 		new_config.min_y = min_y;
 		new_config.max_y = max_y;
+		new_config.fixed_plot_area = true;
 		reset( new_config );
 		width_x = (max_x-min_x)/(resolution-1);
 		width_y = (max_y-min_y)/(resolution-1);
-		for (size_t i=0; i<(resolution-2); ++i) {
+		for (size_t i=0; i<(resolution); ++i) {
 			bins_x.push_back( min_x+width_x*i );
 			bins_y.push_back( min_y+width_y*i );
-			for (size_t j=0; j<(resolution-2); ++j) {
+			for (size_t j=0; j<(resolution); ++j) {
 				data[i*resolution+j] = 0;
 			}
 		}
@@ -357,17 +358,20 @@ namespace realtimeplot {
 
 	void SurfacePlot::add_data( float x, float y, bool show )
 	{
-		for (size_t i=0; i<bins_x.size(); ++i) {
-			if (x < bins_x[i]) {
-				for (size_t j=0; j<bins_y.size(); ++j) {
-					if (y < bins_y[j]) {
-						++data[(i-1)*resolution+(j-1)];
-						if (data[(i-1)*resolution+(j-1)]>max_z)
-							++max_z;
-						break;
+		if (x > bins_x[0] && x < bins_x.back() && 
+				y > bins_y[0] && y < bins_y.back() ) {
+			for (size_t i=1; i<bins_x.size(); ++i) {
+				if (x < bins_x[i]) {
+					for (size_t j=1; j<bins_y.size(); ++j) {
+						if (y < bins_y[j]) {
+							++data[(i-1)*resolution+(j-1)];
+							if (data[(i-1)*resolution+(j-1)]>max_z)
+								++max_z;
+							break;
+						}
 					}
+					break;
 				}
-				break;
 			}
 		}
 		if (show)
