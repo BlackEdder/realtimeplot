@@ -109,6 +109,8 @@ namespace realtimeplot {
     class PlotConfig {
         public:
             /// All the needed variables
+						//! Scale to window size?
+						bool scaling;
             int pixel_width, pixel_height;
             int margin_x, margin_y;
             int nr_of_ticks, ticks_length;
@@ -120,9 +122,11 @@ namespace realtimeplot {
             std::string xlabel, ylabel, font, title;
             bool fixed_plot_area;
 						int label_font_size, numerical_labels_font_size;
-
+						
             /// Constructor that sets default values
-            PlotConfig() {
+            PlotConfig()
+							: scaling( true )
+						{
 								margin_x = 60;
 								margin_y = 60;
                 min_x = 0;

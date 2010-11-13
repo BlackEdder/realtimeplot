@@ -612,7 +612,7 @@ namespace realtimeplot {
 
         transform_to_device_units( context );
         context->translate( x, y );
-        context->scale( double(xSurface->get_width()-config.margin_y)/plot_area_width,
+	       context->scale( double(xSurface->get_width()-config.margin_y)/plot_area_width,
                 double(xSurface->get_height()-config.margin_x)/plot_area_height );
 
         //copy the plot onto our temporary image surface
@@ -683,7 +683,8 @@ namespace realtimeplot {
     }
 
     void BackendPlot::scale_xsurface( double width, double height ) {
-        xSurface->set_size( width, height );
+        if (config.scaling)
+					xSurface->set_size( width, height );
         xContext = Cairo::Context::create( xSurface );
         draw_axes_surface();
         //xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
