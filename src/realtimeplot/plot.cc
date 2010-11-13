@@ -167,9 +167,9 @@ namespace realtimeplot {
 			pEventHandler->add_event( 
 					boost::shared_ptr<Event>( new MultipleEvents( events ) ));
 		}
-	
+
 	/*void Plot::line_add( float x, float y, int id ) {
-		line_add( x, y, id, Color::black() );
+		line_add( x, y, id, Color::Black() );
 	}*/
 	
 	void Plot::line_add( float x, float y, int id, Color color ) {
@@ -203,6 +203,12 @@ namespace realtimeplot {
 	void Plot::update_config() {
 		boost::shared_ptr<Event> pEvent( new ConfigEvent( config ) );
 		pEventHandler->add_event( pEvent );
+	}
+
+	void Plot::close() {
+		pEventHandler->plot_closed();
+		//boost::shared_ptr<Event> pEvent( new CloseEvent() );
+		//pEventHandler->add_event( pEvent );
 	}
 
 	/*

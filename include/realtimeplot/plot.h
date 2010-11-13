@@ -185,7 +185,15 @@ namespace realtimeplot {
              * lead to wrong plots
              */
             void update_config();
-        private:
+
+						/**
+						 * \brief Close the plot
+						 *
+						 * By default the plot stays open, to allow one to view a plot after
+						 * the program has finished. This closes the plot if one wants to.
+						 */
+						void close();
+					private:
 						boost::shared_ptr<EventHandler> pEventHandler;
     };
 

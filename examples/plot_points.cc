@@ -61,5 +61,8 @@ int main() {
     //like move the plot (arrow keys)
     pl.point( 0.2, -15 );
     pl.save( "plot_points.png" );
+
+		sleep(1);
+		pl.close();
 	return 0;
 }
