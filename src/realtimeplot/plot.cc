@@ -333,7 +333,7 @@ namespace realtimeplot {
 				!(config.max_y >= max_y && config.max_y <= 2*max_y) ||
 				!(config.max_x >= max_x && config.max_x <= max_x + 4*bin_width	) ||
 				!(config.min_x <= min_x && config.min_x >= min_x - 4*bin_width	) ) {
-			PlotConfig new_config = PlotConfig();
+			PlotConfig new_config = PlotConfig(config);
 			new_config.min_x = bins_x.front()-bin_width;
 			new_config.max_x = bins_x.back()+bin_width;
 			new_config.max_y = 1.1*max_y;
