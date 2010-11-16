@@ -206,9 +206,9 @@ namespace realtimeplot {
 	}
 
 	void Plot::close() {
-		pEventHandler->plot_closed();
-		//boost::shared_ptr<Event> pEvent( new CloseEvent() );
-		//pEventHandler->add_event( pEvent );
+		//pEventHandler->plot_closed();
+		boost::shared_ptr<Event> pEvent( new CloseEvent() );
+		pEventHandler->add_event( pEvent );
 	}
 
 	/*
@@ -220,6 +220,20 @@ namespace realtimeplot {
 			max_y( 0 ),
 			frozen_bins_x( false )
 	{ }
+
+	Histogram::Histogram( double min_x, double max_x, size_t no_bins )
+		: no_bins( no_bins ),
+			max_y( 0 ),
+			min_x( min_x ),
+			max_x( max_x ),
+			frozen_bins_x( true )
+	{ 
+		bin_width = (max_x-min_x)/(no_bins-1);
+		for (int i=0; i<no_bins; ++i) {
+			bins_x.push_back( min_x+i*bin_width );
+		}
+	}
+	
 
 	Histogram::~Histogram() {
 	}

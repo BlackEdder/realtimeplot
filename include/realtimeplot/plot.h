@@ -114,6 +114,7 @@ namespace realtimeplot {
             int pixel_width, pixel_height;
             int margin_x, margin_y;
             int nr_of_ticks, ticks_length;
+						//! Size of a point (4 by default)
             int point_size;
             float min_x, max_x;
             float min_y, max_y;
@@ -225,6 +226,8 @@ namespace realtimeplot {
 				double bin_width;
 
 				Histogram();
+				//! Creates a histogram with a set min_x and max_x
+				Histogram( double min_x, double max_x, size_t no_bins );
 				~Histogram();
 				/**
 				 * \brief Set data based on a vector containing all the measurements
