@@ -225,6 +225,9 @@ namespace realtimeplot {
 				std::vector<double> bins_y;
 				double bin_width;
 
+				//! If true plot frequencies, instead of counts
+				bool frequency;
+
 				Histogram();
 				//! Creates a histogram with a set min_x and max_x
 				Histogram( double min_x, double max_x, size_t no_bins );

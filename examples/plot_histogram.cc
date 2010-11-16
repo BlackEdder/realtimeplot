@@ -34,6 +34,7 @@ int main() {
 	}
 
 	Histogram hist = Histogram();
+	hist.frequency = true;
 	hist.set_data( data );
 	sleep(1);
 	hist.add_data( 1 );
@@ -43,6 +44,7 @@ int main() {
 	Histogram hist2 = Histogram();
 	hist2.add_data( 1 );
 	sleep(1);
+	hist2.add_data( 5 );
 	hist2.add_data( 5 );
 	sleep(1);
 

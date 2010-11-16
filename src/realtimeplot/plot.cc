@@ -218,6 +218,7 @@ namespace realtimeplot {
 	Histogram::Histogram()
 		: no_bins( 4 ),
 			max_y( 0 ),
+			frequency( false ),
 			frozen_bins_x( false )
 	{ }
 
@@ -226,6 +227,7 @@ namespace realtimeplot {
 			max_y( 0 ),
 			min_x( min_x ),
 			max_x( max_x ),
+			frequency( false ),
 			frozen_bins_x( true )
 	{ 
 		bin_width = (max_x-min_x)/(no_bins-1);
@@ -330,22 +332,28 @@ namespace realtimeplot {
 
 	void Histogram::plot() {
 		if ( (min_x == max_x) || 
-				!(config.max_y >= max_y && config.max_y <= 2*max_y) ||
+				!(frequency && config.max_y >= max_y && config.max_y <= 2*max_y) ||
 				!(config.max_x >= max_x && config.max_x <= max_x + 4*bin_width	) ||
 				!(config.min_x <= min_x && config.min_x >= min_x - 4*bin_width	) ) {
 			PlotConfig new_config = PlotConfig(config);
 			new_config.min_x = bins_x.front()-bin_width;
 			new_config.max_x = bins_x.back()+bin_width;
-			new_config.max_y = 1.1*max_y;
+			if (!frequency)
+				new_config.max_y = 1.1*max_y;
+			else
+				new_config.max_y = 1.1;
 
 			reset( new_config );
 		} else {
 			clear();
 		}
 		for (unsigned int i=0; i<bins_x.size(); ++i) {
+			double height = bins_y[i];
+			if (frequency)
+				height/=data.size();
 			line_add( bins_x[i]-0.5*bin_width, 0, -1 );
-			line_add( bins_x[i]-0.5*bin_width, bins_y[i], -1 );
-			line_add( bins_x[i]+0.5*bin_width, bins_y[i], -1 );
+			line_add( bins_x[i]-0.5*bin_width, height, -1 );
+			line_add( bins_x[i]+0.5*bin_width, height, -1 );
 			line_add( bins_x[i]+0.5*bin_width, 0, -1 );
 		}
 	}
