@@ -231,6 +231,7 @@ namespace realtimeplot {
 		bin_width = (max_x-min_x)/(no_bins-1);
 		for (int i=0; i<no_bins; ++i) {
 			bins_x.push_back( min_x+i*bin_width );
+			bins_y.push_back( 0 );
 		}
 	}
 	
