@@ -301,6 +301,22 @@ namespace realtimeplot {
 				std::vector<float> bins_y;
 		};
 
+		/**
+		 * \brief Plot a height map from x,y,z points
+		 *
+		 * Using Delauney triangulation, so won't need to be a grid of x,y points
+		 * Need an algorithm that allows us to add point for point (probably quickhull
+		 * can do this)
+		 *
+		 * That algorithm should run in the background process.
+		 */
+		class HeightMap : public Plot {
+			public:
+				HeightMap( float min_x, float max_x, float min_y, float max_y );
+				void add_point( float x, float y, float z, bool show=true );
+				void plot();
+		};
+
 
 }
 #endif
