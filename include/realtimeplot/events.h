@@ -62,8 +62,10 @@ namespace realtimeplot {
 		 */
 		class OpenPlotEvent : public Event {
 			public:
-				OpenPlotEvent();
+				OpenPlotEvent( PlotConfig plot_conf );
 				virtual void execute( boost::shared_ptr<BackendPlot> bPl );
+			private:
+				PlotConfig plot_conf;
 		};
 
     /**

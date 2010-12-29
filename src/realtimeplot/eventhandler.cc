@@ -32,8 +32,8 @@ namespace realtimeplot {
 				xevent_queue_size( 0 ),
 				plot_is_closed( false )
 		{
-        //create a backend plot
-        pBPlot.reset( new BackendPlot( config, this ) );
+        //This should be done explicitely with an openplotevent
+        //pBPlot.reset( new BackendPlot( config, this ) );
 
         //start processing thread
         pEventProcessingThrd = boost::shared_ptr<boost::thread>( 

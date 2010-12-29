@@ -44,7 +44,9 @@ namespace realtimeplot {
         }
     }
 
-		OpenPlotEvent::OpenPlotEvent() {}
+		OpenPlotEvent::OpenPlotEvent( PlotConfig plot_conf ) :
+			plot_conf( plot_conf )
+		{}
 		void OpenPlotEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
 			pBPlot->reset( new Plot( plot_conf ) );
 		}
