@@ -33,6 +33,8 @@ namespace realtimeplot {
 				plot_is_closed( false )
 		{
         //This should be done explicitely with an openplotevent
+				//plot_is_closed should be true then, but no way for the event to set it to 
+				//false
         //pBPlot.reset( new BackendPlot( config, this ) );
 
         //start processing thread
