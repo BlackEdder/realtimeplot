@@ -44,6 +44,11 @@ namespace realtimeplot {
         }
     }
 
+		OpenPlotEvent::OpenPlotEvent() {}
+		void OpenPlotEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+			pBPlot->reset( new Plot( plot_conf ) );
+		}
+
 
     SetColorEvent::SetColorEvent( Color colour ) {
         color = colour;

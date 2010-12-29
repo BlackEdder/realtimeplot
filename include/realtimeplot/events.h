@@ -56,6 +56,15 @@ namespace realtimeplot {
         private:
             std::vector<boost::shared_ptr<Event> > events;
     };
+		
+		/**
+		 * \brief Opens a plot
+		 */
+		class OpenPlotEvent : public Event {
+			public:
+				OpenPlotEvent();
+				virtual void execute( boost::shared_ptr<BackendPlot> bPl );
+		};
 
     /**
      * \brief Sets the color used to draw on the plot
