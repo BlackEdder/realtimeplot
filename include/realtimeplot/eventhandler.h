@@ -68,6 +68,7 @@ namespace realtimeplot {
 					void add_event( boost::shared_ptr<Event> pEvent );
 					int get_queue_size();
 
+					bool plot_is_closed;
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
 					boost::shared_ptr<boost::thread> pEventProcessingThrd;
@@ -78,7 +79,6 @@ namespace realtimeplot {
 
 					void process_events();
 
-					bool plot_is_closed;
 		};
 }
 #endif

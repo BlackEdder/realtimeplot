@@ -198,7 +198,7 @@ namespace realtimeplot {
 						 * the program has finished. This closes the plot if one wants to.
 						 */
 						void close();
-					private:
+					//private:
 						boost::shared_ptr<EventHandler> pEventHandler;
     };
 

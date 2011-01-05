@@ -40,8 +40,10 @@ int main() {
 	hist.add_data( 1 );
 	sleep(1);
 	hist.add_data( 5 );
-	sleep(1);
+	sleep(2);
+	std::cout << "bla " << std::endl;
 	Histogram hist2 = Histogram();
+	std::cout << "bla 2" << std::endl;
 	hist2.add_data( 1 );
 	sleep(1);
 	hist2.add_data( 5 );

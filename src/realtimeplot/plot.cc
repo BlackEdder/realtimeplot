@@ -195,10 +195,15 @@ namespace realtimeplot {
 
 	//For now just closes old plot window and opens a new one
 	void Plot::reset( PlotConfig conf ) {
-		pEventHandler->add_event( boost::shared_ptr<Event>( new CloseEvent() ));
+		std::vector<boost::shared_ptr<Event> > events(2);
+		events[0] = boost::shared_ptr<Event>( new CloseEvent() );
 		//delete pEventHandler;
 		config = conf;
-		pEventHandler.reset( new EventHandler( config ) );
+		events[1] = boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+						pEventHandler ) );
+		//pEventHandler.reset( new EventHandler( config ) );
+		pEventHandler->add_event( 
+					boost::shared_ptr<Event>( new MultipleEvents( events ) ));
 	}
 
 	void Plot::clear() {
@@ -225,8 +230,10 @@ namespace realtimeplot {
 		: no_bins( 4 ),
 			max_y( 0 ),
 			frequency( false ),
-			frozen_bins_x( false )
-	{ }
+			frozen_bins_x( false ),
+			Plot()
+	{
+	}
 
 	Histogram::Histogram( double min_x, double max_x, size_t no_bins )
 		: no_bins( no_bins ),
@@ -234,7 +241,8 @@ namespace realtimeplot {
 			min_x( min_x ),
 			max_x( max_x ),
 			frequency( false ),
-			frozen_bins_x( true )
+			frozen_bins_x( true ),
+			Plot()
 	{ 
 		bin_width = (max_x-min_x)/(no_bins-1);
 		for (int i=0; i<no_bins; ++i) {
