@@ -123,14 +123,16 @@ namespace realtimeplot {
 		: config( PlotConfig() ),
 			pEventHandler( new EventHandler( config ) )
 	{ 
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config ) ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+						pEventHandler ) ) );
 	}
 
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
 			pEventHandler( new EventHandler( config ) )
 	{ 
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config ) ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+						pEventHandler ) ) );
 	}
 
 	Plot::~Plot() {

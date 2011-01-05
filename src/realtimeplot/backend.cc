@@ -28,9 +28,10 @@ namespace realtimeplot {
      * BackendPlot
      */
 
-    BackendPlot::BackendPlot(PlotConfig conf, EventHandler *pEH) {
+    BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) :
+			pEventHandler( pEventHandler )
+	{
         config = conf;
-        pEventHandler = pEH;
 
         //calculate minimum plot area width/height based on aspect ratio
         double x = 500/sqrt(config.aspect_ratio);

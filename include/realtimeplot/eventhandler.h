@@ -47,7 +47,7 @@ namespace realtimeplot {
     class Event {
         public:
             Event() {}
-            virtual void execute( boost::shared_ptr<BackendPlot> bPl ) {}
+            virtual void execute( boost::shared_ptr<BackendPlot> &bPl ) {}
     };
 
     /**

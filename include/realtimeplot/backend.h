@@ -99,7 +99,7 @@ namespace realtimeplot {
             PlotConfig config;
 
             //pointer to the eventhandler class, so we can check the queue
-            EventHandler *pEventHandler;
+						boost::shared_ptr<EventHandler> pEventHandler;
 
             //Keep track of the maximum/minimum values of the plot_surface in plot units
             float plot_surface_max_x, plot_surface_min_x;
@@ -117,7 +117,7 @@ namespace realtimeplot {
             //Constructor, takes a config pointer
             //creates the surfaces and contexts
             //starts the event_loop
-            BackendPlot( PlotConfig config, EventHandler *pEventHandler );
+            BackendPlot( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler );
 
             //Destructor, wait for event_loop thread to finish (join)
             ~BackendPlot();

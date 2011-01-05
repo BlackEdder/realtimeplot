@@ -28,7 +28,7 @@ namespace realtimeplot {
         config = new_config;
     }
 
-    void ConfigEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+    void ConfigEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
         pBPlot->config = config;
         pBPlot->update_config();
     }
@@ -37,18 +37,22 @@ namespace realtimeplot {
         events = event_vector;
     }
 
-    void MultipleEvents::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+    void MultipleEvents::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
         for (std::vector<boost::shared_ptr<Event> >::iterator it = events.begin(); 
                 it!=events.end(); ++it) {
             (*it)->execute( pBPlot );
         }
     }
 
-		OpenPlotEvent::OpenPlotEvent( PlotConfig plot_conf ) :
-			plot_conf( plot_conf )
-		{}
-		void OpenPlotEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
-			pBPlot.reset( new BackendPlot( plot_conf ) );
+		OpenPlotEvent::OpenPlotEvent( PlotConfig plot_conf, 
+				boost::shared_ptr<EventHandler> pEventHandler ) :
+			plot_conf( plot_conf ),
+			pEventHandler( pEventHandler )
+		{
+		}
+
+		void OpenPlotEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+			pBPlot.reset( new BackendPlot( plot_conf, pEventHandler ) );
 		}
 
 
@@ -56,7 +60,7 @@ namespace realtimeplot {
         color = colour;
     }
 
-    void SetColorEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+    void SetColorEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
         pBPlot->set_color( color );
     }
 
@@ -65,7 +69,7 @@ namespace realtimeplot {
 		y_crd = y;
 	}
 
-	void PointEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+	void PointEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->point( x_crd, y_crd );
 	}
 
@@ -76,7 +80,7 @@ namespace realtimeplot {
 			width_y( width_y )
 	{}
 
-	void RectangleEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+	void RectangleEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->rectangle( min_x, min_y, width_x, width_y );
 	}
 
@@ -88,7 +92,7 @@ namespace realtimeplot {
 		color = col;
 	}
 
-	void LineAddEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+	void LineAddEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->line_add( x_crd, y_crd, id, color );
 	}
 
@@ -99,7 +103,7 @@ namespace realtimeplot {
 		nr = i;
 	}
 
-	void NumberEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+	void NumberEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->number( x_crd, y_crd, nr );
 	}
 
@@ -107,20 +111,20 @@ namespace realtimeplot {
 		filename = fn;
 	}
 
-	void SaveEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+	void SaveEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->save(filename);
 	}
 
 	ClearEvent::ClearEvent() {
 	}
 
-	void ClearEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+	void ClearEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->clear();
 	}
 
 	CloseEvent::CloseEvent() {
 	}
-	void CloseEvent::execute( boost::shared_ptr<BackendPlot> pBPlot ) {
+	void CloseEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->close_window();
 	}
 
