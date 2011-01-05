@@ -52,8 +52,8 @@ namespace realtimeplot {
 		}
 
 		void OpenPlotEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
-			pBPlot.reset( new BackendPlot( plot_conf, pEventHandler ) );
 			pEventHandler->plot_is_closed = false;
+			pBPlot.reset( new BackendPlot( plot_conf, pEventHandler ) );
 		}
 
 
