@@ -64,12 +64,13 @@ namespace realtimeplot {
     }
 
     BackendPlot::~BackendPlot() {
-        XCloseDisplay(dpy);
     }
 
     void BackendPlot::display() {
+			std::cout << "Being called" << std::endl;
         //Has the display been paused?
-        if (!pause_display ) {
+        if ( !pause_display && xSurface ) {
+						std::cout << "Drawing" << std::endl;
             boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
             //Only do this if event queue is empty 
             //or last update was more than a 0.5 seconds ago
@@ -147,14 +148,18 @@ namespace realtimeplot {
                 break;
                 //close window
             case ClientMessage:
-                pEventHandler->plot_closed();
+                close_window();
                 //XCloseDisplay(dpy);
                 break;
         }
     }
 
 		void BackendPlot::close_window() {
-			pEventHandler->plot_closed();
+			xContext.clear();
+			xSurface.clear();
+			std::cout << "Call close " << std::endl;
+      XCloseDisplay(dpy);
+			std::cout << "End Call close " << std::endl;
 		}
 
 

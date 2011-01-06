@@ -29,8 +29,7 @@ namespace realtimeplot {
 
 	EventHandler::EventHandler( PlotConfig config )
 		: queue_size( 0 ),
-		xevent_queue_size( 0 ),
-		plot_is_closed( false )
+		xevent_queue_size( 0 )
 	{
 		//This should be done explicitely with an openplotevent
 		//plot_is_closed should be true then, but no way for the event to set it to 
@@ -49,7 +48,6 @@ namespace realtimeplot {
 
 	void EventHandler::plot_closed() {
 		pBPlot.reset();
-		plot_is_closed = true;
 		/*if (pBPlot!=NULL) {
 			delete pBPlot;
 			pBPlot = NULL;
@@ -57,21 +55,17 @@ namespace realtimeplot {
 	}
 
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent ) {
-		//ignore if no plot present (for example because plot window was closed)
-		//->EventHandler shouldn't crash because it isn't plotting anywhere
-		if ( !plot_is_closed ) {
-			//block if many events are present
-			if (queue_size>100000) {
-				std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
-				while (queue_size>1000) {
-					usleep(10000);
-				}
+		//block if many events are present
+		if (queue_size>100000) {
+			std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
+			while (queue_size>1000) {
+				usleep(10000);
 			}
-			m_mutex.lock();
-			event_queue.push_back( pEvent );
-			++queue_size;
-			m_mutex.unlock();
 		}
+		m_mutex.lock();
+		event_queue.push_back( pEvent );
+		++queue_size;
+		m_mutex.unlock();
 	}
 
 	int EventHandler::get_queue_size() {
@@ -80,10 +74,10 @@ namespace realtimeplot {
 
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
-		while (true) { // !plot_is_closed) {
-			if (!plot_is_closed && pBPlot != NULL && xevent_queue_size == 0 )
+		while (true) { 
+			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface )
 				xevent_queue_size = XPending(pBPlot->dpy);
-			if (plot_is_closed || (queue_size==0 && xevent_queue_size == 0)) 
+			if (queue_size==0 && xevent_queue_size == 0) 
 				usleep(100000);
 			else if ( xevent_queue_size > 0 ) {
 				XEvent report;
@@ -102,7 +96,7 @@ namespace realtimeplot {
 				//doesn't call display. This way the plot will be refreshed anyway
 				//Not an ideal solution, because when the last event called display
 				//this will do refresh twice instead of the needed one.
-				if (!plot_is_closed && queue_size == 0)
+				if (queue_size == 0)
 					pBPlot->display();
 			} else {}
 		}
