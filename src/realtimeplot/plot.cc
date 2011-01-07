@@ -1,127 +1,127 @@
 /*
-  -------------------------------------------------------------------
-  
-  Copyright (C) 2010, Edwin van Leeuwen
-  
-  This file is part of RealTimePlot.
-  
-  RealTimePlot is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 3 of the License, or
-  (at your option) any later version.
-  
-  RealTimePlot is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with RealTimePlot. If not, see <http://www.gnu.org/licenses/>.
+	 -------------------------------------------------------------------
 
-  -------------------------------------------------------------------
-*/
+	 Copyright (C) 2010, Edwin van Leeuwen
+
+	 This file is part of RealTimePlot.
+
+	 RealTimePlot is free software; you can redistribute it and/or modify
+	 it under the terms of the GNU General Public License as published by
+	 the Free Software Foundation; either version 3 of the License, or
+	 (at your option) any later version.
+
+	 RealTimePlot is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 GNU General Public License for more details.
+
+	 You should have received a copy of the GNU General Public License
+	 along with RealTimePlot. If not, see <http://www.gnu.org/licenses/>.
+
+	 -------------------------------------------------------------------
+	 */
 
 #include "realtimeplot/plot.h"
 #include "realtimeplot/events.h"
 
 namespace realtimeplot {
 
-    Color::Color() {
-        r = 1;
-        g = 1;
-        b = 1;
-        a = 0;
-    }
+	Color::Color() {
+		r = 1;
+		g = 1;
+		b = 1;
+		a = 0;
+	}
 
-    Color::Color( double red, double green, double blue, double alpha ) {
-        r = red;
-        g = green;
-        b = blue;
-        a = alpha;
-    }
+	Color::Color( double red, double green, double blue, double alpha ) {
+		r = red;
+		g = green;
+		b = blue;
+		a = alpha;
+	}
 
-    Color Color::black() {
-        return Color( 0, 0, 0, 1 );
-    }
+	Color Color::black() {
+		return Color( 0, 0, 0, 1 );
+	}
 
-    Color Color::white() {
-        return Color( 1, 1, 1, 1 );
-    }
+	Color Color::white() {
+		return Color( 1, 1, 1, 1 );
+	}
 
-    Color Color::red() {
-        return Color( 1, 0, 0, 1 );
-    }
+	Color Color::red() {
+		return Color( 1, 0, 0, 1 );
+	}
 
-    Color Color::green() {
-        return Color( 0, 1, 0, 1 );
-    }
+	Color Color::green() {
+		return Color( 0, 1, 0, 1 );
+	}
 
-    Color Color::blue() {
-        return Color( 0, 0, 1, 1 );
-    }
+	Color Color::blue() {
+		return Color( 0, 0, 1, 1 );
+	}
 
-		Color Color::yellow() {
-        return Color( 1, 1, 0, 1 );
-		}
+	Color Color::yellow() {
+		return Color( 1, 1, 0, 1 );
+	}
 
-		Color Color::purple() {
-        return Color( 1, 0, 1, 1 );
-		}
+	Color Color::purple() {
+		return Color( 1, 0, 1, 1 );
+	}
 
-		Color Color::grey() {
-        return Color( 0.5, 0.5, 0.5, 1 );
-		}
+	Color Color::grey() {
+		return Color( 0.5, 0.5, 0.5, 1 );
+	}
 
-		Color Color::darkblue() {
-        return Color( 0, 0, 0.545098, 1 );
-		}
+	Color Color::darkblue() {
+		return Color( 0, 0, 0.545098, 1 );
+	}
 
-		Color Color::cyan() {
-        return Color( 0, 1, 1, 1 );
-		}
+	Color Color::cyan() {
+		return Color( 0, 1, 1, 1 );
+	}
 
-		Color Color::indigo() {
-        return Color( 0.294118, 0, 0.509804, 1 );
-		}
+	Color Color::indigo() {
+		return Color( 0.294118, 0, 0.509804, 1 );
+	}
 
-		Color Color::orange() {
-        return Color( 1, 0.647059, 0, 1 );
-		}
+	Color Color::orange() {
+		return Color( 1, 0.647059, 0, 1 );
+	}
 
-		Color Color::brown() {
-        return Color( 0.647059, 0.164706, 0.164706, 1 );
-		}
+	Color Color::brown() {
+		return Color( 0.647059, 0.164706, 0.164706, 1 );
+	}
 
-		Color Color::cadetblue() {
-        return Color( 0.372549, 0.619608, 0.627451, 1 );
-		}
+	Color Color::cadetblue() {
+		return Color( 0.372549, 0.619608, 0.627451, 1 );
+	}
 
-		Color Color::by_id(size_t id) {
-			std::vector<Color> colors = Color::colors();
-			return colors[ id%colors.size() ];
-		}
+	Color Color::by_id(size_t id) {
+		std::vector<Color> colors = Color::colors();
+		return colors[ id%colors.size() ];
+	}
 
-		std::vector<Color> Color::colors() {
-			std::vector<Color> colors;
-			colors.push_back( Color::black() );
-			colors.push_back( Color::red() );
-			colors.push_back( Color::green() );
-			colors.push_back( Color::blue() );
-			colors.push_back( Color::yellow() );
-			colors.push_back( Color::purple() );
-			colors.push_back( Color::grey() );
-			colors.push_back( Color::brown() );
-			colors.push_back( Color::darkblue() );
-			colors.push_back( Color::cyan() );
-			colors.push_back( Color::indigo() );
-			colors.push_back( Color::orange() );
-			colors.push_back( Color::cadetblue() );
-			return colors;
-		}
+	std::vector<Color> Color::colors() {
+		std::vector<Color> colors;
+		colors.push_back( Color::black() );
+		colors.push_back( Color::red() );
+		colors.push_back( Color::green() );
+		colors.push_back( Color::blue() );
+		colors.push_back( Color::yellow() );
+		colors.push_back( Color::purple() );
+		colors.push_back( Color::grey() );
+		colors.push_back( Color::brown() );
+		colors.push_back( Color::darkblue() );
+		colors.push_back( Color::cyan() );
+		colors.push_back( Color::indigo() );
+		colors.push_back( Color::orange() );
+		colors.push_back( Color::cadetblue() );
+		return colors;
+	}
 
 	Plot::Plot()
 		: config( PlotConfig() ),
-			pEventHandler( new EventHandler( config ) )
+		pEventHandler( new EventHandler( config ) )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
 						pEventHandler ) ) );
@@ -129,55 +129,54 @@ namespace realtimeplot {
 
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
-			pEventHandler( new EventHandler( config ) )
+		pEventHandler( new EventHandler( config ) )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
 						pEventHandler ) ) );
 	}
 
 	Plot::~Plot() {
-		//To get non persistent plot uncomment the following:
-		//pEventHandler->plot_closed();
+		pEventHandler->pEventProcessingThrd->join();
 	}
 
-    
-    void Plot::point( float x, float y ) {
-        pEventHandler->add_event( boost::shared_ptr<Event>( new PointEvent(x, y) ) ); 
-    }
 
-		/**
-     * \brief Function to plot a point of a specific color
-     *
-     * Default color of the point is black.
-     * We send a vector of the events needed (set the color, plot the point
-     * and restore color to its former value). A vector is used to make sure
-     * that these events are processed directly following each other (thread
-     * safety).
-     */
-    void Plot::point( float x, float y, Color color ) {
-        std::vector<boost::shared_ptr<Event> > events(3);
-        events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
-        events[1] = boost::shared_ptr<Event>( new PointEvent( x, y ) );
-        events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
-        pEventHandler->add_event( 
-						boost::shared_ptr<Event>( new MultipleEvents( events ) ));
-    }
+	void Plot::point( float x, float y ) {
+		pEventHandler->add_event( boost::shared_ptr<Event>( new PointEvent(x, y) ) ); 
+	}
 
-		void Plot::rectangle( float min_x, float min_y, float width_x, float width_y,
-				bool fill, Color color ) {
-			std::vector<boost::shared_ptr<Event> > events(3);
-			events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
-			events[1] = boost::shared_ptr<Event>( new RectangleEvent( 
-						min_x, min_y, width_x, width_y ) );
-			events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
-			pEventHandler->add_event( 
-					boost::shared_ptr<Event>( new MultipleEvents( events ) ));
-		}
+	/**
+	 * \brief Function to plot a point of a specific color
+	 *
+	 * Default color of the point is black.
+	 * We send a vector of the events needed (set the color, plot the point
+	 * and restore color to its former value). A vector is used to make sure
+	 * that these events are processed directly following each other (thread
+	 * safety).
+	 */
+	void Plot::point( float x, float y, Color color ) {
+		std::vector<boost::shared_ptr<Event> > events(3);
+		events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
+		events[1] = boost::shared_ptr<Event>( new PointEvent( x, y ) );
+		events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
+		pEventHandler->add_event( 
+				boost::shared_ptr<Event>( new MultipleEvents( events ) ));
+	}
+
+	void Plot::rectangle( float min_x, float min_y, float width_x, float width_y,
+			bool fill, Color color ) {
+		std::vector<boost::shared_ptr<Event> > events(3);
+		events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
+		events[1] = boost::shared_ptr<Event>( new RectangleEvent( 
+					min_x, min_y, width_x, width_y ) );
+		events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
+		pEventHandler->add_event( 
+				boost::shared_ptr<Event>( new MultipleEvents( events ) ));
+	}
 
 	/*void Plot::line_add( float x, float y, int id ) {
 		line_add( x, y, id, Color::Black() );
-	}*/
-	
+		}*/
+
 	void Plot::line_add( float x, float y, int id, Color color ) {
 		boost::shared_ptr<Event> pEvent( new LineAddEvent( x, y, id, color ) );
 		pEventHandler->add_event( pEvent );
@@ -200,10 +199,10 @@ namespace realtimeplot {
 		//delete pEventHandler;
 		config = conf;
 		events[1] = boost::shared_ptr<Event>( new OpenPlotEvent( config, 
-						pEventHandler ) );
+					pEventHandler ) );
 		//pEventHandler.reset( new EventHandler( config ) );
 		pEventHandler->add_event( 
-					boost::shared_ptr<Event>( new MultipleEvents( events ) ));
+				boost::shared_ptr<Event>( new MultipleEvents( events ) ));
 	}
 
 	void Plot::clear() {
@@ -228,21 +227,21 @@ namespace realtimeplot {
 
 	Histogram::Histogram()
 		: no_bins( 4 ),
-			max_y( 0 ),
-			frequency( false ),
-			frozen_bins_x( false ),
-			Plot()
+		max_y( 0 ),
+		frequency( false ),
+		frozen_bins_x( false ),
+		Plot()
 	{
 	}
 
 	Histogram::Histogram( double min_x, double max_x, size_t no_bins )
 		: no_bins( no_bins ),
-			max_y( 0 ),
-			min_x( min_x ),
-			max_x( max_x ),
-			frequency( false ),
-			frozen_bins_x( true ),
-			Plot()
+		max_y( 0 ),
+		min_x( min_x ),
+		max_x( max_x ),
+		frequency( false ),
+		frozen_bins_x( true ),
+		Plot()
 	{ 
 		bin_width = (max_x-min_x)/(no_bins-1);
 		for (int i=0; i<no_bins; ++i) {
@@ -250,7 +249,7 @@ namespace realtimeplot {
 			bins_y.push_back( 0 );
 		}
 	}
-	
+
 
 	Histogram::~Histogram() {
 	}
@@ -378,8 +377,9 @@ namespace realtimeplot {
 	SurfacePlot::SurfacePlot( float min_x, float max_x, float min_y, float max_y,
 			size_t resolution )
 		: resolution( resolution ),
-			data( resolution*resolution ), 
-			max_z( 1 )
+		data( resolution*resolution ), 
+		max_z( 1 ), 
+		Plot()
 	{ 
 		PlotConfig new_config = PlotConfig();
 		new_config.min_x = min_x;

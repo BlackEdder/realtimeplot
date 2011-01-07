@@ -47,6 +47,7 @@ namespace realtimeplot {
 	}
 
 	EventHandler::~EventHandler() {
+		std::cout << "Yay, I got called " << std::endl;
 		pEventProcessingThrd->join();
 	}
 
@@ -74,6 +75,10 @@ namespace realtimeplot {
 			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface ) {
 				m_mutex.lock();
 				xevent_queue_size = XPending(pBPlot->dpy);
+				m_mutex.unlock();
+			} else if (pBPlot != NULL && !pBPlot->xSurface) {
+				m_mutex.lock();
+				xevent_queue_size = 0;
 				m_mutex.unlock();
 			}
 			

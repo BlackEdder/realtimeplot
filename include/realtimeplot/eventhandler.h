@@ -29,11 +29,12 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/bind.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 namespace realtimeplot {
     class PlotConfig;
     class BackendPlot;
-    class EventHandler;
+    //class EventHandler;
 
     /**
 		 \brief General event class that all events should inherit
@@ -57,19 +58,19 @@ namespace realtimeplot {
 		currently if the queueu gets to big (>1000) add_event will block, so that 
 		backendplot has time to clear some events.
 		*/
-    class EventHandler {
+    class EventHandler : public boost::enable_shared_from_this<EventHandler> {
         public:
+					boost::shared_ptr<boost::thread> pEventProcessingThrd;
             //Constructor
 					EventHandler( PlotConfig config );
 					~EventHandler();
-					//If the plot is closed (normally only called from backendplot
-					void plot_closed();
+
 					//Add an event to the event queue
 					void add_event( boost::shared_ptr<Event> pEvent );
 					int get_queue_size();
+					
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
-					boost::shared_ptr<boost::thread> pEventProcessingThrd;
 					boost::mutex m_mutex;
 					std::list<boost::shared_ptr<Event> > event_queue;
 					int queue_size;

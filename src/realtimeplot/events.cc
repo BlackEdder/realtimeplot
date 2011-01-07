@@ -47,7 +47,7 @@ namespace realtimeplot {
 		OpenPlotEvent::OpenPlotEvent( PlotConfig plot_conf, 
 				boost::shared_ptr<EventHandler> pEventHandler ) :
 			plot_conf( plot_conf ),
-			pEventHandler( pEventHandler )
+			pEventHandler( pEventHandler->shared_from_this() )
 		{
 		}
 

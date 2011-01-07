@@ -63,6 +63,6 @@ int main() {
 	pl.save( "plot_points.png" );
 
 	sleep(1);
-	pl.close();
+	//pl.close();
 	return 0;
 }
