@@ -34,7 +34,7 @@ int main() {
 	}
 
 	Histogram hist = Histogram();
-	hist.frequency = true;
+	//hist.frequency = true;
 	hist.set_data( data );
 	sleep(1);
 	hist.add_data( 1 );
@@ -45,12 +45,17 @@ int main() {
 
 	std::cout << "bla 1" << std::endl;
 	Histogram hist2 = Histogram();
+	hist2.frequency = true;
 	std::cout << "bla 2" << std::endl;
 	hist2.add_data( 1 );
+	std::cout << "bla 3" << std::endl;
 	sleep(1);
+	std::cout << "bla 4" << std::endl;
 	hist2.add_data( 5 );
+	std::cout << "bla 5" << std::endl;
 	hist2.add_data( 5 );
-	sleep(1);
+	sleep(5);
+	std::cout << "Finished" << std::endl;
 
 	/*sleep( 1 );
 

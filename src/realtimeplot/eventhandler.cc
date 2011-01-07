@@ -50,14 +50,6 @@ namespace realtimeplot {
 		pEventProcessingThrd->join();
 	}
 
-	void EventHandler::plot_closed() {
-		pBPlot.reset();
-		/*if (pBPlot!=NULL) {
-			delete pBPlot;
-			pBPlot = NULL;
-			}*/
-	}
-
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent ) {
 		//block if many events are present
 		if (queue_size>100000) {
@@ -84,9 +76,10 @@ namespace realtimeplot {
 				xevent_queue_size = XPending(pBPlot->dpy);
 				m_mutex.unlock();
 			}
+			
 			if (queue_size==0 && xevent_queue_size == 0) 
 				usleep(100000);
-			else if ( xevent_queue_size > 0 ) {
+			else if ( xevent_queue_size > 0 && pBPlot->xSurface ) {
 				XEvent report;
 				XNextEvent( pBPlot->dpy, &report );
 				pBPlot->handle_xevent( report );

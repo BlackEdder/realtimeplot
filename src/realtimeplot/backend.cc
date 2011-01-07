@@ -253,10 +253,17 @@ namespace realtimeplot {
 		Pango::init();
 
 		//axes_surface, extra margin_x/margin_y pixels for axes and labels
-		axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-				xSurface->get_width(), 
-				xSurface->get_height() );
-		axes_context = Cairo::Context::create(axes_surface);
+		//if xSurface is not closed, width depends on xSurface width.
+		if (xSurface) {
+			axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+					xSurface->get_width(), 
+					xSurface->get_height() );
+			axes_context = Cairo::Context::create(axes_surface);
+		} else {
+			axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+					plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+			axes_context = Cairo::Context::create(axes_surface);
+		}
 
 		int text_width, text_height;
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(axes_context);
@@ -467,7 +474,7 @@ namespace realtimeplot {
 
 	void BackendPlot::save( std::string fn ) {
 		Cairo::RefPtr<Cairo::ImageSurface> surface = create_temporary_surface();
-		save(fn, surface );
+		save( fn, surface );
 	}
 
 	void BackendPlot::save( std::string fn, 
@@ -601,9 +608,17 @@ namespace realtimeplot {
 	 */
 	Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_temporary_surface() {
 
+		size_t surface_width, surface_height; 
+		if (xSurface) {
+			surface_width = xSurface->get_width();
+			surface_height = xSurface->get_height();
+		} else {
+			surface_width = plot_area_width+config.margin_y;
+			surface_height = plot_area_height+config.margin_x;
+		}
 		Cairo::RefPtr<Cairo::ImageSurface> surface = 
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					xSurface->get_width(), xSurface->get_height() );
+					surface_width, surface_height );
 		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
 		
 		double x = plot_surface_min_x;
@@ -614,8 +629,8 @@ namespace realtimeplot {
 
 		transform_to_device_units( context );
 		context->translate( x, y );
-		context->scale( double(xSurface->get_width()-config.margin_y)/plot_area_width,
-				double(xSurface->get_height()-config.margin_x)/plot_area_height );
+		context->scale( double(surface_width-config.margin_y)/plot_area_width,
+				double(surface_height-config.margin_x)/plot_area_height );
 
 		//copy the plot onto our temporary image surface
 		context->set_source( plot_surface, 0, 0 );
@@ -668,18 +683,20 @@ namespace realtimeplot {
 		//Temporary put here, should only be done when min_x/max_x change
 		//recalculate plot_area_width
 		transform_to_plot_units( plot_context );
-		double width,height;
+		double width, height;
 		width = config.max_x-config.min_x;
 		height = config.max_y-config.min_y;
 		plot_context->user_to_device_distance( width, height );
 		transform_to_device_units( plot_context );
 		plot_area_width = round(width);
 		plot_area_height = round(-height);
-		width = xSurface->get_width();
-		height = xSurface->get_height();
-		xSurface = Cairo::XlibSurface::create( dpy, win, DefaultVisual(dpy, 0), 
-				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
-		scale_xsurface( width, height );
+		if (xSurface) {
+			width = xSurface->get_width();
+			height = xSurface->get_height();
+			xSurface = Cairo::XlibSurface::create( dpy, win, DefaultVisual(dpy, 0), 
+					plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+			scale_xsurface( width, height );
+		}
 		draw_axes_surface();
 		display();
 	}

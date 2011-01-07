@@ -171,7 +171,7 @@ namespace realtimeplot {
             /**
              * \brief Set default foreground color on plot_context
              */
-             void set_foreground_color();
+            void set_foreground_color();
 
             void set_alpha( float alpha );
 
