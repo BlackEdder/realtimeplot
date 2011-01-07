@@ -55,6 +55,7 @@ namespace realtimeplot {
 		//draw initial axes etc
 		draw_axes_surface();
 
+		
 		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
 			boost::posix_time::microseconds(500000);
 
@@ -157,9 +158,7 @@ namespace realtimeplot {
 	void BackendPlot::close_window() {
 		xContext.clear();
 		xSurface.clear();
-		std::cout << "Call close " << std::endl;
 		XCloseDisplay(dpy);
-		std::cout << "End Call close " << std::endl;
 	}
 
 
@@ -608,8 +607,7 @@ namespace realtimeplot {
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					xSurface->get_width(), xSurface->get_height() );
 		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
-
-
+		
 		double x = plot_surface_min_x;
 		double y = plot_surface_max_y;
 		transform_to_plot_units_with_origin( surface, context,

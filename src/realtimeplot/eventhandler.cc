@@ -84,6 +84,12 @@ namespace realtimeplot {
 				XNextEvent( pBPlot->dpy, &report );
 				pBPlot->handle_xevent( report );
 				--xevent_queue_size;
+				//This is to work around problems when the last event in the queue
+				//doesn't call display. This way the plot will be refreshed anyway
+				//Not an ideal solution, because when the last event called display
+				//this will do refresh twice instead of the needed one.
+				if (xevent_queue_size == 0)
+					pBPlot->display();
 			}
 			else if ( queue_size>0 ) {
 				boost::shared_ptr<Event> pEvent = event_queue.front();
