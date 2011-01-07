@@ -68,7 +68,6 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::display() {
-		std::cout << "Being called" << std::endl;
 		//Has the display been paused?
 		if ( !pause_display && xSurface ) {
 			boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
@@ -76,7 +75,6 @@ namespace realtimeplot {
 			//or last update was more than a 0.5 seconds ago
 			if  (pEventHandler->get_queue_size() < 1 
 					|| (( now-time_of_last_update )>( boost::posix_time::microseconds(500000))))  {
-				std::cout << "Drawing" << std::endl;
 				temporary_display_surface = create_temporary_surface();
 				//copy the temporary surface onto the xlib surface
 				xContext->set_source( temporary_display_surface, 0, 0 );

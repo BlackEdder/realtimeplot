@@ -40,6 +40,10 @@ namespace realtimeplot {
 		pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
 				new boost::thread( boost::bind( 
 						&realtimeplot::EventHandler::process_events, this ) ) );
+
+		//std::cout << "EventHandler started" << std::endl;
+		//std::cout << this << std::endl;
+		//std::cout << pEventProcessingThrd << std::endl;
 	}
 
 	EventHandler::~EventHandler() {
@@ -75,15 +79,20 @@ namespace realtimeplot {
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while (true) { 
-			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface )
+			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface ) {
+				m_mutex.lock();
 				xevent_queue_size = XPending(pBPlot->dpy);
+				m_mutex.unlock();
+			}
 			if (queue_size==0 && xevent_queue_size == 0) 
 				usleep(100000);
 			else if ( xevent_queue_size > 0 ) {
 				XEvent report;
 				XNextEvent( pBPlot->dpy, &report );
 				pBPlot->handle_xevent( report );
+				m_mutex.lock();
 				--xevent_queue_size;
+				m_mutex.unlock();
 				//This is to work around problems when the last event in the queue
 				//doesn't call display. This way the plot will be refreshed anyway
 				//Not an ideal solution, because when the last event called display

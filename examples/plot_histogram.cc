@@ -35,18 +35,15 @@ int main() {
 
 	Histogram hist = Histogram();
 	hist.frequency = true;
-	std::cout << "bla 1" << std::endl;
 	hist.set_data( data );
 	sleep(1);
-	std::cout << "bla 2" << std::endl;
 	hist.add_data( 1 );
-	std::cout << "sleeping" << std::endl;
 	sleep(1);
-	std::cout << "end sleeping" << std::endl;
-	std::cout << "bla 3" << std::endl;
 	hist.add_data( 5 );
-	sleep(1);
-	std::cout << "bla " << std::endl;
+	sleep(2);
+
+
+	std::cout << "bla 1" << std::endl;
 	Histogram hist2 = Histogram();
 	std::cout << "bla 2" << std::endl;
 	hist2.add_data( 1 );
