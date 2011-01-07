@@ -68,6 +68,9 @@ namespace realtimeplot {
 					//Add an event to the event queue
 					void add_event( boost::shared_ptr<Event> pEvent );
 					int get_queue_size();
+
+					// ! Are/Should we be processing events
+					bool processing_events;
 					
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;

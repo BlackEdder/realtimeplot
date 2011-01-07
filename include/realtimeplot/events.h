@@ -162,11 +162,24 @@ namespace realtimeplot {
 		/**
 		 \brief Event to close the current plot (window)
 		 */
-    class CloseEvent : public Event {
+    class CloseWindowEvent : public Event {
         public:
-            CloseEvent();
+            CloseWindowEvent();
             virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
     };
+
+		/**
+		 * \brief Stop processing events after this events
+		 *
+		 * This causes the EventHandler to stop handling events (and the thread to close)
+		 */
+		class FinalEvent : public Event {
+			public:
+				FinalEvent(boost::shared_ptr<EventHandler> pEventHandler);
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+			private:
+				boost::shared_ptr<EventHandler> pEventHandler;
+		};
 
 
  }

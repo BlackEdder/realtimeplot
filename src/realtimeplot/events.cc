@@ -122,13 +122,20 @@ namespace realtimeplot {
 		pBPlot->clear();
 	}
 
-	CloseEvent::CloseEvent() {
+	CloseWindowEvent::CloseWindowEvent() {
 	}
-	void CloseEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void CloseWindowEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->close_window();
 	}
 
+	FinalEvent::FinalEvent( boost::shared_ptr<EventHandler> pEventHandler ) :
+		pEventHandler( pEventHandler->shared_from_this() )
+	{
+	}
 
+	void FinalEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+		pEventHandler->processing_events = false;
+	}
 }
 
 

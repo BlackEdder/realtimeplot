@@ -195,7 +195,7 @@ namespace realtimeplot {
 	//For now just closes old plot window and opens a new one
 	void Plot::reset( PlotConfig conf ) {
 		std::vector<boost::shared_ptr<Event> > events(2);
-		events[0] = boost::shared_ptr<Event>( new CloseEvent() );
+		events[0] = boost::shared_ptr<Event>( new CloseWindowEvent() );
 		//delete pEventHandler;
 		config = conf;
 		events[1] = boost::shared_ptr<Event>( new OpenPlotEvent( config, 
@@ -217,8 +217,9 @@ namespace realtimeplot {
 
 	void Plot::close() {
 		//pEventHandler->plot_closed();
-		boost::shared_ptr<Event> pEvent( new CloseEvent() );
+		boost::shared_ptr<Event> pEvent( new CloseWindowEvent() );
 		pEventHandler->add_event( pEvent );
+		pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler) ) );
 	}
 
 	/*
