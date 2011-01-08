@@ -30,7 +30,8 @@ namespace realtimeplot {
 	EventHandler::EventHandler( PlotConfig config )
 		: queue_size( 0 ),
 		xevent_queue_size( 0 ),
-		processing_events( true )
+		processing_events( true ),
+		force_close( false )
 	{
 		//This should be done explicitely with an openplotevent
 		//plot_is_closed should be true then, but no way for the event to set it to 
@@ -72,7 +73,7 @@ namespace realtimeplot {
 
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
-		while ( processing_events ) { 
+		while ( processing_events || !force_close ) { 
 			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface ) {
 				m_mutex.lock();
 				xevent_queue_size = XPending(pBPlot->dpy);
@@ -81,6 +82,7 @@ namespace realtimeplot {
 				m_mutex.lock();
 				xevent_queue_size = 0;
 				m_mutex.unlock();
+				force_close = true;
 			}
 			
 			if (queue_size==0 && xevent_queue_size == 0) 

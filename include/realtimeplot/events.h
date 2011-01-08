@@ -171,14 +171,17 @@ namespace realtimeplot {
 		/**
 		 * \brief Stop processing events after this events
 		 *
-		 * This causes the EventHandler to stop handling events (and the thread to close)
+		 * By default this causes the program to keep open if the xwindow is still open.
+		 * Alternatively, it can force the thread to stop listening to new events and
+		 * therefore causes the xwindow to be closed immediately.
 		 */
 		class FinalEvent : public Event {
 			public:
-				FinalEvent(boost::shared_ptr<EventHandler> pEventHandler);
+				FinalEvent(boost::shared_ptr<EventHandler> pEventHandler, bool force = false);
 				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
 			private:
 				boost::shared_ptr<EventHandler> pEventHandler;
+				bool force;
 		};
 
 

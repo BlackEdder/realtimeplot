@@ -136,6 +136,7 @@ namespace realtimeplot {
 	}
 
 	Plot::~Plot() {
+		pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler, false ) ) );
 		pEventHandler->pEventProcessingThrd->join();
 	}
 
@@ -219,7 +220,7 @@ namespace realtimeplot {
 		//pEventHandler->plot_closed();
 		boost::shared_ptr<Event> pEvent( new CloseWindowEvent() );
 		pEventHandler->add_event( pEvent );
-		pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler) ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler, true ) ) );
 	}
 
 	/*

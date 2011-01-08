@@ -71,6 +71,7 @@ namespace realtimeplot {
 
 					// ! Are/Should we be processing events
 					bool processing_events;
+					bool force_close;
 					
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
