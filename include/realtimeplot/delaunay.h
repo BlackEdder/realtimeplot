@@ -1,5 +1,6 @@
 /********************************************************************************
 	Copyright (C) 2004-2005 Sjaak Priester	
+	Copyright (C) 2011 Edwin van Leeuwen
 
 	This is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -15,19 +16,6 @@
 	along with this application; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ********************************************************************************/
-
-// Delaunay
-// Class to perform Delaunay triangulation on a set of vertices
-//
-// Version 1.2 (C) 2005, Sjaak Priester, Amsterdam.
-// - Removed stupid bug in SetY; function wasn't used, so no consequences. Thanks to squat.
-//
-// Version 1.1 (C) 2005, Sjaak Priester, Amsterdam.
-// - Removed bug which gave incorrect results for co-circular vertices.
-//
-// Version 1.0 (C) 2004, Sjaak Priester, Amsterdam.
-// mailto:sjaak@sjaakpriester.nl
-
 #pragma once
 
 #include <set>
