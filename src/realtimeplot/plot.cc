@@ -230,6 +230,8 @@ namespace realtimeplot {
 	Histogram::Histogram()
 		: no_bins( 4 ),
 		max_y( 0 ),
+		min_x( 0 ),
+		max_x( -1 ),
 		frequency( false ),
 		frozen_bins_x( false ),
 		Plot()
@@ -269,6 +271,8 @@ namespace realtimeplot {
 		if (new_data < min_x) {
 			fill_bins();
 		} else if (new_data > max_x) {
+			fill_bins();
+		} else if (data.size() == 1) {
 			fill_bins();
 		} else {
 			unsigned int current_bin;

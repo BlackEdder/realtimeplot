@@ -47,6 +47,7 @@ int main() {
 	Histogram hist2 = Histogram();
 	hist2.frequency = true;
 	std::cout << "bla 2" << std::endl;
+	sleep(1);
 	hist2.add_data( 1 );
 	std::cout << "bla 3" << std::endl;
 	sleep(1);

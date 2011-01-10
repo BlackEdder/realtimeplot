@@ -49,7 +49,6 @@ namespace realtimeplot {
 	}
 
 	EventHandler::~EventHandler() {
-		std::cout << "Yay, I got called " << std::endl;
 		pEventProcessingThrd->join();
 	}
 
