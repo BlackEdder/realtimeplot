@@ -197,6 +197,11 @@ typedef set<edge>::const_iterator cedgeIterator;
 
 ///////////////////
 // Delaunay
+//
+/****
+ * This will have to be replaced with a purely iterative class or the functionality will be
+ * integrated in the HeightMapBackend class
+ */
 
 class Delaunay
 {

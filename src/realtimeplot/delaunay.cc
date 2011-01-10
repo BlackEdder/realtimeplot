@@ -206,6 +206,9 @@ void Delaunay::Triangulate(const vertexSet& vertices, triangleSet& output)
 {
 	if (vertices.size() < 3) return;	// nothing to handle
 
+	/*****
+	 * Should probably be just the area of the plot
+	 */
 	// Determine the bounding box.
 	cvIterator itVertex = vertices.begin();
 
