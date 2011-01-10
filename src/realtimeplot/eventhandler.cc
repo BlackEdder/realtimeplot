@@ -73,7 +73,7 @@ namespace realtimeplot {
 
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
-		while ( processing_events || !force_close ) { 
+		while ( processing_events || !force_close ) {
 			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface ) {
 				m_mutex.lock();
 				xevent_queue_size = XPending(pBPlot->dpy);

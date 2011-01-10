@@ -61,6 +61,8 @@ namespace realtimeplot {
 
 		pause_display = false;
 
+		pEventHandler->processing_events = true;
+
 		display();
 	}
 
@@ -154,9 +156,11 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::close_window() {
-		xContext.clear();
-		xSurface.clear();
-		XCloseDisplay(dpy);
+		if (xSurface) {
+			xContext.clear();
+			xSurface.clear();
+			XCloseDisplay(dpy);
+		}
 	}
 
 
