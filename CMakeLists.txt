@@ -66,6 +66,9 @@ target_link_libraries(plot_histogram realtimeplot)
 add_executable(plot_surface examples/plot_surface.cc)
 target_link_libraries(plot_surface realtimeplot)
 
+add_executable(plot_rolling_update_stress_test examples/plot_rolling_update_stress_test.cc)
+target_link_libraries(plot_rolling_update_stress_test realtimeplot)
+
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
 install (TARGETS realtimeplot DESTINATION lib)
