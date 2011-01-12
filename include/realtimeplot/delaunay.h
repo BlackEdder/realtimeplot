@@ -20,13 +20,13 @@
 #define DELAUNAY_H
 #include <set>
 #include <algorithm>
+#include <limits>
 #include <math.h>
 
 using namespace std;
 
 namespace realtimeplot {
 	namespace delaunay {
-#ifndef _GDIPLUS_H
 
 // I designed this with GDI+ in mind. However, this particular code doesn't
 // use GDI+ at all, only some of it's variable types.
@@ -43,10 +43,7 @@ struct PointF
 	REAL Y;
 };
 
-const REAL REAL_EPSILON = 1.192092896e-07F;	// = 2^-23; I've no idea why this is a good value, but GDI+ has it.
-
-#endif // _GDIPLUS_H
-
+const REAL REAL_EPSILON = 10*numeric_limits<float>::epsilon();
 ///////////////////
 // vertex
 
