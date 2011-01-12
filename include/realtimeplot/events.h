@@ -200,6 +200,18 @@ namespace realtimeplot {
 				boost::shared_ptr<EventHandler> pEventHandler;
 		};
 
+		/**
+		 * \brief Adds new data to the heightmap
+		 */
+		class HMDataEvent : public Event {
+			public:
+				HMDataEvent( float x, float y, float z, bool show );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+			private:
+				float x, y, z;
+				bool show;
+		};
+	
 
  }
 #endif

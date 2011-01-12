@@ -279,7 +279,7 @@ namespace realtimeplot {
 			 *
 			 * If show then the plot is immediately redrawn with the new point
 			 */
-			add_data( float x, float y, float z, bool show );
+			void add_data( float x, float y, float z, bool show );
 		private:
 			std::set<delaunay::vertex> vertices;
 			std::set<delaunay::triangle> triangles;

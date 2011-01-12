@@ -722,6 +722,7 @@ namespace realtimeplot {
 		}
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
+		throw;
 		// insert new point into the set
 		// recalculates the triangles (only if more than three vertices)
 		// If (show) draw all triangles

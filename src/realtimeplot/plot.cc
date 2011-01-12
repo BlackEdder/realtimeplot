@@ -447,7 +447,7 @@ namespace realtimeplot {
 	}
 
 	void HeightMap::add_data( float x, float y, float z, bool show ) {
-		point( x, y );
+		pEventHandler->add_event( boost::shared_ptr<Event>( new HMDataEvent( x, y, z, show ) ) ); 
 	}
 
 }

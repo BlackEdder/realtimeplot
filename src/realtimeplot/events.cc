@@ -156,6 +156,14 @@ namespace realtimeplot {
 		pBPlot.reset( new BackendHeightMap( plot_conf, pEventHandler ) );
 	}
 
+	HMDataEvent::HMDataEvent( float x, float y, float z, bool show )
+		: x(x), y(y), z(z), show( show )
+	{}
+
+	void HMDataEvent::execute(boost::shared_ptr<BackendPlot> &pBPlot ) {
+		static_cast<BackendHeightMap*>(pBPlot.get())->add_data( x, y, z, show );
+	}
+
 }
 
 
