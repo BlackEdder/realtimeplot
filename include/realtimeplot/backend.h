@@ -273,6 +273,16 @@ namespace realtimeplot {
 	class BackendHeightMap : public BackendPlot {
 		public:
 			BackendHeightMap(PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler);
+
+			/**
+			 * \brief Adds a new point to the existing map
+			 *
+			 * If show then the plot is immediately redrawn with the new point
+			 */
+			add_data( float x, float y, float z, bool show );
+		private:
+			std::set<delaunay::vertex> vertices;
+			std::set<delaunay::triangle> triangles;
 	};
 
 }

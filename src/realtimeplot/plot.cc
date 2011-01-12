@@ -448,10 +448,6 @@ namespace realtimeplot {
 
 	void HeightMap::add_data( float x, float y, float z, bool show ) {
 		point( x, y );
-		if (show)
-			plot();
 	}
 
-	void HeightMap::plot() {
-	}
 }

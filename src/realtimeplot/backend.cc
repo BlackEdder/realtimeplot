@@ -717,6 +717,14 @@ namespace realtimeplot {
 	BackendHeightMap::BackendHeightMap( PlotConfig config, 
 			boost::shared_ptr<EventHandler> pEventHandler) : 
 				BackendPlot( config, pEventHandler )
-		{}
+		{ 
+			// Needs to setup the super triangle
+		}
+
+	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
+		// insert new point into the set
+		// recalculates the triangles (only if more than three vertices)
+		// If (show) draw all triangles
+	}
 }
 
