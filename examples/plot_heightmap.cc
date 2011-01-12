@@ -28,5 +28,9 @@ using namespace realtimeplot;
 int main() {
 	HeightMap hm = HeightMap();
 
+	hm.add_data( 1, 1, 1 );
+	hm.add_data( 1, 2, 1 );
+	hm.add_data( 2, 2, 1 );
+
 	return 0;
 }

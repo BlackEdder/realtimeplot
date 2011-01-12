@@ -714,5 +714,9 @@ namespace realtimeplot {
 		//        float(xSurface->get_height())/(plot_area_height+config.margin_x) );
 	}
 
+	BackendHeightMap::BackendHeightMap( PlotConfig config, 
+			boost::shared_ptr<EventHandler> pEventHandler) : 
+				BackendPlot( config, pEventHandler )
+		{}
 }
 

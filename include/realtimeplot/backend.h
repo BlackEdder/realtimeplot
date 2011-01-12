@@ -272,9 +272,7 @@ namespace realtimeplot {
 	 */
 	class BackendHeightMap : public BackendPlot {
 		public:
-			BackendHeightMap(PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler) : 
-				BackendPlot( config, pEventHandler )
-		{throw;}
+			BackendHeightMap(PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler);
 	};
 
 }
