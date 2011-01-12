@@ -200,6 +200,9 @@ namespace realtimeplot {
 			void close();
 			//private:
 			boost::shared_ptr<EventHandler> pEventHandler;
+		protected:
+			//! Constructor which doesn't immediately open a plot (only used by children at the moment)
+			Plot( bool open );
 	};
 
 	/**

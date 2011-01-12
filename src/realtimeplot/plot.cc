@@ -127,6 +127,16 @@ namespace realtimeplot {
 						pEventHandler ) ) );
 	}
 
+	Plot::Plot(bool open)
+		: config( PlotConfig() ),
+		pEventHandler( new EventHandler( config ) )
+	{ 
+		if (open)
+		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+						pEventHandler ) ) );
+	}
+
+
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
 		pEventHandler( new EventHandler( config ) )
@@ -438,10 +448,10 @@ namespace realtimeplot {
 		}
 	}
 
-	HeightMap::HeightMap()
+	HeightMap::HeightMap() : Plot(false)
 	{ 
-		config = PlotConfig();
-		pEventHandler.reset( new EventHandler( config ) );
+		//config = PlotConfig();
+		//pEventHandler.reset( new EventHandler( config ) );
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHeightMapEvent( config, 
 						pEventHandler ) ) );
 	}

@@ -117,7 +117,6 @@ namespace realtimeplot {
 
 			//Constructor, takes a config pointer
 			//creates the surfaces and contexts
-			//starts the event_loop
 			BackendPlot( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler );
 
 			//Destructor, wait for event_loop thread to finish (join)
