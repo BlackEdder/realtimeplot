@@ -38,6 +38,7 @@
 
 #include "realtimeplot/plot.h"
 #include "realtimeplot/eventhandler.h"
+#include "realtimeplot/delaunay.h"
 
 namespace realtimeplot {
 	/**
@@ -261,6 +262,19 @@ namespace realtimeplot {
 
 			//move the plotting area around in increments of 5%
 			void move( int direction_x, int direction_y );
+	};
+
+
+	/**
+	 * \brief Provides backend functions specific for HeightMap plots
+	 *
+	 * Relies heavily on Delaunay.h
+	 */
+	class BackendHeightMap : public BackendPlot {
+		public:
+			BackendHeightMap(PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler) : 
+				BackendPlot( config, pEventHandler )
+		{throw;}
 	};
 
 }

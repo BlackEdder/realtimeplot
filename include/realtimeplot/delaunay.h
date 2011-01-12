@@ -16,14 +16,16 @@
 	along with this application; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ********************************************************************************/
-#pragma once
-
+#ifndef DELAUNAY_H
+#define DELAUNAY_H
 #include <set>
 #include <algorithm>
 #include <math.h>
 
 using namespace std;
 
+namespace realtimeplot {
+	namespace delaunay {
 #ifndef _GDIPLUS_H
 
 // I designed this with GDI+ in mind. However, this particular code doesn't
@@ -117,8 +119,8 @@ public:
 
 	const vertex * GetVertex(int i) const
 	{
-		ASSERT(i >= 0);
-		ASSERT(i < 3);
+		if(i >= 0 || i < 3) 
+			throw;
 		return m_Vertices[i];
 	}
 
@@ -215,3 +217,6 @@ public:
 protected:
 	void HandleEdge(const vertex * p0, const vertex * p1, edgeSet& edges);
 };
+};
+};
+#endif

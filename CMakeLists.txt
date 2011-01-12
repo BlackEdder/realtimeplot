@@ -49,7 +49,7 @@ include_directories("/usr/lib/sigc++-2.0/include")
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 add_library( realtimeplot SHARED src/realtimeplot/plot.cc
 	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
-	src/realtimeplot/events.cc )
+	src/realtimeplot/events.cc src/realtimeplot/delaunay.cc )
 target_link_libraries(realtimeplot ${PANGOMM} ${Boost_LIBRARIES})
 
 #Examples.. should be under own build target -> make examples
