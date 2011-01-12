@@ -184,6 +184,22 @@ namespace realtimeplot {
 				bool force;
 		};
 
+		/*
+		 * HeightMap specific events
+		 */
+
+		/**
+		 * \brief Opens a HeightMap 
+		 */
+		class OpenHeightMapEvent : public Event {
+			public:
+				OpenHeightMapEvent( PlotConfig plot_conf, boost::shared_ptr<EventHandler> pEventHandler );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+			private:
+				PlotConfig plot_conf;
+				boost::shared_ptr<EventHandler> pEventHandler;
+		};
+
 
  }
 
