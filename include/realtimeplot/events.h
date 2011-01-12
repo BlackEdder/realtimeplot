@@ -202,6 +202,5 @@ namespace realtimeplot {
 
 
  }
-
 #endif
 

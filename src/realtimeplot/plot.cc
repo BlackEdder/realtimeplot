@@ -437,4 +437,12 @@ namespace realtimeplot {
 			}
 		}
 	}
+
+	HeightMap::HeightMap()
+	{ 
+		config = PlotConfig();
+		pEventHandler.reset( new EventHandler( config ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHeightMapEvent( config, 
+						pEventHandler ) ) );
+	}
 }
