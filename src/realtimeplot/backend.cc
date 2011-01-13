@@ -722,10 +722,25 @@ namespace realtimeplot {
 		}
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
+		vertices.insert( delaunay::vertex( x, y ) );
+
 		throw;
 		// insert new point into the set
 		// recalculates the triangles (only if more than three vertices)
 		// If (show) draw all triangles
+
+		// Maybe actually draw iteratively -> when triangles are deleted, overdraw their edges
+		// using the plot all triangles 
+	}
+
+	void BackendHeightMap::plot() {
+		throw;
+		// Should maybe consider drawing iteratively from the get go! It should be do able to put
+		// this in the add_data, when we are eliminating old traingles
+
+		// Close plot
+		// open new height plot (maybe overload reset, so that we open height plot)
+		// Draw all edges (using the edges variable)
 	}
 }
 

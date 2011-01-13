@@ -279,9 +279,15 @@ namespace realtimeplot {
 			 * If show then the plot is immediately redrawn with the new point
 			 */
 			void add_data( float x, float y, float z, bool show );
+
+			void plot();
 		private:
+			//! All the vertices
 			std::set<delaunay::vertex> vertices;
+			//! All the triangles
 			std::set<delaunay::triangle> triangles;
+			//! All the edges (used for plotting)
+			std::set<delaunay::edge> edges;
 	};
 
 }
