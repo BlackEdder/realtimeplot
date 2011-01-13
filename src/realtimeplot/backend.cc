@@ -719,13 +719,33 @@ namespace realtimeplot {
 				BackendPlot( config, pEventHandler )
 		{ 
 			// Needs to setup the super triangle
+			float dx = (config.max_x - config.min_x);
+			float dy = (config.max_y - config.min_y);
+			vSuper[0] = delaunay::vertex( config.min_x - 0.5*dx, config.min_y );
+			vSuper[1] = delaunay::vertex( config.max_x + 0.5*dx, config.min_y );
+			vSuper[2] = delaunay::vertex( config.max_x - 0.5*dx, config.max_y + dy );
 		}
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
-		vertices.insert( delaunay::vertex( x, y ) );
+		// insert new point into the set
+		delaunay::vertex current_vertex = delaunay::vertex( x, y );
+		vertices.insert( current_vertex );
+		
+		//if (vertices.size() < 3) return;	// We still handle it, since it will be inside
+		//vSuper
+		
+		std::set<delaunay::triangle> workset;
+		workset.insert(delaunay::triangle(vSuper));
+		
+		// First skip all triangles that are for certain to the right of the current vertex
+		// Doesn't it make sense to do the same from the other direction??!
+		std::multiset<delaunay::triangle>::iterator itEnd = 
+			remove_if(workset.begin(), workset.end(),
+					delaunay::triangleIsCompleted(current_vertex, triangles, vSuper));
+
+		std::set<delaunay::edge> tmp_edges;
 
 		throw;
-		// insert new point into the set
 		// recalculates the triangles (only if more than three vertices)
 		// If (show) draw all triangles
 

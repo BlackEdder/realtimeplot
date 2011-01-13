@@ -128,15 +128,12 @@ namespace realtimeplot {
 		// A triangle is completed if the circumcircle is completely to the left of the current vertex.
 		// If a triangle is completed, it will be inserted in the output set, unless one or more of it's vertices
 		// belong to the 'super triangle'.
-		class triangleIsCompleted
-		{
-			public:
-				triangleIsCompleted(cvIterator itVertex, triangleSet& output, const vertex SuperTriangle[3])
+				triangleIsCompleted::triangleIsCompleted(cvIterator itVertex, triangleSet& output, const vertex SuperTriangle[3])
 					: m_itVertex(itVertex)
-						, m_Output(output)
-						 , m_pSuperTriangle(SuperTriangle)
+					, m_Output(output)
+					, m_pSuperTriangle(SuperTriangle)
 			{}
-				bool operator()(const triangle& tri) const
+				bool triangleIsCompleted::operator()(const triangle& tri) const
 				{
 					bool b = tri.IsLeftOf(m_itVertex);
 
@@ -147,12 +144,6 @@ namespace realtimeplot {
 					}
 					return b;
 				}
-
-			protected:
-				cvIterator m_itVertex;
-				triangleSet& m_Output;
-				const vertex * m_pSuperTriangle;
-		};
 
 		// Function object to check whether vertex is in circumcircle of triangle.
 		// operator() returns true if it does.
@@ -258,30 +249,29 @@ namespace realtimeplot {
 			/****
 			 * We can't do this iteratively (since there is no complete set)
 			 */
-			/*for (itVertex = vertices.begin(); itVertex != vertices.end(); itVertex++)
-				{
-			// First, remove all 'completed' triangles from the workset.
-			// A triangle is 'completed' if its circumcircle is entirely to the left of the current vertex.
-			// Vertices are sorted in x-direction (the set container does this automagically).
-			// Unless they are part of the 'super triangle', copy the 'completed' triangles to the output.
-			// The algorithm also works without this step, but it is an important optimalization for bigger numbers of vertices.
-			// It makes the algorithm about five times faster for 2000 vertices, and for 10000 vertices,
-			// it's thirty times faster. For smaller numbers, the difference is negligible.
+			for (itVertex = vertices.begin(); itVertex != vertices.end(); itVertex++)
+			{
+				// First, remove all 'completed' triangles from the workset.
+				// A triangle is 'completed' if its circumcircle is entirely to the left of the current vertex.
+				// Vertices are sorted in x-direction (the set container does this automagically).
+				// Unless they are part of the 'super triangle', copy the 'completed' triangles to the output.
+				// The algorithm also works without this step, but it is an important optimalization for bigger numbers of vertices.
+				// It makes the algorithm about five times faster for 2000 vertices, and for 10000 vertices,
+				// it's thirty times faster. For smaller numbers, the difference is negligible.
+				tIterator itEnd = remove_if(workset.begin(), workset.end(),
+						triangleIsCompleted(itVertex, output, vSuper));
 
+				edgeSet edges;
 
-			tIterator itEnd = remove_if(workset.begin(), workset.end(), triangleIsCompleted(itVertex, output, vSuper));
+				// A triangle is 'hot' if the current vertex v is inside the circumcircle.
+				// Remove all hot triangles, but keep their edges.
+				itEnd = remove_if(workset.begin(), itEnd, vertexIsInCircumCircle(itVertex, edges));
+				workset.erase(itEnd, workset.end());	// remove_if doesn't actually remove; we have to do this explicitly.
 
-			edgeSet edges;
-
-			// A triangle is 'hot' if the current vertex v is inside the circumcircle.
-			// Remove all hot triangles, but keep their edges.
-			itEnd = remove_if(workset.begin(), itEnd, vertexIsInCircumCircle(itVertex, edges));
-			workset.erase(itEnd, workset.end());	// remove_if doesn't actually remove; we have to do this explicitly.
-
-			// Create new triangles from the edges and the current vertex.
-			for (edgeIterator it = edges.begin(); it != edges.end(); it++)
-			workset.insert(triangle(it->m_pV0, it->m_pV1, & (* itVertex)));
-			}*/
+				// Create new triangles from the edges and the current vertex.
+				for (edgeIterator it = edges.begin(); it != edges.end(); it++)
+					workset.insert(triangle(it->m_pV0, it->m_pV1, & (* itVertex)));
+			}
 
 			// Finally, remove all the triangles belonging to the 'super triangle' and move the remaining
 			// triangles tot the output; remove_copy_if lets us do that in one go.

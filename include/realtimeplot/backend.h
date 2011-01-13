@@ -282,10 +282,12 @@ namespace realtimeplot {
 
 			void plot();
 		private:
+			delaunay::vertex vSuper[3];
+
 			//! All the vertices
 			std::set<delaunay::vertex> vertices;
 			//! All the triangles
-			std::set<delaunay::triangle> triangles;
+			std::multiset<delaunay::triangle> triangles;
 			//! All the edges (used for plotting)
 			std::set<delaunay::edge> edges;
 	};

@@ -194,6 +194,20 @@ typedef set<edge> edgeSet;
 typedef set<edge>::iterator edgeIterator;
 typedef set<edge>::const_iterator cedgeIterator;
 
+	class triangleIsCompleted
+		{
+			public:
+				triangleIsCompleted(cvIterator itVertex, triangleSet& output, const vertex SuperTriangle[3]);
+				bool operator()(const triangle& tri) const;
+
+			protected:
+				cvIterator m_itVertex;
+				triangleSet& m_Output;
+				const vertex * m_pSuperTriangle;
+		};
+
+
+
 ///////////////////
 // Delaunay
 //
