@@ -49,10 +49,10 @@ const float float_EPSILON = 10*numeric_limits<float>::epsilon();
 class vertex
 {
 public:
-	vertex()					: m_Pnt(0.0F, 0.0F)			{}
-	vertex(const vertex& v)		: m_Pnt(v.m_Pnt)			{}
-	vertex(const PointF& pnt)	: m_Pnt(pnt)				{}
-	vertex(float x, float y)		: m_Pnt(x, y)				{}
+	vertex()					: m_Pnt(0.0F, 0.0F)	{}
+	vertex(const vertex& v)		: m_Pnt(v.m_Pnt) {}
+	vertex(const PointF& pnt)	: m_Pnt(pnt) {}
+	vertex(float x, float y)		: m_Pnt(x, y)	{}
 	vertex(int x, int y)		: m_Pnt((float) x, (float) y)	{}
 
 	bool operator<(const vertex& v) const
@@ -117,10 +117,10 @@ public:
 		return m_Vertices[i];
 	}
 
-	bool IsLeftOf(std::set<vertex>::const_iterator itVertex) const
+	bool IsLeftOf(const vertex& current_vertex) const
 	{
 		// returns true if * itVertex is to the right of the triangle's circumcircle
-		return itVertex->GetPoint().X > (m_Center.X + m_R);
+		return current_vertex.GetPoint().X > (m_Center.X + m_R);
 	}
 
 	bool CCEncompasses(std::set<vertex>::const_iterator itVertex) const
@@ -187,11 +187,11 @@ public:
 	class triangleIsCompleted
 		{
 			public:
-				triangleIsCompleted(std::set<vertex>::const_iterator itVertex, std::multiset<triangle>& output, const vertex SuperTriangle[3]);
+				triangleIsCompleted(const vertex& current_vertex, std::multiset<triangle>& output, const vertex SuperTriangle[3]);
 				bool operator()(const triangle& tri) const;
 
 			protected:
-				std::set<vertex>::const_iterator m_itVertex;
+				const vertex& m_current_vertex;
 				std::multiset<triangle>& m_Output;
 				const vertex * m_pSuperTriangle;
 		};

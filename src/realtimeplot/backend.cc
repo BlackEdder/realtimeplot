@@ -726,6 +726,10 @@ namespace realtimeplot {
 			vSuper[2] = delaunay::vertex( config.max_x - 0.5*dx, config.max_y + dy );
 		}
 
+	bool test( const delaunay::triangle& tr ) {
+		return false;
+	}
+
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
 		// insert new point into the set
 		delaunay::vertex current_vertex = delaunay::vertex( x, y );
@@ -734,14 +738,16 @@ namespace realtimeplot {
 		//if (vertices.size() < 3) return;	// We still handle it, since it will be inside
 		//vSuper
 		
-		std::set<delaunay::triangle> workset;
+		std::multiset<delaunay::triangle> workset;
 		workset.insert(delaunay::triangle(vSuper));
 		
 		// First skip all triangles that are for certain to the right of the current vertex
 		// Doesn't it make sense to do the same from the other direction??!
+		std::multiset<delaunay::triangle>::iterator b = workset.begin();
+		std::multiset<delaunay::triangle>::iterator e = workset.end();
 		std::multiset<delaunay::triangle>::iterator itEnd = 
-			remove_if(workset.begin(), workset.end(),
-					delaunay::triangleIsCompleted(current_vertex, triangles, vSuper));
+			remove_if(b, e, test );
+					//delaunay::triangleIsCompleted(current_vertex, triangles, vSuper));
 
 		std::set<delaunay::edge> tmp_edges;
 
