@@ -21,25 +21,25 @@
 namespace realtimeplot {
 	namespace delaunay {
 
-		const REAL sqrt3 = 1.732050808F;
+		const float sqrt3 = 1.732050808F;
 
 		void triangle::SetCircumCircle()
 		{
-			REAL x0 = m_Vertices[0]->GetX();
-			REAL y0 = m_Vertices[0]->GetY();
+			float x0 = m_Vertices[0]->GetX();
+			float y0 = m_Vertices[0]->GetY();
 
-			REAL x1 = m_Vertices[1]->GetX();
-			REAL y1 = m_Vertices[1]->GetY();
+			float x1 = m_Vertices[1]->GetX();
+			float y1 = m_Vertices[1]->GetY();
 
-			REAL x2 = m_Vertices[2]->GetX();
-			REAL y2 = m_Vertices[2]->GetY();
+			float x2 = m_Vertices[2]->GetX();
+			float y2 = m_Vertices[2]->GetY();
 
-			REAL y10 = y1 - y0;
-			REAL y21 = y2 - y1;
+			float y10 = y1 - y0;
+			float y21 = y2 - y1;
 
-			bool b21zero = y21 > -REAL_EPSILON && y21 < REAL_EPSILON;
+			bool b21zero = y21 > -float_EPSILON && y21 < float_EPSILON;
 
-			if (y10 > -REAL_EPSILON && y10 < REAL_EPSILON)
+			if (y10 > -float_EPSILON && y10 < float_EPSILON)
 			{
 				if (b21zero)	// All three vertices are on one horizontal line.
 				{
@@ -56,10 +56,10 @@ namespace realtimeplot {
 				}
 				else	// m_Vertices[0] and m_Vertices[1] are on one horizontal line.
 				{
-					REAL m1 = - (x2 - x1) / y21;
+					float m1 = - (x2 - x1) / y21;
 
-					REAL mx1 = (x1 + x2) * .5F;
-					REAL my1 = (y1 + y2) * .5F;
+					float mx1 = (x1 + x2) * .5F;
+					float my1 = (y1 + y2) * .5F;
 
 					m_Center.X = (x0 + x1) * .5F;
 					m_Center.Y = m1 * (m_Center.X - mx1) + my1;
@@ -67,34 +67,34 @@ namespace realtimeplot {
 			}
 			else if (b21zero)	// m_Vertices[1] and m_Vertices[2] are on one horizontal line.
 			{
-				REAL m0 = - (x1 - x0) / y10;
+				float m0 = - (x1 - x0) / y10;
 
-				REAL mx0 = (x0 + x1) * .5F;
-				REAL my0 = (y0 + y1) * .5F;
+				float mx0 = (x0 + x1) * .5F;
+				float my0 = (y0 + y1) * .5F;
 
 				m_Center.X = (x1 + x2) * .5F;
 				m_Center.Y = m0 * (m_Center.X - mx0) + my0;
 			}
 			else	// 'Common' cases, no multiple vertices are on one horizontal line.
 			{
-				REAL m0 = - (x1 - x0) / y10;
-				REAL m1 = - (x2 - x1) / y21;
+				float m0 = - (x1 - x0) / y10;
+				float m1 = - (x2 - x1) / y21;
 
-				REAL mx0 = (x0 + x1) * .5F;
-				REAL my0 = (y0 + y1) * .5F;
+				float mx0 = (x0 + x1) * .5F;
+				float my0 = (y0 + y1) * .5F;
 
-				REAL mx1 = (x1 + x2) * .5F;
-				REAL my1 = (y1 + y2) * .5F;
+				float mx1 = (x1 + x2) * .5F;
+				float my1 = (y1 + y2) * .5F;
 
 				m_Center.X = (m0 * mx0 - m1 * mx1 + my1 - my0) / (m0 - m1);
 				m_Center.Y = m0 * (m_Center.X - mx0) + my0;
 			}
 
-			REAL dx = x0 - m_Center.X;
-			REAL dy = y0 - m_Center.Y;
+			float dx = x0 - m_Center.X;
+			float dy = y0 - m_Center.Y;
 
 			m_R2 = dx * dx + dy * dy;	// the radius of the circumcircle, squared
-			m_R = (REAL) sqrt(m_R2);	// the proper radius
+			m_R = (float) sqrt(m_R2);	// the proper radius
 
 			// Version 1.1: make m_R2 slightly higher to ensure that all edges
 			// of co-circular vertices will be caught.
@@ -128,7 +128,7 @@ namespace realtimeplot {
 		// A triangle is completed if the circumcircle is completely to the left of the current vertex.
 		// If a triangle is completed, it will be inserted in the output set, unless one or more of it's vertices
 		// belong to the 'super triangle'.
-				triangleIsCompleted::triangleIsCompleted(cvIterator itVertex, triangleSet& output, const vertex SuperTriangle[3])
+				triangleIsCompleted::triangleIsCompleted(std::set<vertex>::const_iterator itVertex, std::multiset<triangle>& output, const vertex SuperTriangle[3])
 					: m_itVertex(itVertex)
 					, m_Output(output)
 					, m_pSuperTriangle(SuperTriangle)
@@ -151,7 +151,7 @@ namespace realtimeplot {
 		class vertexIsInCircumCircle
 		{
 			public:
-				vertexIsInCircumCircle(cvIterator itVertex, edgeSet& edges) : m_itVertex(itVertex), m_Edges(edges)	{}
+				vertexIsInCircumCircle(std::set<vertex>::const_iterator itVertex, std::set<edge>& edges) : m_itVertex(itVertex), m_Edges(edges)	{}
 				bool operator()(const triangle& tri) const
 				{
 					bool b = tri.CCEncompasses(m_itVertex);
@@ -185,17 +185,17 @@ namespace realtimeplot {
 					edge e(pVertex0, pVertex1);
 
 					// Check if this edge is already in the buffer
-					edgeIterator found = m_Edges.find(e);
+					std::set<edge>::iterator found = m_Edges.find(e);
 
 					if (found == m_Edges.end()) m_Edges.insert(e);		// no, it isn't, so insert
 					else m_Edges.erase(found);							// yes, it is, so erase it to eliminate double edges
 				}
 
-				cvIterator m_itVertex;
-				edgeSet& m_Edges;
+				std::set<vertex>::const_iterator m_itVertex;
+				std::set<edge>& m_Edges;
 		};
 
-		void Delaunay::Triangulate(const vertexSet& vertices, triangleSet& output)
+		void Delaunay::Triangulate(const std::set<vertex>& vertices, std::multiset<triangle>& output)
 		{
 			if (vertices.size() < 3) return;	// nothing to handle
 
@@ -203,28 +203,28 @@ namespace realtimeplot {
 			 * Should probably be just the area of the plot
 			 */
 			// Determine the bounding box.
-			cvIterator itVertex = vertices.begin();
+			std::set<vertex>::const_iterator itVertex = vertices.begin();
 
-			REAL xMin = itVertex->GetX();
-			REAL yMin = itVertex->GetY();
-			REAL xMax = xMin;
-			REAL yMax = yMin;
+			float xMin = itVertex->GetX();
+			float yMin = itVertex->GetY();
+			float xMax = xMin;
+			float yMax = yMin;
 
 			++itVertex;		// If we're here, we know that vertices is not empty.
 			for (; itVertex != vertices.end(); itVertex++)
 			{
 				xMax = itVertex->GetX();	// Vertices are sorted along the x-axis, so the last one stored will be the biggest.
-				REAL y = itVertex->GetY();
+				float y = itVertex->GetY();
 				if (y < yMin) yMin = y;
 				if (y > yMax) yMax = y;
 			}
 
-			REAL dx = xMax - xMin;
-			REAL dy = yMax - yMin;
+			float dx = xMax - xMin;
+			float dy = yMax - yMin;
 
 			// Make the bounding box slightly bigger, just to feel safe.
-			REAL ddx = dx * 0.01F;
-			REAL ddy = dy * 0.01F;
+			float ddx = dx * 0.01F;
+			float ddy = dy * 0.01F;
 
 			xMin -= ddx;
 			xMax += ddx;
@@ -243,7 +243,7 @@ namespace realtimeplot {
 			vSuper[1] = vertex(xMax + dy * sqrt3 / 3.0F, yMin);
 			vSuper[2] = vertex((xMin + xMax) * 0.5F, yMax + dx * sqrt3 * 0.5F);
 
-			triangleSet workset;
+			std::multiset<triangle> workset;
 			workset.insert(triangle(vSuper));
 
 			/****
@@ -258,10 +258,10 @@ namespace realtimeplot {
 				// The algorithm also works without this step, but it is an important optimalization for bigger numbers of vertices.
 				// It makes the algorithm about five times faster for 2000 vertices, and for 10000 vertices,
 				// it's thirty times faster. For smaller numbers, the difference is negligible.
-				tIterator itEnd = remove_if(workset.begin(), workset.end(),
+				std::multiset<triangle>::iterator itEnd = remove_if(workset.begin(), workset.end(),
 						triangleIsCompleted(itVertex, output, vSuper));
 
-				edgeSet edges;
+				std::set<edge> edges;
 
 				// A triangle is 'hot' if the current vertex v is inside the circumcircle.
 				// Remove all hot triangles, but keep their edges.
@@ -269,19 +269,19 @@ namespace realtimeplot {
 				workset.erase(itEnd, workset.end());	// remove_if doesn't actually remove; we have to do this explicitly.
 
 				// Create new triangles from the edges and the current vertex.
-				for (edgeIterator it = edges.begin(); it != edges.end(); it++)
+				for (std::set<edge>::iterator it = edges.begin(); it != edges.end(); it++)
 					workset.insert(triangle(it->m_pV0, it->m_pV1, & (* itVertex)));
 			}
 
 			// Finally, remove all the triangles belonging to the 'super triangle' and move the remaining
 			// triangles tot the output; remove_copy_if lets us do that in one go.
-			tIterator where = output.begin();
+			std::multiset<triangle>::iterator where = output.begin();
 			remove_copy_if(workset.begin(), workset.end(), inserter(output, where), triangleHasVertex(vSuper));
 		}
 
-		void Delaunay::TrianglesToEdges(const triangleSet& triangles, edgeSet& edges)
+		void Delaunay::TrianglesToEdges(const std::multiset<triangle>& triangles, std::set<edge>& edges)
 		{
-			for (ctIterator it = triangles.begin(); it != triangles.end(); ++it)
+			for (std::multiset<triangle>::const_iterator it = triangles.begin(); it != triangles.end(); ++it)
 			{
 				HandleEdge(it->GetVertex(0), it->GetVertex(1), edges);
 				HandleEdge(it->GetVertex(1), it->GetVertex(2), edges);
@@ -289,7 +289,7 @@ namespace realtimeplot {
 			}
 		}
 
-		void Delaunay::HandleEdge(const vertex * p0, const vertex * p1, edgeSet& edges)
+		void Delaunay::HandleEdge(const vertex * p0, const vertex * p1, std::set<edge>& edges)
 		{
 			const vertex * pV0(NULL);
 			const vertex * pV1(NULL);
