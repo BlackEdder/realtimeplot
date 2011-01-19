@@ -289,7 +289,7 @@ namespace realtimeplot {
 			//! All the triangles
 			std::multiset<delaunay::triangle> triangles;
 			//! All the edges (used for plotting)
-			std::set<delaunay::edge> edges;
+			//std::set<delaunay::edge> edges;
 	};
 
 }

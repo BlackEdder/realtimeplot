@@ -103,53 +103,71 @@ namespace realtimeplot {
 			m_R2 *= 1.000001f;
 		}
 
-		// Function object to check whether a triangle has one of the vertices in SuperTriangle.
-		// operator() returns true if it does.
-		class triangleHasVertex
-		{
-			public:
-				triangleHasVertex(const vertex SuperTriangle[3]) : m_pSuperTriangle(SuperTriangle)	{}
-				bool operator()(const triangle& tri) const
-				{
-					for (int i = 0; i < 3; i++)
-					{
-						const vertex * p = tri.GetVertex(i);
-						if (p >= m_pSuperTriangle && p < (m_pSuperTriangle + 3)) return true;
-					}
-					return false;
-				}
-			protected:
-				const vertex * m_pSuperTriangle;
-		};
-
-		// Function object to check whether a triangle is 'completed', i.e. doesn't need to be checked
-		// again in the algorithm, i.e. it won't be changed anymore.
-		// Therefore it can be removed from the workset.
-		// A triangle is completed if the circumcircle is completely to the left of the current vertex.
-		// If a triangle is completed, it will be inserted in the output set, unless one or more of it's vertices
-		// belong to the 'super triangle'.
-		triangleIsCompleted::triangleIsCompleted(const vertex& current_vertex, std::multiset<triangle>& output, const vertex SuperTriangle[3])
-			: m_current_vertex( current_vertex )
-			, m_Output(output)
-			, m_pSuperTriangle(SuperTriangle)
-		{}
-
-		bool triangleIsCompleted::operator()(const triangle& tri) const
-		{
-			bool b = tri.IsLeftOf(m_current_vertex);
-
-			if (b)
-			{
-				triangleHasVertex thv(m_pSuperTriangle);
-				if (! thv(tri)) m_Output.insert(tri);
-			}
-			return b;
-		}
-
 		// Function object to check whether vertex is in circumcircle of triangle.
 		// operator() returns true if it does.
 		// The edges of a 'hot' triangle are stored in the edgeSet edges.
-		class vertexIsInCircumCircle
+		bool triangle::vertexIsInCircumCircle( const vertex& current_vertex, 
+				std::multiset<edge>& edges ) const 
+		{
+			bool b = CCEncompasses(current_vertex);
+			if (b)
+			{
+				HandleEdge(GetVertex(0), GetVertex(1), edges );
+				HandleEdge(GetVertex(1), GetVertex(2), edges );
+				HandleEdge(GetVertex(2), GetVertex(0), edges );
+			}
+			return b;
+		}
+				void triangle::HandleEdge(const vertex * p0, const vertex * p1,
+						std::multiset<edge>& edges ) const
+				{
+					const vertex * pVertex0(NULL);
+					const vertex * pVertex1(NULL);
+
+					// Create a normalized edge, in which the smallest vertex comes first.
+					if (* p0 < * p1)
+					{
+						pVertex0 = p0;
+						pVertex1 = p1;
+					}
+					else
+					{
+						pVertex0 = p1;
+						pVertex1 = p0;
+					}
+
+					edge e(pVertex0, pVertex1);
+
+					// Check if this edge is already in the buffer
+					bool exist = false;
+					std::multiset<edge>::iterator iE = edges.begin();
+					for (;iE!=edges.end();++iE) {
+						if ((*iE)==(e)) {
+							edges.erase( iE );
+							std::cout << "Erase " << (*iE) << " " << edges.size() << std::endl;
+							exist = true;
+						}
+					}
+					if (!exist) {
+						edges.insert( e );
+						std::cout << "Insert " << e << " " << edges.size() << std::endl;
+					}
+				}
+	bool triangle::hasVertex( const vertex SuperTriangle[3] ) const 
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			const vertex * p = GetVertex(i);
+			for (int j = 0; j < 3; j++) {
+				if ( (*p) == SuperTriangle[j] )
+					return true;
+			}
+
+		}
+		return false;
+	}
+
+		/*class vertexIsInCircumCircle
 		{
 			public:
 				vertexIsInCircumCircle(std::set<vertex>::const_iterator itVertex, std::set<edge>& edges) : m_itVertex(itVertex), m_Edges(edges)	{}
@@ -194,7 +212,51 @@ namespace realtimeplot {
 
 				std::set<vertex>::const_iterator m_itVertex;
 				std::set<edge>& m_Edges;
+		};*/
+
+		// Function object to check whether a triangle has one of the vertices in SuperTriangle.
+		// operator() returns true if it does.
+		class triangleHasVertex
+		{
+			public:
+				triangleHasVertex(const vertex SuperTriangle[3]) : m_pSuperTriangle(SuperTriangle)	{}
+				bool operator()(const triangle& tri) const
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						const vertex * p = tri.GetVertex(i);
+						if (p >= m_pSuperTriangle && p < (m_pSuperTriangle + 3)) return true;
+					}
+					return false;
+				}
+			protected:
+				const vertex * m_pSuperTriangle;
 		};
+
+		// Function object to check whether a triangle is 'completed', i.e. doesn't need to be checked
+		// again in the algorithm, i.e. it won't be changed anymore.
+		// Therefore it can be removed from the workset.
+		// A triangle is completed if the circumcircle is completely to the left of the current vertex.
+		// If a triangle is completed, it will be inserted in the output set, unless one or more of it's vertices
+		// belong to the 'super triangle'.
+		triangleIsCompleted::triangleIsCompleted(const vertex& current_vertex, std::multiset<triangle>& output, const vertex SuperTriangle[3])
+			: m_current_vertex( current_vertex )
+			, m_Output(output)
+			, m_pSuperTriangle(SuperTriangle)
+		{}
+
+		bool triangleIsCompleted::operator()(const triangle& tri) const
+		{
+			bool b = tri.IsLeftOf(m_current_vertex);
+
+			if (b)
+			{
+				triangleHasVertex thv(m_pSuperTriangle);
+				if (! thv(tri)) m_Output.insert(tri);
+			}
+			return b;
+		}
+
 
 		void Delaunay::Triangulate(const std::set<vertex>& vertices, std::multiset<triangle>& output)
 		{
@@ -313,3 +375,25 @@ namespace realtimeplot {
 		}
 	};
 };
+
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::vertex *v) {
+	out << "(" << v->GetX() << ","  << v->GetY() << ")";
+  return out;
+};
+
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::vertex &v) {
+	out << "(" << v.GetX() << ","  << v.GetY() << ")";
+  return out;
+};
+
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::edge &edge) {
+	out << edge.m_pV0 << "----"  << edge.m_pV1;
+	return out;
+}
+
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::triangle &triangle) {
+	for (size_t i=0; i<3; ++i) {
+		out << triangle.GetVertex( i ) << std::endl;
+	}
+	return out;
+}

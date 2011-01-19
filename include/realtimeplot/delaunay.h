@@ -18,6 +18,8 @@
 ********************************************************************************/
 #ifndef DELAUNAY_H
 #define DELAUNAY_H
+#include <iostream>
+#include <ostream>
 #include <set>
 #include <algorithm>
 #include <limits>
@@ -78,6 +80,37 @@ protected:
 };
 
 
+
+
+///////////////////
+// edge
+
+class edge
+{
+public:
+	edge(const edge& e)	: m_pV0(e.m_pV0), m_pV1(e.m_pV1)	{}
+	edge(const vertex * pV0, const vertex * pV1)
+		: m_pV0(pV0), m_pV1(pV1)
+	{
+	}
+
+	bool operator<(const edge& e) const
+	{
+		if (m_pV0 == e.m_pV0) return * m_pV1 < * e.m_pV1;
+		return * m_pV0 < * e.m_pV0;
+	}
+
+	bool operator==(const edge& e) const
+	{
+		if (((*m_pV0) == (*e.m_pV0) &&	(*m_pV1) == (*e.m_pV1)) ||
+				((*m_pV0) == (*e.m_pV1) &&	(*m_pV1) == (*e.m_pV0))) 
+			return true;
+		return false;
+	}
+
+	const vertex * m_pV0;
+	const vertex * m_pV1;
+};
 ///////////////////
 // triangle
 
@@ -112,7 +145,7 @@ public:
 
 	const vertex * GetVertex(int i) const
 	{
-		if(i >= 0 || i < 3) 
+		if (i < 0 || i >= 3) 
 			throw;
 		return m_Vertices[i];
 	}
@@ -123,7 +156,7 @@ public:
 		return current_vertex.GetPoint().X > (m_Center.X + m_R);
 	}
 
-	bool CCEncompasses(std::set<vertex>::const_iterator itVertex) const
+	bool CCEncompasses(const vertex& current_vertex) const
 	{
 		// Returns true if * itVertex is in the triangle's circumcircle.
 		// A vertex exactly on the circle is also considered to be in the circle.
@@ -143,10 +176,17 @@ public:
 //		if (y > (m_Center.Y + m_R)) return false;
 //		if (y < (m_Center.Y - m_R)) return false;
 
-		PointF dist = itVertex->GetPoint() - m_Center;		// the distance between v and the circle center
+		PointF dist = current_vertex.GetPoint() - m_Center;		// the distance between v and the circle center
 		float dist2 = dist.X * dist.X + dist.Y * dist.Y;		// squared
 		return dist2 <= m_R2;								// compare with squared radius
 	}
+
+	/**
+	 * \brief Check if vertexIsInCircumCircle of the triangle and store the edges if it is
+	 */
+	bool vertexIsInCircumCircle( const vertex& current_vertex, std::multiset<edge>& edges ) const;
+
+	bool hasVertex( const vertex SuperTriangle[3] ) const;
 protected:
 	const vertex * m_Vertices[3];	// the three triangle vertices
 	PointF m_Center;				// center of circumcircle
@@ -154,6 +194,11 @@ protected:
 	float m_R2;			// radius of circumcircle, squared
 
 	void SetCircumCircle();
+
+	/**
+	 * \brief Helper function for vertexIsInCircumCircle
+	 */
+	void HandleEdge(const vertex * p0, const vertex * p1, std::multiset<edge>& edges ) const;
 };
 
 // Changed in verion 1.1: collect triangles in a multiset.
@@ -161,27 +206,7 @@ protected:
 // triangles with identical center points. Therefore, more than three
 // co-circular vertices yielded incorrect results. Thanks to Roger Labbe.
 
-///////////////////
-// edge
 
-class edge
-{
-public:
-	edge(const edge& e)	: m_pV0(e.m_pV0), m_pV1(e.m_pV1)	{}
-	edge(const vertex * pV0, const vertex * pV1)
-		: m_pV0(pV0), m_pV1(pV1)
-	{
-	}
-
-	bool operator<(const edge& e) const
-	{
-		if (m_pV0 == e.m_pV0) return * m_pV1 < * e.m_pV1;
-		return * m_pV0 < * e.m_pV0;
-	}
-
-	const vertex * m_pV0;
-	const vertex * m_pV1;
-};
 
 
 	class triangleIsCompleted
@@ -220,4 +245,9 @@ protected:
 };
 };
 };
+
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::vertex *v);
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::vertex &v);
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::edge &edge);
+std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::triangle &triangle);
 #endif

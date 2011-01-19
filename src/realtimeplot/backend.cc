@@ -714,56 +714,89 @@ namespace realtimeplot {
 		//        float(xSurface->get_height())/(plot_area_height+config.margin_x) );
 	}
 
-	BackendHeightMap::BackendHeightMap( PlotConfig config, 
+	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler) : 
-				BackendPlot( config, pEventHandler )
+				BackendPlot( cfg, pEventHandler )
 		{ 
+			config.fixed_plot_area = true;
 			// Needs to setup the super triangle
 			float dx = (config.max_x - config.min_x);
 			float dy = (config.max_y - config.min_y);
 			vSuper[0] = delaunay::vertex( config.min_x - 0.5*dx, config.min_y );
 			vSuper[1] = delaunay::vertex( config.max_x + 0.5*dx, config.min_y );
 			vSuper[2] = delaunay::vertex( config.max_x - 0.5*dx, config.max_y + dy );
+			triangles.insert( delaunay::triangle( vSuper ) );
+			std::cout << "Super " << delaunay::triangle( vSuper ) << std::endl;
 		}
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
 		// insert new point into the set
 		delaunay::vertex current_vertex = delaunay::vertex( x, y );
+
+		std::cout << "Adding: " << current_vertex << std::endl;
 		vertices.insert( current_vertex );
 		
 		//if (vertices.size() < 3) return;	// We still handle it, since it will be inside
 		//vSuper
 		
-		//Hmmm shouldn't workset have a copy of all existing triangles?
-		std::multiset<delaunay::triangle> workset;
-		workset.insert(delaunay::triangle(vSuper));
-		
-		// First skip all triangles that are for certain to the right of the current vertex
-		// Doesn't it make sense to do the same from the other direction??!
-		/*std::multiset<delaunay::triangle>::const_iterator b = workset.begin();
-		std::multiset<delaunay::triangle>::const_iterator e = workset.end();
-		std::multiset<delaunay::triangle>::const_iterator itEnd = 
-			remove_if(b, e, test );*/
-					//delaunay::triangleIsCompleted(current_vertex, triangles, vSuper));
+		std::multiset<delaunay::edge> tmp_edges;
 
-		std::set<delaunay::edge> tmp_edges;
+		std::multiset<delaunay::triangle>::iterator iTriangle = triangles.begin();
+		for (;iTriangle!=triangles.end();++iTriangle) {
+			std::cout << (*iTriangle) << std::endl;
+			bool answer = iTriangle->vertexIsInCircumCircle( current_vertex, tmp_edges );
+			if (answer) {
+				std::cout << "Delete it!" << std::endl;
+				triangles.erase( (*iTriangle) );
+			}
+		}
+		std::cout << "Triangles left: " << triangles.size() << " " 
+			<< tmp_edges.size() << std::endl;
 
-		throw;
-		// recalculates the triangles (only if more than three vertices)
-		// If (show) draw all triangles
+		// Create new triangles from the edges and the current vertex.
+		for (std::set<delaunay::edge>::iterator it = 
+				tmp_edges.begin(); it != tmp_edges.end(); it++) {
+			delaunay::vertex *cp = new delaunay::vertex( current_vertex );
+			triangles.insert(delaunay::triangle(it->m_pV0, it->m_pV1, cp));
+			std::cout << (*it) << std::endl;
+			std::cout << delaunay::triangle(it->m_pV0, it->m_pV1, cp) << std::endl;
+		}
 
-		// Maybe actually draw iteratively -> when triangles are deleted, overdraw their edges
-		// using the plot all triangles 
+		// If (show) and vertices>=3 draw all triangles
+		if (show && vertices.size()>=3)
+			plot();
+
+		iTriangle = triangles.begin();
+		std::cout << "We have: " << std::endl;
+		for (;iTriangle!=triangles.end();++iTriangle) {
+			std::cout << (*iTriangle) << std::endl;
+		}
 	}
 
-	void BackendHeightMap::plot() {
-		throw;
-		// Should maybe consider drawing iteratively from the get go! It should be do able to put
-		// this in the add_data, when we are eliminating old traingles
 
-		// Close plot
-		// open new height plot (maybe overload reset, so that we open height plot)
-		// Draw all edges (using the edges variable)
+	void BackendHeightMap::plot() {
+		clear();
+		std::cout << "Bla" << std::endl;
+		std::multiset<delaunay::triangle>::iterator iTriangle = triangles.begin();
+		int line_id = 0;
+		for (;iTriangle!=triangles.end();++iTriangle) {
+			std::cout << (*iTriangle) << std::endl;
+			if (!iTriangle->hasVertex(vSuper)) {
+			for (size_t i=0; i<3; ++i) {
+				line_add( iTriangle->GetVertex( i )->GetX(),
+						iTriangle->GetVertex( i )->GetY(), line_id, Color::red() );
+				std::cout << iTriangle->GetVertex( i )->GetX() << " " << 
+					iTriangle->GetVertex( i )->GetY() << std::endl;
+			}
+			line_add( iTriangle->GetVertex( 0 )->GetX(),
+					iTriangle->GetVertex( 0 )->GetY(), line_id, Color::red() );
+			++line_id;
+			}
+		}
+		std::set<delaunay::vertex>::iterator iV = vertices.begin();
+		for (;iV!=vertices.end();++iV) {
+			point( iV->GetX(), iV->GetY() );
+		}
 	}
 }
 
