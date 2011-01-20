@@ -85,6 +85,17 @@ set(DOXYFILE_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/realtimeplot")
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include(UseDoxygen)
 
+# Tests
+find_package(CxxTest)
+if(CXXTEST_FOUND)
+	#include_directories(tests)
+  enable_testing()
+
+  CXXTEST_ADD_TEST(unittest_delaunay test_delaunay.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_delaunay.h)
+  target_link_libraries(unittest_delaunay realtimeplot) # as needed
+endif()
+
 #
 # Ruby library
 #

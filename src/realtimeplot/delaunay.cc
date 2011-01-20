@@ -1,399 +1,42 @@
-/********************************************************************************
-	Copyright (C) 2004-2005 Sjaak Priester	
-	Copyright (C) 2011 Edwin van Leeuwen
+/*
+	 -------------------------------------------------------------------
 
-	This is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+	 Copyright (C) 2010, Edwin van Leeuwen
 
-	This file is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+	 This file is part of RealTimePlot.
 
-	You should have received a copy of the GNU General Public License
-	along with Tinter; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- ********************************************************************************/
+	 RealTimePlot is free software; you can redistribute it and/or modify
+	 it under the terms of the GNU General Public License as published by
+	 the Free Software Foundation; either version 3 of the License, or
+	 (at your option) any later version.
+
+	 RealTimePlot is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 GNU General Public License for more details.
+
+	 You should have received a copy of the GNU General Public License
+	 along with RealTimePlot. If not, see <http://www.gnu.org/licenses/>.
+
+	 -------------------------------------------------------------------
+	 */
 
 #include "realtimeplot/delaunay.h"
 namespace realtimeplot {
 	namespace delaunay {
-
-		const float sqrt3 = 1.732050808F;
-
-		void triangle::SetCircumCircle()
+		Delaunay::Delaunay( float min_x, float max_x, float min_y, float max_y )
 		{
-			float x0 = m_Vertices[0]->GetX();
-			float y0 = m_Vertices[0]->GetY();
+			//Setup gVertices vTriangles oOpposites
+			float dx = (max_x - min_x);
+			float dy = (max_y - min_y);
+			gVertices.push_back( Vertex( min_x - 0.5*dx, min_y ) );
+			gVertices.push_back( Vertex( max_x - 0.5*dx, max_y + dy ) );
+			gVertices.push_back( Vertex( max_x + 0.5*dx, min_y ) );
+			vTriangles.push_back( Triplet( 0, 1, 2 ) );
 
-			float x1 = m_Vertices[1]->GetX();
-			float y1 = m_Vertices[1]->GetY();
-
-			float x2 = m_Vertices[2]->GetX();
-			float y2 = m_Vertices[2]->GetY();
-
-			float y10 = y1 - y0;
-			float y21 = y2 - y1;
-
-			bool b21zero = y21 > -float_EPSILON && y21 < float_EPSILON;
-
-			if (y10 > -float_EPSILON && y10 < float_EPSILON)
-			{
-				if (b21zero)	// All three vertices are on one horizontal line.
-				{
-					if (x1 > x0)
-					{
-						if (x2 > x1) x1 = x2;
-					}
-					else
-					{
-						if (x2 < x0) x0 = x2;
-					}
-					m_Center.X = (x0 + x1) * .5F;
-					m_Center.Y = y0;
-				}
-				else	// m_Vertices[0] and m_Vertices[1] are on one horizontal line.
-				{
-					float m1 = - (x2 - x1) / y21;
-
-					float mx1 = (x1 + x2) * .5F;
-					float my1 = (y1 + y2) * .5F;
-
-					m_Center.X = (x0 + x1) * .5F;
-					m_Center.Y = m1 * (m_Center.X - mx1) + my1;
-				}
-			}
-			else if (b21zero)	// m_Vertices[1] and m_Vertices[2] are on one horizontal line.
-			{
-				float m0 = - (x1 - x0) / y10;
-
-				float mx0 = (x0 + x1) * .5F;
-				float my0 = (y0 + y1) * .5F;
-
-				m_Center.X = (x1 + x2) * .5F;
-				m_Center.Y = m0 * (m_Center.X - mx0) + my0;
-			}
-			else	// 'Common' cases, no multiple vertices are on one horizontal line.
-			{
-				float m0 = - (x1 - x0) / y10;
-				float m1 = - (x2 - x1) / y21;
-
-				float mx0 = (x0 + x1) * .5F;
-				float my0 = (y0 + y1) * .5F;
-
-				float mx1 = (x1 + x2) * .5F;
-				float my1 = (y1 + y2) * .5F;
-
-				m_Center.X = (m0 * mx0 - m1 * mx1 + my1 - my0) / (m0 - m1);
-				m_Center.Y = m0 * (m_Center.X - mx0) + my0;
-			}
-
-			float dx = x0 - m_Center.X;
-			float dy = y0 - m_Center.Y;
-
-			m_R2 = dx * dx + dy * dy;	// the radius of the circumcircle, squared
-			m_R = (float) sqrt(m_R2);	// the proper radius
-
-			// Version 1.1: make m_R2 slightly higher to ensure that all edges
-			// of co-circular vertices will be caught.
-			// Note that this is a compromise. In fact, the algorithm isn't really
-			// suited for very many co-circular vertices.
-			m_R2 *= 1.000001f;
-		}
-
-		// Function object to check whether vertex is in circumcircle of triangle.
-		// operator() returns true if it does.
-		// The edges of a 'hot' triangle are stored in the edgeSet edges.
-		bool triangle::vertexIsInCircumCircle( const vertex& current_vertex, 
-				std::multiset<edge>& edges ) const 
-		{
-			bool b = CCEncompasses(current_vertex);
-			if (b)
-			{
-				HandleEdge(GetVertex(0), GetVertex(1), edges );
-				HandleEdge(GetVertex(1), GetVertex(2), edges );
-				HandleEdge(GetVertex(2), GetVertex(0), edges );
-			}
-			return b;
-		}
-				void triangle::HandleEdge(const vertex * p0, const vertex * p1,
-						std::multiset<edge>& edges ) const
-				{
-					const vertex * pVertex0(NULL);
-					const vertex * pVertex1(NULL);
-
-					// Create a normalized edge, in which the smallest vertex comes first.
-					if (* p0 < * p1)
-					{
-						pVertex0 = p0;
-						pVertex1 = p1;
-					}
-					else
-					{
-						pVertex0 = p1;
-						pVertex1 = p0;
-					}
-
-					edge e(pVertex0, pVertex1);
-
-					// Check if this edge is already in the buffer
-					bool exist = false;
-					std::multiset<edge>::iterator iE = edges.begin();
-					for (;iE!=edges.end();++iE) {
-						if ((*iE)==(e)) {
-							edges.erase( iE );
-							std::cout << "Erase " << (*iE) << " " << edges.size() << std::endl;
-							exist = true;
-						}
-					}
-					if (!exist) {
-						edges.insert( e );
-						std::cout << "Insert " << e << " " << edges.size() << std::endl;
-					}
-				}
-	bool triangle::hasVertex( const vertex SuperTriangle[3] ) const 
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			const vertex * p = GetVertex(i);
-			for (int j = 0; j < 3; j++) {
-				if ( (*p) == SuperTriangle[j] )
-					return true;
-			}
-
-		}
-		return false;
-	}
-
-		/*class vertexIsInCircumCircle
-		{
-			public:
-				vertexIsInCircumCircle(std::set<vertex>::const_iterator itVertex, std::set<edge>& edges) : m_itVertex(itVertex), m_Edges(edges)	{}
-				bool operator()(const triangle& tri) const
-				{
-					bool b = tri.CCEncompasses(m_itVertex);
-
-					if (b)
-					{
-						HandleEdge(tri.GetVertex(0), tri.GetVertex(1));
-						HandleEdge(tri.GetVertex(1), tri.GetVertex(2));
-						HandleEdge(tri.GetVertex(2), tri.GetVertex(0));
-					}
-					return b;
-				}
-			protected:
-				void HandleEdge(const vertex * p0, const vertex * p1) const
-				{
-					const vertex * pVertex0(NULL);
-					const vertex * pVertex1(NULL);
-
-					// Create a normalized edge, in which the smallest vertex comes first.
-					if (* p0 < * p1)
-					{
-						pVertex0 = p0;
-						pVertex1 = p1;
-					}
-					else
-					{
-						pVertex0 = p1;
-						pVertex1 = p0;
-					}
-
-					edge e(pVertex0, pVertex1);
-
-					// Check if this edge is already in the buffer
-					std::set<edge>::iterator found = m_Edges.find(e);
-
-					if (found == m_Edges.end()) m_Edges.insert(e);		// no, it isn't, so insert
-					else m_Edges.erase(found);							// yes, it is, so erase it to eliminate double edges
-				}
-
-				std::set<vertex>::const_iterator m_itVertex;
-				std::set<edge>& m_Edges;
-		};*/
-
-		// Function object to check whether a triangle has one of the vertices in SuperTriangle.
-		// operator() returns true if it does.
-		class triangleHasVertex
-		{
-			public:
-				triangleHasVertex(const vertex SuperTriangle[3]) : m_pSuperTriangle(SuperTriangle)	{}
-				bool operator()(const triangle& tri) const
-				{
-					for (int i = 0; i < 3; i++)
-					{
-						const vertex * p = tri.GetVertex(i);
-						if (p >= m_pSuperTriangle && p < (m_pSuperTriangle + 3)) return true;
-					}
-					return false;
-				}
-			protected:
-				const vertex * m_pSuperTriangle;
-		};
-
-		// Function object to check whether a triangle is 'completed', i.e. doesn't need to be checked
-		// again in the algorithm, i.e. it won't be changed anymore.
-		// Therefore it can be removed from the workset.
-		// A triangle is completed if the circumcircle is completely to the left of the current vertex.
-		// If a triangle is completed, it will be inserted in the output set, unless one or more of it's vertices
-		// belong to the 'super triangle'.
-		triangleIsCompleted::triangleIsCompleted(const vertex& current_vertex, std::multiset<triangle>& output, const vertex SuperTriangle[3])
-			: m_current_vertex( current_vertex )
-			, m_Output(output)
-			, m_pSuperTriangle(SuperTriangle)
-		{}
-
-		bool triangleIsCompleted::operator()(const triangle& tri) const
-		{
-			bool b = tri.IsLeftOf(m_current_vertex);
-
-			if (b)
-			{
-				triangleHasVertex thv(m_pSuperTriangle);
-				if (! thv(tri)) m_Output.insert(tri);
-			}
-			return b;
-		}
-
-
-		void Delaunay::Triangulate(const std::set<vertex>& vertices, std::multiset<triangle>& output)
-		{
-			if (vertices.size() < 3) return;	// nothing to handle
-
-			/*****
-			 * Should probably be just the area of the plot
-			 */
-			// Determine the bounding box.
-			std::set<vertex>::const_iterator itVertex = vertices.begin();
-
-			float xMin = itVertex->GetX();
-			float yMin = itVertex->GetY();
-			float xMax = xMin;
-			float yMax = yMin;
-
-			++itVertex;		// If we're here, we know that vertices is not empty.
-			for (; itVertex != vertices.end(); itVertex++)
-			{
-				xMax = itVertex->GetX();	// Vertices are sorted along the x-axis, so the last one stored will be the biggest.
-				float y = itVertex->GetY();
-				if (y < yMin) yMin = y;
-				if (y > yMax) yMax = y;
-			}
-
-			float dx = xMax - xMin;
-			float dy = yMax - yMin;
-
-			// Make the bounding box slightly bigger, just to feel safe.
-			float ddx = dx * 0.01F;
-			float ddy = dy * 0.01F;
-
-			xMin -= ddx;
-			xMax += ddx;
-			dx += 2 * ddx;
-
-			yMin -= ddy;
-			yMax += ddy;
-			dy += 2 * ddy;
-
-			// Create a 'super triangle', encompassing all the vertices. We choose an equilateral triangle with horizontal base.
-			// We could have made the 'super triangle' simply very big. However, the algorithm is quite sensitive to
-			// rounding errors, so it's better to make the 'super triangle' just big enough, like we do here.
-			vertex vSuper[3];
-
-			vSuper[0] = vertex(xMin - dy * sqrt3 / 3.0F, yMin);	// Simple highschool geometry, believe me.
-			vSuper[1] = vertex(xMax + dy * sqrt3 / 3.0F, yMin);
-			vSuper[2] = vertex((xMin + xMax) * 0.5F, yMax + dx * sqrt3 * 0.5F);
-
-			std::multiset<triangle> workset;
-			workset.insert(triangle(vSuper));
-
-			/****
-			 * We can't do this iteratively (since there is no complete set)
-			 */
-
-			/*for (itVertex = vertices.begin(); itVertex != vertices.end(); itVertex++)
-			{
-				// First, remove all 'completed' triangles from the workset.
-				// A triangle is 'completed' if its circumcircle is entirely to the left of the current vertex.
-				// Vertices are sorted in x-direction (the set container does this automagically).
-				// Unless they are part of the 'super triangle', copy the 'completed' triangles to the output.
-				// The algorithm also works without this step, but it is an important optimalization for bigger numbers of vertices.
-				// It makes the algorithm about five times faster for 2000 vertices, and for 10000 vertices,
-				// it's thirty times faster. For smaller numbers, the difference is negligible.
-				std::multiset<triangle>::iterator itEnd = remove_if(workset.begin(), workset.end(),
-						triangleIsCompleted(itVertex, output, vSuper));
-
-				std::set<edge> edges;
-
-				// A triangle is 'hot' if the current vertex v is inside the circumcircle.
-				// Remove all hot triangles, but keep their edges.
-				itEnd = remove_if(workset.begin(), itEnd, vertexIsInCircumCircle(itVertex, edges));
-				workset.erase(itEnd, workset.end());	// remove_if doesn't actually remove; we have to do this explicitly.
-
-				// Create new triangles from the edges and the current vertex.
-				for (std::set<edge>::iterator it = edges.begin(); it != edges.end(); it++)
-					workset.insert(triangle(it->m_pV0, it->m_pV1, & (* itVertex)));
-			}*/
-
-			// Finally, remove all the triangles belonging to the 'super triangle' and move the remaining
-			// triangles tot the output; remove_copy_if lets us do that in one go.
-			std::multiset<triangle>::iterator where = output.begin();
-			remove_copy_if(workset.begin(), workset.end(), inserter(output, where), triangleHasVertex(vSuper));
-		}
-
-		void Delaunay::TrianglesToEdges(const std::multiset<triangle>& triangles, std::set<edge>& edges)
-		{
-			for (std::multiset<triangle>::const_iterator it = triangles.begin(); it != triangles.end(); ++it)
-			{
-				HandleEdge(it->GetVertex(0), it->GetVertex(1), edges);
-				HandleEdge(it->GetVertex(1), it->GetVertex(2), edges);
-				HandleEdge(it->GetVertex(2), it->GetVertex(0), edges);
-			}
-		}
-
-		void Delaunay::HandleEdge(const vertex * p0, const vertex * p1, std::set<edge>& edges)
-		{
-			const vertex * pV0(NULL);
-			const vertex * pV1(NULL);
-
-			if (* p0 < * p1)
-			{
-				pV0 = p0;
-				pV1 = p1;
-			}
-			else
-			{
-				pV0 = p1;
-				pV1 = p0;
-			}
-
-			// Insert a normalized edge. If it's already in edges, insertion will fail,
-			// thus leaving only unique edges.
-			edges.insert(edge(pV0, pV1));
+			//Only one triangle, so no opposites
+			oOpposites.push_back( Triplet( -1, -1, -1 ) );
 		}
 	};
 };
 
-std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::vertex *v) {
-	out << "(" << v->GetX() << ","  << v->GetY() << ")";
-  return out;
-};
-
-std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::vertex &v) {
-	out << "(" << v.GetX() << ","  << v.GetY() << ")";
-  return out;
-};
-
-std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::edge &edge) {
-	out << edge.m_pV0 << "----"  << edge.m_pV1;
-	return out;
-}
-
-std::ostream& operator<< (std::ostream &out, const realtimeplot::delaunay::triangle &triangle) {
-	for (size_t i=0; i<3; ++i) {
-		out << triangle.GetVertex( i ) << std::endl;
-	}
-	return out;
-}

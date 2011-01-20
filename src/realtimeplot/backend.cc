@@ -720,17 +720,18 @@ namespace realtimeplot {
 		{ 
 			config.fixed_plot_area = true;
 			// Needs to setup the super triangle
-			float dx = (config.max_x - config.min_x);
+			/*float dx = (config.max_x - config.min_x);
 			float dy = (config.max_y - config.min_y);
 			vSuper[0] = delaunay::vertex( config.min_x - 0.5*dx, config.min_y );
 			vSuper[1] = delaunay::vertex( config.max_x + 0.5*dx, config.min_y );
 			vSuper[2] = delaunay::vertex( config.max_x - 0.5*dx, config.max_y + dy );
 			triangles.insert( delaunay::triangle( vSuper ) );
-			std::cout << "Super " << delaunay::triangle( vSuper ) << std::endl;
+			std::cout << "Super " << delaunay::triangle( vSuper ) << std::endl;*/
 		}
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
-		// insert new point into the set
+		/*
+		 * // insert new point into the set
 		delaunay::vertex current_vertex = delaunay::vertex( x, y );
 
 		std::cout << "Adding: " << current_vertex << std::endl;
@@ -770,12 +771,12 @@ namespace realtimeplot {
 		std::cout << "We have: " << std::endl;
 		for (;iTriangle!=triangles.end();++iTriangle) {
 			std::cout << (*iTriangle) << std::endl;
-		}
+		}*/
 	}
 
 
 	void BackendHeightMap::plot() {
-		clear();
+		/*clear();
 		std::cout << "Bla" << std::endl;
 		std::multiset<delaunay::triangle>::iterator iTriangle = triangles.begin();
 		int line_id = 0;
@@ -796,7 +797,7 @@ namespace realtimeplot {
 		std::set<delaunay::vertex>::iterator iV = vertices.begin();
 		for (;iV!=vertices.end();++iV) {
 			point( iV->GetX(), iV->GetY() );
-		}
+		}*/
 	}
 }
 
