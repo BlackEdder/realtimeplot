@@ -29,13 +29,19 @@ namespace realtimeplot {
 			//Setup gVertices vTriangles oOpposites
 			float dx = (max_x - min_x);
 			float dy = (max_y - min_y);
-			gVertices.push_back( Vertex( min_x - 0.5*dx, min_y ) );
-			gVertices.push_back( Vertex( max_x - 0.5*dx, max_y + dy ) );
-			gVertices.push_back( Vertex( max_x + 0.5*dx, min_y ) );
-			vTriangles.push_back( Triplet( 0, 1, 2 ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x - 0.5*dx, min_y ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x - 0.5*dx, max_y + dy ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x + 0.5*dx, min_y ) ) );
+			
+			triangles.push_back( boost::shared_ptr<Triangle>( new Triangle ) );
 
-			//Only one triangle, so no opposites
-			oOpposites.push_back( Triplet( -1, -1, -1 ) );
+			for (size_t i = 0; i<3; ++i) {
+				boost::shared_ptr<Corner> corner (new Corner());
+				corner->vertex = vertices[i];
+				corner->triangle = triangles[0];
+				corners.push_back( corner );
+			}
+			triangles[0]->corners = corners;
 		}
 	};
 };

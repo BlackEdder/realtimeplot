@@ -25,6 +25,7 @@
 #include <iostream>
 #include <ostream>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 namespace realtimeplot {
 	namespace delaunay {
 		/*
@@ -39,25 +40,20 @@ namespace realtimeplot {
 			{}
 		};
 
-		class Triplet {
+		class Corner;
+		class Triangle {
 			public:
-				Triplet( float id1, float id2, float id3 ) 
-				{
-					ids.push_back( id1 );
-					ids.push_back( id2 );
-					ids.push_back( id3 );
-				}
-				float operator[] ( int i )
-				{
-					if (i>=0)
-						return ids[i % 3];
-					else {
-						i = (0-i)%3;
-						return ids[3-i];
-					}
-				}
-			private:
-				std::vector<float> ids;
+				std::vector<boost::shared_ptr<Corner> > corners;
+		};
+
+		class Corner {
+			public:
+				boost::shared_ptr<Vertex> vertex;
+				boost::shared_ptr<Corner> next;
+				boost::shared_ptr<Corner> previous;
+				boost::shared_ptr<Corner> opposite;
+				boost::shared_ptr<Triangle> triangle;
+				Corner() {};
 		};
 
 		class Delaunay {
@@ -67,9 +63,9 @@ namespace realtimeplot {
 
 			/*private:
 				friend class TestDelaunay;*/
-				std::vector<Vertex> gVertices;
-				std::vector<Triplet> vTriangles;
-				std::vector<Triplet> oOpposites;
+				std::vector<boost::shared_ptr<Vertex> > vertices;
+				std::vector<boost::shared_ptr<Triangle> > triangles;
+				std::vector<boost::shared_ptr<Corner> > corners;
 		};
 	};
 };
