@@ -282,6 +282,7 @@ namespace realtimeplot {
 
 			void plot();
 		private:
+			delaunay::Delaunay delaunay;
 			/*delaunay::vertex vSuper[3];
 
 			//! All the vertices

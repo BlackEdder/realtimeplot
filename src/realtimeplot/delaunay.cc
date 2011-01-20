@@ -86,6 +86,13 @@ namespace realtimeplot {
 			}
 		}
 
+		void Delaunay::add_data( float x, float y ) {
+			boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );
+			boost::shared_ptr<Triangle> triangle =
+				findTriangle( vertex );
+			createNewTriangles( vertex, triangle );
+		}
+
 		boost::shared_ptr<Triangle> 
 			Delaunay::findTriangle( boost::shared_ptr<Vertex> vertex ) 
 		{
@@ -104,6 +111,7 @@ namespace realtimeplot {
 			//Else go on as in the article
 			return tr;
 		}
+
 		void Delaunay::createNewTriangles( boost::shared_ptr<Vertex> vertex,
 			boost::shared_ptr<Triangle> triangle ) {
 			vertices.push_back( vertex );

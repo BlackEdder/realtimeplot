@@ -716,88 +716,29 @@ namespace realtimeplot {
 
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler) : 
-				BackendPlot( cfg, pEventHandler )
+				BackendPlot( cfg, pEventHandler ),
+				delaunay( delaunay::Delaunay( config.min_x, 
+					config.max_x, config.min_y, config.max_y ) )
 		{ 
 			config.fixed_plot_area = true;
-			// Needs to setup the super triangle
-			/*float dx = (config.max_x - config.min_x);
-			float dy = (config.max_y - config.min_y);
-			vSuper[0] = delaunay::vertex( config.min_x - 0.5*dx, config.min_y );
-			vSuper[1] = delaunay::vertex( config.max_x + 0.5*dx, config.min_y );
-			vSuper[2] = delaunay::vertex( config.max_x - 0.5*dx, config.max_y + dy );
-			triangles.insert( delaunay::triangle( vSuper ) );
-			std::cout << "Super " << delaunay::triangle( vSuper ) << std::endl;*/
 		}
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
-		/*
-		 * // insert new point into the set
-		delaunay::vertex current_vertex = delaunay::vertex( x, y );
-
-		std::cout << "Adding: " << current_vertex << std::endl;
-		vertices.insert( current_vertex );
-		
-		//if (vertices.size() < 3) return;	// We still handle it, since it will be inside
-		//vSuper
-		
-		std::multiset<delaunay::edge> tmp_edges;
-
-		std::multiset<delaunay::triangle>::iterator iTriangle = triangles.begin();
-		for (;iTriangle!=triangles.end();++iTriangle) {
-			std::cout << (*iTriangle) << std::endl;
-			bool answer = iTriangle->vertexIsInCircumCircle( current_vertex, tmp_edges );
-			if (answer) {
-				std::cout << "Delete it!" << std::endl;
-				triangles.erase( (*iTriangle) );
-			}
-		}
-		std::cout << "Triangles left: " << triangles.size() << " " 
-			<< tmp_edges.size() << std::endl;
-
-		// Create new triangles from the edges and the current vertex.
-		for (std::set<delaunay::edge>::iterator it = 
-				tmp_edges.begin(); it != tmp_edges.end(); it++) {
-			delaunay::vertex *cp = new delaunay::vertex( current_vertex );
-			triangles.insert(delaunay::triangle(it->m_pV0, it->m_pV1, cp));
-			std::cout << (*it) << std::endl;
-			std::cout << delaunay::triangle(it->m_pV0, it->m_pV1, cp) << std::endl;
-		}
-
-		// If (show) and vertices>=3 draw all triangles
-		if (show && vertices.size()>=3)
-			plot();
-
-		iTriangle = triangles.begin();
-		std::cout << "We have: " << std::endl;
-		for (;iTriangle!=triangles.end();++iTriangle) {
-			std::cout << (*iTriangle) << std::endl;
-		}*/
+		delaunay.add_data( x, y );
+		plot();
 	}
 
 
 	void BackendHeightMap::plot() {
-		/*clear();
-		std::cout << "Bla" << std::endl;
-		std::multiset<delaunay::triangle>::iterator iTriangle = triangles.begin();
-		int line_id = 0;
-		for (;iTriangle!=triangles.end();++iTriangle) {
-			std::cout << (*iTriangle) << std::endl;
-			if (!iTriangle->hasVertex(vSuper)) {
-			for (size_t i=0; i<3; ++i) {
-				line_add( iTriangle->GetVertex( i )->GetX(),
-						iTriangle->GetVertex( i )->GetY(), line_id, Color::red() );
-				std::cout << iTriangle->GetVertex( i )->GetX() << " " << 
-					iTriangle->GetVertex( i )->GetY() << std::endl;
+		clear();
+		for (size_t i=0; i<delaunay.triangles.size(); ++i) {
+			for (size_t j=0; j<3; ++j) {
+				line_add( delaunay.triangles[i]->corners[j]->vertex->x,
+						delaunay.triangles[i]->corners[j]->vertex->y, i, Color::black() );
 			}
-			line_add( iTriangle->GetVertex( 0 )->GetX(),
-					iTriangle->GetVertex( 0 )->GetY(), line_id, Color::red() );
-			++line_id;
-			}
+			line_add( delaunay.triangles[i]->corners[0]->vertex->x,
+					delaunay.triangles[i]->corners[0]->vertex->y, i, Color::black() );
 		}
-		std::set<delaunay::vertex>::iterator iV = vertices.begin();
-		for (;iV!=vertices.end();++iV) {
-			point( iV->GetX(), iV->GetY() );
-		}*/
 	}
 }
 
