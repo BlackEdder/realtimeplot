@@ -54,6 +54,58 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT( !e1.intersect( e3 ) );
 		}
 
+
+		void testTriangleVertexInTriangle() {
+			boost::shared_ptr<Corner> c1( new Corner );
+			boost::shared_ptr<Corner> c2( new Corner );
+			boost::shared_ptr<Corner> c3( new Corner );
+			c1->vertex = boost::shared_ptr<Vertex>( new Vertex( 0,0 ) );
+			c2->vertex = boost::shared_ptr<Vertex>( new Vertex( 0,1 ) );
+			c3->vertex = boost::shared_ptr<Vertex>( new Vertex( 1,0 ) );
+
+			Triangle tr = Triangle();
+			tr.corners.push_back( c1 );
+			tr.corners.push_back( c2 );
+			tr.corners.push_back( c3 );
+
+			TS_ASSERT( tr.inTriangle( boost::shared_ptr<Vertex>( new Vertex( 0.4, 0.4 ) ) ) );
+			TS_ASSERT( !tr.inTriangle( boost::shared_ptr<Vertex>( new Vertex( 1, 1 ) ) ));
+		}
+
+		// Used to check consistency of Delaunay state
+		void checkTriangleConsistency( boost::shared_ptr<Triangle> tr ) {
+			TS_ASSERT_EQUALS( tr->corners[0]->next, tr->corners[1] )
+			TS_ASSERT_EQUALS( tr->corners[1]->next, tr->corners[2] )
+			TS_ASSERT_EQUALS( tr->corners[2]->next, tr->corners[0] )
+			TS_ASSERT_EQUALS( tr->corners[0], tr->corners[1]->previous )
+			TS_ASSERT_EQUALS( tr->corners[1], tr->corners[2]->previous )
+			TS_ASSERT_EQUALS( tr->corners[2], tr->corners[0]->previous )
+		}
+
+		void checkOppositesConsistency( boost::shared_ptr<Corner> pC ) {
+			TS_ASSERT_EQUALS( pC->previous->vertex, pC->opposite->next->vertex )
+			TS_ASSERT_EQUALS( pC->next->vertex, pC->opposite->previous->vertex )
+		}
+
+		void checkDelaunayConsistency( Delaunay &d ) {
+			//Should start with some general stats like number of vertices etc
+
+			// Triangles/next/previous
+			for (size_t i=0; i<d.triangles.size(); ++i) {
+				checkTriangleConsistency( d.triangles[i] );
+			}
+
+			// Opposites
+			size_t lacking_opposites = 0;
+			for (size_t i=0; i<d.corners.size(); ++i) {
+				if (!d.corners[i]->opposite)
+					++lacking_opposites;
+				else
+					checkOppositesConsistency( d.corners[i] );
+			}
+			TS_ASSERT_EQUALS( lacking_opposites, 3 );
+		}
+
 		void testDelaunaySetup()
 		{
 			Delaunay d = Delaunay( 0,1, 0,1 );
@@ -69,14 +121,42 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( d.corners[0]->previous, d.corners[2] );
 			TS_ASSERT_EQUALS( d.corners[1]->next, d.corners[2] );
 			TS_ASSERT_EQUALS( d.corners[1]->previous, d.corners[0] );
+
+			checkDelaunayConsistency( d );
 			
 		}
+
+		void testDelaunayAddData() {
+			Delaunay d = Delaunay( 0,10, 0,50 );
+			checkDelaunayConsistency( d );
+			boost::shared_ptr<Vertex> vertex( new Vertex( 5.1, 20 ) );
+			boost::shared_ptr<Triangle> triangle =
+				d.findTriangle( vertex );
+			TS_ASSERT( triangle->inTriangle( vertex ) );
+			checkDelaunayConsistency( d );
+			d.createNewTriangles( vertex, triangle );
+			checkDelaunayConsistency( d );
+	}
 
 		void testDelaunayFindTriangleFirstPoint()
 		{
 			Delaunay d = Delaunay( 0,1, 0,1 );
 			boost::shared_ptr<Vertex> v( new Vertex( 0.5, 0.4 ) );
 			TS_ASSERT_EQUALS( d.findTriangle( v ), d.triangles[0] );
+			checkDelaunayConsistency( d );
+
+			Delaunay d2 = Delaunay( 0,10, 0,50 );
+			checkDelaunayConsistency( d2 );
+			d2.add_data( 5.1, 20 );
+			checkDelaunayConsistency( d2 );
+			boost::shared_ptr<Vertex> pV( new Vertex( 9.1, 2.2 ) );
+			TS_ASSERT( d2.findTriangle(pV)->inTriangle( pV ) );
+			d2.add_data( 9.1, 2.2 );
+			boost::shared_ptr<Vertex> pV1( new Vertex( 5, 15 ) );
+			TS_ASSERT( d2.findTriangle(pV1)->inTriangle( pV1 ) );
+			d2.add_data( 5, 15 );
+			checkDelaunayConsistency( d2 );
+
 		}
 
 		void testDelaunayCreateNewTriangles()
@@ -87,5 +167,6 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( d.triangles.size(), 3 );
 			TS_ASSERT_EQUALS( d.vertices.size(), 4 );
 			TS_ASSERT_EQUALS( d.corners.size(), 9 );
+			checkDelaunayConsistency( d );
 		}
 };

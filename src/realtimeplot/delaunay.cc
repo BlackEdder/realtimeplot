@@ -54,6 +54,46 @@ namespace realtimeplot {
 			return true;
 		}
 
+		bool Triangle::inTriangle( boost::shared_ptr<Vertex> pV ) {
+			// Compute vectors        
+			Vertex v0 = (*corners[2]->vertex.get())-(*corners[0]->vertex.get());
+			Vertex v1 = (*corners[1]->vertex.get())-(*corners[0]->vertex.get());
+			Vertex v2 = (*pV.get())-(*corners[0]->vertex.get());
+			// Compute dot products
+			float dot00 = v0.dot( v0 );
+			float dot01 = v0.dot( v1 );
+			float dot02 = v0.dot( v2 );
+			float dot11 = v1.dot( v1 );
+			float dot12 = v1.dot( v2 );
+
+			// Compute barycentric coordinates
+			float invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+			float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+			float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+			// Check if point is in triangle
+			return (u > 0) && (v > 0) && (u + v < 1);
+
+				/*v0 = C - A
+v1 = B - A
+v2 = P - A
+
+dot00 = dot(v0, v0)
+dot01 = dot(v0, v1)
+dot02 = dot(v0, v2)
+dot11 = dot(v1, v1)
+dot12 = dot(v1, v2)
+
+// Compute barycentric coordinates
+invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
+u = (dot11 * dot02 - dot01 * dot12) * invDenom
+v = (dot00 * dot12 - dot01 * dot02) * invDenom
+
+// Check if point is in triangle
+return (u > 0) && (v > 0) && (u + v < 1)
+			return false;*/
+		}
+
 
 		Delaunay::Delaunay( float min_x, float max_x, float min_y, float max_y )
 		{
@@ -107,8 +147,43 @@ namespace realtimeplot {
 
 			//Find edge that a line between that vertex and the provided vertex passes through
 			//(if none found, then return current triangle)
+			size_t i = 0;
+			bool passed = false;
+			boost::shared_ptr<Corner> current_corner;
+			Edge eline = Edge( pStart_v, vertex );
+			while (i<3 && !passed) {
+				Edge etriangle = Edge( tr->corners[i]->vertex, tr->corners[i]->next->vertex );
+				if (etriangle.intersect( eline )) {
+					passed = true;
+					current_corner = tr->corners[i];
+				}
+				++i;
+			}
 
-			//Else go on as in the article
+			if (!passed) //The point is in the current triangle
+				return tr;
+			current_corner = current_corner->previous->opposite;
+
+			while (passed) {
+				//Is it to the right?
+				Edge etriangle = Edge( current_corner->vertex, current_corner->next->vertex );
+				if (etriangle.intersect( eline )) {
+					current_corner = current_corner->previous->opposite;
+					tr = current_corner->triangle;
+				} else {
+					etriangle = Edge( current_corner->vertex, 
+							current_corner->previous->vertex );
+					//Is it to the left?
+					if (etriangle.intersect( eline )) {
+						current_corner = current_corner->next->opposite;
+						tr = current_corner->triangle;
+					} else {
+						passed = false;
+					}
+
+				}
+			}
+
 			return tr;
 		}
 
@@ -130,7 +205,7 @@ namespace realtimeplot {
 			c1->next = c1n;
 			c1n->previous = c1;
 			boost::shared_ptr<Corner> c1p( new Corner() );
-			c1p->vertex = old_vertex;
+			c1p->vertex =  old_vertex;
 			c1p->triangle = tr1;
 			tr1->corners.push_back( c1p );
 			c1->previous = c1p;
@@ -144,13 +219,13 @@ namespace realtimeplot {
 			c2->triangle = tr2;
 			tr2->corners.push_back( c2 );
 			boost::shared_ptr<Corner> c2n( new Corner() );
-			c2n->vertex = triangle->corners[0]->next->vertex;
+			c2n->vertex = old_vertex;		
 			c2n->triangle = tr2;
 			tr2->corners.push_back( c2n );
 			c2->next = c2n;
 			c2n->previous = c2;
 			boost::shared_ptr<Corner> c2p( new Corner() );
-			c2p->vertex = old_vertex;
+			c2p->vertex =  triangle->corners[0]->next->vertex; 
 			c2p->triangle = tr1;
 			tr2->corners.push_back( c2p );
 			c2->previous = c2p;
@@ -170,20 +245,19 @@ namespace realtimeplot {
 			//Opposites
 			if (triangle->corners[0]->next->opposite) {
 				c1->opposite = triangle->corners[0]->next->opposite;
-				triangle->corners[0]->next->opposite = c1->opposite;
+				triangle->corners[0]->next->opposite->opposite = c1;
 			}
 			if (triangle->corners[0]->previous->opposite) {
 				c2->opposite = triangle->corners[0]->previous->opposite;
-				triangle->corners[0]->previous->opposite = c2->opposite;
+				triangle->corners[0]->previous->opposite->opposite = c2;
 			}
 
-			triangle->corners[0]->previous->opposite = c2p;
-			c2p->opposite = triangle->corners[0]->previous;
+			triangle->corners[0]->previous->opposite = c2n;
+			c2n->opposite = triangle->corners[0]->previous;
 			triangle->corners[0]->next->opposite = c1p;
 			c1p->opposite = triangle->corners[0]->next;
-			c1n->opposite = c2n;
-			c2n->opposite = c1n;
-
+			c1n->opposite = c2p;
+			c2p->opposite = c1n;
 		}
 	};
 };

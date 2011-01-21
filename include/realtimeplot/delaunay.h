@@ -38,7 +38,7 @@ namespace realtimeplot {
 				Vertex( float x, float y ) :
 					x(x), y(y)
 			{}
-				bool operator==( Vertex v ) {
+				bool operator==( Vertex &v ) {
 					if (x == v.x && y == v.y)
 						return true;
 					else
@@ -52,6 +52,12 @@ namespace realtimeplot {
 
 				Vertex operator+( Vertex v ) {
 					return Vertex( x+v.x, y+v.y );
+				}
+				Vertex operator-( Vertex &v ) {
+					return Vertex( x-v.x, y-v.y );
+				}
+				float dot(Vertex &v) {
+					return x*v.x+y*v.y;
 				}
 		};
 
@@ -75,6 +81,11 @@ namespace realtimeplot {
 		class Triangle {
 			public:
 				std::vector<boost::shared_ptr<Corner> > corners;
+
+				/**
+				 * \brief Check if the point is in this triangle
+				 */
+				bool inTriangle( boost::shared_ptr<Vertex> pV );
 		};
 
 		class Corner {
