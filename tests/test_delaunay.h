@@ -72,6 +72,27 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT( !tr.inTriangle( boost::shared_ptr<Vertex>( new Vertex( 1, 1 ) ) ));
 		}
 
+		void testTriangleInCircumCircle() {
+			//Not a very thorough test
+
+			boost::shared_ptr<Corner> c1( new Corner );
+			boost::shared_ptr<Corner> c2( new Corner );
+			boost::shared_ptr<Corner> c3( new Corner );
+			c1->vertex = boost::shared_ptr<Vertex>( new Vertex( 0,0 ) );
+			c2->vertex = boost::shared_ptr<Vertex>( new Vertex( 0,1 ) );
+			c3->vertex = boost::shared_ptr<Vertex>( new Vertex( 1,0 ) );
+
+			Triangle tr = Triangle();
+			tr.corners.push_back( c1 );
+			tr.corners.push_back( c2 );
+			tr.corners.push_back( c3 );
+
+			TS_ASSERT( 
+					tr.inCircumCircle( boost::shared_ptr<Vertex>( new Vertex( 0.4, 0.4 ) ) ) );
+			TS_ASSERT( 
+					!tr.inCircumCircle( boost::shared_ptr<Vertex>( new Vertex( 1.1, 1.1 ) ) ));
+		}
+
 		// Used to check consistency of Delaunay state
 		void checkTriangleConsistency( boost::shared_ptr<Triangle> tr ) {
 			TS_ASSERT_EQUALS( tr->corners[0]->next, tr->corners[1] )

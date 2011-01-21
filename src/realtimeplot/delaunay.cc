@@ -73,25 +73,47 @@ namespace realtimeplot {
 
 			// Check if point is in triangle
 			return (u > 0) && (v > 0) && (u + v < 1);
+		}
 
-				/*v0 = C - A
-v1 = B - A
-v2 = P - A
+		bool Triangle::inCircumCircle( boost::shared_ptr<Vertex> pV ) {
+			// For now recalculate everything everytime, since vertices of corners
+			// can change between calls
+			//
+			// Should be adapted to deal with cases where all vertices are on same line
+			
 
-dot00 = dot(v0, v0)
-dot01 = dot(v0, v1)
-dot02 = dot(v0, v2)
-dot11 = dot(v1, v1)
-dot12 = dot(v1, v2)
+			float x0 = corners[0]->vertex->x;
+			float y0 = corners[0]->vertex->y;
 
-// Compute barycentric coordinates
-invDenom = 1 / (dot00 * dot11 - dot01 * dot01)
-u = (dot11 * dot02 - dot01 * dot12) * invDenom
-v = (dot00 * dot12 - dot01 * dot02) * invDenom
+			float x1 = corners[1]->vertex->x;
+			float y1 = corners[1]->vertex->y;
 
-// Check if point is in triangle
-return (u > 0) && (v > 0) && (u + v < 1)
-			return false;*/
+			float x2 = corners[2]->vertex->x;
+			float y2 = corners[2]->vertex->y;
+
+			float y10 = y1 - y0;
+			float y21 = y2 - y1;
+
+			float m0 = - (x1 - x0) / y10;
+			float m1 = - (x2 - x1) / y21;
+
+			float mx0 = (x0 + x1) * .5F;
+			float my0 = (y0 + y1) * .5F;
+
+			float mx1 = (x1 + x2) * .5F;
+			float my1 = (y1 + y2) * .5F;
+
+			float x = (m0 * mx0 - m1 * mx1 + my1 - my0) / (m0 - m1);
+			float y = m0 * (x - mx0) + my0;
+			Vertex center = Vertex( x, y );
+
+			float dx = x0 - center.x;
+			float dy = y0 - center.y;
+			float m_R2 = dx * dx + dy * dy;	// the radius of the circumcircle, squared
+
+			Vertex dist = (*pV)-center;		// the distance between v and the circle center
+			float dist2 = dist.x * dist.x + dist.y * dist.y;		// squared
+			return dist2 < m_R2;
 		}
 
 
@@ -162,7 +184,7 @@ return (u > 0) && (v > 0) && (u + v < 1)
 
 			if (!passed) //The point is in the current triangle
 				return tr;
-			current_corner = current_corner->previous->opposite;
+			//current_corner = current_corner->previous->opposite;
 
 			while (passed) {
 				//Is it to the right?
@@ -193,6 +215,8 @@ return (u > 0) && (v > 0) && (u + v < 1)
 			boost::shared_ptr<Vertex> old_vertex = triangle->corners[0]->vertex;
 			triangle->corners[0]->vertex = vertex;
 
+			// Lot's of housekeeping. Most should be abstracted away by the Triangle/Corner
+			// classes, but isn't yet.
 			boost::shared_ptr<Triangle> tr1( new Triangle() );
 			boost::shared_ptr<Corner> c1( new Corner() );
 			c1->vertex = vertex;
@@ -258,6 +282,15 @@ return (u > 0) && (v > 0) && (u + v < 1)
 			c1p->opposite = triangle->corners[0]->next;
 			c1n->opposite = c2p;
 			c2p->opposite = c1n;
+		}
+
+		void flipEdgesRecursively( boost::shared_ptr<Corner> pC ) {
+			// Check if pC->opposite is inside the circumcircle of pC->triangle
+
+			// If so then flip (lot's of housekeeping again)
+	
+			// Call flipEdgesRecursively for pC (with new triangle) 
+			// and old pC.o.n (now pC.p.o.p)
 		}
 	};
 };

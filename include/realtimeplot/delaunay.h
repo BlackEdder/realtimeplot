@@ -86,6 +86,8 @@ namespace realtimeplot {
 				 * \brief Check if the point is in this triangle
 				 */
 				bool inTriangle( boost::shared_ptr<Vertex> pV );
+
+				bool inCircumCircle( boost::shared_ptr<Vertex> pV ); 
 		};
 
 		class Corner {
@@ -110,6 +112,18 @@ namespace realtimeplot {
 
 				void createNewTriangles( boost::shared_ptr<Vertex> vertex,
 						boost::shared_ptr<Triangle> triangle );
+
+				/**
+				 * \brief Method that checks if edges need to be flipped and then flips them
+				 *
+				 * Method is recursive, so that new created triangles cause the method
+				 * to be called again
+				 *
+				 * pC is the new vertex, so we only check if the pC->opposite is inside
+				 * the circumCircle. See "An improved incremental Delaunay Triangulation
+				 * Algorithm for details".
+				 */
+				void flipEdgesRecursively( boost::shared_ptr<Corner> pC );
 
 			/*private:
 				friend class TestDelaunay;*/
