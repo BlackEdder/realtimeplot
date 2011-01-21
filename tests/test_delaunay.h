@@ -110,6 +110,8 @@ class TestDelaunay : public CxxTest::TestSuite
 
 		void checkDelaunayConsistency( Delaunay &d ) {
 			//Should start with some general stats like number of vertices etc
+			TS_ASSERT_EQUALS( d.triangles.size(), 2*d.vertices.size() - 2 - 3  );
+			TS_ASSERT_EQUALS( d.corners.size(), d.triangles.size()*3);
 
 			// Triangles/next/previous
 			for (size_t i=0; i<d.triangles.size(); ++i) {
@@ -150,8 +152,15 @@ class TestDelaunay : public CxxTest::TestSuite
 		void testDelaunayAddData() {
 			Delaunay d = Delaunay( 0,10, 0,50 );
 			checkDelaunayConsistency( d );
-			boost::shared_ptr<Vertex> vertex( new Vertex( 5.1, 20 ) );
+			boost::shared_ptr<Vertex> vertex( new Vertex( 6.7215, 19.7191 ) );
 			boost::shared_ptr<Triangle> triangle =
+				d.findTriangle( vertex );
+			TS_ASSERT( triangle->inTriangle( vertex ) );
+			checkDelaunayConsistency( d );
+			d.createNewTriangles( vertex, triangle );
+			checkDelaunayConsistency( d );
+			vertex.reset( new Vertex( 3.20183, 44.5765 ) );
+			triangle =
 				d.findTriangle( vertex );
 			TS_ASSERT( triangle->inTriangle( vertex ) );
 			checkDelaunayConsistency( d );
