@@ -113,6 +113,21 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( d.triangles.size(), 2*d.vertices.size() - 2 - 3  );
 			TS_ASSERT_EQUALS( d.corners.size(), d.triangles.size()*3);
 
+			if (d.triangles.size()>1) {
+				std::map<boost::shared_ptr<Vertex>, size_t> no_triangles_per_vertex;
+				std::map<boost::shared_ptr<Vertex>, size_t>::iterator ntpv_iter;
+				for (size_t i=0; i<d.vertices.size(); ++i) {
+					no_triangles_per_vertex[d.vertices[i]] = 0;
+				}
+				for (size_t i=0; i<d.corners.size(); ++i) {
+					++no_triangles_per_vertex[d.corners[i]->vertex];
+				}
+				for (ntpv_iter = no_triangles_per_vertex.begin(); 
+						ntpv_iter != no_triangles_per_vertex.end(); ++ntpv_iter) {
+					TS_ASSERT( ntpv_iter->second > 1 );
+				}
+			}
+
 			// Triangles/next/previous
 			for (size_t i=0; i<d.triangles.size(); ++i) {
 				checkTriangleConsistency( d.triangles[i] );
@@ -199,4 +214,23 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( d.corners.size(), 9 );
 			checkDelaunayConsistency( d );
 		}
+
+		void testDelaunayManyTimes()
+		{
+			std::rand();
+			Delaunay d = Delaunay( 0,10, 0,50 );
+			for (size_t i=0; i<10; ++i) {
+				float x = 8*float(std::rand())/RAND_MAX;
+				float y = 50*float(std::rand())/RAND_MAX;
+				std::cout << x << " " << y << std::endl;
+				boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );
+				boost::shared_ptr<Triangle> triangle =
+					d.findTriangle( vertex );
+				TS_ASSERT( triangle->inTriangle( vertex ) );
+				checkDelaunayConsistency( d );
+				d.createNewTriangles( vertex, triangle );
+				checkDelaunayConsistency( d );
+			}
+		}
+	
 };
