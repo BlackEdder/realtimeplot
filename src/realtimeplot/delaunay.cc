@@ -22,6 +22,7 @@
 	 */
 
 #include "realtimeplot/delaunay.h"
+#include "ostream"
 namespace realtimeplot {
 	namespace delaunay {
 		bool Edge::intersect( Edge& e ) {
@@ -329,4 +330,17 @@ namespace realtimeplot {
 		}
 	};
 };
+
+std::ostream & operator<<(std::ostream &out,
+		const realtimeplot::delaunay::Vertex &v ) {
+	out << "(" << v.x << "," << v.y << ")";
+}
+
+std::ostream & operator<<(std::ostream &out,
+		const realtimeplot::delaunay::Triangle &t ) {
+	for (size_t i=0; i<2; ++i) {
+		out << (*t.corners[i]->vertex) << "--"; 
+	}
+	out << (*t.corners[2]->vertex); 
+}
 
