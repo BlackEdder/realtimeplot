@@ -734,10 +734,12 @@ namespace realtimeplot {
 		for (size_t i=0; i<delaunay.triangles.size(); ++i) {
 			for (size_t j=0; j<3; ++j) {
 				line_add( delaunay.triangles[i]->corners[j]->vertex->x,
-						delaunay.triangles[i]->corners[j]->vertex->y, i, Color::black() );
+						delaunay.triangles[i]->corners[j]->vertex->y, i, Color::red() );
+				point( delaunay.triangles[i]->corners[j]->vertex->x,
+						delaunay.triangles[i]->corners[j]->vertex->y );
 			}
 			line_add( delaunay.triangles[i]->corners[0]->vertex->x,
-					delaunay.triangles[i]->corners[0]->vertex->y, i, Color::black() );
+					delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
 		}
 	}
 }
