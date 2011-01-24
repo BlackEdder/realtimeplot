@@ -28,12 +28,11 @@ using namespace realtimeplot;
 int main() {
 	HeightMap hm = HeightMap();
 
-	for (size_t i=0; i<20; ++i) {
+	for (size_t i=0; i<10; ++i) {
 		float x = 8*float(std::rand())/RAND_MAX;
 		float y = 50*float(std::rand())/RAND_MAX;
 		std::cout << x << " " << y << std::endl;
 		hm.add_data( x, y, false );
-		sleep( 1 );
 	}
 	hm.add_data( 8*float(std::rand())/RAND_MAX, 50*float(std::rand())/RAND_MAX, 1 );
 	

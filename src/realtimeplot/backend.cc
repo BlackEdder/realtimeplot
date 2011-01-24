@@ -725,21 +725,32 @@ namespace realtimeplot {
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
 		delaunay.add_data( x, y );
-		plot();
+		if (show && delaunay.vertices.size()>=3)
+			plot();
 	}
 
 
 	void BackendHeightMap::plot() {
 		clear();
 		for (size_t i=0; i<delaunay.triangles.size(); ++i) {
+			bool part_of_super = false;
 			for (size_t j=0; j<3; ++j) {
-				line_add( delaunay.triangles[i]->corners[j]->vertex->x,
-						delaunay.triangles[i]->corners[j]->vertex->y, i, Color::red() );
-				point( delaunay.triangles[i]->corners[j]->vertex->x,
-						delaunay.triangles[i]->corners[j]->vertex->y );
+				for (size_t k=0; k<3; ++k) {
+					if (delaunay.triangles[i]->corners[j]->vertex == delaunay.vertices[k])
+						part_of_super = true;
+				}
 			}
-			line_add( delaunay.triangles[i]->corners[0]->vertex->x,
-					delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
+
+			if (!part_of_super) {
+				for (size_t j=0; j<3; ++j) {
+					line_add( delaunay.triangles[i]->corners[j]->vertex->x,
+							delaunay.triangles[i]->corners[j]->vertex->y, i, Color::red() );
+					point( delaunay.triangles[i]->corners[j]->vertex->x,
+							delaunay.triangles[i]->corners[j]->vertex->y );
+				}
+				line_add( delaunay.triangles[i]->corners[0]->vertex->x,
+						delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
+			}
 		}
 	}
 }
