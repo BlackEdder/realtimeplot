@@ -26,15 +26,15 @@
 using namespace realtimeplot;
 
 int main() {
-	HeightMap hm = HeightMap();
+	/*HeightMap hm = HeightMap();
 
-	for (size_t i=0; i<10; ++i) {
+	for (size_t i=0; i<100; ++i) {
 		float x = 8*float(std::rand())/RAND_MAX;
 		float y = 50*float(std::rand())/RAND_MAX;
 		std::cout << x << " " << y << std::endl;
-		hm.add_data( x, y, false );
+		hm.add_data( x, y, 1, false );
 	}
-	hm.add_data( 8*float(std::rand())/RAND_MAX, 50*float(std::rand())/RAND_MAX, 1 );
+	hm.add_data( 8*float(std::rand())/RAND_MAX, 50*float(std::rand())/RAND_MAX, 1 );*/
 	
 
 /*	hm.add_data( 5.1, 20, 1 );
@@ -42,6 +42,18 @@ int main() {
 	hm.add_data( 9.1, 2.2, 1 );
 	sleep(1);
 	hm.add_data( 5, 15, 1 );*/
+	HeightMap hm2 = HeightMap();
 
+	for (size_t i=0; i<5; ++i) {
+		for (size_t j=0; j<5; ++j) {
+		float x = 5.0/5*i + 0.0001*float(std::rand())/RAND_MAX;
+		float y = 50.0/5*j + 0.0001*float(std::rand())/RAND_MAX;
+		std::cout << x << " " << y << std::endl;
+		hm2.add_data( x, y, 1, true );
+		sleep(1);
+		}
+	}
+	hm2.add_data( 8*float(std::rand())/RAND_MAX, 50*float(std::rand())/RAND_MAX, 1 );
+	
 	return 0;
 }

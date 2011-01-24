@@ -120,12 +120,15 @@ namespace realtimeplot {
 
 		Delaunay::Delaunay( float min_x, float max_x, float min_y, float max_y )
 		{
-			//Setup gVertices vTriangles oOpposites
+			//Setup super triangle (slightly larger than plotting area)
 			float dx = (max_x - min_x);
 			float dy = (max_y - min_y);
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x - 0.5*dx, min_y ) ) );
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x - 0.5*dx, max_y + dy ) ) );
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x + 0.5*dx, min_y ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x - 0.501*dx, 
+							max_y - 1.001*dy ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x - 0.5*dx, 
+							max_y + 1.001*dy ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x + 0.501*dx, 
+							max_y - 1.001*dy ) ) );
 			
 			triangles.push_back( boost::shared_ptr<Triangle>( new Triangle ) );
 
