@@ -263,6 +263,50 @@ namespace realtimeplot {
 			void move( int direction_x, int direction_y );
 	};
 
+	/**
+	 * \brief 3D Triangle for use in HeightMap
+	 */
+	class Vertex3D : public delaunay::Vertex
+	{
+		public:
+			float z;
+			Vertex3D( float x, float y, float z ) : 
+				z(z), delaunay::Vertex( x, y ) {}
+			boost::shared_ptr<Vertex3D> crossProduct( boost::shared_ptr<Vertex3D> pV ) {
+				return boost::shared_ptr<Vertex3D>( new Vertex3D( y*pV->z-z*pV->y, 
+							z*pV->x-x*pV->z, x*pV->y-y*pV->x ) );
+			}
+	};
+
+	class Triangle3D 
+	{
+		public:
+			Triangle3D() {};
+			Triangle3D( delaunay::Triangle & tr ) {
+				for (size_t i=0; i<3; ++i) {
+					vertices.push_back( boost::static_pointer_cast<Vertex3D, delaunay::Vertex>(
+								tr.corners[i]->vertex ) );
+				}
+			}
+
+			std::vector<boost::shared_ptr<Vertex3D> > gradientVector() {
+				std::vector<boost::shared_ptr<Vertex3D> > v;
+				//Find lowest and highest Vertex
+				v.push_back( vertices[0] );
+				v.push_back( vertices[0] );
+				for (size_t i=1; i<3; ++i) {
+					if (vertices[i]->z < v[0]->z)
+						v[0] = vertices[i];
+					if (vertices[i]->z > v[1]->z)
+						v[1] = vertices[i];
+				}
+				return v;
+			}
+
+			std::vector<boost::shared_ptr<Vertex3D> > vertices;
+	};
+
+
 
 	/**
 	 * \brief Provides backend functions specific for HeightMap plots

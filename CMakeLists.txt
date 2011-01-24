@@ -94,6 +94,9 @@ if(CXXTEST_FOUND)
   CXXTEST_ADD_TEST(unittest_delaunay test_delaunay.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_delaunay.h)
   target_link_libraries(unittest_delaunay realtimeplot) # as needed
+  CXXTEST_ADD_TEST(unittest_backend test_backend.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_backend.h)
+  target_link_libraries(unittest_backend realtimeplot) # as needed
 endif()
 
 #
