@@ -260,7 +260,7 @@ namespace realtimeplot {
 			c2n->previous = c2;
 			boost::shared_ptr<Corner> c2p( new Corner() );
 			c2p->vertex =  triangle->corners[0]->next->vertex; 
-			c2p->triangle = tr1;
+			c2p->triangle = tr2;
 			tr2->corners.push_back( c2p );
 			c2->previous = c2p;
 			c2p->next = c2;
@@ -303,7 +303,6 @@ namespace realtimeplot {
 			// Check if pC->opposite is inside the circumcircle of pC->triangle
 			if (pC->triangle->inCircumCircle( pC->opposite->vertex ) )
 			{
-				std::cout << "Flipping " << std::endl;
 				// If so then flip (lot's of housekeeping again)
 				boost::shared_ptr<Corner> pCP = pC->previous;
 				boost::shared_ptr<Corner> pCN = pC->next;
