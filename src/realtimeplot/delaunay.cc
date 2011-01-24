@@ -152,8 +152,7 @@ namespace realtimeplot {
 			}
 		}
 
-		void Delaunay::add_data( float x, float y ) {
-			boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );
+		void Delaunay::add_data( boost::shared_ptr<Vertex> vertex ) {
 			boost::shared_ptr<Triangle> triangle =
 				findTriangle( vertex );
 			createNewTriangles( vertex, triangle );

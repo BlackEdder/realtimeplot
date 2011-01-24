@@ -195,14 +195,15 @@ class TestDelaunay : public CxxTest::TestSuite
 
 			Delaunay d2 = Delaunay( 0,10, 0,50 );
 			checkDelaunayConsistency( d2 );
-			d2.add_data( 5.1, 20 );
+			boost::shared_ptr<Vertex> pV0( new Vertex( 5.1, 20 ) );
+			d2.add_data( pV0 );
 			checkDelaunayConsistency( d2 );
-			boost::shared_ptr<Vertex> pV( new Vertex( 9.1, 2.2 ) );
-			TS_ASSERT( d2.findTriangle(pV)->inTriangle( pV ) );
-			d2.add_data( 9.1, 2.2 );
-			boost::shared_ptr<Vertex> pV1( new Vertex( 5, 15 ) );
+			boost::shared_ptr<Vertex> pV1( new Vertex( 9.1, 2.2 ) );
 			TS_ASSERT( d2.findTriangle(pV1)->inTriangle( pV1 ) );
-			d2.add_data( 5, 15 );
+			d2.add_data( pV1 );
+			boost::shared_ptr<Vertex> pV2( new Vertex( 5, 15 ) );
+			TS_ASSERT( d2.findTriangle(pV2)->inTriangle( pV2 ) );
+			d2.add_data( pV2 );
 			checkDelaunayConsistency( d2 );
 
 		}

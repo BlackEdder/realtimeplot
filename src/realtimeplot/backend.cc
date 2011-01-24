@@ -724,7 +724,8 @@ namespace realtimeplot {
 		}
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
-		delaunay.add_data( x, y );
+		boost::shared_ptr<delaunay::Vertex> vertex( new delaunay::Vertex( x, y ) );
+		delaunay.add_data( vertex );
 		if (show && delaunay.vertices.size()>=3)
 			plot();
 	}

@@ -105,7 +105,7 @@ namespace realtimeplot {
 				//For testing
 				Delaunay( float xmin, float xmax, float ymin, float ymax );
 
-				void add_data( float x, float y );
+				void add_data( boost::shared_ptr<Vertex> vertex );
 
 				boost::shared_ptr<Triangle>
 					findTriangle( boost::shared_ptr<Vertex> vertex );
