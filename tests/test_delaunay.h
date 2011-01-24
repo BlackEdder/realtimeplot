@@ -101,6 +101,9 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( tr->corners[0], tr->corners[1]->previous )
 			TS_ASSERT_EQUALS( tr->corners[1], tr->corners[2]->previous )
 			TS_ASSERT_EQUALS( tr->corners[2], tr->corners[0]->previous )
+			TS_ASSERT_EQUALS( tr->corners[0]->triangle, tr )
+			TS_ASSERT_EQUALS( tr->corners[1]->triangle, tr )
+			TS_ASSERT_EQUALS( tr->corners[2]->triangle, tr )
 		}
 
 		void checkOppositesConsistency( boost::shared_ptr<Corner> pC ) {
@@ -217,17 +220,17 @@ class TestDelaunay : public CxxTest::TestSuite
 
 		void testDelaunayManyTimes()
 		{
-			std::rand();
 			Delaunay d = Delaunay( 0,10, 0,50 );
-			for (size_t i=0; i<10; ++i) {
+			for (size_t i=0; i<1; ++i) {
 				float x = 8*float(std::rand())/RAND_MAX;
 				float y = 50*float(std::rand())/RAND_MAX;
-				std::cout << x << " " << y << std::endl;
 				boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );
 				boost::shared_ptr<Triangle> triangle =
 					d.findTriangle( vertex );
-				TS_ASSERT( triangle->inTriangle( vertex ) );
+				std::cout << (*triangle) << std::endl;
+				std::cout << (*vertex) << std::endl;
 				checkDelaunayConsistency( d );
+				TS_ASSERT( triangle->inTriangle( vertex ) );
 				d.createNewTriangles( vertex, triangle );
 				checkDelaunayConsistency( d );
 			}

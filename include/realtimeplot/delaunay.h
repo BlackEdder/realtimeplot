@@ -136,5 +136,7 @@ namespace realtimeplot {
 std::ostream & operator<<(std::ostream &out,
 		const realtimeplot::delaunay::Vertex &v ); 
 std::ostream & operator<<(std::ostream &out,
+		const realtimeplot::delaunay::Edge &e ); 
+std::ostream & operator<<(std::ostream &out,
 		const realtimeplot::delaunay::Triangle &t );
 #endif

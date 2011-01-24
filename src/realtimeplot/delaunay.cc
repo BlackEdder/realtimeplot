@@ -41,7 +41,7 @@ namespace realtimeplot {
 				((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
 			float y5 = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4))/
 				((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
-			if (x5<x1 || x5<x3 || x5>x2 || x5>x4)
+			if (x5<=x1 || x5<=x3 || x5>=x2 || x5>=x4)
 				return false;
 			//normalize ys
 			if (y1>y2) {
@@ -50,7 +50,7 @@ namespace realtimeplot {
 			if (y3>y4) {
 				float tmp_y = y3; y3 = y4; y4 = tmp_y;
 			}
-			if (y5<y1 || y5<y3 || y5>y2 || y5>y4)
+			if (y5<=y1 || y5<=y3 || y5>=y2 || y5>=y4)
 				return false;
 			return true;
 		}
@@ -183,13 +183,22 @@ namespace realtimeplot {
 				++i;
 			}
 
-			if (!passed) //The point is in the current triangle
+			if (!passed) {
+				//The point is in the current triangle
 				return tr;
-			//current_corner = current_corner->previous->opposite;
+			}
+			current_corner = current_corner->previous->opposite;
+			tr = current_corner->triangle;
 
 			while (passed) {
 				//Is it to the right?
+				/*std::cout << "eline: " << eline << std::endl;
+				std::cout << (*vertex) << std::endl;
+				std::cout << (*current_corner->vertex) << std::endl;*/
 				Edge etriangle = Edge( current_corner->vertex, current_corner->next->vertex );
+				/*std::cout << etriangle << std::endl;
+				std::cout << (*current_corner->triangle) << std::endl;
+				std::cout << (*current_corner->next->triangle) << std::endl;*/
 				if (etriangle.intersect( eline )) {
 					current_corner = current_corner->previous->opposite;
 					tr = current_corner->triangle;
@@ -294,6 +303,7 @@ namespace realtimeplot {
 			// Check if pC->opposite is inside the circumcircle of pC->triangle
 			if (pC->triangle->inCircumCircle( pC->opposite->vertex ) )
 			{
+				std::cout << "Flipping " << std::endl;
 				// If so then flip (lot's of housekeeping again)
 				boost::shared_ptr<Corner> pCP = pC->previous;
 				boost::shared_ptr<Corner> pCN = pC->next;
@@ -336,6 +346,11 @@ std::ostream & operator<<(std::ostream &out,
 	out << "(" << v.x << "," << v.y << ")";
 }
 
+std::ostream & operator<<(std::ostream &out,
+		const realtimeplot::delaunay::Edge &e ) {
+	out << (*e.pV0) << "--" << (*e.pV1);
+
+}
 std::ostream & operator<<(std::ostream &out,
 		const realtimeplot::delaunay::Triangle &t ) {
 	for (size_t i=0; i<2; ++i) {
