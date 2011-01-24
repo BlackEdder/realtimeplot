@@ -733,6 +733,8 @@ namespace realtimeplot {
 
 
 	void BackendHeightMap::plot() {
+		// Only display it after it has been drawn completely
+		pause_display = true;
 		clear();
 		for (size_t i=0; i<delaunay.triangles.size(); ++i) {
 			bool part_of_super = false;
@@ -754,6 +756,8 @@ namespace realtimeplot {
 						delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
 			}
 		}
+		pause_display = false;
+		display();
 	}
 }
 

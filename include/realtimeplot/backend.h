@@ -75,6 +75,7 @@ namespace realtimeplot {
 		*/
 	class BackendPlot {
 		public:
+			friend class BackendHeightMap;
 			//plot_surface, an imagesurface that contains the plotted points
 			//plot_context, the corresponding context
 			Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
