@@ -300,6 +300,25 @@ namespace realtimeplot {
 					if (vertices[i]->z > v[1]->z)
 						v[1] = vertices[i];
 				}
+
+				boost::shared_ptr<Vertex3D> pEV1( new Vertex3D( vertices[1]->x-vertices[0]->x,
+							vertices[1]->y-vertices[0]->y,
+							vertices[1]->z-vertices[0]->z ) );
+				boost::shared_ptr<Vertex3D> pEV2( new Vertex3D( vertices[2]->x-vertices[0]->x,
+							vertices[2]->y-vertices[0]->y,
+							vertices[2]->z-vertices[0]->z ) );
+				float x2; float y2; float z2;
+				boost::shared_ptr<Vertex3D> pNormal;
+				pNormal = pEV1->crossProduct( pEV2 );
+				y2 = pNormal->y/pNormal->x;
+				z2 = -(pow(pNormal->y,2)+pow(pNormal->x,2))/(pNormal->x*pNormal->z);
+				std::cout << y2 << std::endl;
+				std::cout << z2 << std::endl;
+
+				float scalar = (v[1]->z-v[0]->z)/z2;
+				v[1]->x = v[0]->x+scalar;
+				v[1]->y = v[0]->y+scalar*y2;
+				v[1]->z = v[0]->z+scalar*z2;
 				return v;
 			}
 
