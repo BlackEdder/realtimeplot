@@ -717,6 +717,7 @@ namespace realtimeplot {
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler) : 
 				BackendPlot( cfg, pEventHandler ),
+				zmin( 0 ), zmax( 0 ),
 				delaunay( delaunay::Delaunay( config.min_x, 
 					config.max_x, config.min_y, config.max_y ) )
 		{ 
@@ -725,6 +726,10 @@ namespace realtimeplot {
 
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
+		if (z<zmin)
+			zmin = z;
+		else if (z>zmax)
+			zmax = z;
 		boost::shared_ptr<delaunay::Vertex> vertex( new delaunay::Vertex( x, y ) );
 		delaunay.add_data( vertex );
 		if (show && delaunay.vertices.size()>=3)

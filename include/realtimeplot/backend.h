@@ -344,6 +344,7 @@ namespace realtimeplot {
 
 			void plot();
 		private:
+			float zmin, zmax;
 			delaunay::Delaunay delaunay;
 			/*delaunay::vertex vSuper[3];
 
