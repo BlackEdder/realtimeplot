@@ -21,11 +21,42 @@
 	 -------------------------------------------------------------------
 	 */
 
+#include "math.h"
+
 #include "realtimeplot/delaunay.h"
 #include "ostream"
 namespace realtimeplot {
 	namespace delaunay {
-		bool Edge::intersect( Edge& e ) {
+		bool Edge::intersect(  Edge& e ) {
+			float x1 = pV0->x;
+			float x2 = pV1->x;
+			float y1 = pV0->y;
+			float y2 = pV1->y;
+			float x3 = e.pV0->x;
+			float x4 = e.pV1->x;
+			float y3 = e.pV0->y;
+			float y4 = e.pV1->y;
+
+			Vertex v = intersectionVertex( e );
+
+			float x5 = v.x;
+			float y5 = v.y;
+
+			if (x5<=x1 || x5<=x3 || x5>=x2 || x5>=x4)
+				return false;
+			//normalize ys
+			if (y1>y2) {
+				float tmp_y = y1; y1 = y2; y2 = tmp_y;
+			}
+			if (y3>y4) {
+				float tmp_y = y3; y3 = y4; y4 = tmp_y;
+			}
+			if (y5<=y1 || y5<=y3 || y5>=y2 || y5>=y4)
+				return false;
+			return true;
+		}
+
+		Vertex Edge::intersectionVertex( Edge& e ) {
 			//Calculate intersection point
 			float x1 = pV0->x;
 			float x2 = pV1->x;
@@ -41,19 +72,9 @@ namespace realtimeplot {
 				((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
 			float y5 = ((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4))/
 				((x1-x2)*(y3-y4)-(y1-y2)*(x3-x4));
-			if (x5<=x1 || x5<=x3 || x5>=x2 || x5>=x4)
-				return false;
-			//normalize ys
-			if (y1>y2) {
-				float tmp_y = y1; y1 = y2; y2 = tmp_y;
-			}
-			if (y3>y4) {
-				float tmp_y = y3; y3 = y4; y4 = tmp_y;
-			}
-			if (y5<=y1 || y5<=y3 || y5>=y2 || y5>=y4)
-				return false;
-			return true;
+			return Vertex( x5, y5 );
 		}
+
 
 		bool Triangle::inTriangle( boost::shared_ptr<Vertex> pV ) {
 			// Compute vectors        
@@ -81,8 +102,6 @@ namespace realtimeplot {
 			// can change between calls
 			//
 			// Should be adapted to deal with cases where all vertices are on same line
-			
-
 			float x0 = corners[0]->vertex->x;
 			float y0 = corners[0]->vertex->y;
 
@@ -91,29 +110,40 @@ namespace realtimeplot {
 
 			float x2 = corners[2]->vertex->x;
 			float y2 = corners[2]->vertex->y;
+			
+			//Calculate vectors for 2 of the edges
+			Vertex v1 = Vertex( x1-x0, y1-y0 );
+			Vertex v2 = Vertex( x2-x0, y2-y0 );
 
-			float y10 = y1 - y0;
-			float y21 = y2 - y1;
+			//Check if they are parallel (x0/x1 == y0/y1), i.e if (x0*y1==x1*y0)
+			//-> Triangle is basically one line and thus circumcircle is infinite 
+			//-> return true;
+			if ((v1.x==0 && v1.y ==0) || (v2.x == 0 && v2.y==0)) 
+				return false; //Vector length of zero, so point won't be in here
+			if (v1.x*v2.y == v2.x*v1.y)
+				return true;
 
-			float m0 = - (x1 - x0) / y10;
-			float m1 = - (x2 - x1) / y21;
 
-			float mx0 = (x0 + x1) * .5F;
-			float my0 = (y0 + y1) * .5F;
+			//Define vector starting from half way up the each edge, perpendicular to the edge
+			Vertex perp_v1 = Vertex( -v1.y, v1.x );
+			Vertex perp_v2 = Vertex( -v2.y, v2.x );
 
-			float mx1 = (x1 + x2) * .5F;
-			float my1 = (y1 + y2) * .5F;
-
-			float x = (m0 * mx0 - m1 * mx1 + my1 - my0) / (m0 - m1);
-			float y = m0 * (x - mx0) + my0;
-			Vertex center = Vertex( x, y );
-
-			float dx = x0 - center.x;
-			float dy = y0 - center.y;
-			float m_R2 = dx * dx + dy * dy;	// the radius of the circumcircle, squared
-
-			Vertex dist = (*pV)-center;		// the distance between v and the circle center
-			float dist2 = dist.x * dist.x + dist.y * dist.y;		// squared
+			Edge e1 = Edge( boost::shared_ptr<Vertex>( new Vertex( 0.5*v1.x+x0, 0.5*v1.y+y0 ) ),
+					boost::shared_ptr<Vertex>( 
+						new Vertex( 0.5*v1.x+x0+perp_v1.x, 0.5*v1.y+y0+perp_v1.y ) ) );
+			Edge e2 = Edge( boost::shared_ptr<Vertex>( new Vertex( 0.5*v2.x+x0, 0.5*v2.y+y0 ) ),
+					boost::shared_ptr<Vertex>( 
+						new Vertex( 0.5*v2.x+x0+perp_v2.x, 0.5*v2.y+y0+perp_v2.y ) ) );
+			//Find intersection point.
+			Vertex inter = e1.intersectionVertex( e2 );
+			
+			//Radius is distance from intersection point to any corner
+			float m_R2 = pow((inter.x-x0),2)+pow(inter.y-y0,2);
+			
+			//Calculate distance from intersection to the given vertex
+			float dist2 = pow((inter.x-pV->x),2)+pow(inter.y-pV->y,2);
+			
+			//Compare those two
 			return dist2 < m_R2;
 		}
 

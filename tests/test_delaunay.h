@@ -219,10 +219,28 @@ class TestDelaunay : public CxxTest::TestSuite
 			checkDelaunayConsistency( d );
 		}
 
+		void xtestSquareLattice()
+		{
+			Delaunay d = Delaunay( 0,1, 0,1 );
+			for (size_t i=0; i<10; ++i) {
+				for (size_t j=0; j<10; ++j) {
+					float x = 1.0/10*i;
+					float y = 1.0/10*j;
+					boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );
+					boost::shared_ptr<Triangle> triangle =
+						d.findTriangle( vertex );
+					checkDelaunayConsistency( d );
+					TS_ASSERT( triangle->inTriangle( vertex ) );
+					d.createNewTriangles( vertex, triangle );
+					checkDelaunayConsistency( d );
+				}
+			}
+		}
+
 		void testDelaunayManyTimes()
 		{
 			Delaunay d = Delaunay( 0,10, 0,50 );
-			for (size_t i=0; i<1; ++i) {
+			for (size_t i=0; i<100; ++i) {
 				float x = 8*float(std::rand())/RAND_MAX;
 				float y = 50*float(std::rand())/RAND_MAX;
 				boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );

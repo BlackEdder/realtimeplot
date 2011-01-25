@@ -75,6 +75,7 @@ namespace realtimeplot {
 					}
 				}
 				bool intersect( Edge& e );
+				Vertex intersectionVertex( Edge& e );
 		};
 
 		class Corner;
