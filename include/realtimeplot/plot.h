@@ -313,6 +313,7 @@ namespace realtimeplot {
 	class HeightMap : public Plot {
 		public:
 			HeightMap(); //float min_x, float max_x, float min_y, float max_y );
+			HeightMap( float min_x, float max_x, float min_y, float max_y );
 
 			//! Sends an HeightMapData event to eventhandler
 			void add_data( float x, float y, float z, bool show=true );

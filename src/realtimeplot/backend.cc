@@ -715,17 +715,20 @@ namespace realtimeplot {
 	}
 
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
-			boost::shared_ptr<EventHandler> pEventHandler) : 
+			boost::shared_ptr<EventHandler> pEventHandler ) : 
 				BackendPlot( cfg, pEventHandler ),
 				zmin( 0 ), zmax( 0 ),
 				delaunay( delaunay::Delaunay( config.min_x, 
 					config.max_x, config.min_y, config.max_y ) )
 		{ 
-			config.fixed_plot_area = true;
 		}
 
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
+		if (delaunay.vertices.size() == 0) {
+			zmin = z;
+			zmax = z;
+		}
 		if (z<zmin)
 			zmin = z;
 		else if (z>zmax)
@@ -764,9 +767,9 @@ namespace realtimeplot {
 		    Cairo::RefPtr< Cairo::LinearGradient > pGradient = Cairo::LinearGradient::create(
 						x0, y0, x1, y1 );
 
-				float shade = 1-(v[0]->z-zmin)/(zmax-zmin)+zmin;
+				float shade = 1-(v[0]->z-zmin)/(zmax-zmin);
 				pGradient->add_color_stop_rgba( 0,shade,shade,shade,1 ); 
-				shade = 1-(v[1]->z-zmin)/(zmax-zmin)+zmin;
+				shade = 1-(v[1]->z-zmin)/(zmax-zmin);
 				pGradient->add_color_stop_rgba( 1,shade,shade,shade,1 );
 				transform_to_plot_units();
 				plot_context->move_to( tr.vertices[2]->x, tr.vertices[2]->y );

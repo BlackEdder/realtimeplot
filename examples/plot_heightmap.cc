@@ -27,15 +27,15 @@
 using namespace realtimeplot;
 
 int main() {
-	HeightMap hm = HeightMap();
+	HeightMap hm = HeightMap(0,1,2,4);
 
 	for (size_t i=0; i<1000; ++i) {
-		float x = 8*float(std::rand())/RAND_MAX;
-		float y = 50*float(std::rand())/RAND_MAX;
-		std::cout << x << " " << y << std::endl;
-		hm.add_data( x, y, pow(abs((x-4)*(y-25)),0.5), true );
+		float x = float(std::rand())/RAND_MAX;
+		float y = 2+2*float(std::rand())/RAND_MAX;
+		std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
+		hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), true );
 	}
-	hm.add_data( 8*float(std::rand())/RAND_MAX, 50*float(std::rand())/RAND_MAX, 1 );
+	hm.add_data( float(std::rand())/RAND_MAX, 2+2*float(std::rand())/RAND_MAX, 1 );
 	
 
 	/*hm.add_data( 5.1, 20, 1 );

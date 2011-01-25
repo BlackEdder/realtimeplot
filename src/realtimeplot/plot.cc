@@ -452,9 +452,23 @@ namespace realtimeplot {
 	{ 
 		//config = PlotConfig();
 		//pEventHandler.reset( new EventHandler( config ) );
+		config.fixed_plot_area = true;
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHeightMapEvent( config, 
 						pEventHandler ) ) );
 	}
+
+	HeightMap::HeightMap( float min_x, float max_x, float min_y, float max_y ) : Plot(false)
+	{ 
+		config.min_x = min_x;
+		config.max_x = max_x;
+		config.min_y = min_y;
+		config.max_y = max_y;
+		config.fixed_plot_area = true;
+		//pEventHandler.reset( new EventHandler( config ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHeightMapEvent( config, 
+						pEventHandler ) ) );
+	}
+
 
 	void HeightMap::add_data( float x, float y, float z, bool show ) {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new HMDataEvent( x, y, z, show ) ) ); 
