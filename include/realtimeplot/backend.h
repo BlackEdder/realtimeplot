@@ -293,13 +293,15 @@ namespace realtimeplot {
 			std::vector<boost::shared_ptr<Vertex3D> > gradientVector() {
 				std::vector<boost::shared_ptr<Vertex3D> > v;
 				//Find lowest and highest Vertex
-				v.push_back( vertices[0] );
-				v.push_back( vertices[0] );
+				v.push_back( boost::shared_ptr<Vertex3D>( new Vertex3D( vertices[0]->x, 
+								vertices[0]->y, vertices[0]->z ) ) );
+				v.push_back( boost::shared_ptr<Vertex3D>( new Vertex3D( vertices[0]->x, 
+								vertices[0]->y, vertices[0]->z ) ) );
 				for (size_t i=1; i<3; ++i) {
 					if (vertices[i]->z < v[0]->z)
-						v[0] = vertices[i];
+						v[0].reset( new Vertex3D( vertices[i]->x, vertices[i]->y, vertices[i]->z ) );
 					if (vertices[i]->z > v[1]->z)
-						v[1] = vertices[i];
+						v[1].reset( new Vertex3D( vertices[i]->x, vertices[i]->y, vertices[i]->z ) );
 				}
 
 				boost::shared_ptr<Vertex3D> pEV1( new Vertex3D( vertices[1]->x-vertices[0]->x,

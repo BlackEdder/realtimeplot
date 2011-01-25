@@ -751,6 +751,8 @@ namespace realtimeplot {
 			}
 
 			if (!part_of_super) {
+				Triangle3D tr = Triangle3D( delaunay.triangles[i] );
+				//std::vector<boost::shared_ptr<Vertex3D> > v = tr.gradientVector();
 				for (size_t j=0; j<3; ++j) {
 					line_add( delaunay.triangles[i]->corners[j]->vertex->x,
 							delaunay.triangles[i]->corners[j]->vertex->y, i, Color::red() );
