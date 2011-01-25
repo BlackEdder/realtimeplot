@@ -283,10 +283,10 @@ namespace realtimeplot {
 	{
 		public:
 			Triangle3D() {};
-			Triangle3D( delaunay::Triangle & tr ) {
+			Triangle3D( boost::shared_ptr<delaunay::Triangle> pTriangle ) {
 				for (size_t i=0; i<3; ++i) {
 					vertices.push_back( boost::static_pointer_cast<Vertex3D, delaunay::Vertex>(
-								tr.corners[i]->vertex ) );
+								pTriangle->corners[i]->vertex ) );
 				}
 			}
 
