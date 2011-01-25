@@ -219,7 +219,7 @@ class TestDelaunay : public CxxTest::TestSuite
 			checkDelaunayConsistency( d );
 		}
 
-		void xtestSquareLattice()
+		void testSquareLattice()
 		{
 			Delaunay d = Delaunay( 0,1, 0,1 );
 			for (size_t i=0; i<10; ++i) {

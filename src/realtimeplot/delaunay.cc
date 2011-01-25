@@ -42,17 +42,22 @@ namespace realtimeplot {
 			float x5 = v.x;
 			float y5 = v.y;
 
-			if (x5<=x1 || x5<=x3 || x5>=x2 || x5>=x4)
+			if (x5<x1 || x5<x3) {
+				std::cout << "blaaarrgh1 " << (e) << " " << (*this) << std::endl;
+				std::cout << "blaaarrgh1 " << x5 << " " << x1 << " " << x3 << std::endl;
 				return false;
-			//normalize ys
-			if (y1>y2) {
-				float tmp_y = y1; y1 = y2; y2 = tmp_y;
 			}
-			if (y3>y4) {
-				float tmp_y = y3; y3 = y4; y4 = tmp_y;
-			}
-			if (y5<=y1 || y5<=y3 || y5>=y2 || y5>=y4)
+			
+			if ((pow(x5-x1,2)+pow(y5-y1,2))>=(pow(x2-x1,2)+pow(y2-y1,2))) {
+				std::cout << "blaaarrgh2 " << std::endl;
 				return false;
+			}
+			if ((pow(x5-x3,2)+pow(y5-y3,2))>=(pow(x4-x3,2)+pow(y4-y3,2))){
+				std::cout << "blaaarrgh3 " << std::endl;
+				return false;
+			}
+
+			std::cout << "blaaarrgh " << std::endl;
 			return true;
 		}
 
@@ -195,9 +200,9 @@ namespace realtimeplot {
 			boost::shared_ptr<Triangle> tr = triangles[0];
 
 			//Vertex in that triangle (using the barycenter)
-			Vertex start_v = tr->corners[0]->vertex->scalar( 1/3.0 ) + 
-				tr->corners[1]->vertex->scalar( 1/3.0 ) +
-				tr->corners[2]->vertex->scalar( 1/3.0 );
+			Vertex start_v = tr->corners[0]->vertex->scalar( 2/6.0 ) + 
+				tr->corners[1]->vertex->scalar( 2/6.0 ) +
+				tr->corners[2]->vertex->scalar( 2/6.0 );
 			boost::shared_ptr<Vertex> pStart_v( new Vertex( start_v.x, start_v.y ) );
 
 			//Find edge that a line between that vertex and the provided vertex passes through
@@ -246,7 +251,11 @@ namespace realtimeplot {
 					}
 
 				}
+				std::cout << (*tr) << std::endl;
+				std::cout << eline << std::endl;
 			}
+			std::cout << (*tr) << std::endl;
+			std::cout << "Bla " << eline << " " << (*vertex) << std::endl;
 
 			return tr;
 		}
@@ -317,6 +326,7 @@ namespace realtimeplot {
 				c2->opposite = triangle->corners[0]->previous->opposite;
 				triangle->corners[0]->previous->opposite->opposite = c2;
 			}
+
 
 			triangle->corners[0]->previous->opposite = c2n;
 			c2n->opposite = triangle->corners[0]->previous;
