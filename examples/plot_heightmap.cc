@@ -22,17 +22,18 @@
 	 */
 
 #include "realtimeplot/plot.h"
+#include "math.h"
 
 using namespace realtimeplot;
 
 int main() {
 	HeightMap hm = HeightMap();
 
-	for (size_t i=0; i<100; ++i) {
+	for (size_t i=0; i<1000; ++i) {
 		float x = 8*float(std::rand())/RAND_MAX;
 		float y = 50*float(std::rand())/RAND_MAX;
 		std::cout << x << " " << y << std::endl;
-		hm.add_data( x, y, x*y, false );
+		hm.add_data( x, y, pow(abs((x-4)*(y-25)),0.5), true );
 	}
 	hm.add_data( 8*float(std::rand())/RAND_MAX, 50*float(std::rand())/RAND_MAX, 1 );
 	

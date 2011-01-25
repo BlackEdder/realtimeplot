@@ -752,15 +752,34 @@ namespace realtimeplot {
 
 			if (!part_of_super) {
 				Triangle3D tr = Triangle3D( delaunay.triangles[i] );
-				//std::vector<boost::shared_ptr<Vertex3D> > v = tr.gradientVector();
+				std::vector<boost::shared_ptr<Vertex3D> > v = tr.gradientVector();
+				
+				double x0 = v[0]->x;
+				double y0 = v[0]->y;
+				double x1 = v[1]->x;
+				double y1 = v[1]->y;
+				//plot_context->user_to_device( x0, y0 );
+				//plot_context->user_to_device( x1, y1 );
+
+		    Cairo::RefPtr< Cairo::LinearGradient > pGradient = Cairo::LinearGradient::create(
+						x0, y0, x1, y1 );
+
+				float shade = 1-(v[0]->z-zmin)/(zmax-zmin)+zmin;
+				pGradient->add_color_stop_rgba( 0,shade,shade,shade,1 ); 
+				shade = 1-(v[1]->z-zmin)/(zmax-zmin)+zmin;
+				pGradient->add_color_stop_rgba( 1,shade,shade,shade,1 );
+				transform_to_plot_units();
+				plot_context->move_to( tr.vertices[2]->x, tr.vertices[2]->y );
+
 				for (size_t j=0; j<3; ++j) {
-					line_add( delaunay.triangles[i]->corners[j]->vertex->x,
-							delaunay.triangles[i]->corners[j]->vertex->y, i, Color::red() );
-					point( delaunay.triangles[i]->corners[j]->vertex->x,
-							delaunay.triangles[i]->corners[j]->vertex->y );
+					plot_context->line_to( tr.vertices[j]->x, tr.vertices[j]->y );
 				}
-				line_add( delaunay.triangles[i]->corners[0]->vertex->x,
-						delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
+				plot_context->set_source( pGradient );
+				transform_to_device_units(plot_context);
+				plot_context->fill_preserve();
+				plot_context->stroke();
+				//line_add( delaunay.triangles[i]->corners[0]->vertex->x,
+						//delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
 			}
 		}
 		pause_display = false;
