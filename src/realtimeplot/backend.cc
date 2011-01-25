@@ -730,7 +730,7 @@ namespace realtimeplot {
 			zmin = z;
 		else if (z>zmax)
 			zmax = z;
-		boost::shared_ptr<delaunay::Vertex> vertex( new delaunay::Vertex( x, y ) );
+		boost::shared_ptr<delaunay::Vertex> vertex( new Vertex3D( x, y, z ) );
 		delaunay.add_data( vertex );
 		if (show && delaunay.vertices.size()>=3)
 			plot();
