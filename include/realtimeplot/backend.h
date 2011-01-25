@@ -313,8 +313,6 @@ namespace realtimeplot {
 				pNormal = pEV1->crossProduct( pEV2 );
 				y2 = pNormal->y/pNormal->x;
 				z2 = -(pow(pNormal->y,2)+pow(pNormal->x,2))/(pNormal->x*pNormal->z);
-				std::cout << y2 << std::endl;
-				std::cout << z2 << std::endl;
 
 				float scalar = (v[1]->z-v[0]->z)/z2;
 				v[1]->x = v[0]->x+scalar;
