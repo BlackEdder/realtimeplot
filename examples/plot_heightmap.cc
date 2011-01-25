@@ -46,13 +46,13 @@ int main() {
 	sleep(1);
 	HeightMap hm2 = HeightMap(0,1,0,1);
 
-	for (size_t i=0; i<5; ++i) {
-		for (size_t j=0; j<5; ++j) {
-		float x = 1.0/5*i;
-		float y = 1.0/5*j;
-		std::cout << x << " " << y << std::endl;
-		hm2.add_data( x, y, pow(pow(((x-0.5)*(y-0.5)),2),0.5), true );
-		sleep(1);
+	for (size_t i=0; i<10; ++i) {
+		for (size_t j=0; j<10; ++j) {
+			float x = 1.0/10*i;
+			float y = 1.0/10*j;
+			std::cout << x << " " << y << std::endl;
+			hm2.add_data( x, y, pow(pow(((x-0.5)*(y-0.5)),2),0.5), true );
+			//sleep(1);
 		}
 	}
 	

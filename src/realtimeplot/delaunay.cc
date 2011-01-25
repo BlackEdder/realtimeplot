@@ -42,22 +42,24 @@ namespace realtimeplot {
 			float x5 = v.x;
 			float y5 = v.y;
 
-			if (x5<x1 || x5<x3) {
+			/*if (x5<x1 || x5<x3) {
 				std::cout << "blaaarrgh1 " << (e) << " " << (*this) << std::endl;
 				std::cout << "blaaarrgh1 " << x5 << " " << x1 << " " << x3 << std::endl;
 				return false;
-			}
+			}*/
+
+			float x12 = 0.5*(x2-x1)+x1;
+			float y12 = 0.5*(y2-y1)+y1;
+			float x34 = 0.5*(x4-x3)+x3;
+			float y34 = 0.5*(y4-y3)+y3;
 			
-			if ((pow(x5-x1,2)+pow(y5-y1,2))>=(pow(x2-x1,2)+pow(y2-y1,2))) {
-				std::cout << "blaaarrgh2 " << std::endl;
+			if ((pow(x5-x12,2)+pow(y5-y12,2))>(pow(x2-x12,2)+pow(y2-y12,2))) {
 				return false;
 			}
-			if ((pow(x5-x3,2)+pow(y5-y3,2))>=(pow(x4-x3,2)+pow(y4-y3,2))){
-				std::cout << "blaaarrgh3 " << std::endl;
+			if ((pow(x5-x34,2)+pow(y5-y34,2))>(pow(x4-x34,2)+pow(y4-y34,2))){
 				return false;
 			}
 
-			std::cout << "blaaarrgh " << std::endl;
 			return true;
 		}
 
@@ -251,12 +253,7 @@ namespace realtimeplot {
 					}
 
 				}
-				std::cout << (*tr) << std::endl;
-				std::cout << eline << std::endl;
 			}
-			std::cout << (*tr) << std::endl;
-			std::cout << "Bla " << eline << " " << (*vertex) << std::endl;
-
 			return tr;
 		}
 
