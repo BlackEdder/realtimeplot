@@ -29,21 +29,24 @@ using namespace realtimeplot;
 int main() {
 	HeightMap hm = HeightMap(0,1,2,4);
 
-	for (size_t i=0; i<100; ++i) {
+	for (size_t i=0; i<10000; ++i) {
 		float x = float(std::rand())/RAND_MAX;
 		float y = 2+2*float(std::rand())/RAND_MAX;
 		std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
-		hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), true );
+		hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), false );
 	}
-	hm.add_data( float(std::rand())/RAND_MAX, 2+2*float(std::rand())/RAND_MAX, 1 );
-	
+	float x = float(std::rand())/RAND_MAX;
+	float y = 2+2*float(std::rand())/RAND_MAX;
+	std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
+	hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), true );
+
 
 	/*hm.add_data( 5.1, 20, 1 );
-	sleep(1);
-	hm.add_data( 9.1, 2.2, 1 );
-	sleep(1);
-	hm.add_data( 5, 15, 1 );*/
-	sleep(1);
+		sleep(1);
+		hm.add_data( 9.1, 2.2, 1 );
+		sleep(1);
+		hm.add_data( 5, 15, 1 );*/
+	//sleep(1);
 	HeightMap hm2 = HeightMap(0,1,0,1);
 
 	for (size_t i=0; i<10; ++i) {
@@ -55,6 +58,6 @@ int main() {
 			//sleep(1);
 		}
 	}
-	
+
 	return 0;
 }

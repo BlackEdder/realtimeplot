@@ -24,7 +24,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(RealTimePlot)
 
-SET (CMAKE_CXX_FLAGS "-O2 -pipe -ffast-math -fomit-frame-pointer -g")
+SET (CMAKE_CXX_FLAGS "-O2 -pipe -ffast-math -fomit-frame-pointer")
 find_library( PANGOMM pangomm-1.4 )
 if( PANGOMM-NOTFOUND )
 	message( FATAL_ERROR "Could not find pangomm library" )

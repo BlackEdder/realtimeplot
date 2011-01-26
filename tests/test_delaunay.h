@@ -230,6 +230,9 @@ class TestDelaunay : public CxxTest::TestSuite
 					boost::shared_ptr<Triangle> triangle =
 						d.findTriangle( vertex, d.triangles[0] );
 					checkDelaunayConsistency( d );
+					if (!triangle->inTriangle( vertex )) {
+						std::cout << (*triangle) << " " << (*vertex) << std::endl;
+					}
 					TS_ASSERT( triangle->inTriangle( vertex ) );
 					d.createNewTriangles( vertex, triangle );
 					checkDelaunayConsistency( d );

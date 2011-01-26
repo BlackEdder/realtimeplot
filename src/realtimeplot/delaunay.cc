@@ -104,7 +104,7 @@ namespace realtimeplot {
 			float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
 			// Check if point is in triangle
-			return (u > 0) && (v > 0) && (u + v < 1);
+			return (u >= 0) && (v >= 0) && (u + v <= 1);
 		}
 
 		bool Triangle::inCircumCircle( boost::shared_ptr<Vertex> pV ) {
