@@ -172,14 +172,14 @@ class TestDelaunay : public CxxTest::TestSuite
 			checkDelaunayConsistency( d );
 			boost::shared_ptr<Vertex> vertex( new Vertex( 6.7215, 19.7191 ) );
 			boost::shared_ptr<Triangle> triangle =
-				d.findTriangle( vertex );
+				d.findTriangle( vertex, d.triangles[0] );
 			TS_ASSERT( triangle->inTriangle( vertex ) );
 			checkDelaunayConsistency( d );
 			d.createNewTriangles( vertex, triangle );
 			checkDelaunayConsistency( d );
 			vertex.reset( new Vertex( 3.20183, 44.5765 ) );
 			triangle =
-				d.findTriangle( vertex );
+				d.findTriangle( vertex, d.triangles[0] );
 			TS_ASSERT( triangle->inTriangle( vertex ) );
 			checkDelaunayConsistency( d );
 			d.createNewTriangles( vertex, triangle );
@@ -190,7 +190,7 @@ class TestDelaunay : public CxxTest::TestSuite
 		{
 			Delaunay d = Delaunay( 0,1, 0,1 );
 			boost::shared_ptr<Vertex> v( new Vertex( 0.5, 0.4 ) );
-			TS_ASSERT_EQUALS( d.findTriangle( v ), d.triangles[0] );
+			TS_ASSERT_EQUALS( d.findTriangle( v, d.triangles[0] ), d.triangles[0] );
 			checkDelaunayConsistency( d );
 
 			Delaunay d2 = Delaunay( 0,10, 0,50 );
@@ -199,10 +199,10 @@ class TestDelaunay : public CxxTest::TestSuite
 			d2.add_data( pV0 );
 			checkDelaunayConsistency( d2 );
 			boost::shared_ptr<Vertex> pV1( new Vertex( 9.1, 2.2 ) );
-			TS_ASSERT( d2.findTriangle(pV1)->inTriangle( pV1 ) );
+			TS_ASSERT( d2.findTriangle(pV1, d2.triangles[0])->inTriangle( pV1 ) );
 			d2.add_data( pV1 );
 			boost::shared_ptr<Vertex> pV2( new Vertex( 5, 15 ) );
-			TS_ASSERT( d2.findTriangle(pV2)->inTriangle( pV2 ) );
+			TS_ASSERT( d2.findTriangle(pV2, d2.triangles[0])->inTriangle( pV2 ) );
 			d2.add_data( pV2 );
 			checkDelaunayConsistency( d2 );
 
@@ -212,7 +212,7 @@ class TestDelaunay : public CxxTest::TestSuite
 		{
 			Delaunay d = Delaunay( 0,1, 0,1 );
 			boost::shared_ptr<Vertex> pVertex( new Vertex( 0.5, 0.4 ) );
-			d.createNewTriangles( pVertex, d.findTriangle( pVertex ) );
+			d.createNewTriangles( pVertex, d.findTriangle( pVertex, d.triangles[0] ) );
 			TS_ASSERT_EQUALS( d.triangles.size(), 3 );
 			TS_ASSERT_EQUALS( d.vertices.size(), 4 );
 			TS_ASSERT_EQUALS( d.corners.size(), 9 );
@@ -228,7 +228,7 @@ class TestDelaunay : public CxxTest::TestSuite
 					float y = 1.0/10*j;
 					boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );
 					boost::shared_ptr<Triangle> triangle =
-						d.findTriangle( vertex );
+						d.findTriangle( vertex, d.triangles[0] );
 					checkDelaunayConsistency( d );
 					TS_ASSERT( triangle->inTriangle( vertex ) );
 					d.createNewTriangles( vertex, triangle );
@@ -245,7 +245,7 @@ class TestDelaunay : public CxxTest::TestSuite
 				float y = 50*float(std::rand())/RAND_MAX;
 				boost::shared_ptr<Vertex> vertex( new Vertex( x, y ) );
 				boost::shared_ptr<Triangle> triangle =
-					d.findTriangle( vertex );
+					d.findTriangle( vertex, d.triangles[0] );
 				checkDelaunayConsistency( d );
 				TS_ASSERT( triangle->inTriangle( vertex ) );
 				d.createNewTriangles( vertex, triangle );

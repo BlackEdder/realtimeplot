@@ -75,6 +75,7 @@ namespace realtimeplot {
 					}
 				}
 				bool intersect( Edge& e );
+				bool include( Vertex &v );
 				Vertex intersectionVertex( Edge& e );
 		};
 
@@ -109,7 +110,8 @@ namespace realtimeplot {
 				void add_data( boost::shared_ptr<Vertex> vertex );
 
 				boost::shared_ptr<Triangle>
-					findTriangle( boost::shared_ptr<Vertex> vertex );
+					findTriangle( boost::shared_ptr<Vertex> vertex,
+						boost::shared_ptr<Triangle> tr );
 
 				void createNewTriangles( boost::shared_ptr<Vertex> vertex,
 						boost::shared_ptr<Triangle> triangle );

@@ -39,27 +39,30 @@ namespace realtimeplot {
 
 			Vertex v = intersectionVertex( e );
 
+			if (e.include( v ) && include( v ))
+				return true;
+			else
+				return false;
+
+		}
+
+		bool Edge::include( Vertex &v ) {
+			//is the vertex on the edge. Edge does not include it's two end points
+			float x1 = pV0->x;
+			float x2 = pV1->x;
+			float y1 = pV0->y;
+			float y2 = pV1->y;
+
 			float x5 = v.x;
 			float y5 = v.y;
 
-			/*if (x5<x1 || x5<x3) {
-				std::cout << "blaaarrgh1 " << (e) << " " << (*this) << std::endl;
-				std::cout << "blaaarrgh1 " << x5 << " " << x1 << " " << x3 << std::endl;
-				return false;
-			}*/
-
 			float x12 = 0.5*(x2-x1)+x1;
 			float y12 = 0.5*(y2-y1)+y1;
-			float x34 = 0.5*(x4-x3)+x3;
-			float y34 = 0.5*(y4-y3)+y3;
-			
-			if ((pow(x5-x12,2)+pow(y5-y12,2))>(pow(x2-x12,2)+pow(y2-y12,2))) {
+	
+			float dist512 = (pow(x5-x12,2)+pow(y5-y12,2));
+			float dist212 = (pow(x2-x12,2)+pow(y2-y12,2));
+			if ( dist512>=dist212 )
 				return false;
-			}
-			if ((pow(x5-x34,2)+pow(y5-y34,2))>(pow(x4-x34,2)+pow(y4-y34,2))){
-				return false;
-			}
-
 			return true;
 		}
 
@@ -191,15 +194,13 @@ namespace realtimeplot {
 
 		void Delaunay::add_data( boost::shared_ptr<Vertex> vertex ) {
 			boost::shared_ptr<Triangle> triangle =
-				findTriangle( vertex );
+				findTriangle( vertex, triangles[0]  );
 			createNewTriangles( vertex, triangle );
 		}
 
 		boost::shared_ptr<Triangle> 
-			Delaunay::findTriangle( boost::shared_ptr<Vertex> vertex ) 
+			Delaunay::findTriangle( boost::shared_ptr<Vertex> vertex, boost::shared_ptr<Triangle> tr ) 
 		{
-			//Choose random triangle
-			boost::shared_ptr<Triangle> tr = triangles[0];
 
 			//Vertex in that triangle (using the barycenter)
 			Vertex start_v = tr->corners[0]->vertex->scalar( 2/6.0 ) + 
@@ -230,14 +231,13 @@ namespace realtimeplot {
 			tr = current_corner->triangle;
 
 			while (passed) {
-				//Is it to the right?
-				/*std::cout << "eline: " << eline << std::endl;
-				std::cout << (*vertex) << std::endl;
-				std::cout << (*current_corner->vertex) << std::endl;*/
 				Edge etriangle = Edge( current_corner->vertex, current_corner->next->vertex );
-				/*std::cout << etriangle << std::endl;
-				std::cout << (*current_corner->triangle) << std::endl;
-				std::cout << (*current_corner->next->triangle) << std::endl;*/
+
+				//Check if it passes the vertex to the right,
+				//Check to the left
+				//Check if it goes through the current corner
+				//If none then we are in the current triangle
+
 				if (etriangle.intersect( eline )) {
 					current_corner = current_corner->previous->opposite;
 					tr = current_corner->triangle;
@@ -249,10 +249,20 @@ namespace realtimeplot {
 						current_corner = current_corner->next->opposite;
 						tr = current_corner->triangle;
 					} else {
-						passed = false;
+						// Is current vertex on the line
+						if (eline.include( (*current_corner->vertex) ) )
+							if (float(rand())/RAND_MAX < 0.5 && current_corner->previous->opposite ) {
+								tr = findTriangle( vertex, current_corner->previous->opposite->triangle );
+								passed = false;
+							} else {
+								tr = findTriangle( vertex, current_corner->next->opposite->triangle );
+								passed = false;
+							}
+						else
+							passed = false;
 					}
-
 				}
+
 			}
 			return tr;
 		}
