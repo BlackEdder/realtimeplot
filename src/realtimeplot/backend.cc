@@ -790,8 +790,18 @@ namespace realtimeplot {
 	}
 
 	Color BackendHeightMap::colorMap( float z ) {
-		float shade = 1-(z-zmin)/(zmax-zmin);
-		return Color( shade, 0, 1-shade, 1 );
+		float fraction = (z-zmin)/(zmax-zmin);
+		float r, g, b;
+		if (fraction < 0.5) {
+			r = 1-2*fraction;
+			g = 2*fraction;
+			b = 0;
+		} else {
+			r = 0;
+			g = 1-2*(fraction-0.5);
+			b = 0+2*(fraction-0.5);
+		}
+		return Color( r, g, b, 1 );
 	}
 }
 
