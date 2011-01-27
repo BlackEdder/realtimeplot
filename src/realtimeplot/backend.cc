@@ -767,10 +767,10 @@ namespace realtimeplot {
 		    Cairo::RefPtr< Cairo::LinearGradient > pGradient = Cairo::LinearGradient::create(
 						x0, y0, x1, y1 );
 
-				float shade = 1-(v[0]->z-zmin)/(zmax-zmin);
-				pGradient->add_color_stop_rgba( 0, shade,0,1-shade,1 ); 
-				shade = 1-(v[1]->z-zmin)/(zmax-zmin);
-				pGradient->add_color_stop_rgba( 1, shade,0,1-shade,1 );
+				Color shade = colorMap( v[0]->z );
+				pGradient->add_color_stop_rgba( 0, shade.r, shade.g, shade.b, shade.a ); 
+				shade = colorMap( v[1]->z );
+				pGradient->add_color_stop_rgba( 1, shade.r, shade.g, shade.b, shade.a ); 
 				transform_to_plot_units();
 				plot_context->move_to( tr.vertices[2]->x, tr.vertices[2]->y );
 
@@ -787,6 +787,11 @@ namespace realtimeplot {
 		}
 		pause_display = false;
 		display();
+	}
+
+	Color BackendHeightMap::colorMap( float z ) {
+		float shade = 1-(z-zmin)/(zmax-zmin);
+		return Color( shade, 0, 1-shade, 1 );
 	}
 }
 

@@ -348,6 +348,8 @@ namespace realtimeplot {
 		private:
 			float zmin, zmax;
 			delaunay::Delaunay delaunay;
+
+			inline Color colorMap( float z );
 			/*delaunay::vertex vSuper[3];
 
 			//! All the vertices
