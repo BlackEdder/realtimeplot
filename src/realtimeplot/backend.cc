@@ -803,5 +803,9 @@ namespace realtimeplot {
 		}
 		return Color( r, g, b, 1 );
 	}
+
+	void BackendHeightMap::calculate_height_scaling() {
+		throw;
+	}
 }
 

@@ -474,4 +474,10 @@ namespace realtimeplot {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new HMDataEvent( x, y, z, show ) ) ); 
 	}
 
+	void HeightMap::calculate_height_scaling() {
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new HMHeightScalingEvent() ) ); 
+	}
+
+
 }

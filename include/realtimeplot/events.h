@@ -211,8 +211,17 @@ namespace realtimeplot {
 				float x, y, z;
 				bool show;
 		};
-	
 
+		/**
+		 * \brief Causes HeightMap to calculate it's optimal coloring scheme
+		 */
+		class HMHeightScalingEvent	: public Event {
+			public:
+				HMHeightScalingEvent( ) {};
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				boost::static_pointer_cast<BackendHeightMap, BackendPlot>( pBPlot )->calculate_height_scaling();
+				}
+		};
  }
 #endif
 

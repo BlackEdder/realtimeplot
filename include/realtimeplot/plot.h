@@ -317,6 +317,20 @@ namespace realtimeplot {
 
 			//! Sends an HeightMapData event to eventhandler
 			void add_data( float x, float y, float z, bool show=true );
+
+			/**
+			 * \brief Calculates parameters that should lead to "optimal" colouring
+			 *
+			 * I.e. if most of the data is grouped (i.e. most values are low) then it will
+			 * cause the data to be rescaled in such a way that most of the color range is 
+			 * used for that part of the scale. 
+			 *
+			 * Assumes that the relative height is beta distributed and calculates alpha and
+			 * beta values. Is a relatively costly procedure, so should not be used to often.
+			 * For example only when all data is present, or once when a significant portions
+			 * of the data has been added.
+			 */
+			void calculate_height_scaling();
 	};
 
 

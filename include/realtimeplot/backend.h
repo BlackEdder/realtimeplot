@@ -345,6 +345,14 @@ namespace realtimeplot {
 			void add_data( float x, float y, float z, bool show );
 
 			void plot();
+
+			/**
+			 * \brief Tries to calculate ideal scaling of the height parameter
+			 *
+			 * Such that most of the colors in the colormap cover the spot where most
+			 * of the data is
+			 */
+			void calculate_height_scaling();
 		private:
 			float zmin, zmax;
 			delaunay::Delaunay delaunay;
