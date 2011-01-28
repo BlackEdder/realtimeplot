@@ -27,8 +27,5 @@
 
 #ifndef REALTIMEPLOT_HELPER_H
 #define REALTIMEPLOT_HELPER_H
-/**
- * \brief Calculate cumulative beta distribution
- */
 
 #endif

@@ -30,7 +30,7 @@ if( PANGOMM-NOTFOUND )
 	message( FATAL_ERROR "Could not find pangomm library" )
 	endif()
 
-set(BOOST_LIBS thread date_time)
+set(BOOST_LIBS thread date_time math_c99 math_tr1)
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
 include_directories("include")

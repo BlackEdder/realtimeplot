@@ -22,7 +22,8 @@
 	 */
 #include <boost/shared_ptr.hpp>
 #include "realtimeplot/backend.h"
-#include "realtimeplot/helper_functions.h"
+
+#include <boost/math/special_functions/gamma.hpp>
 
 namespace realtimeplot {
 	/*
@@ -826,6 +827,7 @@ namespace realtimeplot {
 		beta = (1-mean)*((mean*(1-mean))/v-1);
 		std::cout << "Blaat: " << mean << " " << v << std::endl;
 		std::cout << "Blaat: " << alpha << " " << beta << std::endl;
+		std::cout << "Blaat: " << boost::math::ibeta(alpha, beta, 0.5) << std::endl;
 		scale = true;
 		if (delaunay.vertices.size()>=3)
 			plot();
