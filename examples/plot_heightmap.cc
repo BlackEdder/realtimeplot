@@ -39,6 +39,7 @@ int main() {
 	float y = 2+2*float(std::rand())/RAND_MAX;
 	std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
 	hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), true );
+	hm.calculate_height_scaling();
 
 
 	/*hm.add_data( 5.1, 20, 1 );

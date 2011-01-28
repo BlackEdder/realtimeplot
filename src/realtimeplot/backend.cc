@@ -22,6 +22,7 @@
 	 */
 #include <boost/shared_ptr.hpp>
 #include "realtimeplot/backend.h"
+#include "realtimeplot/helper_functions.h"
 
 namespace realtimeplot {
 	/*
@@ -719,7 +720,8 @@ namespace realtimeplot {
 				BackendPlot( cfg, pEventHandler ),
 				zmin( 0 ), zmax( 0 ),
 				delaunay( delaunay::Delaunay( config.min_x, 
-					config.max_x, config.min_y, config.max_y ) )
+					config.max_x, config.min_y, config.max_y ) ),
+				scale(false)
 		{ 
 		}
 
@@ -805,7 +807,28 @@ namespace realtimeplot {
 	}
 
 	void BackendHeightMap::calculate_height_scaling() {
-		throw;
+		float mean = 0;
+		float v = 0;
+		float dz = zmax - zmin;
+		// calculate mean and sd
+		for (size_t i=0; i<delaunay.vertices.size(); ++i) {
+			mean += (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
+						delaunay.vertices[i] )->z-zmin)/dz; 
+		}
+		mean /= delaunay.vertices.size();
+		// calculate alpha beta
+		for (size_t i=0; i<delaunay.vertices.size(); ++i) {
+			v += pow((boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
+						delaunay.vertices[i] )->z-zmin)/dz-mean,2); 
+		}
+		v /= delaunay.vertices.size();
+		alpha = mean*((mean*(1-mean))/v-1);
+		beta = (1-mean)*((mean*(1-mean))/v-1);
+		std::cout << "Blaat: " << mean << " " << v << std::endl;
+		std::cout << "Blaat: " << alpha << " " << beta << std::endl;
+		scale = true;
+		if (delaunay.vertices.size()>=3)
+			plot();
 	}
 }
 
