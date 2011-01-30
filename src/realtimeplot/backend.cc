@@ -23,7 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include "realtimeplot/backend.h"
 
-#include <boost/math/special_functions/gamma.hpp>
+#include <boost/math/special_functions/beta.hpp>
 
 namespace realtimeplot {
 	/*
@@ -795,6 +795,8 @@ namespace realtimeplot {
 	Color BackendHeightMap::colorMap( float z ) {
 		float fraction = (z-zmin)/(zmax-zmin);
 		float r, g, b;
+		if (scale)
+			fraction = boost::math::ibeta(alpha, beta, fraction);
 		if (fraction < 0.5) {
 			r = 1-2*fraction;
 			g = 2*fraction;
@@ -825,9 +827,6 @@ namespace realtimeplot {
 		v /= delaunay.vertices.size();
 		alpha = mean*((mean*(1-mean))/v-1);
 		beta = (1-mean)*((mean*(1-mean))/v-1);
-		std::cout << "Blaat: " << mean << " " << v << std::endl;
-		std::cout << "Blaat: " << alpha << " " << beta << std::endl;
-		std::cout << "Blaat: " << boost::math::ibeta(alpha, beta, 0.5) << std::endl;
 		scale = true;
 		if (delaunay.vertices.size()>=3)
 			plot();

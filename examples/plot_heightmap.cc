@@ -39,6 +39,7 @@ int main() {
 	float y = 2+2*float(std::rand())/RAND_MAX;
 	std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
 	hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), true );
+	sleep(5);
 	hm.calculate_height_scaling();
 
 
@@ -48,6 +49,7 @@ int main() {
 		sleep(1);
 		hm.add_data( 5, 15, 1 );*/
 	//sleep(1);
+	sleep(10);
 	HeightMap hm2 = HeightMap(0,1,0,1);
 
 	for (size_t i=0; i<10; ++i) {
