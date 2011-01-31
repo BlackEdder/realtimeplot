@@ -52,12 +52,15 @@ int main() {
 	sleep(10);
 	HeightMap hm2 = HeightMap(0,1,0,1);
 
-	for (size_t i=0; i<10; ++i) {
-		for (size_t j=0; j<10; ++j) {
-			float x = 1.0/10*i;
-			float y = 1.0/10*j;
+	for (size_t i=0; i<50; ++i) {
+		for (size_t j=0; j<50; ++j) {
+			float x = 1.0/49*i;
+			float y = 1.0/49*j;
 			std::cout << x << " " << y << std::endl;
-			hm2.add_data( x, y, pow(pow(((x-0.5)*(y-0.5)),2),0.5), true );
+			bool show = false;
+			if (i==49 && j==49)
+				show = true;
+			hm2.add_data( x, y, pow(pow(((x-0.5)*(y-0.5)),2),0.5), show );
 			//sleep(1);
 		}
 	}

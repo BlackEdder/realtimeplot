@@ -205,7 +205,6 @@ class TestDelaunay : public CxxTest::TestSuite
 			TS_ASSERT( d2.findTriangle(pV2, d2.triangles[0])->inTriangle( pV2 ) );
 			d2.add_data( pV2 );
 			checkDelaunayConsistency( d2 );
-
 		}
 
 		void testDelaunayCreateNewTriangles()

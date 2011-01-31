@@ -202,10 +202,12 @@ namespace realtimeplot {
 			Delaunay::findTriangle( boost::shared_ptr<Vertex> vertex, boost::shared_ptr<Triangle> tr ) 
 		{
 
-			//Vertex in that triangle (using the barycenter)
-			Vertex start_v = tr->corners[0]->vertex->scalar( 2/6.0 ) + 
-				tr->corners[1]->vertex->scalar( 2/6.0 ) +
-				tr->corners[2]->vertex->scalar( 2/6.0 );
+			//Vertex in that triangle
+			//Using the exact barycenter is more likely to produce numerical errors,
+			//so using a slightly different point in the triangle
+			Vertex start_v = tr->corners[0]->vertex->scalar( 2.3/6.0 ) + 
+				tr->corners[1]->vertex->scalar( 1.9/6.0 ) +
+				tr->corners[2]->vertex->scalar( 1.8/6.0 );
 			boost::shared_ptr<Vertex> pStart_v( new Vertex( start_v.x, start_v.y ) );
 
 			//Find edge that a line between that vertex and the provided vertex passes through
@@ -224,6 +226,7 @@ namespace realtimeplot {
 			}
 
 			if (!passed) {
+				//std::cout << "Blaat 1" << std::endl;
 				//The point is in the current triangle
 				return tr;
 			}
@@ -250,7 +253,7 @@ namespace realtimeplot {
 						tr = current_corner->triangle;
 					} else {
 						// Is current vertex on the line
-						if (eline.include( (*current_corner->vertex) ) )
+						if (eline.include( (*current_corner->vertex) ) ) {
 							if (float(rand())/RAND_MAX < 0.5 && current_corner->previous->opposite ) {
 								tr = findTriangle( vertex, current_corner->previous->opposite->triangle );
 								passed = false;
@@ -258,12 +261,15 @@ namespace realtimeplot {
 								tr = findTriangle( vertex, current_corner->next->opposite->triangle );
 								passed = false;
 							}
-						else
+						}
+						else {
 							passed = false;
+						}
 					}
 				}
 
 			}
+			//std::cout << "Blaat 10" << std::endl;
 			return tr;
 		}
 

@@ -827,7 +827,12 @@ namespace realtimeplot {
 		v /= delaunay.vertices.size();
 		alpha = mean*((mean*(1-mean))/v-1);
 		beta = (1-mean)*((mean*(1-mean))/v-1);
-		scale = true;
+		// Sometimes this doesn't work properly -> no scaling
+		if (alpha <=0, beta <=0)
+			scale = false;
+		else 
+			scale = true;
+
 		if (delaunay.vertices.size()>=3)
 			plot();
 	}
