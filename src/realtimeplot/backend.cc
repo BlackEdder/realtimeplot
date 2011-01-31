@@ -810,9 +810,9 @@ namespace realtimeplot {
 	}
 
 	void BackendHeightMap::calculate_height_scaling() {
-		float mean = 0;
-		float v = 0;
-		float dz = zmax - zmin;
+		double mean = 0;
+		double v = 0;
+		double dz = zmax - zmin;
 		// calculate mean and sd
 		for (size_t i=0; i<delaunay.vertices.size(); ++i) {
 			mean += (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
@@ -828,7 +828,7 @@ namespace realtimeplot {
 		alpha = mean*((mean*(1-mean))/v-1);
 		beta = (1-mean)*((mean*(1-mean))/v-1);
 		// Sometimes this doesn't work properly -> no scaling
-		if (alpha <=0, beta <=0)
+		if (alpha <=0 || beta <=0)
 			scale = false;
 		else 
 			scale = true;

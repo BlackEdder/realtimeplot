@@ -86,7 +86,7 @@ namespace realtimeplot {
 			
 			if (queue_size==0 && xevent_queue_size == 0) 
 				usleep(100000);
-			else if ( xevent_queue_size > 0 && pBPlot->xSurface ) {
+			else if ( pBPlot != NULL && xevent_queue_size > 0 && pBPlot->xSurface ) {
 				XEvent report;
 				XNextEvent( pBPlot->dpy, &report );
 				pBPlot->handle_xevent( report );

@@ -132,7 +132,7 @@ namespace realtimeplot {
 		pEventHandler( new EventHandler( config ) )
 	{ 
 		if (open)
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+			pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
 						pEventHandler ) ) );
 	}
 
@@ -451,8 +451,8 @@ namespace realtimeplot {
 	HeightMap::HeightMap() : Plot(false)
 	{ 
 		//config = PlotConfig();
-		//pEventHandler.reset( new EventHandler( config ) );
 		config.fixed_plot_area = true;
+		//pEventHandler.reset( new EventHandler( config ) );
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHeightMapEvent( config, 
 						pEventHandler ) ) );
 	}
