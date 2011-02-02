@@ -1,3 +1,4 @@
+* Move Pango initialization out of draw_axes_surface (don't forget to lock)
 * Top and right margin for axis numerical labels overflow
 * Use a key to start (and stop) recording to a png file
 * Subplot (show two image surfaces in the xwindow?)
