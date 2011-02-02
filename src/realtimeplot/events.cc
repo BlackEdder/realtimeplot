@@ -161,7 +161,7 @@ namespace realtimeplot {
 	{}
 
 	void HMDataEvent::execute(boost::shared_ptr<BackendPlot> &pBPlot ) {
-		static_cast<BackendHeightMap*>(pBPlot.get())->add_data( x, y, z, show );
+		boost::static_pointer_cast<BackendHeightMap, BackendPlot>(pBPlot)->add_data( x, y, z, show );
 	}
 
 }

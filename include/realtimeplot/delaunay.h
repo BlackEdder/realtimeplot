@@ -125,8 +125,11 @@ namespace realtimeplot {
 				 * pC is the new vertex, so we only check if the pC->opposite is inside
 				 * the circumCircle. See "An improved incremental Delaunay Triangulation
 				 * Algorithm for details".
+				 *
+				 * The count is there to help detecting infinite loops (caused by numerical
+				 * inprecision
 				 */
-				void flipEdgesRecursively( boost::shared_ptr<Corner> pC );
+				void flipEdgesRecursively( boost::shared_ptr<Corner> pC, size_t count = 0 );
 
 			/*private:
 				friend class TestDelaunay;*/

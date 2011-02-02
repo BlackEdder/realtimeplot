@@ -62,6 +62,7 @@ int main() {
 			//sleep(1);
 		}
 	}
+	hm2.calculate_height_scaling();
 
 	return 0;
 }

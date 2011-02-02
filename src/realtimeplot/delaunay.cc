@@ -352,44 +352,45 @@ namespace realtimeplot {
 			flipEdgesRecursively( c2 );
 		}
 
-		void Delaunay::flipEdgesRecursively( boost::shared_ptr<Corner> pC ) {
-			if (!pC->opposite) {
+		void Delaunay::flipEdgesRecursively( boost::shared_ptr<Corner> pC, size_t count ) {
+			++count;
+			if (!pC->opposite || count > triangles.size()/2) {
 			} else {
-			// Check if pC->opposite is inside the circumcircle of pC->triangle
-			if (pC->triangle->inCircumCircle( pC->opposite->vertex ) )
-			{
-				// If so then flip (lot's of housekeeping again)
-				boost::shared_ptr<Corner> pCP = pC->previous;
-				boost::shared_ptr<Corner> pCN = pC->next;
-				boost::shared_ptr<Corner> pCO = pC->opposite;
-				boost::shared_ptr<Corner> pCON = pC->opposite->next;
-				boost::shared_ptr<Corner> pCOP = pC->opposite->previous;
+				// Check if pC->opposite is inside the circumcircle of pC->triangle
+				if (pC->triangle->inCircumCircle( pC->opposite->vertex ) )
+				{
+					// If so then flip (lot's of housekeeping again)
+					boost::shared_ptr<Corner> pCP = pC->previous;
+					boost::shared_ptr<Corner> pCN = pC->next;
+					boost::shared_ptr<Corner> pCO = pC->opposite;
+					boost::shared_ptr<Corner> pCON = pC->opposite->next;
+					boost::shared_ptr<Corner> pCOP = pC->opposite->previous;
 
-				boost::shared_ptr<Corner> pCOR = pC->opposite->previous->opposite;
-				boost::shared_ptr<Corner> pCOL = pC->opposite->next->opposite;
-				boost::shared_ptr<Corner> pCR = pC->previous->opposite;
-				boost::shared_ptr<Corner> pCL = pC->next->opposite;
+					boost::shared_ptr<Corner> pCOR = pC->opposite->previous->opposite;
+					boost::shared_ptr<Corner> pCOL = pC->opposite->next->opposite;
+					boost::shared_ptr<Corner> pCR = pC->previous->opposite;
+					boost::shared_ptr<Corner> pCL = pC->next->opposite;
 
-				pCN->vertex = pCO->vertex;
-				pCON->vertex = pC->vertex;
+					pCN->vertex = pCO->vertex;
+					pCON->vertex = pC->vertex;
 
 
-				pC->opposite = pCOR;
-				if (pCOR) pCOR->opposite = pC;
-				pCP->opposite = pCOP;
-				pCOP->opposite = pCP;
-				pCON->opposite = pCOL;
-				if (pCOL) pCOL->opposite = pCON;
-				pCO->opposite = pCR;
-				if (pCR) pCR->opposite = pCO;
-				pCN->opposite = pCL;
-				if (pCL) pCL->opposite = pCN;
-	
-			// Call flipEdgesRecursively for pC (with new triangle) 
-			// and old pC.o.n (now pC.p.o.p)
-				flipEdgesRecursively( pC );
-				flipEdgesRecursively( pCON );
-			}
+					pC->opposite = pCOR;
+					if (pCOR) pCOR->opposite = pC;
+					pCP->opposite = pCOP;
+					pCOP->opposite = pCP;
+					pCON->opposite = pCOL;
+					if (pCOL) pCOL->opposite = pCON;
+					pCO->opposite = pCR;
+					if (pCR) pCR->opposite = pCO;
+					pCN->opposite = pCL;
+					if (pCL) pCL->opposite = pCN;
+
+					// Call flipEdgesRecursively for pC (with new triangle) 
+					// and old pC.o.n (now pC.p.o.p)
+					flipEdgesRecursively( pC, count );
+					flipEdgesRecursively( pCON, count );
+				}
 			}
 		}
 	};
