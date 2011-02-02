@@ -111,7 +111,7 @@ namespace realtimeplot {
 				//doesn't call display. This way the plot will be refreshed anyway
 				//Not an ideal solution, because when the last event called display
 				//this will do refresh twice instead of the needed one.
-				if (queue_size == 0)
+				if (queue_size == 0 && pBPlot != NULL)
 					pBPlot->display();
 			} else {}
 		}

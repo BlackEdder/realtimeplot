@@ -32,12 +32,12 @@ int main() {
 	for (size_t i=0; i<10000; ++i) {
 		float x = float(std::rand())/RAND_MAX;
 		float y = 2+2*float(std::rand())/RAND_MAX;
-		std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
+		//std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
 		hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), false );
 	}
 	float x = float(std::rand())/RAND_MAX;
 	float y = 2+2*float(std::rand())/RAND_MAX;
-	std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
+	//std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
 	hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), true );
 	hm.calculate_height_scaling();
 
@@ -54,7 +54,7 @@ int main() {
 		for (size_t j=0; j<50; ++j) {
 			float x = 1.0/49*i;
 			float y = 1.0/49*j;
-			std::cout << x << " " << y << std::endl;
+			//std::cout << x << " " << y << std::endl;
 			bool show = false;
 			if (i==49 && j==49)
 				show = true;

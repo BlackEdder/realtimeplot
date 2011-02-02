@@ -29,6 +29,7 @@ namespace realtimeplot {
 	/*
 	 * BackendPlot
 	 */
+	boost::mutex BackendPlot::global_mutex;
 
 	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) :
 		pEventHandler( pEventHandler )
@@ -56,14 +57,13 @@ namespace realtimeplot {
 
 		//draw initial axes etc
 		draw_axes_surface();
-
 		
 		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
 			boost::posix_time::microseconds(500000);
 
 		pause_display = false;
 
-		pEventHandler->processing_events = true;
+		//pEventHandler->processing_events = true;
 
 		display();
 	}
@@ -250,6 +250,7 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::draw_axes_surface() {
+		boost::mutex::scoped_lock lock(global_mutex);
 		//draw them non transparent (else we get weird interactions that when 
 		//drawing a transparent point and a rolling update happens the axes 
 		//become transparent as well)
@@ -723,7 +724,7 @@ namespace realtimeplot {
 				delaunay( delaunay::Delaunay( config.min_x, 
 					config.max_x, config.min_y, config.max_y ) ),
 				scale(false)
-		{ 
+		{
 		}
 
 

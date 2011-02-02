@@ -104,7 +104,7 @@ namespace realtimeplot {
 
 		class Delaunay {
 			public:
-				//For testing
+				Delaunay() {};
 				Delaunay( float xmin, float xmax, float ymin, float ymax );
 
 				void add_data( boost::shared_ptr<Vertex> vertex );

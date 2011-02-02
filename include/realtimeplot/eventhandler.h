@@ -73,9 +73,9 @@ namespace realtimeplot {
 					bool processing_events;
 					bool force_close;
 					
+					boost::mutex m_mutex;
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
-					boost::mutex m_mutex;
 					std::list<boost::shared_ptr<Event> > event_queue;
 					int queue_size;
 					int xevent_queue_size;

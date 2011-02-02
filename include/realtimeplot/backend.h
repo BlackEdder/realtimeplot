@@ -25,6 +25,7 @@
 #define REALTIMEPLOT_BACKEND_H
 
 #include <vector>
+#include <boost/thread/mutex.hpp>
 
 /// Needs to be before cairomm, due to Xlib.h macros
 #include <pangomm/init.h>
@@ -260,8 +261,10 @@ namespace realtimeplot {
 
 			Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
 
+
 			//move the plotting area around in increments of 5%
 			void move( int direction_x, int direction_y );
+			static boost::mutex global_mutex;
 	};
 
 	/**
