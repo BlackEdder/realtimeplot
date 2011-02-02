@@ -796,7 +796,7 @@ namespace realtimeplot {
 	Color BackendHeightMap::colorMap( float z ) {
 		float fraction = (z-zmin)/(zmax-zmin);
 		float r, g, b;
-		if (scale && fraction > 0 && fraction < 1)
+		if (scale && fraction >= 0 && fraction <= 1)
 			fraction = boost::math::ibeta(alpha, beta, fraction);
 		if (fraction < 0.5) {
 			r = 1-2*fraction;
