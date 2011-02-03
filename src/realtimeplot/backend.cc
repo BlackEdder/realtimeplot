@@ -815,17 +815,26 @@ namespace realtimeplot {
 		double v = 0;
 		double dz = zmax - zmin;
 		// calculate mean and sd
+		size_t dim = delaunay.vertices.size();
 		for (size_t i=0; i<delaunay.vertices.size(); ++i) {
-			mean += (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
+			double fraction = (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
+						delaunay.vertices[i] )->z-zmin)/dz;
+			if (fraction >= 0 && fraction <= 1)
+				mean += (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
 						delaunay.vertices[i] )->z-zmin)/dz; 
+			else
+				--dim;
 		}
-		mean /= delaunay.vertices.size();
+		mean /= dim;
 		// calculate alpha beta
 		for (size_t i=0; i<delaunay.vertices.size(); ++i) {
-			v += pow((boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
+			double fraction = (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
+						delaunay.vertices[i] )->z-zmin)/dz;
+			if (fraction >= 0 && fraction <= 1)
+				v += pow((boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
 						delaunay.vertices[i] )->z-zmin)/dz-mean,2); 
 		}
-		v /= delaunay.vertices.size();
+		v /= dim;
 		alpha = mean*((mean*(1-mean))/v-1);
 		beta = (1-mean)*((mean*(1-mean))/v-1);
 		// Sometimes this doesn't work properly -> no scaling
