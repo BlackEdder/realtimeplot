@@ -126,7 +126,7 @@ namespace realtimeplot {
 
 			/// Constructor that sets default values
 			PlotConfig()
-				: scaling( true )
+				: scaling( false )
 			{
 				margin_x = 60;
 				margin_y = 60;
