@@ -798,6 +798,7 @@ namespace realtimeplot {
 		float r, g, b;
 		if (scale && fraction >= 0 && fraction <= 1)
 			fraction = boost::math::ibeta(alpha, beta, fraction);
+		/* // Red green blue
 		if (fraction < 0.5) {
 			r = 1-2*fraction;
 			g = 2*fraction;
@@ -806,6 +807,17 @@ namespace realtimeplot {
 			r = 0;
 			g = 1-2*(fraction-0.5);
 			b = 0+2*(fraction-0.5);
+		}*/
+
+		// Yellow - red - black
+		if (fraction < 0.5) {
+			r = 1;
+			g = 1-2*fraction;
+			b = 0;
+		} else {
+			r = 1-2*(fraction-0.5);
+			g = 0;
+			b = 0;
 		}
 		return Color( r, g, b, 1 );
 	}
