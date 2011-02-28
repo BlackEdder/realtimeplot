@@ -3,4 +3,3 @@
 * Use a key to start (and stop) recording to a png file
 * Subplot (show two image surfaces in the xwindow?)
 * Comments
-* Add ability to close a plot explicitely
