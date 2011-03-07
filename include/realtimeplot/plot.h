@@ -260,6 +260,7 @@ namespace realtimeplot {
 			 */
 
 			void add_data( double data, bool show = true );
+			void plot();
 		private:
 			bool frozen_bins_x;
 			/**
@@ -271,7 +272,6 @@ namespace realtimeplot {
 			 * \todo Fix dropping data outside bin range when frozen_bins_x is set end
 			 */
 			void fill_bins();
-			void plot();
 	};
 
 	/**
