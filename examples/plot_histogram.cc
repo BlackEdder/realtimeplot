@@ -34,6 +34,10 @@ int main() {
 	}
 
 	Histogram hist = Histogram();
+	Histogram hist2 = Histogram();
+	hist2.frequency = true;
+
+
 	//hist.frequency = true;
 	hist.set_data( data );
 	hist.add_data( 1 );
@@ -42,13 +46,11 @@ int main() {
 	sleep( 1 );
 
 
-	Histogram hist2 = Histogram();
-	hist2.frequency = true;
 	hist2.add_data( 1 );
 	hist2.add_data( 5 );
 	hist2.add_data( 5 );
 
-	sleep( 1 );
+	//sleep( 1 );
 
 	/*sleep( 1 );
 
