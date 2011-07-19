@@ -74,6 +74,8 @@ namespace realtimeplot {
 					bool force_close;
 					
 					boost::mutex m_mutex;
+
+					friend class TestBackendWithCairo;
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
 					std::list<boost::shared_ptr<Event> > event_queue;
