@@ -216,6 +216,14 @@ namespace realtimeplot {
 
 		Atom wmDelete=XInternAtom(dpy, "WM_DELETE_WINDOW", True);
 		XSetWMProtocols(dpy, win, &wmDelete, 1);
+		// We need to wait for the MapNotify, otherwise apparently something
+		// can go wrong with destroying the window.
+		for(;;) {
+			XEvent e;
+			XNextEvent(dpy, &e);
+			if (e.type == MapNotify)
+				break;
+		}
 		xSurface = Cairo::XlibSurface::create( dpy, win, DefaultVisual(dpy, 0), 
 				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 		xContext = Cairo::Context::create( xSurface );

@@ -67,6 +67,12 @@ namespace realtimeplot {
 
 				Atom wmDelete=XInternAtom(dpy, "WM_DELETE_WINDOW", True);
 				XSetWMProtocols(dpy, win, &wmDelete, 1);
+				for(;;) {
+					XEvent e;
+					XNextEvent(dpy, &e);
+					if (e.type == MapNotify)
+						break;
+				}
 				//xSurface = Cairo::XlibSurface::create( dpy, win, DefaultVisual(dpy, 0), 
 				//			100, 100);
 				//xContext = Cairo::Context::create( xSurface );
@@ -76,7 +82,7 @@ namespace realtimeplot {
 			void testXlib() {
 				openWindow();
 				// With this sleep it works as expected
-				sleep(1);
+				//sleep(1);
 				//xContext.clear();
 				//xSurface.clear();
 				XCloseDisplay(dpy);
