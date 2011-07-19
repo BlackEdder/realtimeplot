@@ -55,6 +55,12 @@ Extension.new "rb_realtimeplot" do |e|
 		node.classes( "Histogram" ).use_constructor(
 			node.classes( "Histogram" ).constructors.find( :arguments => [] )
 		)
+		node.classes( "SurfacePlot" ).use_constructor(
+			node.classes( "SurfacePlot" ).constructors.find( :arguments => [nil,nil,nil,nil,nil] )
+		)
+		node.classes( "HeightMap" ).use_constructor(
+			node.classes( "HeightMap" ).constructors.find( :arguments => [nil,nil,nil,nil,nil] )
+		)
 	end
 		
 end
