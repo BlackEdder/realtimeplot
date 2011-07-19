@@ -24,12 +24,17 @@
 /*
  * Testing for crashes (due to threading mostly)
  */
-
+#include "X11/Xlib.h"
 #include "realtimeplot/plot.h"
 
 using namespace realtimeplot;
 
 int main() {
+	// This has no effect in my experience, but added it to make sure it is not the
+	// cause of the problem
+	XInitThreads();
+
+
 	PlotConfig config = PlotConfig();
 	config.min_x = -0.111;
 	config.max_x = 1.04;
