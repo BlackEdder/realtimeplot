@@ -47,6 +47,7 @@ Extension.new "rb_realtimeplot" do |e|
 		)
 
 		node.classes( "Plot" ).methods( "line_add" ).ignore
+		node.classes( "Plot" ).methods( "rectangle" ).ignore
 
 		node.classes( "PlotConfig" ).use_constructor(
 			node.classes( "PlotConfig" ).constructors.find( :arguments => [] )
