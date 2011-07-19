@@ -43,6 +43,7 @@ int main() {
 	Plot pl = Plot();
 	pl.reset( config );
 	sleep( 1 );
+	config.xlabel = "Bla";
 	Plot pl2 = Plot();
 	// This plot does not get shown unless we sleep first
 	//sleep( 1 );
