@@ -51,6 +51,8 @@ namespace realtimeplot {
 				pEventHandler->add_event( 
 						boost::shared_ptr<Event>( new MultipleEvents( events ) ));
 
+				TS_ASSERT( pEventHandler->pBPlot.use_count() > 0 );
+
 				pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler, false ) ) );
 				pEventHandler->pEventProcessingThrd->join();
 			}
