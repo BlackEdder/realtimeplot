@@ -30,9 +30,16 @@ pl.point_with_color( 5,80, RealTimePlot::Color.red )
 #    sleep(0.1)
 #end
 
-sleep( 5 )
+sleep( 1 )
 plot_conf = RealTimePlot::PlotConfig.new
 plot_conf.max_x = 1
 plot_conf.max_y = 1
 pl.reset( plot_conf )
 pl.point( 0.5, 0.5 )
+
+sleep( 1 )
+
+hist = RealTimePlot::Histogram.new
+hist.add_data( 1 )
+hist.set_data( [1,2,3,1,1.1] )
+

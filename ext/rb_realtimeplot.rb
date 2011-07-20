@@ -33,7 +33,8 @@ Extension.new "rb_realtimeplot" do |e|
 			File.join( ROOT, "include/realtimeplot/plot.h" )
 		],
 			:include_paths => File.join( ROOT, "include" ),
-			:libraries => "realtimeplot"
+			:libraries => "realtimeplot",
+			:include_source_dir => File.join( ROOT, "ext", "utils" )
 
 	e.module "RealTimePlot" do |m|
 		node = m.namespace "realtimeplot"
