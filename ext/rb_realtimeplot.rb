@@ -48,6 +48,8 @@ Extension.new "rb_realtimeplot" do |e|
 
 		node.classes( "Plot" ).methods( "line_add" ).ignore
 		node.classes( "Plot" ).methods( "rectangle" ).ignore
+		node.classes( "Plot" ).methods( "point" ).find( :arguments=>[nil,nil] ).wrap_as( "point" )
+		node.classes( "Plot" ).methods( "point" ).find( :arguments=>[nil,nil,nil] ).wrap_as( "point_with_color" )
 
 		node.classes( "PlotConfig" ).use_constructor(
 			node.classes( "PlotConfig" ).constructors.find( :arguments => [] )
