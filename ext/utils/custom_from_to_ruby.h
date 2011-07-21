@@ -9,7 +9,6 @@
 #include <vector>
 #include <map>
 #include <iostream>
-
 template<>
 std::vector<double> from_ruby< std::vector<double> >(Rice::Object obj);
 

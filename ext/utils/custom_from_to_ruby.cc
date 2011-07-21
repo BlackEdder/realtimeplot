@@ -1,13 +1,12 @@
 #include "custom_from_to_ruby.h"
-
 template<>
 std::vector<double> from_ruby< std::vector<double> >(Rice::Object obj) {
   Rice::Array arr(obj);
   std::vector<double> vec;
-
-  for (size_t i=0;i<arr.size();++i) {
-      vec.push_back( from_ruby<double>( arr[i] ) );
-  }
+	vec.reserve(arr.size());
+	for (Rice::Array::iterator it = arr.begin(); it != arr.end(); ++it) {
+		vec.push_back(from_ruby<int>(*it));
+	}
 
   return vec;
 }
@@ -37,12 +36,8 @@ std::vector<bool> from_ruby< std::vector<bool> >(Rice::Object obj) {
 }
 
 template<>
-Rice::Object to_ruby<std::vector<double> >(std::vector<double> const &v) {
-    Rice::Array arr;
-    for (size_t i=0;i<v.size();++i) {
-        arr.push( v[i] );
-    }
-    return arr;
+Rice::Object to_ruby<std::vector<double> >(std::vector<double> const &x) {
+	return Rice::Array(x.begin(), x.end());
 }
 
 /*template<>
