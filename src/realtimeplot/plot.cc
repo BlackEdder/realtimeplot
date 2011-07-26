@@ -188,6 +188,10 @@ namespace realtimeplot {
 		line_add( x, y, id, Color::Black() );
 		}*/
 
+	void Plot::line_add( float x, float y, int id ) {
+		this->line_add( x, y, id, Color::black() );
+	}
+
 	void Plot::line_add( float x, float y, int id, Color color ) {
 		boost::shared_ptr<Event> pEvent( new LineAddEvent( x, y, id, color ) );
 		pEventHandler->add_event( pEvent );

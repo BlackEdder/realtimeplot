@@ -170,7 +170,8 @@ namespace realtimeplot {
 			void rectangle( float x, float y, float width_x, float width_y,
 					bool fill = true, Color color = Color::black() );
 			//void line_add( float x, float y, int id=-1 );
-			void line_add( float x, float y, int id=-1, Color color=Color::black() );
+			void line_add( float x, float y, int id=-1 );
+			void line_add( float x, float y, int id, Color color );
 			void number( float x, float y, float i );
 			void save( std::string filename );
 			void clear();
