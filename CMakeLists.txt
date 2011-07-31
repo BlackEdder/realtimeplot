@@ -57,6 +57,9 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 add_executable(plot_points examples/plot_points.cc)
 target_link_libraries(plot_points realtimeplot)
 
+add_executable(plot_test examples/plot_test.cc)
+target_link_libraries(plot_test realtimeplot)
+
 add_executable(plot_line examples/plot_line.cc)
 target_link_libraries(plot_line realtimeplot)
 
@@ -71,6 +74,10 @@ target_link_libraries(plot_rolling_update_stress_test realtimeplot)
 
 add_executable(plot_heightmap examples/plot_heightmap.cc)
 target_link_libraries(plot_heightmap realtimeplot)
+
+#Testing for xcb
+add_executable(xcb examples/xcb.cc src/cairomm/xcb_surface.cc)
+target_link_libraries(xcb ${PANGOMM})
 
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
