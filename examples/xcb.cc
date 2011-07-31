@@ -108,10 +108,13 @@ int main(void)
 
 	xcb_flush(c);
 
-	sleep(1);
+	//while(1) {
+	for (size_t i=0; i<10; ++i) {
 	xContext = Cairo::Context::create( xSurface );
-	xContext->rectangle(0,0,50,50);
+	xContext->rectangle(i*50,i*50,50,50);
 	xContext->fill();
+	}
+	//}
 
 	//cairo_t *cr_win = cairo_create(win_surf);
 	//cairo_set_source_rgb(cr_win,0,1,0);
