@@ -75,7 +75,7 @@ namespace realtimeplot {
 		while ( processing_events || !force_close ) {
 			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface ) {
 				m_mutex.lock();
-				xevent_queue_size = XPending(pBPlot->dpy);
+				//xevent_queue_size = XPending(pBPlot->dpy);
 				m_mutex.unlock();
 			} else if (pBPlot != NULL && !pBPlot->xSurface) {
 				m_mutex.lock();
@@ -87,7 +87,7 @@ namespace realtimeplot {
 			if (queue_size==0 && xevent_queue_size == 0) 
 				usleep(100000);
 			else if ( pBPlot != NULL && xevent_queue_size > 0 && pBPlot->xSurface ) {
-				XEvent report;
+				/*XEvent report;
 				XNextEvent( pBPlot->dpy, &report );
 				pBPlot->handle_xevent( report );
 				m_mutex.lock();
@@ -98,7 +98,7 @@ namespace realtimeplot {
 				//Not an ideal solution, because when the last event called display
 				//this will do refresh twice instead of the needed one.
 				if (xevent_queue_size == 0)
-					pBPlot->display();
+					pBPlot->display();*/
 			}
 			else if ( queue_size>0 ) {
 				boost::shared_ptr<Event> pEvent = event_queue.front();

@@ -56,6 +56,7 @@
 
 /* Function protos */
 xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
+void *event_thread(void *p);
 
 /* Global vars */
 xcb_connection_t *c;
@@ -107,14 +108,20 @@ int main(void)
 	xcb_map_window(c,win);
 
 	xcb_flush(c);
+	
+	pthread_create(&thr,0,event_thread,0);
 
-	//while(1) {
-	for (size_t i=0; i<10; ++i) {
 	xContext = Cairo::Context::create( xSurface );
-	xContext->rectangle(i*50,i*50,50,50);
+	xContext->rectangle(0,0,50,50);
 	xContext->fill();
+
+	while(1) {
+		for (size_t i=1; i<10; ++i) {
+			//xContext = Cairo::Context::create( xSurface );
+			xContext->rectangle(i*50,i*50,50,50);
+			xContext->fill();
+		}
 	}
-	//}
 
 	//cairo_t *cr_win = cairo_create(win_surf);
 	//cairo_set_source_rgb(cr_win,0,1,0);
@@ -125,6 +132,69 @@ int main(void)
 
 	return 0;
 }
+
+void *event_thread(void *p)
+{
+	xcb_generic_event_t *e;
+	xcb_button_press_event_t *bpress;
+	xcb_motion_notify_event_t *motion;
+	xcb_configure_notify_event_t *conf;
+	cairo_t *cr;
+	cairo_bool_t moving = 0;
+	cairo_surface_t *tmp;
+
+	while((e = xcb_wait_for_event(c))) {
+		if(e) {
+			switch(e->response_type){
+/*				case XCB_BUTTON_PRESS:
+					cr = cairo_create(win_surf);
+
+					bpress = (xcb_button_press_event_t *)e;
+					cairo_rectangle(cr,squares[0].x,squares[0].y,squares[0].width,squares[0].height);
+
+					if(cairo_in_fill(cr,bpress->event_x,bpress->event_y))
+						moving = 1;
+
+					cairo_destroy(cr);
+					break;
+				case XCB_MOTION_NOTIFY:
+					motion = (xcb_motion_notify_event_t *)e;
+
+					if(moving) {
+						squares[0].x = motion->event_x;
+						squares[0].y = motion->event_y;
+					}
+
+					break;
+				case XCB_BUTTON_RELEASE:
+					if(moving)
+						moving = !moving;
+
+					break;
+				case XCB_EXPOSE:
+					break;
+				case XCB_CONFIGURE_NOTIFY:
+					conf = (xcb_configure_notify_event_t *)e;
+
+					win_width = conf->width;
+					win_height = conf->height;
+
+					tmp = cairo_image_surface_create_for_data(cairo_image_surface_get_data(im_surf),
+									CAIRO_FORMAT_RGB24,win_width,win_height,0);
+					cairo_surface_destroy(im_surf);
+					im_surf = tmp;
+					tmp = NULL;
+
+					break;*/
+				default:
+					break;
+			}
+		}
+
+		free(e);
+	}
+}
+
 
 xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s)
 {
@@ -139,12 +209,12 @@ xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s)
 
 		visual_iter = xcb_depth_visuals_iterator(depth_iter.data);
 		for(;visual_iter.rem;xcb_visualtype_next(&visual_iter)) {
-		    if(s->root_visual == visual_iter.data->visual_id) {
-			visual_type = visual_iter.data;
-			break;
-		    }
+			if(s->root_visual == visual_iter.data->visual_id) {
+				visual_type = visual_iter.data;
+				break;
+			}
 		}
-      	}
+	}
 
 	return visual_type;
 }

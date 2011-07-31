@@ -33,7 +33,7 @@
 #include <pangomm/layout.h>
 
 #include <cairomm/context.h>
-#include <cairomm/xlib_surface.h>
+#include <cairomm/xcb_surface.h>
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 
@@ -84,10 +84,11 @@ namespace realtimeplot {
 
 			//temporary surface used when plotting stuff
 			Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
-			Cairo::RefPtr<Cairo::XlibSurface> xSurface;
+			Cairo::RefPtr<Cairo::XcbSurface> xSurface;
 			Cairo::RefPtr<Cairo::Context> xContext;
-			Window win;
-			Display *dpy;
+			xcb_connection_t *dpy;
+			xcb_drawable_t win;
+			xcb_screen_t *screen;
 
 			//keep track of plot area pixels
 			int plot_area_width, plot_area_height;
@@ -213,7 +214,7 @@ namespace realtimeplot {
 
 			//handle_xevent
 			//Called by event handler when an xevent happens
-			void handle_xevent( XEvent report );
+			//void handle_xevent( XEvent report );
 
 			/**
 			 * \brief Close the current xwindow
@@ -260,7 +261,8 @@ namespace realtimeplot {
 			std::vector<float> axes_ticks( float min, float max, int nr );
 
 			Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
-
+			
+			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
 
 			//move the plotting area around in increments of 5%
 			void move( int direction_x, int direction_y );

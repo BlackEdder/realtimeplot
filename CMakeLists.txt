@@ -49,7 +49,8 @@ include_directories("/usr/lib/sigc++-2.0/include")
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 add_library( realtimeplot SHARED src/realtimeplot/plot.cc
 	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
-	src/realtimeplot/events.cc src/realtimeplot/delaunay.cc )
+	src/realtimeplot/events.cc src/realtimeplot/delaunay.cc
+	src/cairomm/xcb_surface.cc )
 target_link_libraries(realtimeplot ${PANGOMM} ${Boost_LIBRARIES})
 
 #Examples.. should be under own build target -> make examples
@@ -104,9 +105,9 @@ if(CXXTEST_FOUND)
   CXXTEST_ADD_TEST(unittest_backend test_backend.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_backend.h)
   target_link_libraries(unittest_backend realtimeplot) # as needed
-  CXXTEST_ADD_TEST(unittest_backend_with_cairo test_backend_with_cairo.cc
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_backend_with_cairo.h)
-  target_link_libraries(unittest_backend_with_cairo realtimeplot) # as needed
+	#CXXTEST_ADD_TEST(unittest_backend_with_cairo test_backend_with_cairo.cc
+	#	${CMAKE_CURRENT_SOURCE_DIR}/tests/test_backend_with_cairo.h)
+	#target_link_libraries(unittest_backend_with_cairo realtimeplot) # as needed
 endif()
 
 #
