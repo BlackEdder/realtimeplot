@@ -109,26 +109,8 @@ namespace realtimeplot {
 
 	void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
 		switch(e->response_type) {
-			case XCB_UNMAP_SUBWINDOWS:
-				std::cout << "Destroying" << std::endl;
-				break;
 			case XCB_UNMAP_WINDOW:
-				std::cout << "Destroying2" << std::endl;
-				break;
-			case XCB_UNMAP_NOTIFY:
-				std::cout << "Destroying3" << std::endl;
-				break;
-			case XCB_DESTROY_WINDOW:
-				std::cout << "Destroying4" << std::endl;
-				break;
-			case XCB_DESTROY_NOTIFY:
-				std::cout << "Destroying5" << std::endl;
-				break;
-			case XCB_KILL_CLIENT:
-				std::cout << "Destroying6" << std::endl;
-				break;
-			case XCB_DESTROY_SUBWINDOWS:
-				std::cout << "Destroying7" << std::endl;
+				close_window();
 				break;
 			case XCB_CONFIGURE_NOTIFY:
 				xcb_configure_notify_event_t *conf;
@@ -283,13 +265,35 @@ namespace realtimeplot {
 
 		mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
 		values[0] = screen->white_pixel;
-		values[1] = XCB_EVENT_MASK_EXPOSURE           | XCB_EVENT_MASK_BUTTON_PRESS
-			| XCB_EVENT_MASK_BUTTON_RELEASE      | XCB_EVENT_MASK_POINTER_MOTION
-			| XCB_EVENT_MASK_ENTER_WINDOW        | XCB_EVENT_MASK_LEAVE_WINDOW
-			| XCB_EVENT_MASK_KEY_PRESS           | XCB_EVENT_MASK_KEY_RELEASE
-			| XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT
-			| XCB_EVENT_MASK_ENTER_WINDOW	   | XCB_EVENT_MASK_LEAVE_WINDOW
-			| XCB_EVENT_MASK_STRUCTURE_NOTIFY | XCB_DESTROY_NOTIFY;
+
+		// These need to be in the proper order
+		// All unused values are commented out, but kept in the list, to make changes easier
+		values[1] = //XCB_EVENT_MASK_NO_EVENT |
+    XCB_EVENT_MASK_KEY_PRESS |
+    //XCB_EVENT_MASK_KEY_RELEASE |
+    //XCB_EVENT_MASK_BUTTON_PRESS |
+    //XCB_EVENT_MASK_BUTTON_RELEASE |
+    //XCB_EVENT_MASK_ENTER_WINDOW |
+    //XCB_EVENT_MASK_LEAVE_WINDOW |
+    //XCB_EVENT_MASK_POINTER_MOTION |
+    //XCB_EVENT_MASK_POINTER_MOTION_HINT |
+    //XCB_EVENT_MASK_BUTTON_1_MOTION |
+    //XCB_EVENT_MASK_BUTTON_2_MOTION |
+    //XCB_EVENT_MASK_BUTTON_3_MOTION |
+    //XCB_EVENT_MASK_BUTTON_4_MOTION |
+    //XCB_EVENT_MASK_BUTTON_5_MOTION |
+    //XCB_EVENT_MASK_BUTTON_MOTION |
+    //XCB_EVENT_MASK_KEYMAP_STATE |
+    XCB_EVENT_MASK_EXPOSURE |
+    //XCB_EVENT_MASK_VISIBILITY_CHANGE |
+    XCB_EVENT_MASK_STRUCTURE_NOTIFY |
+    //XCB_EVENT_MASK_RESIZE_REDIRECT |
+    //XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
+    //XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
+    XCB_EVENT_MASK_FOCUS_CHANGE;
+		//| XCB_EVENT_MASK_PROPERTY_CHANGE |
+    //XCB_EVENT_MASK_COLOR_MAP_CHANGE |
+    //XCB_EVENT_MASK_OWNER_GRAB_BUTTON;
 
 		x_surface_width = plot_area_width+config.margin_y;
 		x_surface_height = plot_area_height+config.margin_x;
