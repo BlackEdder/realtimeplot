@@ -297,22 +297,25 @@ namespace realtimeplot {
 
 		x_surface_width = plot_area_width+config.margin_y;
 		x_surface_height = plot_area_height+config.margin_x;
-		xcb_create_window(dpy,XCB_COPY_FROM_PARENT,win,screen->root,0,0,x_surface_width,x_surface_width,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
+		xcb_create_window(dpy,XCB_COPY_FROM_PARENT,win,screen->root,0,0,x_surface_width,
+				x_surface_width,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
 
 		//win_surf = cairo_xcb_surface_create(c,win,get_root_visual_type(screen),win_width,win_height);
 
 
-		xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+		xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), 
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 		//im_surf = cairo_image_surface_create(CAIRO_FORMAT_RGB24,win_width,win_height);
 
 		if(!xSurface)
 			fprintf(stderr,"Error creating surface\n");
 
-		xcb_map_window(dpy,win);
+		xcb_map_window(dpy, win);
 
 		xcb_flush(dpy);
-
+		xcb_generic_event_t *e = xcb_wait_for_event( dpy );
 		xContext = Cairo::Context::create( xSurface );
+		handle_xevent( e );
 	}
 
 	xcb_visualtype_t *BackendPlot::get_root_visual_type(xcb_screen_t *s)
