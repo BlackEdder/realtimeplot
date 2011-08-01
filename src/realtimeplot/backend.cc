@@ -826,8 +826,11 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::scale_xsurface( double width, double height ) {
-		if (config.scaling)
+		if (config.scaling) {
+			x_surface_width = width;
+			x_surface_height = height;
 			xSurface->set_size( width, height );
+		}
 		xContext = Cairo::Context::create( xSurface );
 		draw_axes_surface();
 		//xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
