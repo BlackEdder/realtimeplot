@@ -300,6 +300,10 @@ namespace realtimeplot {
 		xcb_create_window(dpy,XCB_COPY_FROM_PARENT,win,screen->root,0,0,x_surface_width,
 				x_surface_width,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
 
+		xcb_change_property_checked (dpy, XCB_PROP_MODE_REPLACE, win,
+				XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
+				config.title.length(), config.title.c_str());
+
 		//win_surf = cairo_xcb_surface_create(c,win,get_root_visual_type(screen),win_width,win_height);
 
 
