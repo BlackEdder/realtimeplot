@@ -92,6 +92,7 @@ namespace realtimeplot {
 
 			//keep track of plot area pixels
 			int plot_area_width, plot_area_height;
+			int x_surface_width, x_surface_height;
 
 			//axes_surface, surface that contains the axes + labels, 
 			//used as a mask on the plot_surface when showing the plot

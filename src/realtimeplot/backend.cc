@@ -109,6 +109,27 @@ namespace realtimeplot {
 
 	void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
 		switch(e->response_type) {
+			case XCB_UNMAP_SUBWINDOWS:
+				std::cout << "Destroying" << std::endl;
+				break;
+			case XCB_UNMAP_WINDOW:
+				std::cout << "Destroying2" << std::endl;
+				break;
+			case XCB_UNMAP_NOTIFY:
+				std::cout << "Destroying3" << std::endl;
+				break;
+			case XCB_DESTROY_WINDOW:
+				std::cout << "Destroying4" << std::endl;
+				break;
+			case XCB_DESTROY_NOTIFY:
+				std::cout << "Destroying5" << std::endl;
+				break;
+			case XCB_KILL_CLIENT:
+				std::cout << "Destroying6" << std::endl;
+				break;
+			case XCB_DESTROY_SUBWINDOWS:
+				std::cout << "Destroying7" << std::endl;
+				break;
 			case XCB_CONFIGURE_NOTIFY:
 				xcb_configure_notify_event_t *conf;
 				conf = (xcb_configure_notify_event_t *)e;
@@ -123,7 +144,6 @@ namespace realtimeplot {
 				ev = (xcb_key_press_event_t *)e;
 				xcb_keysym_t key;
 				key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(dpy),ev->detail,0);
-				std::cout << key << " " << 0x0020 << std::endl;
 				if (key == XK_space)  {
 					if (pause_display) {
 						pause_display = false;
@@ -158,8 +178,8 @@ namespace realtimeplot {
 					config.max_y+=0.05*yrange;
 					update_config();
 				}
-				break;				break;
-			default:
+				break;	
+		default:
 				break;
 		}
 		/*switch( report.type ) {
@@ -269,9 +289,11 @@ namespace realtimeplot {
 			| XCB_EVENT_MASK_KEY_PRESS           | XCB_EVENT_MASK_KEY_RELEASE
 			| XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT
 			| XCB_EVENT_MASK_ENTER_WINDOW	   | XCB_EVENT_MASK_LEAVE_WINDOW
-			| XCB_EVENT_MASK_STRUCTURE_NOTIFY;
+			| XCB_EVENT_MASK_STRUCTURE_NOTIFY | XCB_DESTROY_NOTIFY;
 
-		xcb_create_window(dpy,XCB_COPY_FROM_PARENT,win,screen->root,0,0,plot_area_width+config.margin_y, plot_area_height+config.margin_x,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
+		x_surface_width = plot_area_width+config.margin_y;
+		x_surface_height = plot_area_height+config.margin_x;
+		xcb_create_window(dpy,XCB_COPY_FROM_PARENT,win,screen->root,0,0,x_surface_width,x_surface_width,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
 
 		//win_surf = cairo_xcb_surface_create(c,win,get_root_visual_type(screen),win_width,win_height);
 
@@ -354,7 +376,7 @@ namespace realtimeplot {
 		//if xSurface is not closed, width depends on xSurface width.
 		if (xSurface) {
 			axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+					x_surface_width, x_surface_height);
 				//xSurface->get_width(), 
 				//xSurface->get_height() );
 			axes_context = Cairo::Context::create(axes_surface);
@@ -709,8 +731,8 @@ namespace realtimeplot {
 
 		size_t surface_width, surface_height; 
 		if (xSurface) {
-			surface_width = plot_area_width+config.margin_y;
-			surface_height = plot_area_height+config.margin_x;
+			surface_width = x_surface_width;
+			surface_height = x_surface_height;
 			/*surface_width = xSurface->get_width();
 			surface_height = xSurface->get_height();*/
 		} else {
@@ -792,11 +814,11 @@ namespace realtimeplot {
 		plot_area_width = round(width);
 		plot_area_height = round(-height);
 		if (xSurface) {
-			width = plot_area_width+config.margin_y;
-			height = plot_area_height+config.margin_x;
+			width = x_surface_width;
+			height = x_surface_height;
 			/*width = xSurface->get_width();
 			height = xSurface->get_height();*/
-		xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+			xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 			scale_xsurface( width, height );
 		}
 		draw_axes_surface();
