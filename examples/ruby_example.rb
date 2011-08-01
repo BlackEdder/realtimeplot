@@ -29,6 +29,10 @@ pl.point_with_color( 5,80, RealTimePlot::Color.red )
 #    pl.point_0( 45+20*rand(), i*(0.1) )
 #    sleep(0.1)
 #end
+pl.line_add( 1, 50 )
+pl.line_add( 5, 80 )
+pl.line_add_with_color( 4, 50, 1, RealTimePlot::Color.red )
+pl.line_add_with_color( 6, 80, 1, RealTimePlot::Color.red)
 
 sleep( 1 )
 plot_conf = RealTimePlot::PlotConfig.new

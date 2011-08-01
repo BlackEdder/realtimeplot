@@ -104,8 +104,8 @@ namespace realtimeplot {
 		display();
 	}
 
-	/*void BackendPlot::handle_xevent( XEvent report ) {
-		switch( report.type ) {
+	void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
+		/*switch( report.type ) {
 			case ConfigureNotify:
 				scale_xsurface( report.xconfigure.width, report.xconfigure.height );
 				display();
@@ -154,8 +154,8 @@ namespace realtimeplot {
 				close_window();
 				//XCloseDisplay(dpy);
 				break;
-		}
-	}*/
+		}*/
+	}
 
 	void BackendPlot::close_window() {
 		if (xSurface) {

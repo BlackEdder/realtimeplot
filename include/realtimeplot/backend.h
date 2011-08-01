@@ -214,7 +214,7 @@ namespace realtimeplot {
 
 			//handle_xevent
 			//Called by event handler when an xevent happens
-			//void handle_xevent( XEvent report );
+			void handle_xevent( xcb_generic_event_t *e );
 
 			/**
 			 * \brief Close the current xwindow

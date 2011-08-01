@@ -73,7 +73,35 @@ namespace realtimeplot {
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !force_close ) {
-			if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface ) {
+			if (pBPlot != NULL && pBPlot->xSurface ) {
+				// Handle xcb_events
+				xcb_generic_event_t *ev;
+				while (ev = xcb_poll_for_event( pBPlot->dpy)) {
+					pBPlot->handle_xevent( ev );
+				}
+				free( ev );
+			}
+			if ( queue_size>0 ) {
+				boost::shared_ptr<Event> pEvent = event_queue.front();
+				m_mutex.lock();
+				event_queue.pop_front();
+				--queue_size;
+				m_mutex.unlock();
+				pEvent->execute( pBPlot );
+				//This is to work around problems when the last event in the queue
+				//doesn't call display. This way the plot will be refreshed anyway
+				//Not an ideal solution, because when the last event called display
+				//this will do refresh twice instead of the needed one.
+				if (queue_size == 0 && pBPlot != NULL)
+					pBPlot->display();
+			}
+			if (queue_size==0) {
+				if (pBPlot != NULL) {
+					pBPlot->display();
+				}
+				usleep(100000);
+			}
+			/*if (pBPlot != NULL && xevent_queue_size == 0 && pBPlot->xSurface ) {
 				m_mutex.lock();
 				//xevent_queue_size = XPending(pBPlot->dpy);
 				m_mutex.unlock();
@@ -87,7 +115,7 @@ namespace realtimeplot {
 			if (queue_size==0 && xevent_queue_size == 0) 
 				usleep(100000);
 			else if ( pBPlot != NULL && xevent_queue_size > 0 && pBPlot->xSurface ) {
-				/*XEvent report;
+				XEvent report;
 				XNextEvent( pBPlot->dpy, &report );
 				pBPlot->handle_xevent( report );
 				m_mutex.lock();
@@ -98,7 +126,7 @@ namespace realtimeplot {
 				//Not an ideal solution, because when the last event called display
 				//this will do refresh twice instead of the needed one.
 				if (xevent_queue_size == 0)
-					pBPlot->display();*/
+					pBPlot->display();
 			}
 			else if ( queue_size>0 ) {
 				boost::shared_ptr<Event> pEvent = event_queue.front();
@@ -113,7 +141,7 @@ namespace realtimeplot {
 				//this will do refresh twice instead of the needed one.
 				if (queue_size == 0 && pBPlot != NULL)
 					pBPlot->display();
-			} else {}
+			} else {}*/
 		}
 	}
 }
