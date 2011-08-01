@@ -88,12 +88,6 @@ namespace realtimeplot {
 				--queue_size;
 				m_mutex.unlock();
 				pEvent->execute( pBPlot );
-				//This is to work around problems when the last event in the queue
-				//doesn't call display. This way the plot will be refreshed anyway
-				//Not an ideal solution, because when the last event called display
-				//this will do refresh twice instead of the needed one.
-				if (queue_size == 0 && pBPlot != NULL)
-					pBPlot->display();
 			}
 			if (queue_size==0) {
 				if (pBPlot != NULL) {
