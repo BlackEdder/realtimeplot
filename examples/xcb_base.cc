@@ -50,28 +50,15 @@
 void *event_thread(void *p);
 
 /* Global vars */
-xcb_connection_t *c;
-xcb_drawable_t win;
-
 int win_width = 640;
 int win_height = 480;
 int main(void)
 {
-	xcb_screen_t *screen;
  	int mask = 0;
 	uint32_t values[2];
 	pthread_t thr;
 	int i;
-
-	c = xcb_connect(NULL,NULL);
-	screen = xcb_setup_roots_iterator(xcb_get_setup(c)).data;
-
-	//populate_square_thingys();
-
-	win = xcb_generate_id(c);
-
 	mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-	values[0] = screen->white_pixel;
 	values[1] = XCB_EVENT_MASK_EXPOSURE           | XCB_EVENT_MASK_BUTTON_PRESS
              	  | XCB_EVENT_MASK_BUTTON_RELEASE      | XCB_EVENT_MASK_POINTER_MOTION
                   | XCB_EVENT_MASK_ENTER_WINDOW        | XCB_EVENT_MASK_LEAVE_WINDOW
@@ -80,13 +67,18 @@ int main(void)
 	          | XCB_EVENT_MASK_ENTER_WINDOW	   | XCB_EVENT_MASK_LEAVE_WINDOW
 	          | XCB_EVENT_MASK_STRUCTURE_NOTIFY;
 
+
+	xcb_connection_t *c;
+	xcb_drawable_t win;
+
+	xcb_screen_t *screen;
+	c = xcb_connect(NULL,NULL);
+	screen = xcb_setup_roots_iterator(xcb_get_setup(c)).data;
+	values[0] = screen->white_pixel;
+
+	win = xcb_generate_id(c);
+
 	xcb_create_window(c,XCB_COPY_FROM_PARENT,win,screen->root,0,0,win_width,win_height,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
-
-	//win_surf = cairo_xcb_surface_create(c,win,get_root_visual_type(screen),win_width,win_height);
-
-
-	//xSurface = Cairo::XcbSurface::create( c, win, get_root_visual_type(screen), win_width, win_height);
-	//im_surf = cairo_image_surface_create(CAIRO_FORMAT_RGB24,win_width,win_height);
 
 	xcb_map_window(c,win);
 
@@ -94,15 +86,41 @@ int main(void)
 	
 	pthread_create(&thr,0,event_thread,0);
 
-	//xContext = Cairo::Context::create( xSurface );
-	//xContext->rectangle(0,0,50,50);
-	//xContext->fill();
+	//Second window
+	xcb_connection_t *c1;
+	xcb_drawable_t win1;
 
-	//cairo_t *cr_win = cairo_create(win_surf);
-	//cairo_set_source_rgb(cr_win,0,1,0);
-	//cairo_rectangle(cr_win,0,0,win_width,win_height);
-	//cairo_fill(cr_win);
+	xcb_screen_t *screen1;
+	c1 = xcb_connect(NULL,NULL);
+	screen1 = xcb_setup_roots_iterator(xcb_get_setup(c1)).data;
+	values[0] = screen1->white_pixel;
 
+	win1 = xcb_generate_id(c1);
+
+	xcb_create_window(c1,XCB_COPY_FROM_PARENT,win1,screen1->root,0,0,win_width,win_height,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen1->root_visual,mask,values);
+
+	xcb_map_window(c1,win1);
+
+	xcb_flush(c1);
+	
+	//Third window
+	xcb_connection_t *c2;
+	xcb_drawable_t win2;
+
+	xcb_screen_t *screen2;
+	c2 = xcb_connect(NULL,NULL);
+	screen2 = xcb_setup_roots_iterator(xcb_get_setup(c2)).data;
+	values[0] = screen2->white_pixel;
+
+	win2 = xcb_generate_id(c2);
+
+	xcb_create_window(c2,XCB_COPY_FROM_PARENT,win2,screen2->root,0,0,win_width,win_height,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen2->root_visual,mask,values);
+
+	xcb_map_window(c2,win2);
+
+	xcb_flush(c2);
+	
+		
 	sleep(1);
 
 	return 0;
@@ -110,7 +128,7 @@ int main(void)
 
 void *event_thread(void *p)
 {
-	xcb_generic_event_t *e;
+	/*xcb_generic_event_t *e;
 	xcb_button_press_event_t *bpress;
 	xcb_motion_notify_event_t *motion;
 	xcb_configure_notify_event_t *conf;
@@ -158,11 +176,11 @@ void *event_thread(void *p)
 					tmp = NULL;
 
 					break;*/
-				default:
+				/*default:
 					break;
 			}
 		}
 
 		free(e);
-	}
+	}*/
 }
