@@ -77,8 +77,10 @@ add_executable(plot_heightmap examples/plot_heightmap.cc)
 target_link_libraries(plot_heightmap realtimeplot)
 
 #Testing for xcb
-add_executable(xcb examples/xcb.cc src/cairomm/xcb_surface.cc)
-target_link_libraries(xcb ${PANGOMM})
+add_executable(xcb_cairo examples/xcb.cc src/cairomm/xcb_surface.cc)
+target_link_libraries(xcb_cairo ${PANGOMM})
+add_executable(xcb_base examples/xcb_base.cc)
+target_link_libraries(xcb_base xcb pthread)
 
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
