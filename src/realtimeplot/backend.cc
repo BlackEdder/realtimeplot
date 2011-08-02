@@ -88,10 +88,6 @@ namespace realtimeplot {
 				xContext->paint();
 
 				time_of_last_update = boost::posix_time::microsec_clock::local_time();
-				//only sleep if no more events are coming
-				//if (pEventHandler->get_queue_size() < 1) {
-				//	usleep(100000);
-				//}
 			}
 		}
 	}
@@ -164,56 +160,6 @@ namespace realtimeplot {
 		default:
 				break;
 		}
-		/*switch( report.type ) {
-			case ConfigureNotify:
-				scale_xsurface( report.xconfigure.width, report.xconfigure.height );
-				display();
-				break;
-			case Expose:
-				display();
-				break;
-			case KeyPress:
-				if (XLookupKeysym(&report.xkey, 0) == XK_space)  {
-					if (pause_display) {
-						pause_display = false;
-						display();
-					}
-					else
-						pause_display = true;
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_w)  {
-					save( "realtimeplot.png", temporary_display_surface );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Left) {
-					move( -1, 0 );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Right) {
-					move( 1, 0 );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Up) {
-					move( 0, 1 );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_Down) {
-					move( 0, -1 );
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_KP_Add) { 
-					double xrange = config.max_x-config.min_x;
-					config.min_x+=0.05*xrange;
-					config.max_x-=0.05*xrange;
-					double yrange = config.max_y-config.min_y;
-					config.min_y+=0.05*yrange;
-					config.max_y-=0.05*yrange;
-					update_config();
-				} else if (XLookupKeysym(&report.xkey, 0) == XK_KP_Subtract) { 
-					double xrange = config.max_x-config.min_x;
-					config.min_x-=0.05*xrange;
-					config.max_x+=0.05*xrange;
-					double yrange = config.max_y-config.min_y;
-					config.min_y-=0.05*yrange;
-					config.max_y+=0.05*yrange;
-					update_config();
-				}
-				break;
-				//close window
-			case ClientMessage:
-				close_window();
-				//XCloseDisplay(dpy);
-				break;
-		}*/
 	}
 
 	void BackendPlot::close_window() {
@@ -259,7 +205,6 @@ namespace realtimeplot {
 		dpy = xcb_connect(NULL,NULL);
 		screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 
-		//populate_square_thingys();
 
 		win = xcb_generate_id(dpy);
 
@@ -304,12 +249,8 @@ namespace realtimeplot {
 				XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
 				config.title.length(), config.title.c_str());
 
-		//win_surf = cairo_xcb_surface_create(c,win,get_root_visual_type(screen),win_width,win_height);
-
-
 		xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), 
 				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
-		//im_surf = cairo_image_surface_create(CAIRO_FORMAT_RGB24,win_width,win_height);
 
 		if(!xSurface)
 			fprintf(stderr,"Error creating surface\n");
@@ -317,9 +258,9 @@ namespace realtimeplot {
 		xcb_map_window(dpy, win);
 
 		xcb_flush(dpy);
-		xcb_generic_event_t *e = xcb_wait_for_event( dpy );
+		//xcb_generic_event_t *e = xcb_wait_for_event( dpy );
 		xContext = Cairo::Context::create( xSurface );
-		handle_xevent( e );
+		//handle_xevent( e );
 	}
 
 	xcb_visualtype_t *BackendPlot::get_root_visual_type(xcb_screen_t *s)
