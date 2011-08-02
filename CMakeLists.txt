@@ -30,6 +30,12 @@ if( PANGOMM-NOTFOUND )
 	message( FATAL_ERROR "Could not find pangomm library" )
 	endif()
 
+	find_library( XCB-UTIL xcb-keysyms  )
+	if( XCB-UTIL-NOTFOUND )
+		message( FATAL_ERROR "Could not find xcb-util(-keysyms) library" )
+	endif()
+
+
 set(BOOST_LIBS thread date_time math_tr1 )
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
@@ -51,7 +57,7 @@ add_library( realtimeplot SHARED src/realtimeplot/plot.cc
 	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
 	src/realtimeplot/events.cc src/realtimeplot/delaunay.cc
 	src/cairomm/xcb_surface.cc )
-target_link_libraries(realtimeplot ${PANGOMM} ${Boost_LIBRARIES} xcb-keysyms)
+target_link_libraries(realtimeplot ${PANGOMM} ${Boost_LIBRARIES} ${XCB-UTIL})
 
 #Examples.. should be under own build target -> make examples
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
