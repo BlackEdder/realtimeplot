@@ -33,19 +33,10 @@ namespace realtimeplot {
 		processing_events( true ),
 		force_close( false )
 	{
-		//This should be done explicitely with an openplotevent
-		//plot_is_closed should be true then, but no way for the event to set it to 
-		//false
-		//pBPlot.reset( new BackendPlot( config, this ) );
-
 		//start processing thread
 		pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
 				new boost::thread( boost::bind( 
 						&realtimeplot::EventHandler::process_events, this ) ) );
-
-		//std::cout << "EventHandler started" << std::endl;
-		//std::cout << this << std::endl;
-		//std::cout << pEventProcessingThrd << std::endl;
 	}
 
 	EventHandler::~EventHandler() {
