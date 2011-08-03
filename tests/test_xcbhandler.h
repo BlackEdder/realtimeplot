@@ -1,10 +1,10 @@
 #include <cxxtest/TestSuite.h>
 
-#include "realtimeplot/xcb_eventhandler.h"
+#include "realtimeplot/xcbhandler.h"
 
 using namespace realtimeplot;
 
-class TestXcbEventHandler : public CxxTest::TestSuite 
+class TestXcbHandler : public CxxTest::TestSuite 
 {
 	public:
 		/*

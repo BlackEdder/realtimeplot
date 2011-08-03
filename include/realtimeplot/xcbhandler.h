@@ -21,19 +21,25 @@
   -------------------------------------------------------------------
 */
 
-#ifndef REALTIMEPLOT_XCBEVENTHANDLER_H
-#define REALTIMEPLOT_XCBEVENTHANDLER_H
+#ifndef REALTIMEPLOT_XCBHANDLER_H
+#define REALTIMEPLOT_XCBHANDLER_H
 
 
 namespace realtimeplot {
 	/**
-	 *	\brief Singular class that handles all events and maintains an x_connection
+	 *	\brief Singular class that maintains an x_connection and handles xevents
 	 *
-	 * This eventhandler is a singular class that maintains the connection
-	 * with x and handles events. In case of x_events it sends them
-	 * to the plot that is associated with the specific window.
+	 * This class is used in the following way. Each plot will request a window from
+	 * this class. With that request it will also give provide a ptr to itself.
+	 *
+	 * The handler starts a thread that handles all x events and sends those events to
+	 * the plot that belongs with the window. 
+	 *
+	 * When a plot is closed it will need to tell the xcb handler that, which will need to
+	 * remove the window/plot from its list of windows/plots. Or (probably better) xcbhandler
+	 * can keep an eye out for unmap/destroy events and remove it itself.
 	 */
-	class XcbEventHandler {
+	class XcbHandler {
 	};
 }
 #endif
