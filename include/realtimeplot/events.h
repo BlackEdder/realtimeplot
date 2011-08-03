@@ -69,6 +69,18 @@ namespace realtimeplot {
 				boost::shared_ptr<EventHandler> pEventHandler;
 		};
 
+		/**
+		 * \brief Resets a plot with a new config
+		 */
+		class ResetEvent : public Event {
+			public:
+				ResetEvent( PlotConfig plot_conf );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+			private:
+				PlotConfig plot_conf;
+		};
+
+
     /**
      * \brief Sets the color used to draw on the plot
      *

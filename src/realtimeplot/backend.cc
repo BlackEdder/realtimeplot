@@ -107,6 +107,41 @@ namespace realtimeplot {
 		display();
 	}
 
+	void BackendPlot::reset( PlotConfig conf ) {
+		config = conf;
+		double x = 500/sqrt(config.aspect_ratio);
+		plot_area_width = round( config.aspect_ratio*x );
+		plot_area_height = round( x );
+		//create the surfaces and contexts
+		//
+		//plot_surface, the shown part of this surface is 250000 pixels (default 500x500)
+		//The rest is for when plotting outside of the area
+		plot_surface_width = 5*plot_area_width;
+		plot_surface_height = 5*plot_area_height;
+
+		//create the surface to draw on
+		plot_surface = create_plot_surface();
+		plot_context = Cairo::Context::create(plot_surface);
+		set_foreground_color();
+
+		x_surface_width = plot_area_width+config.margin_y;
+		x_surface_height = plot_area_height+config.margin_x;
+		xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), 
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+		xContext = Cairo::Context::create( xSurface );
+
+		//draw initial axes etc
+		draw_axes_surface();
+		
+		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
+			boost::posix_time::microseconds(500000);
+
+		//pEventHandler->processing_events = true;
+		//update_config();
+
+		display();
+	}
+
 	void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
 		switch(e->response_type) {
 			case XCB_UNMAP_WINDOW:
@@ -203,7 +238,6 @@ namespace realtimeplot {
 	void BackendPlot::create_xlib_window() {
 		int mask = 0;
 		uint32_t values[2];
-		pthread_t thr;
 		int i;
 
 		dpy = xcb_connect(NULL,NULL);

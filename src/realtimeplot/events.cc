@@ -55,6 +55,16 @@ namespace realtimeplot {
 			pBPlot.reset( new BackendPlot( plot_conf, pEventHandler ) );
 		}
 
+		ResetEvent::ResetEvent( PlotConfig plot_conf ) :
+			plot_conf( plot_conf )
+		{
+		}
+
+		void ResetEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+			pBPlot->reset( plot_conf );
+		}
+
+
 
     SetColorEvent::SetColorEvent( Color colour ) {
         color = colour;

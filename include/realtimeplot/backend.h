@@ -145,6 +145,11 @@ namespace realtimeplot {
 			//clears the plot
 			void clear();
 
+			/**
+			 * \brief Resets the plot to use a new config
+			 */
+			void reset( PlotConfig config );
+
 			//transform_to_plot_units
 			//rescale image to plot scale
 			void transform_to_plot_units( );
