@@ -113,9 +113,9 @@ if(CXXTEST_FOUND)
   CXXTEST_ADD_TEST(unittest_backend test_backend.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_backend.h)
   target_link_libraries(unittest_backend realtimeplot) # as needed
-	#CXXTEST_ADD_TEST(unittest_backend_with_cairo test_backend_with_cairo.cc
-	#	${CMAKE_CURRENT_SOURCE_DIR}/tests/test_backend_with_cairo.h)
-	#target_link_libraries(unittest_backend_with_cairo realtimeplot) # as needed
+  CXXTEST_ADD_TEST(unittest_xcb_eventhandler test_xcb_eventhandler.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xcb_eventhandler.h)
+  target_link_libraries(unittest_xcb_eventhandler realtimeplot) # as needed
 endif()
 
 #
