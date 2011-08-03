@@ -26,6 +26,13 @@
 
 
 namespace realtimeplot {
+	/**
+	 *	\brief Singular class that handles all events and maintains an x_connection
+	 *
+	 * This eventhandler is a singular class that maintains the connection
+	 * with x and handles events. In case of x_events it sends them
+	 * to the plot that is associated with the specific window.
+	 */
 	class XcbEventHandler {
 	};
 }
