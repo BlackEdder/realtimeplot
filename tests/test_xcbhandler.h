@@ -10,8 +10,13 @@ class TestXcbHandler : public CxxTest::TestSuite
 		/*
 		 * Make sure we can only create one object
 		 */
-		void testSingularity() {}
-
+		void testSingularity() {
+			XcbHandler xcb1 = XcbHandler::create();
+			XcbHandler xcb2 = XcbHandler::create();
+			TS_ASSERT_EQUALS( xcb1, xcb2 );
+		}
+		
+		void testConstructorPrivate() {}
 		/*
 		 * x connection
 		 */

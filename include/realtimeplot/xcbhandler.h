@@ -40,6 +40,8 @@ namespace realtimeplot {
 	 * can keep an eye out for unmap/destroy events and remove it itself.
 	 */
 	class XcbHandler {
+		public:
+			static XcbHandler create();
 	};
 }
 #endif
