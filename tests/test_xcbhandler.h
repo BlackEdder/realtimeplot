@@ -10,7 +10,7 @@ class TestXcbHandler : public CxxTest::TestSuite
 		/*
 		 * Make sure we can only create one object
 		 */
-		void testSingularity() {
+		void testSingleton() {
 			XcbHandler xcb1 = XcbHandler::create();
 			XcbHandler xcb2 = XcbHandler::create();
 			TS_ASSERT_EQUALS( xcb1, xcb2 );

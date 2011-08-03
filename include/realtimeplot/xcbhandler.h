@@ -27,7 +27,7 @@
 
 namespace realtimeplot {
 	/**
-	 *	\brief Singular class that maintains an x_connection and handles xevents
+	 *	\brief Singleton class that maintains an x_connection and handles xevents
 	 *
 	 * This class is used in the following way. Each plot will request a window from
 	 * this class. With that request it will also give provide a ptr to itself.
