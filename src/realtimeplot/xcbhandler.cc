@@ -90,6 +90,8 @@ namespace realtimeplot {
 		while (event = xcb_wait_for_event (connection)) {
 			switch(event->response_type) {
 				// Documentation seemed to indicate that this should be XCB_CLIENT_MESSAGE, but seems to be 161
+				case XCB_CLIENT_MESSAGE:
+					//No break, so we do the same as for 161
 				case 161: 
 					xcb_client_message_event_t* msg;
 					msg = (xcb_client_message_event_t *)event;
