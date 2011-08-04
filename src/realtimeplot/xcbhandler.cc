@@ -59,7 +59,6 @@ namespace realtimeplot {
 		xcb_flush(connection);
 
 		mapWindow[win] = pEventHandler;
-		std::cout << win << std::endl;
 		return win;
 	}
 
@@ -127,5 +126,6 @@ namespace realtimeplot {
 					break;
 			}
 		}
+		free(event);
 	}
 };

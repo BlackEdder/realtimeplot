@@ -64,8 +64,6 @@ namespace realtimeplot {
 			pBPlot->reset( plot_conf );
 		}
 
-
-
     SetColorEvent::SetColorEvent( Color colour ) {
         color = colour;
     }
