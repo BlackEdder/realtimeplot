@@ -115,6 +115,18 @@ namespace realtimeplot {
         private:
             float x_crd, y_crd;
     };
+ 
+		/**
+      \brief Event that scales the surface size
+      */
+    class ScaleXSurfaceEvent : public Event {
+        public:
+            ScaleXSurfaceEvent( size_t width, size_t height );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+        private:
+            size_t width, height;
+    };
+
 
     class RectangleEvent : public Event {
         public:

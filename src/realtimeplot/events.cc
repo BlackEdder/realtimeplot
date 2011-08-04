@@ -83,6 +83,15 @@ namespace realtimeplot {
 		pBPlot->point( x_crd, y_crd );
 	}
 
+	ScaleXSurfaceEvent::ScaleXSurfaceEvent( size_t width, size_t height ) 
+		: width( width), height( height )
+	{ }
+
+	void ScaleXSurfaceEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+		pBPlot->scale_xsurface( width, height );
+	}
+
+
 	RectangleEvent::RectangleEvent( float min_x, float min_y, float width_x, float width_y )
 		: min_x( min_x ),
 			min_y( min_y ),

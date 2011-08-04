@@ -1,4 +1,7 @@
 #include "realtimeplot/xcbhandler.h"
+
+#include "realtimeplot/events.h"
+
 namespace realtimeplot {
 	XcbHandler* XcbHandler::pInstance = 0;
 	XcbHandler* XcbHandler::Instance() {
@@ -76,8 +79,8 @@ namespace realtimeplot {
 				case XCB_CONFIGURE_NOTIFY:
 					xcb_configure_notify_event_t *conf;
 					conf = (xcb_configure_notify_event_t *)event;
-					std::cout << conf->window << std::endl;
-					//scale_xsurface( conf->width, conf->height );
+					mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+								new ScaleXSurfaceEvent( conf->width, conf->height ) ) ); 
 					break;
 				case XCB_EXPOSE:
 					//display();
