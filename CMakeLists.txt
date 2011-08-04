@@ -56,8 +56,7 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 add_library( realtimeplot SHARED src/realtimeplot/plot.cc
 	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
 	src/realtimeplot/events.cc src/realtimeplot/delaunay.cc
-	src/realtimeplot/xcbhandler.cc
-	src/cairomm/xcb_surface.cc )
+	src/realtimeplot/xcbhandler.cc src/cairomm/xcb_surface.cc )
 target_link_libraries(realtimeplot ${PANGOMM} ${Boost_LIBRARIES} ${XCB-UTIL})
 
 #Examples.. should be under own build target -> make examples
