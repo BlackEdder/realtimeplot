@@ -61,7 +61,7 @@ namespace realtimeplot {
 		//create_xlib_window
 		x_surface_width = plot_area_width+config.margin_y;
 		x_surface_height = plot_area_height+config.margin_x;
-		win = pXcbHandler->open_window(x_surface_width, x_surface_height);
+		win = pXcbHandler->open_window(x_surface_width, x_surface_height, pEventHandler);
 		/*xcb_change_property_checked (dpy, XCB_PROP_MODE_REPLACE, win,
 			XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
 			config.title.length(), config.title.c_str());*/
@@ -156,6 +156,7 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
+		throw;
 		switch(e->response_type) {
 			case XCB_UNMAP_WINDOW:
 				close_window();

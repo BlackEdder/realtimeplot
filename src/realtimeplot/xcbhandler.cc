@@ -8,7 +8,8 @@ namespace realtimeplot {
 		return pInstance;
 	}
 
-	xcb_drawable_t XcbHandler::open_window(size_t width, size_t height) {
+	xcb_drawable_t XcbHandler::open_window(size_t width, size_t height,
+			boost::shared_ptr<EventHandler> pEventHandler ) {
  		int mask = 0;
 		uint32_t values[2];
 		mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
@@ -51,6 +52,7 @@ namespace realtimeplot {
 
 		xcb_flush(connection);
 
+		mapWindow[win] = pEventHandler;
 		return win;
 	}
 
@@ -64,5 +66,66 @@ namespace realtimeplot {
 	}
 
 	void XcbHandler::process_xevents() {
+		xcb_generic_event_t *event;
+
+		while (event = xcb_wait_for_event (connection)) {
+			switch(event->response_type) {
+				case XCB_UNMAP_WINDOW:
+					//close_window();
+					break;
+				case XCB_CONFIGURE_NOTIFY:
+					xcb_configure_notify_event_t *conf;
+					conf = (xcb_configure_notify_event_t *)event;
+					std::cout << conf->window << std::endl;
+					//scale_xsurface( conf->width, conf->height );
+					break;
+				case XCB_EXPOSE:
+					//display();
+					break;
+				case XCB_KEY_PRESS:
+					/* Handle the Key Press event type */
+					xcb_key_press_event_t *ev;
+					ev = (xcb_key_press_event_t *)event;
+					/*xcb_keysym_t key;
+						key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(pXcbHandler->connection),ev->detail,0);
+						if (key == XK_space)  {
+						if (pause_display) {
+						pause_display = false;
+						display();
+						}
+						else
+						pause_display = true;
+						} else if (key == XK_w)  {
+						save( "realtimeplot.png", temporary_display_surface );
+						} else if (key == XK_Left) {
+						move( -1, 0 );
+						} else if (key == XK_Right) {
+						move( 1, 0 );
+						} else if (key == XK_Up) {
+						move( 0, 1 );
+						} else if (key == XK_Down) {
+						move( 0, -1 );
+						} else if (key == XK_KP_Add) { 
+						double xrange = config.max_x-config.min_x;
+						config.min_x+=0.05*xrange;
+						config.max_x-=0.05*xrange;
+						double yrange = config.max_y-config.min_y;
+						config.min_y+=0.05*yrange;
+						config.max_y-=0.05*yrange;
+						update_config();
+						} else if (key == XK_KP_Subtract) { 
+						double xrange = config.max_x-config.min_x;
+						config.min_x-=0.05*xrange;
+						config.max_x+=0.05*xrange;
+						double yrange = config.max_y-config.min_y;
+						config.min_y-=0.05*yrange;
+						config.max_y+=0.05*yrange;
+						update_config();
+						}*/
+					break;	
+				default:
+					break;
+			}
+		}
 	}
 };

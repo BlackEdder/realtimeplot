@@ -23,9 +23,13 @@
 
 #ifndef REALTIMEPLOT_XCBHANDLER_H
 #define REALTIMEPLOT_XCBHANDLER_H
+#include <map>
+
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <xcb/xcb.h>
+
+#include "realtimeplot/eventhandler.h"
 
 
 namespace realtimeplot {
@@ -51,7 +55,9 @@ namespace realtimeplot {
 			xcb_screen_t *screen;
 			static XcbHandler* Instance();
 
-			xcb_drawable_t open_window(size_t width, size_t height);
+			xcb_drawable_t open_window(size_t width, size_t height,
+					boost::shared_ptr<EventHandler> pEventHandler = 
+					boost::shared_ptr<EventHandler>() );
 		private:
 			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
 
@@ -61,6 +67,7 @@ namespace realtimeplot {
 			static XcbHandler *pInstance;
 
 			void process_xevents();
+			std::map<xcb_drawable_t, boost::shared_ptr<EventHandler> > mapWindow;
 	};
 }
 #endif
