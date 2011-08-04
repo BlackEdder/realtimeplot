@@ -114,6 +114,8 @@ namespace realtimeplot {
 			//last_update_time (display at least every second)
 			boost::posix_time::ptime time_of_last_update;
 
+			//set a flag when display shouldn't be updated (plotting still runs on)
+			bool pause_display;
 			/*
 			 * Methods
 			 */
@@ -258,8 +260,6 @@ namespace realtimeplot {
 			//Keep track to lines
 			std::list<boost::shared_ptr<LineAttributes> > lines;
 
-			//set a flag when display shouldn't be updated (plotting still runs on)
-			bool pause_display;
 
 			//function to calculate the "optimal" tick values/positions
 			std::vector<float> axes_ticks( float min, float max, int nr );

@@ -127,6 +127,19 @@ namespace realtimeplot {
             size_t width, height;
     };
 
+		class PauseEvent : public Event {
+			public:
+				PauseEvent() {};
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					if (pBPlot->pause_display) {
+						pBPlot->pause_display = false;
+						pBPlot->display();
+					}
+					else 
+						pBPlot->pause_display = true;
+				}
+		};
+
 
     class RectangleEvent : public Event {
         public:

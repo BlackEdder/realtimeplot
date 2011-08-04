@@ -20,8 +20,6 @@
 
 	 -------------------------------------------------------------------
 	 */
-#include <xcb/xcb_keysyms.h>
-#include <X11/keysym.h>
 
 #include <boost/shared_ptr.hpp>
 #include "realtimeplot/backend.h"
@@ -157,62 +155,6 @@ namespace realtimeplot {
 
 	void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
 		throw;
-		switch(e->response_type) {
-			case XCB_UNMAP_WINDOW:
-				close_window();
-				break;
-			case XCB_CONFIGURE_NOTIFY:
-				xcb_configure_notify_event_t *conf;
-				conf = (xcb_configure_notify_event_t *)e;
-				scale_xsurface( conf->width, conf->height );
-				break;
-			case XCB_EXPOSE:
-				display();
-				break;
-	    case XCB_KEY_PRESS:
-      	/* Handle the Key Press event type */
-	      xcb_key_press_event_t *ev;
-				ev = (xcb_key_press_event_t *)e;
-				xcb_keysym_t key;
-				key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(pXcbHandler->connection),ev->detail,0);
-				if (key == XK_space)  {
-					if (pause_display) {
-						pause_display = false;
-						display();
-					}
-					else
-						pause_display = true;
-				} else if (key == XK_w)  {
-					save( "realtimeplot.png", temporary_display_surface );
-				} else if (key == XK_Left) {
-					move( -1, 0 );
-				} else if (key == XK_Right) {
-					move( 1, 0 );
-				} else if (key == XK_Up) {
-					move( 0, 1 );
-				} else if (key == XK_Down) {
-					move( 0, -1 );
-				} else if (key == XK_KP_Add) { 
-					double xrange = config.max_x-config.min_x;
-					config.min_x+=0.05*xrange;
-					config.max_x-=0.05*xrange;
-					double yrange = config.max_y-config.min_y;
-					config.min_y+=0.05*yrange;
-					config.max_y-=0.05*yrange;
-					update_config();
-				} else if (key == XK_KP_Subtract) { 
-					double xrange = config.max_x-config.min_x;
-					config.min_x-=0.05*xrange;
-					config.max_x+=0.05*xrange;
-					double yrange = config.max_y-config.min_y;
-					config.min_y-=0.05*yrange;
-					config.max_y+=0.05*yrange;
-					update_config();
-				}
-				break;	
-		default:
-				break;
-		}
 	}
 
 	void BackendPlot::close_window() {

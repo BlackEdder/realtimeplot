@@ -1,5 +1,8 @@
 #include "realtimeplot/xcbhandler.h"
 
+#include <xcb/xcb_keysyms.h>
+#include <X11/keysym.h>
+
 #include "realtimeplot/events.h"
 
 namespace realtimeplot {
@@ -56,6 +59,7 @@ namespace realtimeplot {
 		xcb_flush(connection);
 
 		mapWindow[win] = pEventHandler;
+		std::cout << win << std::endl;
 		return win;
 	}
 
@@ -89,16 +93,13 @@ namespace realtimeplot {
 					/* Handle the Key Press event type */
 					xcb_key_press_event_t *ev;
 					ev = (xcb_key_press_event_t *)event;
-					/*xcb_keysym_t key;
-						key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(pXcbHandler->connection),ev->detail,0);
-						if (key == XK_space)  {
-						if (pause_display) {
-						pause_display = false;
-						display();
-						}
-						else
-						pause_display = true;
-						} else if (key == XK_w)  {
+					xcb_keysym_t key;
+					key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(connection),ev->detail,0);
+					if (key == XK_space)  {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+								new PauseEvent() ) ); 
+					}
+						/*} else if (key == XK_w)  {
 						save( "realtimeplot.png", temporary_display_surface );
 						} else if (key == XK_Left) {
 						move( -1, 0 );
