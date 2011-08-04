@@ -17,9 +17,27 @@ namespace realtimeplot {
 
 	xcb_drawable_t XcbHandler::open_window(size_t width, size_t height,
 			boost::shared_ptr<EventHandler> pEventHandler ) {
- 		int mask = 0;
-		uint32_t values[2];
+		xcb_drawable_t win;
+
+		win = xcb_generate_id(connection);
+		xcb_create_window(connection,XCB_COPY_FROM_PARENT,win,
+				screen->root,0,0,width,height,0,
+				XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
+
+		xcb_map_window(connection,win);
+
+		xcb_flush(connection);
+
+		mapWindow[win] = pEventHandler;
+		return win;
+	}
+
+	XcbHandler::XcbHandler() {
+		connection = xcb_connect(NULL,NULL);
+		screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
+
 		mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
+		values[0] = screen->white_pixel;
 		values[1] = //XCB_EVENT_MASK_NO_EVENT |
 			XCB_EVENT_MASK_KEY_PRESS |
 			//XCB_EVENT_MASK_KEY_RELEASE |
@@ -43,29 +61,9 @@ namespace realtimeplot {
 			//XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 			//XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
 			XCB_EVENT_MASK_FOCUS_CHANGE;
-		//| XCB_EVENT_MASK_PROPERTY_CHANGE |
-		//XCB_EVENT_MASK_COLOR_MAP_CHANGE |
-		//XCB_EVENT_MASK_OWNER_GRAB_BUTTON;
-		xcb_drawable_t win;
-		values[0] = screen->white_pixel;
-
-		win = xcb_generate_id(connection);
-
-		xcb_create_window(connection,XCB_COPY_FROM_PARENT,win,
-				screen->root,0,0,width,height,0,
-				XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
-
-		xcb_map_window(connection,win);
-
-		xcb_flush(connection);
-
-		mapWindow[win] = pEventHandler;
-		return win;
-	}
-
-	XcbHandler::XcbHandler() {
-		connection = xcb_connect(NULL,NULL);
-		screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
+			//| XCB_EVENT_MASK_PROPERTY_CHANGE |
+			//XCB_EVENT_MASK_COLOR_MAP_CHANGE |
+			//XCB_EVENT_MASK_OWNER_GRAB_BUTTON;
 		pXEventProcessingThrd = boost::shared_ptr<boost::thread>( 
 				new boost::thread( boost::bind( 
 						&realtimeplot::XcbHandler::process_xevents, this ) ) );

@@ -60,7 +60,10 @@ namespace realtimeplot {
 					boost::shared_ptr<EventHandler> pEventHandler = 
 					boost::shared_ptr<EventHandler>() );
 		private:
-			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
+		boost::shared_ptr<boost::thread> pXEventProcessingThrd;
+		int mask;
+		uint32_t values[2];
+
 
 			static boost::mutex i_mutex; 
 			XcbHandler();
