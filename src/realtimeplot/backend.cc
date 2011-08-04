@@ -675,6 +675,19 @@ namespace realtimeplot {
 		draw_axes_surface();
 		display();
 	}
+	
+	void BackendPlot::zoom( double scale ) {
+		double xrange = config.max_x-config.min_x;
+		double xshift = (scale-1)*xrange/2.0;;
+		config.max_x += xshift;
+		config.min_x -= xshift;
+		double yrange = config.max_y-config.min_y;
+		double yshift = (scale-1)*yrange/2.0;;
+		config.max_y += yshift;
+		config.min_y -= yshift;
+		update_config();
+		display();
+	}
 
 	void BackendPlot::update_config() { 
 		//Check that it can be done:

@@ -257,6 +257,11 @@ namespace realtimeplot {
 
 			//move the plotting area around in increments of 5%
 			void move( int direction_x, int direction_y );
+
+			/**
+			 * \brief Zoom in or out according to the given scale
+			 */
+			void zoom( double scale );
 		private:
 			XcbHandler *pXcbHandler;
 

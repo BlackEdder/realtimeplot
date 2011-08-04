@@ -115,23 +115,13 @@ namespace realtimeplot {
 					} else if (key == XK_Down) {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new MoveEvent( 0, -1 ) ) );
-					} /*else if (key == XK_KP_Add) { 
-						double xrange = config.max_x-config.min_x;
-						config.min_x+=0.05*xrange;
-						config.max_x-=0.05*xrange;
-						double yrange = config.max_y-config.min_y;
-						config.min_y+=0.05*yrange;
-						config.max_y-=0.05*yrange;
-						update_config();
-						} else if (key == XK_KP_Subtract) { 
-						double xrange = config.max_x-config.min_x;
-						config.min_x-=0.05*xrange;
-						config.max_x+=0.05*xrange;
-						double yrange = config.max_y-config.min_y;
-						config.min_y-=0.05*yrange;
-						config.max_y+=0.05*yrange;
-						update_config();
-						}*/
+					} else if (key == XK_KP_Add) { 
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new ZoomEvent( 0.95 ) ) );
+					} else if (key == XK_KP_Subtract) { 
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new ZoomEvent( 1.05 ) ) );
+					}
 					break;	
 				default:
 					break;

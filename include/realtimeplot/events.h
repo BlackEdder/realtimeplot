@@ -151,8 +151,21 @@ namespace realtimeplot {
 			}
 			private:
 				int dx, dy;
-
 		};
+
+		class ZoomEvent : public Event {
+			public:
+				ZoomEvent( double scale ) :
+				scale( scale )
+			{
+			}
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				pBPlot->zoom( scale );
+			}
+			private:
+				double scale;
+		};
+
 
 
     class RectangleEvent : public Event {
