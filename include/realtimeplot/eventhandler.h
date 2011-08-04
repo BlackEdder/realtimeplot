@@ -66,7 +66,7 @@ namespace realtimeplot {
 					~EventHandler();
 
 					//Add an event to the event queue
-					void add_event( boost::shared_ptr<Event> pEvent );
+					void add_event( boost::shared_ptr<Event> pEvent, bool high_priority=false );
 					int get_queue_size();
 
 					// ! Are/Should we be processing events
@@ -79,8 +79,8 @@ namespace realtimeplot {
 				private:
 					boost::shared_ptr<BackendPlot> pBPlot;
 					std::list<boost::shared_ptr<Event> > event_queue;
-					int queue_size;
-					int xevent_queue_size;
+					std::list<boost::shared_ptr<Event> > priority_event_queue;
+					size_t queue_size, priority_queue_size;
 
 					void process_events();
 

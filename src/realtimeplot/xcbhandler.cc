@@ -97,7 +97,7 @@ namespace realtimeplot {
 							reply2->atom)
 					{
 						mapWindow[msg->window]->add_event( boost::shared_ptr<Event>( 
-									new CloseWindowEvent() ) ); 
+									new CloseWindowEvent() ), true ); 
 					}
 					break;
 				case XCB_UNMAP_WINDOW:
@@ -106,7 +106,7 @@ namespace realtimeplot {
 					xcb_configure_notify_event_t *conf;
 					conf = (xcb_configure_notify_event_t *)event;
 					mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-								new ScaleXSurfaceEvent( conf->width, conf->height ) ) ); 
+								new ScaleXSurfaceEvent( conf->width, conf->height ) ), true ); 
 					break;
 				case XCB_EXPOSE:
 					//display();
@@ -119,30 +119,30 @@ namespace realtimeplot {
 					key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(connection),ev->detail,0);
 					if (key == XK_space)  {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-								new PauseEvent() ) ); 
+								new PauseEvent() ), true ); 
 					}
 					else if (key == XK_w)  {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new SaveEvent( "realtimeplot.png" ) ) );
+									new SaveEvent( "realtimeplot.png" ) ), true );
 					}
 					else if (key == XK_Left) {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( -1, 0 ) ) );
+									new MoveEvent( -1, 0 ) ), true );
 					} else if (key == XK_Right) {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( 1, 0 ) ) );
+									new MoveEvent( 1, 0 ) ), true );
 					} else if (key == XK_Up) {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( 0, 1 ) ) );
+									new MoveEvent( 0, 1 ) ), true );
 					} else if (key == XK_Down) {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( 0, -1 ) ) );
+									new MoveEvent( 0, -1 ) ), true );
 					} else if (key == XK_KP_Add) { 
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new ZoomEvent( 0.95 ) ) );
+									new ZoomEvent( 0.95 ) ), true );
 					} else if (key == XK_KP_Subtract) { 
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new ZoomEvent( 1.05 ) ) );
+									new ZoomEvent( 1.05 ) ), true );
 					}
 					break;	
 				default:

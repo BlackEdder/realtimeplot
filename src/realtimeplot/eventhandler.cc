@@ -29,7 +29,7 @@ namespace realtimeplot {
 
 	EventHandler::EventHandler( PlotConfig config )
 		: queue_size( 0 ),
-		xevent_queue_size( 0 ),
+		priority_queue_size( 0 ),
 		processing_events( true ),
 		force_close( false )
 	{
@@ -43,7 +43,8 @@ namespace realtimeplot {
 		pEventProcessingThrd->join();
 	}
 
-	void EventHandler::add_event( boost::shared_ptr<Event> pEvent ) {
+	void EventHandler::add_event( boost::shared_ptr<Event> pEvent, 
+			bool high_priority ) {
 		//block if many events are present
 		if (queue_size>100000) {
 			std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
@@ -51,20 +52,34 @@ namespace realtimeplot {
 				usleep(10000);
 			}
 		}
-		m_mutex.lock();
-		event_queue.push_back( pEvent );
-		++queue_size;
-		m_mutex.unlock();
+		if (high_priority) {
+			m_mutex.lock();
+			priority_event_queue.push_back( pEvent );
+			++priority_queue_size;
+			m_mutex.unlock();
+		} else {
+			m_mutex.lock();
+			event_queue.push_back( pEvent );
+			++queue_size;
+			m_mutex.unlock();
+		}
 	}
 
 	int EventHandler::get_queue_size() {
-		return queue_size + xevent_queue_size;
+		return queue_size+priority_queue_size;
 	}
 
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !force_close ) {
-			if ( queue_size>0 ) {
+			if (priority_queue_size > 0) {
+				boost::shared_ptr<Event> pEvent = priority_event_queue.front();
+				m_mutex.lock();
+				priority_event_queue.pop_front();
+				--priority_queue_size;
+				m_mutex.unlock();
+				pEvent->execute( pBPlot );
+			} else if ( queue_size>0 ) {
 				boost::shared_ptr<Event> pEvent = event_queue.front();
 				m_mutex.lock();
 				event_queue.pop_front();
@@ -72,7 +87,7 @@ namespace realtimeplot {
 				m_mutex.unlock();
 				pEvent->execute( pBPlot );
 			}
-			if (queue_size==0) {
+			if (queue_size + priority_queue_size == 0) {
 				if (pBPlot != NULL) {
 					pBPlot->display();
 				}
