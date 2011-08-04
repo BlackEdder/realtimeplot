@@ -58,8 +58,11 @@ namespace realtimeplot {
 		connection = xcb_connect(NULL,NULL);
 		screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
 
-		/*pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
+		pXEventProcessingThrd = boost::shared_ptr<boost::thread>( 
 				new boost::thread( boost::bind( 
-						&realtimeplot::EventHandler::process_events, this ) ) );*/
+						&realtimeplot::XcbHandler::process_xevents, this ) ) );
+	}
+
+	void XcbHandler::process_xevents() {
 	}
 };

@@ -21,11 +21,12 @@
   -------------------------------------------------------------------
 */
 
+#ifndef REALTIMEPLOT_XCBHANDLER_H
+#define REALTIMEPLOT_XCBHANDLER_H
+#include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <xcb/xcb.h>
 
-#ifndef REALTIMEPLOT_XCBHANDLER_H
-#define REALTIMEPLOT_XCBHANDLER_H
 
 namespace realtimeplot {
 	/**
@@ -52,10 +53,14 @@ namespace realtimeplot {
 
 			xcb_drawable_t open_window(size_t width, size_t height);
 		private:
+			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
+
 			static boost::mutex i_mutex; 
 			XcbHandler();
 			~XcbHandler() {}
 			static XcbHandler *pInstance;
+
+			void process_xevents();
 	};
 }
 #endif
