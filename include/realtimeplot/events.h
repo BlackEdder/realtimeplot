@@ -115,6 +115,58 @@ namespace realtimeplot {
         private:
             float x_crd, y_crd;
     };
+ 
+		/**
+      \brief Event that scales the surface size
+      */
+    class ScaleXSurfaceEvent : public Event {
+        public:
+            ScaleXSurfaceEvent( size_t width, size_t height );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+        private:
+            size_t width, height;
+    };
+
+		class PauseEvent : public Event {
+			public:
+				PauseEvent() {};
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					if (pBPlot->pause_display) {
+						pBPlot->pause_display = false;
+						pBPlot->display();
+					}
+					else 
+						pBPlot->pause_display = true;
+				}
+		};
+
+		class MoveEvent : public Event {
+			public:
+				MoveEvent( int direction_x, int direction_y ) :
+				dx( direction_x ), dy(direction_y)
+			{
+			}
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				pBPlot->move( dx, dy );
+			}
+			private:
+				int dx, dy;
+		};
+
+		class ZoomEvent : public Event {
+			public:
+				ZoomEvent( double scale ) :
+				scale( scale )
+			{
+			}
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				pBPlot->zoom( scale );
+			}
+			private:
+				double scale;
+		};
+
+
 
     class RectangleEvent : public Event {
         public:

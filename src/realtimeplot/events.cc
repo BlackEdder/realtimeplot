@@ -64,8 +64,6 @@ namespace realtimeplot {
 			pBPlot->reset( plot_conf );
 		}
 
-
-
     SetColorEvent::SetColorEvent( Color colour ) {
         color = colour;
     }
@@ -82,6 +80,15 @@ namespace realtimeplot {
 	void PointEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot->point( x_crd, y_crd );
 	}
+
+	ScaleXSurfaceEvent::ScaleXSurfaceEvent( size_t width, size_t height ) 
+		: width( width), height( height )
+	{ }
+
+	void ScaleXSurfaceEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+		pBPlot->scale_xsurface( width, height );
+	}
+
 
 	RectangleEvent::RectangleEvent( float min_x, float min_y, float width_x, float width_y )
 		: min_x( min_x ),

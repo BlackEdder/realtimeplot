@@ -114,6 +114,8 @@ namespace realtimeplot {
 			//last_update_time (display at least every second)
 			boost::posix_time::ptime time_of_last_update;
 
+			//set a flag when display shouldn't be updated (plotting still runs on)
+			bool pause_display;
 			/*
 			 * Methods
 			 */
@@ -252,14 +254,20 @@ namespace realtimeplot {
 			 * \brief Call when xwindow changes size to scale it up or down
 			 */
 			void scale_xsurface( double width, double height );
+
+			//move the plotting area around in increments of 5%
+			void move( int direction_x, int direction_y );
+
+			/**
+			 * \brief Zoom in or out according to the given scale
+			 */
+			void zoom( double scale );
 		private:
 			XcbHandler *pXcbHandler;
 
 			//Keep track to lines
 			std::list<boost::shared_ptr<LineAttributes> > lines;
 
-			//set a flag when display shouldn't be updated (plotting still runs on)
-			bool pause_display;
 
 			//function to calculate the "optimal" tick values/positions
 			std::vector<float> axes_ticks( float min, float max, int nr );
@@ -268,8 +276,6 @@ namespace realtimeplot {
 			
 			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
 
-			//move the plotting area around in increments of 5%
-			void move( int direction_x, int direction_y );
 			static boost::mutex global_mutex;
 	};
 

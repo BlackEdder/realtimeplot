@@ -1,4 +1,10 @@
 #include "realtimeplot/xcbhandler.h"
+
+#include <xcb/xcb_keysyms.h>
+#include <X11/keysym.h>
+
+#include "realtimeplot/events.h"
+
 namespace realtimeplot {
 	XcbHandler* XcbHandler::pInstance = 0;
 	XcbHandler* XcbHandler::Instance() {
@@ -9,8 +15,9 @@ namespace realtimeplot {
 		return pInstance;
 	}
 
-	xcb_drawable_t XcbHandler::open_window(size_t width, size_t height) {
-		int mask = 0;
+	xcb_drawable_t XcbHandler::open_window(size_t width, size_t height,
+			boost::shared_ptr<EventHandler> pEventHandler ) {
+ 		int mask = 0;
 		uint32_t values[2];
 		mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
 		values[1] = //XCB_EVENT_MASK_NO_EVENT |
@@ -52,6 +59,7 @@ namespace realtimeplot {
 
 		xcb_flush(connection);
 
+		mapWindow[win] = pEventHandler;
 		return win;
 	}
 
@@ -65,6 +73,60 @@ namespace realtimeplot {
 	}
 
 	void XcbHandler::process_xevents() {
-		std::cout << 1 << std::endl;
+		xcb_generic_event_t *event;
+
+		while (event = xcb_wait_for_event (connection)) {
+			switch(event->response_type) {
+				case XCB_UNMAP_WINDOW:
+					//close_window();
+					break;
+				case XCB_CONFIGURE_NOTIFY:
+					xcb_configure_notify_event_t *conf;
+					conf = (xcb_configure_notify_event_t *)event;
+					mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+								new ScaleXSurfaceEvent( conf->width, conf->height ) ) ); 
+					break;
+				case XCB_EXPOSE:
+					//display();
+					break;
+				case XCB_KEY_PRESS:
+					/* Handle the Key Press event type */
+					xcb_key_press_event_t *ev;
+					ev = (xcb_key_press_event_t *)event;
+					xcb_keysym_t key;
+					key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(connection),ev->detail,0);
+					if (key == XK_space)  {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+								new PauseEvent() ) ); 
+					}
+					else if (key == XK_w)  {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new SaveEvent( "realtimeplot.png" ) ) );
+					}
+					else if (key == XK_Left) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( -1, 0 ) ) );
+					} else if (key == XK_Right) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( 1, 0 ) ) );
+					} else if (key == XK_Up) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( 0, 1 ) ) );
+					} else if (key == XK_Down) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( 0, -1 ) ) );
+					} else if (key == XK_KP_Add) { 
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new ZoomEvent( 0.95 ) ) );
+					} else if (key == XK_KP_Subtract) { 
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new ZoomEvent( 1.05 ) ) );
+					}
+					break;	
+				default:
+					break;
+			}
+		}
+		free(event);
 	}
 };
