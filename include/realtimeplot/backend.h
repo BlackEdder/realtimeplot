@@ -254,6 +254,9 @@ namespace realtimeplot {
 			 * \brief Call when xwindow changes size to scale it up or down
 			 */
 			void scale_xsurface( double width, double height );
+
+			//move the plotting area around in increments of 5%
+			void move( int direction_x, int direction_y );
 		private:
 			XcbHandler *pXcbHandler;
 
@@ -268,8 +271,6 @@ namespace realtimeplot {
 			
 			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
 
-			//move the plotting area around in increments of 5%
-			void move( int direction_x, int direction_y );
 			static boost::mutex global_mutex;
 	};
 

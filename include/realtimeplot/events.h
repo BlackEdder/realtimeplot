@@ -140,6 +140,20 @@ namespace realtimeplot {
 				}
 		};
 
+		class MoveEvent : public Event {
+			public:
+				MoveEvent( int direction_x, int direction_y ) :
+				dx( direction_x ), dy(direction_y)
+			{
+			}
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				pBPlot->move( dx, dy );
+			}
+			private:
+				int dx, dy;
+
+		};
+
 
     class RectangleEvent : public Event {
         public:

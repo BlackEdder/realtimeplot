@@ -101,17 +101,21 @@ namespace realtimeplot {
 					}
 					else if (key == XK_w)  {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-								new SaveEvent( "realtimeplot.png" ) ) );
+									new SaveEvent( "realtimeplot.png" ) ) );
 					}
-					/*	} else if (key == XK_Left) {
-						move( -1, 0 );
-						} else if (key == XK_Right) {
-						move( 1, 0 );
-						} else if (key == XK_Up) {
-						move( 0, 1 );
-						} else if (key == XK_Down) {
-						move( 0, -1 );
-						} else if (key == XK_KP_Add) { 
+					else if (key == XK_Left) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( -1, 0 ) ) );
+					} else if (key == XK_Right) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( 1, 0 ) ) );
+					} else if (key == XK_Up) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( 0, 1 ) ) );
+					} else if (key == XK_Down) {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+									new MoveEvent( 0, -1 ) ) );
+					} /*else if (key == XK_KP_Add) { 
 						double xrange = config.max_x-config.min_x;
 						config.min_x+=0.05*xrange;
 						config.max_x-=0.05*xrange;
