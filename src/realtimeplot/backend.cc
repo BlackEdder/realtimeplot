@@ -218,7 +218,10 @@ namespace realtimeplot {
 		if (xSurface) {
 			xContext.clear();
 			xSurface.clear();
-			xcb_disconnect( pXcbHandler->connection );
+			xcb_unmap_window( pXcbHandler->connection, win );
+			xcb_destroy_window( pXcbHandler->connection, win );
+			xcb_flush(pXcbHandler->connection);
+			//xcb_disconnect( pXcbHandler->connection );
 		}
 	}
 

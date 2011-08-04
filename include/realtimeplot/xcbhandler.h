@@ -53,7 +53,7 @@ namespace realtimeplot {
 			xcb_drawable_t open_window(size_t width, size_t height);
 		private:
 			static boost::mutex i_mutex; 
-			XcbHandler() {}
+			XcbHandler();
 			~XcbHandler() {}
 			static XcbHandler *pInstance;
 	};
