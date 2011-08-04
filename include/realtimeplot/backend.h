@@ -40,6 +40,7 @@
 #include "realtimeplot/plot.h"
 #include "realtimeplot/eventhandler.h"
 #include "realtimeplot/delaunay.h"
+#include "realtimeplot/xcbhandler.h"
 
 namespace realtimeplot {
 	/**
@@ -86,9 +87,7 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
 			Cairo::RefPtr<Cairo::XcbSurface> xSurface;
 			Cairo::RefPtr<Cairo::Context> xContext;
-			xcb_connection_t *dpy;
 			xcb_drawable_t win;
-			xcb_screen_t *screen;
 
 			//keep track of plot area pixels
 			int plot_area_width, plot_area_height;
@@ -135,9 +134,6 @@ namespace realtimeplot {
 
 			//draw_axes_surface
 			void draw_axes_surface();
-
-			//create_xlib_window
-			void create_xlib_window();
 
 			//display the surface on xlib surface
 			void display();
@@ -257,6 +253,8 @@ namespace realtimeplot {
 			 */
 			void scale_xsurface( double width, double height );
 		private:
+			XcbHandler *pXcbHandler;
+
 			//Keep track to lines
 			std::list<boost::shared_ptr<LineAttributes> > lines;
 

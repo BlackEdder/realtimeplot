@@ -21,9 +21,11 @@
   -------------------------------------------------------------------
 */
 
+#include <boost/thread/mutex.hpp>
+#include <xcb/xcb.h>
+
 #ifndef REALTIMEPLOT_XCBHANDLER_H
 #define REALTIMEPLOT_XCBHANDLER_H
-
 
 namespace realtimeplot {
 	/**
@@ -41,7 +43,19 @@ namespace realtimeplot {
 	 */
 	class XcbHandler {
 		public:
-			static XcbHandler create();
+			xcb_connection_t *connection;
+
+			// Should probably be enough to give access to root visual type
+			// see get_root_visual_type(pXcbHandler->screen) in backend.cc
+			xcb_screen_t *screen;
+			static XcbHandler* Instance();
+
+			xcb_drawable_t open_window(size_t width, size_t height);
+		private:
+			static boost::mutex i_mutex; 
+			XcbHandler() {}
+			~XcbHandler() {}
+			static XcbHandler *pInstance;
 	};
 }
 #endif

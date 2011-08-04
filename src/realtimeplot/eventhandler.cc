@@ -64,14 +64,14 @@ namespace realtimeplot {
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !force_close ) {
-			if (pBPlot != NULL && pBPlot->xSurface ) {
+			/*if (pBPlot != NULL && pBPlot->xSurface ) {
 				// Handle xcb_events
 				xcb_generic_event_t *ev;
 				while (ev = xcb_poll_for_event( pBPlot->dpy)) {
 					pBPlot->handle_xevent( ev );
 				}
 				free( ev );
-			}
+			}*/
 			if ( queue_size>0 ) {
 				boost::shared_ptr<Event> pEvent = event_queue.front();
 				m_mutex.lock();

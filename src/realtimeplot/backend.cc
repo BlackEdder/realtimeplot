@@ -38,8 +38,7 @@ namespace realtimeplot {
 	 */
 	boost::mutex BackendPlot::global_mutex;
 
-	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) :
-		pEventHandler( pEventHandler )
+	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), pXcbHandler( XcbHandler::Instance() )
 	{
 		config = conf;
 
@@ -60,7 +59,20 @@ namespace realtimeplot {
 		set_foreground_color();
 
 		//create_xlib_window
-		create_xlib_window();
+		x_surface_width = plot_area_width+config.margin_y;
+		x_surface_height = plot_area_height+config.margin_x;
+		win = pXcbHandler->open_window(x_surface_width, x_surface_height);
+		/*xcb_change_property_checked (dpy, XCB_PROP_MODE_REPLACE, win,
+			XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
+			config.title.length(), config.title.c_str());*/
+
+		xSurface = Cairo::XcbSurface::create( pXcbHandler->connection, win, 
+				get_root_visual_type(pXcbHandler->screen), 
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+
+		if(!xSurface)
+			fprintf(stderr,"Error creating surface\n");
+
 
 		//draw initial axes etc
 		draw_axes_surface();
@@ -72,6 +84,7 @@ namespace realtimeplot {
 
 		//pEventHandler->processing_events = true;
 
+		xContext = Cairo::Context::create( xSurface );
 		display();
 	}
 
@@ -126,7 +139,7 @@ namespace realtimeplot {
 
 		x_surface_width = plot_area_width+config.margin_y;
 		x_surface_height = plot_area_height+config.margin_x;
-		xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), 
+		xSurface = Cairo::XcbSurface::create( pXcbHandler->connection, win, get_root_visual_type(pXcbHandler->screen), 
 				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 		xContext = Cairo::Context::create( xSurface );
 
@@ -160,7 +173,7 @@ namespace realtimeplot {
 	      xcb_key_press_event_t *ev;
 				ev = (xcb_key_press_event_t *)e;
 				xcb_keysym_t key;
-				key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(dpy),ev->detail,0);
+				key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(pXcbHandler->connection),ev->detail,0);
 				if (key == XK_space)  {
 					if (pause_display) {
 						pause_display = false;
@@ -205,7 +218,7 @@ namespace realtimeplot {
 		if (xSurface) {
 			xContext.clear();
 			xSurface.clear();
-			xcb_disconnect( dpy );
+			xcb_disconnect( pXcbHandler->connection );
 		}
 	}
 
@@ -233,72 +246,6 @@ namespace realtimeplot {
 		plot_surface_min_y = config.min_y-yratio*(config.max_y-config.min_y);
 		plot_surface_max_y = config.max_y+yratio*(config.max_y-config.min_y);
 		return surface;
-	}
-
-	void BackendPlot::create_xlib_window() {
-		int mask = 0;
-		uint32_t values[2];
-		int i;
-
-		dpy = xcb_connect(NULL,NULL);
-		screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
-
-
-		win = xcb_generate_id(dpy);
-
-		mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-		values[0] = screen->white_pixel;
-
-		// These need to be in the proper order
-		// All unused values are commented out, but kept in the list, to make changes easier
-		values[1] = //XCB_EVENT_MASK_NO_EVENT |
-    XCB_EVENT_MASK_KEY_PRESS |
-    //XCB_EVENT_MASK_KEY_RELEASE |
-    //XCB_EVENT_MASK_BUTTON_PRESS |
-    //XCB_EVENT_MASK_BUTTON_RELEASE |
-    //XCB_EVENT_MASK_ENTER_WINDOW |
-    //XCB_EVENT_MASK_LEAVE_WINDOW |
-    //XCB_EVENT_MASK_POINTER_MOTION |
-    //XCB_EVENT_MASK_POINTER_MOTION_HINT |
-    //XCB_EVENT_MASK_BUTTON_1_MOTION |
-    //XCB_EVENT_MASK_BUTTON_2_MOTION |
-    //XCB_EVENT_MASK_BUTTON_3_MOTION |
-    //XCB_EVENT_MASK_BUTTON_4_MOTION |
-    //XCB_EVENT_MASK_BUTTON_5_MOTION |
-    //XCB_EVENT_MASK_BUTTON_MOTION |
-    //XCB_EVENT_MASK_KEYMAP_STATE |
-    XCB_EVENT_MASK_EXPOSURE |
-    //XCB_EVENT_MASK_VISIBILITY_CHANGE |
-    XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-    //XCB_EVENT_MASK_RESIZE_REDIRECT |
-    //XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
-    //XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
-    XCB_EVENT_MASK_FOCUS_CHANGE;
-		//| XCB_EVENT_MASK_PROPERTY_CHANGE |
-    //XCB_EVENT_MASK_COLOR_MAP_CHANGE |
-    //XCB_EVENT_MASK_OWNER_GRAB_BUTTON;
-
-		x_surface_width = plot_area_width+config.margin_y;
-		x_surface_height = plot_area_height+config.margin_x;
-		xcb_create_window(dpy,XCB_COPY_FROM_PARENT,win,screen->root,0,0,x_surface_width,
-				x_surface_width,0,XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
-
-		xcb_change_property_checked (dpy, XCB_PROP_MODE_REPLACE, win,
-				XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
-				config.title.length(), config.title.c_str());
-
-		xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), 
-				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
-
-		if(!xSurface)
-			fprintf(stderr,"Error creating surface\n");
-
-		xcb_map_window(dpy, win);
-
-		xcb_flush(dpy);
-		//xcb_generic_event_t *e = xcb_wait_for_event( dpy );
-		xContext = Cairo::Context::create( xSurface );
-		//handle_xevent( e );
 	}
 
 	xcb_visualtype_t *BackendPlot::get_root_visual_type(xcb_screen_t *s)
@@ -808,7 +755,7 @@ namespace realtimeplot {
 			height = x_surface_height;
 			/*width = xSurface->get_width();
 			height = xSurface->get_height();*/
-			xSurface = Cairo::XcbSurface::create( dpy, win, get_root_visual_type(screen), plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+			xSurface = Cairo::XcbSurface::create( pXcbHandler->connection, win, get_root_visual_type(pXcbHandler->screen), plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 			scale_xsurface( width, height );
 		}
 		draw_axes_surface();
