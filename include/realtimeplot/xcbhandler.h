@@ -53,7 +53,7 @@ namespace realtimeplot {
 
 			// Should probably be enough to give access to root visual type
 			// see get_root_visual_type(pXcbHandler->screen) in backend.cc
-			xcb_screen_t *screen;
+			xcb_visualtype_t *visual_type;
 			static XcbHandler* Instance();
 
 			xcb_drawable_t open_window(size_t width, size_t height,
@@ -63,7 +63,7 @@ namespace realtimeplot {
 			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
 			int mask;
 			uint32_t values[2];
-
+			xcb_screen_t *screen;
 			xcb_intern_atom_reply_t* reply;
 			xcb_intern_atom_reply_t* reply2;
 
@@ -74,6 +74,8 @@ namespace realtimeplot {
 
 			void process_xevents();
 			std::map<xcb_drawable_t, boost::shared_ptr<EventHandler> > mapWindow;
+
+			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
 	};
 }
 #endif

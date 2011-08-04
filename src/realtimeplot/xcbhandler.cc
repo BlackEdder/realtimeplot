@@ -39,6 +39,8 @@ namespace realtimeplot {
 		connection = xcb_connect(NULL,NULL);
 		screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
 
+		visual_type = get_root_visual_type( screen );
+
 		mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
 		values[0] = screen->white_pixel;
 		values[1] = //XCB_EVENT_MASK_NO_EVENT |
@@ -149,4 +151,29 @@ namespace realtimeplot {
 		}
 		free(event);
 	}
+
+	xcb_visualtype_t *XcbHandler::get_root_visual_type(xcb_screen_t *s)
+	{
+		xcb_visualid_t root_visual;
+		xcb_visualtype_t  *visual_type = NULL;
+		xcb_depth_iterator_t depth_iter;
+
+		depth_iter = xcb_screen_allowed_depths_iterator(s);
+
+		for(;depth_iter.rem;xcb_depth_next(&depth_iter)) {
+			xcb_visualtype_iterator_t visual_iter;
+
+			visual_iter = xcb_depth_visuals_iterator(depth_iter.data);
+			for(;visual_iter.rem;xcb_visualtype_next(&visual_iter)) {
+				if(s->root_visual == visual_iter.data->visual_id) {
+					visual_type = visual_iter.data;
+					break;
+				}
+			}
+		}
+
+		return visual_type;
+	}
+
+
 };

@@ -274,8 +274,6 @@ namespace realtimeplot {
 
 			Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
 			
-			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
-
 			static boost::mutex global_mutex;
 	};
 
