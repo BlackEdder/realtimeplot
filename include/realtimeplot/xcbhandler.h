@@ -56,14 +56,16 @@ namespace realtimeplot {
 			xcb_screen_t *screen;
 			static XcbHandler* Instance();
 
-		xcb_drawable_t open_window(size_t width, size_t height,
+			xcb_drawable_t open_window(size_t width, size_t height,
 					boost::shared_ptr<EventHandler> pEventHandler = 
 					boost::shared_ptr<EventHandler>() );
 		private:
-		boost::shared_ptr<boost::thread> pXEventProcessingThrd;
-		int mask;
-		uint32_t values[2];
+			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
+			int mask;
+			uint32_t values[2];
 
+			xcb_intern_atom_reply_t* reply;
+			xcb_intern_atom_reply_t* reply2;
 
 			static boost::mutex i_mutex; 
 			XcbHandler();

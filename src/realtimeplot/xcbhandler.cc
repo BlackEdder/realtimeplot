@@ -24,6 +24,9 @@ namespace realtimeplot {
 				screen->root,0,0,width,height,0,
 				XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
 
+		xcb_change_property(connection, XCB_PROP_MODE_REPLACE, win, reply->atom, 4, 32, 1,
+				&reply2->atom);
+
 		xcb_map_window(connection,win);
 
 		xcb_flush(connection);
@@ -64,6 +67,15 @@ namespace realtimeplot {
 			//| XCB_EVENT_MASK_PROPERTY_CHANGE |
 			//XCB_EVENT_MASK_COLOR_MAP_CHANGE |
 			//XCB_EVENT_MASK_OWNER_GRAB_BUTTON;
+		
+
+		xcb_intern_atom_cookie_t cookie = xcb_intern_atom(connection, 1, 12,
+				"WM_PROTOCOLS");
+		reply = xcb_intern_atom_reply(connection, cookie, 0);
+		xcb_intern_atom_cookie_t cookie2 = xcb_intern_atom(connection, 0, 16,
+				"WM_DELETE_WINDOW");
+		reply2 = xcb_intern_atom_reply(connection, cookie2, 0);
+
 		pXEventProcessingThrd = boost::shared_ptr<boost::thread>( 
 				new boost::thread( boost::bind( 
 						&realtimeplot::XcbHandler::process_xevents, this ) ) );
@@ -75,8 +87,18 @@ namespace realtimeplot {
 
 		while (event = xcb_wait_for_event (connection)) {
 			switch(event->response_type) {
+				// Documentation seemed to indicate that this should be XCB_CLIENT_MESSAGE, but seems to be 161
+				case 161: 
+					xcb_client_message_event_t* msg;
+					msg = (xcb_client_message_event_t *)event;
+					if(msg->data.data32[0] ==
+							reply2->atom)
+					{
+						mapWindow[msg->window]->add_event( boost::shared_ptr<Event>( 
+									new CloseWindowEvent() ) ); 
+					}
+					break;
 				case XCB_UNMAP_WINDOW:
-					//close_window();
 					break;
 				case XCB_CONFIGURE_NOTIFY:
 					xcb_configure_notify_event_t *conf;
