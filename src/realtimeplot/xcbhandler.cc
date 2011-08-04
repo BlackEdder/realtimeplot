@@ -1,6 +1,7 @@
 #include "realtimeplot/xcbhandler.h"
 
 #include <xcb/xcb_keysyms.h>
+#include <xcb/xcb_event.h>
 #include <X11/keysym.h>
 
 #include "realtimeplot/events.h"
@@ -88,11 +89,8 @@ namespace realtimeplot {
 		xcb_generic_event_t *event;
 
 		while (event = xcb_wait_for_event (connection)) {
-			switch(event->response_type) {
-				// Documentation seemed to indicate that this should be XCB_CLIENT_MESSAGE, but seems to be 161
+			switch(XCB_EVENT_RESPONSE_TYPE(event)) {
 				case XCB_CLIENT_MESSAGE:
-					//No break, so we do the same as for 161
-				case 161: 
 					xcb_client_message_event_t* msg;
 					msg = (xcb_client_message_event_t *)event;
 					if(msg->data.data32[0] ==
