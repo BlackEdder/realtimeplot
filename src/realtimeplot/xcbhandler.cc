@@ -99,9 +99,11 @@ namespace realtimeplot {
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 								new PauseEvent() ) ); 
 					}
-						/*} else if (key == XK_w)  {
-						save( "realtimeplot.png", temporary_display_surface );
-						} else if (key == XK_Left) {
+					else if (key == XK_w)  {
+						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
+								new SaveEvent( "realtimeplot.png" ) ) );
+					}
+					/*	} else if (key == XK_Left) {
 						move( -1, 0 );
 						} else if (key == XK_Right) {
 						move( 1, 0 );
