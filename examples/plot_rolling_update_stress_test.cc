@@ -35,12 +35,14 @@ int main() {
     config.overlap = 0.99;
 
     Plot pl = Plot( config );
+    Plot pl2 = Plot( config );
     int y = 0;
     while (1) {
         //if (float(std::rand())/RAND_MAX < 0.1) {
         //    usleep(10000);
         //}
         pl.point( -y, y+50+900*float(std::rand())/RAND_MAX );
+        pl2.point( y, y+50+900*float(std::rand())/RAND_MAX );
         ++y;
     }
     return 0;

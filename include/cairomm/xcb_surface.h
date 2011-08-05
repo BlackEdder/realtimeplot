@@ -80,7 +80,7 @@ public:
    * @param width	the new width of the surface
    * @param height	the new height of the surface
    */
-//	void set_size(int width, int height);
+	void set_size(int width, int height);
 
   /** Informs cairo of a new X Drawable underlying the surface. The drawable
    * must match the display, screen and format of the existing drawable or the
