@@ -36,6 +36,8 @@ int main() {
 
     Plot pl = Plot( config );
     Plot pl2 = Plot( config );
+    Plot pl3 = Plot( config );
+    Plot pl4 = Plot( config );
     int y = 0;
     while (1) {
         //if (float(std::rand())/RAND_MAX < 0.1) {
@@ -43,6 +45,8 @@ int main() {
         //}
         pl.point( -y, y+50+900*float(std::rand())/RAND_MAX );
         pl2.point( y, y+50+900*float(std::rand())/RAND_MAX );
+        pl3.point( y, y-50-900*float(std::rand())/RAND_MAX );
+        pl4.point( -y, y-50-900*float(std::rand())/RAND_MAX );
         ++y;
     }
     return 0;

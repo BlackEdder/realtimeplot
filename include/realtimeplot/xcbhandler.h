@@ -68,6 +68,8 @@ namespace realtimeplot {
 			xcb_intern_atom_reply_t* reply2;
 
 			static boost::mutex i_mutex; 
+			boost::mutex map_mutex; 
+
 			XcbHandler();
 			~XcbHandler() { pXEventProcessingThrd->join(); }
 			static XcbHandler *pInstance;

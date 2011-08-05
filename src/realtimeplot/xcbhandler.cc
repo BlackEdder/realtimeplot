@@ -25,6 +25,10 @@ namespace realtimeplot {
 				screen->root,0,0,width,height,0,
 				XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
 
+		map_mutex.lock();
+		mapWindow[win] = pEventHandler;
+		map_mutex.unlock();
+
 		xcb_change_property(connection, XCB_PROP_MODE_REPLACE, win, reply->atom, 4, 32, 1,
 				&reply2->atom);
 
@@ -32,7 +36,6 @@ namespace realtimeplot {
 
 		xcb_flush(connection);
 
-		mapWindow[win] = pEventHandler;
 		return win;
 	}
 
@@ -96,8 +99,10 @@ namespace realtimeplot {
 					if(msg->data.data32[0] ==
 							reply2->atom)
 					{
+						map_mutex.lock();
 						mapWindow[msg->window]->add_event( boost::shared_ptr<Event>( 
 									new CloseWindowEvent() ), true ); 
+						map_mutex.unlock();
 					}
 					break;
 				case XCB_UNMAP_WINDOW:
@@ -105,8 +110,10 @@ namespace realtimeplot {
 				case XCB_CONFIGURE_NOTIFY:
 					xcb_configure_notify_event_t *conf;
 					conf = (xcb_configure_notify_event_t *)event;
+						map_mutex.lock();
 					mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 								new ScaleXSurfaceEvent( conf->width, conf->height ) ), true ); 
+						map_mutex.unlock();
 					break;
 				case XCB_EXPOSE:
 					//display();
@@ -118,31 +125,47 @@ namespace realtimeplot {
 					xcb_keysym_t key;
 					key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(connection),ev->detail,0);
 					if (key == XK_space)  {
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 								new PauseEvent() ), true ); 
+						map_mutex.unlock();
 					}
 					else if (key == XK_w)  {
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new SaveEvent( "realtimeplot.png" ) ), true );
+						map_mutex.unlock();
 					}
 					else if (key == XK_Left) {
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new MoveEvent( -1, 0 ) ), true );
+						map_mutex.unlock();
 					} else if (key == XK_Right) {
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new MoveEvent( 1, 0 ) ), true );
+						map_mutex.unlock();
 					} else if (key == XK_Up) {
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new MoveEvent( 0, 1 ) ), true );
+						map_mutex.unlock();
 					} else if (key == XK_Down) {
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new MoveEvent( 0, -1 ) ), true );
+						map_mutex.unlock();
 					} else if (key == XK_KP_Add) { 
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new ZoomEvent( 0.95 ) ), true );
+						map_mutex.unlock();
 					} else if (key == XK_KP_Subtract) { 
+						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
 									new ZoomEvent( 1.05 ) ), true );
+						map_mutex.unlock();
 					}
 					break;	
 				default:
