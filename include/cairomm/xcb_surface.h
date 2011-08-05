@@ -1,4 +1,5 @@
-/* Copyright (C) 2005 The cairomm Development Team and Edwin van Leeuwen
+/* Copyright (C) 2005 The cairomm Development Team and 
+ * 2011 Edwin van Leeuwen
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,21 +27,20 @@
 // You may include it directly if you need to use this API.
 
 #ifdef CAIRO_HAS_XCB_SURFACE
-#include <cairo-xcb.h> // Needed for the X11 "Display" struct (which pollutes the namespace because it has no prefix.)
-#endif // CAIRO_HAS_XLIB_SURFACE
-
+#include <cairo-xcb.h> 
+#endif 
 
 namespace Cairo
 {
 
 #ifdef CAIRO_HAS_XCB_SURFACE
 
-/** An XcbSurface provides a way to render to the X Window System using XLib.
+/** An XcbSurface provides a way to render to the X Window System using Xcb.
  * If you want to draw to the screen within an application that uses the X
  * Window system, you should use this Surface type.
  *
  * @note For this surface to be availabe, cairo must have been compiled with
- * support for XLib Surfaces
+ * support for Xcb Surfaces
  */
 class XcbSurface : public Surface
 {
@@ -48,41 +48,20 @@ public:
 
   /** Create a C++ wrapper for the C instance. This C++ instance should then be
    * given to a RefPtr.
-   *
-   * @param cobject The C instance.
-   * @param has_reference whether we already have a reference. Otherwise, the
-   * constructor will take an extra reference.
-   */
+  */
   explicit XcbSurface(cairo_surface_t* cobject, bool has_reference = false);
   virtual ~XcbSurface();
 
   /** Creates an Xcb surface that draws to the given drawable. The way that
    * colors are represented in the drawable is specified by the provided
    * visual.
-   *
-   * @note If drawable is a Window, then the function
-   * cairo_xlib_surface_set_size must be called whenever the size of the window
-   * changes.
-   *
-   * @param dpy	an X Display
-   * @param drawable	an X Drawable, (a Pixmap or a Window)
-   * @param visual	the visual to use for drawing to drawable. The depth of the visual must match the depth of the drawable. Currently, only TrueColor visuals are fully supported.
-   * @param width	the current width of drawable.
-   * @param height	the current height of drawable.
-   * @return	A RefPtr to the newly created surface
    */
   static RefPtr<XcbSurface> create(xcb_connection_t *c, xcb_drawable_t drawable, xcb_visualtype_t *visual, int width, int height);
 
   /** Creates an Xcb surface that draws to the given bitmap. This will be
    * drawn to as a CAIRO_FORMAT_A1 object.
    *
-   * @param dpy	an X Display
-   * @param bitmap	an X Drawable, (a depth-1 Pixmap)
-   * @param screen	the X Screen associated with bitmap
-   * @param width	the current width of bitmap.
-   * @param height	the current height of bitmap.
-   * @return	A RefPtr to the newly created surface
-	 */
+   */
 	static RefPtr<XcbSurface> create(xcb_connection_t *connection,
 				xcb_screen_t *screen,
 				xcb_pixmap_t  bitmap,
@@ -101,7 +80,7 @@ public:
    * @param width	the new width of the surface
    * @param height	the new height of the surface
    */
-	void set_size(int width, int height);
+//	void set_size(int width, int height);
 
   /** Informs cairo of a new X Drawable underlying the surface. The drawable
    * must match the display, screen and format of the existing drawable or the

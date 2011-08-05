@@ -1,4 +1,5 @@
 /* Copyright (C) 2005 The cairomm Development Team
+ * 2011 Edwin van Leeuwen
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -129,8 +130,5 @@ int XcbSurface::get_width() const
   check_object_status_and_throw_exception(*this);
   return w;
 }*/
-#endif // CAIRO_HAS_XLIB_SURFACE
-
+#endif 
 } //namespace Cairo
-
-// vim: ts=2 sw=2 et
