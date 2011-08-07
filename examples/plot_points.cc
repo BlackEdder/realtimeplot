@@ -31,8 +31,6 @@ int main() {
 	config.max_x = 1.04;
 	config.min_y = -20;
 	config.max_y = 30;
-	//config.margin_x = 200;
-	//config.font = "sans 12";
 	config.aspect_ratio = 0.5;
 	config.point_size = 2;
 	config.xlabel = "Very Long Long label";
@@ -58,8 +56,6 @@ int main() {
 	pl.config.xlabel = "bla";
 	pl.config.max_x = 0.9;
 	pl.update_config();
-	//For some reason this one doesn't get shown until another action is performed
-	//like move the plot (arrow keys)
 	pl.point( 0.2, -15 );
 	pl.save( "plot_points.png" );
 
