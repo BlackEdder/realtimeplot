@@ -30,7 +30,14 @@ if( PANGOMM-NOTFOUND )
 	message( FATAL_ERROR "Could not find pangomm library" )
 	endif()
 
-	find_library( XCB-UTIL xcb-keysyms  )
+# PANGOMM already depends on cairomm, so no need to check
+#find_library( CAIROMM cairomm-1.0 )
+#if( CAIROMM-NOTFOUND )
+#message( FATAL_ERROR "Could not find cairomm library" )
+#endif()
+
+
+	find_library( XCB-UTIL xcb-keysyms xcb-util )
 	if( XCB-UTIL-NOTFOUND )
 		message( FATAL_ERROR "Could not find xcb-util(-keysyms) library" )
 	endif()
@@ -81,12 +88,6 @@ target_link_libraries(plot_rolling_update_stress_test realtimeplot)
 
 add_executable(plot_heightmap examples/plot_heightmap.cc)
 target_link_libraries(plot_heightmap realtimeplot)
-
-#Testing for xcb
-add_executable(xcb_cairo examples/xcb.cc src/cairomm/xcb_surface.cc)
-target_link_libraries(xcb_cairo ${PANGOMM})
-add_executable(xcb_base examples/xcb_base.cc)
-target_link_libraries(xcb_base xcb pthread)
 
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
