@@ -28,8 +28,21 @@
 using namespace realtimeplot;
 
 int
-main ()
+main (int argc, char** argv)
 {
+  if (argc < 2) {
+    std::cout << "Usage: " << argv[0] << " <sample rate>" << std::endl;
+    return -1;
+  }
+
+  float x = 0.0;
+  float sample_rate = strtod (argv[1], 0);
+  if (sample_rate <= 0) {
+    std::cerr << "Sampling rate must be greater than zero." << std::endl;
+    return -1;
+  }
+  float step = 1 / sample_rate;
+
   PlotConfig config = PlotConfig();
   config.min_x =  0;
   config.max_x = 10;
@@ -37,12 +50,14 @@ main ()
   config.max_y =  1.10;
   
   Plot pl = Plot (config);
-  float x = 0.0;
+
   double v;
+  
   while (! feof (stdin)) {
     fread (&v, sizeof (double), 1, stdin);
     pl.line_add (x, v);
-    x += 1 / 4000.0;
+    x += step;
   }
+  
   return 0;
 }
