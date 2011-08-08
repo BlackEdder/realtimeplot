@@ -54,7 +54,9 @@ main (int argc, char** argv)
   double v;
   
   while (! feof (stdin)) {
-    fread (&v, sizeof (double), 1, stdin);
+    int ret = fread (&v, sizeof (double), 1, stdin);
+		if (!ret)
+			std::cerr << "Failed to read from stdin" << std::endl;
     pl.line_add (x, v);
     x += step;
   }
