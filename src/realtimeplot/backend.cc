@@ -41,7 +41,7 @@ namespace realtimeplot {
 		config = conf;
 
 		//calculate minimum plot area width/height based on aspect ratio
-		double x = 500/sqrt(config.aspect_ratio);
+		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
 		plot_area_width = round( config.aspect_ratio*x );
 		plot_area_height = round( x );
 		//create the surfaces and contexts

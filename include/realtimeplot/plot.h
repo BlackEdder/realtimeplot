@@ -111,11 +111,13 @@ namespace realtimeplot {
 			/// All the needed variables
 			//! Scale to window size?
 			bool scaling;
-			int pixel_width, pixel_height;
 			int margin_x, margin_y;
 			int nr_of_ticks, ticks_length;
 			//! Size of a point (4 by default)
 			int point_size;
+
+			//! Total area in number of pixels (default = 500*500)
+			size_t area;
 			float min_x, max_x;
 			float min_y, max_y;
 			float overlap;
@@ -128,6 +130,7 @@ namespace realtimeplot {
 			PlotConfig()
 				: scaling( false )
 			{
+				area = 500*500;
 				margin_x = 60;
 				margin_y = 60;
 				min_x = 0;
