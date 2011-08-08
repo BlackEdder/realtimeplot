@@ -1,7 +1,7 @@
 #
 # -------------------------------------------------------------------
 # 
-# Copyright (C) 2010, Edwin van Leeuwen
+# Copyright (C) 2010, 2011, Edwin van Leeuwen
 # 
 # This file is part of RealTimePlot.
 # 
@@ -76,6 +76,9 @@ target_link_libraries(plot_test realtimeplot)
 
 add_executable(plot_line examples/plot_line.cc)
 target_link_libraries(plot_line realtimeplot)
+
+add_executable(plot_stream examples/plot_stream.cc)
+target_link_libraries(plot_stream realtimeplot)
 
 add_executable(plot_histogram examples/plot_histogram.cc)
 target_link_libraries(plot_histogram realtimeplot)
