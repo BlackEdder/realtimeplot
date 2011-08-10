@@ -39,15 +39,13 @@ int main() {
 	float y = 2+2*float(std::rand())/RAND_MAX;
 	//std::cout << x << " " << y << " " << pow(((x-0.5)*(y-3)),2) << std::endl;
 	hm.add_data( x, y, pow(pow(((x-0.5)*(y-3)),2),0.5), true );
-	hm.calculate_height_scaling();
 
 
-	/*hm.add_data( 5.1, 20, 1 );
-		sleep(1);
-		hm.add_data( 9.1, 2.2, 1 );
-		sleep(1);
-		hm.add_data( 5, 15, 1 );*/
-	//sleep(1);
+	// A regular grid, which can lead to numerical problems in delaunay algorithms.
+	// Our algorithm deals reasonably well with this case, but not perfectly.
+	// If you want to do this it is better/ideal to actually make the 
+	// grid slightly randomized, i.e. by adding small random values to each x/y 
+	// coordinate
 	HeightMap hm2 = HeightMap(0,1,0,1);
 
 	for (size_t i=0; i<50; ++i) {
@@ -62,7 +60,10 @@ int main() {
 			//sleep(1);
 		}
 	}
+	sleep(1);
+	//Optimize color distribution/usage
 	hm2.calculate_height_scaling();
+	hm.calculate_height_scaling();
 
 	return 0;
 }
