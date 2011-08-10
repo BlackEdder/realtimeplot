@@ -25,10 +25,6 @@ require "ext/rb_realtimeplot.so"
 pl = RealTimePlot::Plot.new
 pl.point( 5,50 )
 pl.point_with_color( 5,80, RealTimePlot::Color.red )
-#100.times do |i|
-#    pl.point_0( 45+20*rand(), i*(0.1) )
-#    sleep(0.1)
-#end
 pl.line_add( 1, 50 )
 pl.line_add( 5, 80 )
 pl.line_add_with_color( 4, 50, 1, RealTimePlot::Color.red )
@@ -42,8 +38,23 @@ pl.reset( plot_conf )
 pl.point( 0.5, 0.5 )
 
 sleep( 1 )
+hm = RealTimePlot::HeightMap.new( 0, 1, 0, 1 )
+50.times do |x|
+	x = x/50.0
+	50.times do |y|
+		y = y/50.0
+		hm.add_data( x, y, ((((x-0.5)*(y-0.5))**2)**0.5), false );
+	end
+end
+x = 0; y=0
+hm.add_data( x, y, ((((x-0.5)*(y-0.5))**2)**0.5), true );
+hm.calculate_height_scaling();
 
+sleep(1)
 hist = RealTimePlot::Histogram.new
 hist.add_data( 1 )
+# This will throw an error with some versions of rbplusplus
+# since the conversion of array into c++ vector is not working
+# in those versions
 hist.set_data( [1,2,3,1,1.1] )
 
