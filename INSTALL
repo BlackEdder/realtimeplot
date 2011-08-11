@@ -8,11 +8,16 @@ boost
 Under debian testing (and therefore probably under ubuntu) one needs to install:
 libboost-date-time-dev libboost-thread-dev libboost-math-dev libpangomm-1.4-dev libxcb-keysyms1-dev libxcb-util0-dev
 
+Old xcb-util libraries:
+(i.e. pre ubuntu 11.10)
+Older versions of xcb-util were divided into multiple separate libraries. Now they are all part of one library (libxcb-util.so). The build system currently only handles the newer version. It should be possible to install the library using the older implementation, but (since I don't use such a system) this is currently not supported (patches are welcome though :) ).
+Reportedly in Ubuntu 11.04 it is possible to install the libxcb-util0-devs from 11.10:
+- libxcb-util0-dev: http://packages.ubuntu.com/oneiric/libxcb-util0-dev 
+- libxcb-util0: http://packages.ubuntu.com/oneiric/libxcb-util0
+
 
 Basic Installation
 ==================
 Run:
 cmake .
 make install
-
-The library is currently only tested to build on my gentoo installation, so if you find any problems please contact me and I'll try to address them.
