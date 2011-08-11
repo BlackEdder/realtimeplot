@@ -4,16 +4,13 @@ The following are the basic requirements for the library. Also see CMakeLists.tx
 pangomm-1.4
 cairomm-1.0
 boost
+xcb-util
 
-Under debian testing (and therefore probably under ubuntu) one needs to install:
+Debian testing and Ubuntu 11.10:
 libboost-date-time-dev libboost-thread-dev libboost-math-dev libpangomm-1.4-dev libxcb-keysyms1-dev libxcb-util0-dev
+Ubuntu 11.04 (and earlier?):
+libboost-date-time-dev libboost-thread-dev libboost-math-dev libpangomm-1.4-dev libxcb-keysyms1-dev libxcb-event1-dev
 
-Old xcb-util libraries:
-(i.e. pre ubuntu 11.10)
-Older versions of xcb-util were divided into multiple separate libraries. Now they are all part of one library (libxcb-util.so). The build system currently only handles the newer version. It should be possible to install the library using the older implementation, but (since I don't use such a system) this is currently not supported (patches are welcome though :) ).
-Reportedly in Ubuntu 11.04 it is possible to install the libxcb-util0-devs from 11.10:
-- libxcb-util0-dev: http://packages.ubuntu.com/oneiric/libxcb-util0-dev 
-- libxcb-util0: http://packages.ubuntu.com/oneiric/libxcb-util0
 
 
 Basic Installation
