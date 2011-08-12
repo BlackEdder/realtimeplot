@@ -130,9 +130,13 @@ endif()
 #
 #add_custom_target(rb_two_niches.so COMMAND ruby ruby/rb_two_niches.rb DEPENDS
 #    two_niches)
+add_custom_target(ruby_install ${CMAKE_COMMAND} -E chdir ext/generated/ make
+	install
+	DEPENDS ext/generated/Makefile )
+
 add_custom_target(ruby DEPENDS ext/rb_realtimeplot.so)
 
-add_custom_command( OUTPUT ext/rb_realtimeplot.so
+add_custom_command( OUTPUT ext/rb_realtimeplot.so ext/generated/Makefile
 	COMMAND ruby ext/rb_realtimeplot.rb 
 	COMMAND ${CMAKE_COMMAND} -E copy ext/generated/rb_realtimeplot.so ext/rb_realtimeplot.so
 	DEPENDS ext/rb_realtimeplot.rb realtimeplot
