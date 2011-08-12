@@ -132,7 +132,11 @@ endif()
 #    two_niches)
 add_custom_target(ruby_install ${CMAKE_COMMAND} -E chdir ext/generated/ make
 	install
-	DEPENDS ext/generated/Makefile )
+	DEPENDS ext/generated/Makefile __install )
+
+# Currently impossible to depend on build in command, so need to define my own
+# install: http://public.kitware.com/Bug/view.php?id=8438
+add_custom_target(__install ${CMAKE_COMMAND} cmake -P cmake_install.cmake)
 
 add_custom_target(ruby DEPENDS ext/rb_realtimeplot.so)
 
