@@ -166,7 +166,7 @@ namespace realtimeplot {
 
 			Plot();
 			Plot( PlotConfig conf );
-			~Plot();
+			virtual ~Plot();
 
 			void point( float x, float y );
 			void point( float x, float y, Color color );

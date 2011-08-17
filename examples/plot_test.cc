@@ -32,14 +32,18 @@ int main() {
 	config.min_y = -20;
 	config.max_y = 30;
 
-	Plot pl = Plot();
-	pl.reset( config );
-	Plot pl1 = Plot();
-	pl1.reset( config );
-	Plot pl2 = Plot();
-	pl2.reset( config );
-	Plot pl3 = Plot();
-	pl3.reset( config );
+	std::vector<Histogram*> plots;
+	for (size_t i=0; i<10; ++i) {
+		plots.push_back( new Histogram() );
+		for (size_t j=0; j<10; ++j) {
+			plots[i]->add_data( 10*((double) rand())/RAND_MAX );
+		}
+	}
+
+	sleep(5);
+	for (size_t i=0; i<10; ++i) {
+		delete plots[i];
+	}
 
 	return 0;
 }
