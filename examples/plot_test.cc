@@ -31,19 +31,20 @@ int main() {
 	config.max_x = 90;
 	config.min_y = -20;
 	config.max_y = 30;
-
-	std::vector<Histogram*> plots;
-	for (size_t i=0; i<10; ++i) {
-		plots.push_back( new Histogram() );
-		for (size_t j=0; j<10; ++j) {
-			plots[i]->add_data( 10*((double) rand())/RAND_MAX );
-		}
+	for (size_t i=0; i<1; ++i) {
+		Plot pl = Plot();
+		pl.point( 1, 10 );
+		std::cout << "Wait till plot gets closed" << std::endl;
 	}
-
-	sleep(5);
-	for (size_t i=0; i<10; ++i) {
-		delete plots[i];
+	std::cout << "Continuing" << std::endl;
+	for (size_t i=0; i<5; ++i) {
+		Plot pl = Plot();
+		pl.point( 1, 10 );
+		pl.detach = true;
 	}
+	std::cout << "Continuing" << std::endl;
 
+	sleep( 5 );
+	
 	return 0;
 }

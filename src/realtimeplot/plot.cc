@@ -121,7 +121,7 @@ namespace realtimeplot {
 
 	Plot::Plot()
 		: config( PlotConfig() ),
-		pEventHandler( new EventHandler( config ) )
+		pEventHandler( new EventHandler( config ) ), detach( false )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
 						pEventHandler ) ) );
@@ -129,7 +129,7 @@ namespace realtimeplot {
 
 	Plot::Plot(bool open)
 		: config( PlotConfig() ),
-		pEventHandler( new EventHandler( config ) )
+		pEventHandler( new EventHandler( config ) ), detach( false )
 	{ 
 		if (open)
 			pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
@@ -139,7 +139,7 @@ namespace realtimeplot {
 
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
-		pEventHandler( new EventHandler( config ) )
+		pEventHandler( new EventHandler( config ) ), detach( false )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
 						pEventHandler ) ) );
@@ -147,7 +147,10 @@ namespace realtimeplot {
 
 	Plot::~Plot() {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler, false ) ) );
-		pEventHandler->pEventProcessingThrd->join();
+		if (detach)
+			pEventHandler->pEventProcessingThrd->detach();
+		else
+			pEventHandler->pEventProcessingThrd->join();
 	}
 
 

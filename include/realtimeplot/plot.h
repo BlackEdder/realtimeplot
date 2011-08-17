@@ -202,6 +202,12 @@ namespace realtimeplot {
 			 * the program has finished. This closes the plot if one wants to.
 			 */
 			void close();
+
+			//! If set to true the Plot object can be destroyed, but the plot
+			//! will stay around till the program ends. When the program ends this will
+			//! destroy the plot though. Useful if you want to create a plot inside a method,
+			//! but want the program to keep running.
+			bool detach;
 			//private:
 			boost::shared_ptr<EventHandler> pEventHandler;
 		protected:
