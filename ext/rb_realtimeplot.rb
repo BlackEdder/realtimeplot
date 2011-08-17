@@ -31,7 +31,7 @@ Extension.new "rb_realtimeplot" do |e|
 	e.working_dir = File.join( ROOT, "ext", "generated" )
 	e.sources [
 			File.join( ROOT, "include/realtimeplot/plot.h" )
-		], :includes => [File.join( ROOT, "ext", "utils", "custom_from_to_ruby.h" )],
+		], #:includes => [File.join( ROOT, "ext", "utils", "custom_from_to_ruby.h" )],
 			:include_paths => [File.join( ROOT, "include" ), File.join( ROOT, "ext", "utils" )],
 			:libraries => "realtimeplot",
 			:include_source_dir => File.join( ROOT, "ext", "utils" )
