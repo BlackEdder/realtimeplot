@@ -83,6 +83,9 @@ target_link_libraries(plot_line realtimeplot)
 add_executable(plot_stream examples/plot_stream.cc)
 target_link_libraries(plot_stream realtimeplot)
 
+add_executable(plot_thread examples/plot_thread.cc)
+target_link_libraries(plot_thread realtimeplot pthread)
+
 add_executable(plot_histogram examples/plot_histogram.cc)
 target_link_libraries(plot_histogram realtimeplot)
 
