@@ -71,6 +71,7 @@ namespace realtimeplot {
 
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
+		size_t count = 0;
 		while ( processing_events || !force_close ) {
 			if (priority_queue_size > 0) {
 				boost::shared_ptr<Event> pEvent = priority_event_queue.front();

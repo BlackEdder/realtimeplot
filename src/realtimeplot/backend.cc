@@ -101,8 +101,8 @@ namespace realtimeplot {
 				temporary_display_surface = create_temporary_surface();
 				//copy the temporary surface onto the xcb surface
 				//Appears that this is not completely thread safe (probably problem in xcb)
-				global_mutex.lock();
 				xContext->set_source( temporary_display_surface, 0, 0 );
+				global_mutex.lock();
 				xContext->paint();
 				global_mutex.unlock();
 
@@ -392,7 +392,11 @@ namespace realtimeplot {
 		plot_context->device_to_user_distance(dx,dy);
 		plot_context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
 		transform_to_device_units( plot_context );
+
+		global_mutex.lock();
 		plot_context->fill();
+		global_mutex.unlock();
+	
 		display();
 	}
 
@@ -442,15 +446,21 @@ namespace realtimeplot {
 		} else {
 			//plot_surface might have been updated, for example due to rolling_update
 			line->context = Cairo::Context::create( plot_surface );
-
+			
 			transform_to_device_units( line->context );
 			set_foreground_color( line->context );
+
 			line->context->set_source_rgba( color.r, color.g, color.b, color.a );    
 			transform_to_plot_units( line->context );
 			line->context->move_to( line->current_x, line->current_y );
 			line->context->line_to( x, y );
 			transform_to_device_units( line->context );
+			// This can cause segmentation faults without log. Seems cairo not completely
+			// thread safe
+			global_mutex.lock();
 			line->context->stroke();
+			global_mutex.unlock();
+
 			line->current_x = x;
 			line->current_y = y;
 			display();
