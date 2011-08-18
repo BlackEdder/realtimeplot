@@ -34,7 +34,7 @@ namespace realtimeplot {
 
 		xcb_map_window(connection,win);
 
-		xcb_flush(connection);
+		//xcb_flush(connection);
 
 		return win;
 	}

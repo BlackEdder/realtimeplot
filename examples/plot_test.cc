@@ -37,7 +37,7 @@ int main() {
 		std::cout << "Wait till plot gets closed" << std::endl;
 	}
 	std::cout << "Continuing" << std::endl;
-	for (size_t i=0; i<5; ++i) {
+	for (size_t i=0; i<20; ++i) {
 		Plot pl = Plot();
 		pl.point( 1, 10 );
 		pl.detach = true;

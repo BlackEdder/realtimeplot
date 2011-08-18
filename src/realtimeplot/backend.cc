@@ -99,9 +99,12 @@ namespace realtimeplot {
 			if  (pEventHandler->get_queue_size() < 1 
 					|| (( now-time_of_last_update )>( boost::posix_time::microseconds(500000))))  {
 				temporary_display_surface = create_temporary_surface();
-				//copy the temporary surface onto the xlib surface
+				//copy the temporary surface onto the xcb surface
+				//Appears that this is not completely thread safe (probably problem in xcb)
+				global_mutex.lock();
 				xContext->set_source( temporary_display_surface, 0, 0 );
 				xContext->paint();
+				global_mutex.unlock();
 
 				time_of_last_update = boost::posix_time::microsec_clock::local_time();
 			}
