@@ -1,7 +1,7 @@
 /*
   -------------------------------------------------------------------
   
-  Copyright (C) 2010, 2011, Edwin van Leeuwen
+  Copyright (C) 2010, 2011, Edwin van Leeuwen, Juan Carlos Vallejo López
   
   This file is part of RealTimePlot.
   
@@ -21,9 +21,7 @@
   -------------------------------------------------------------------
 */
 
-extern "C" {
-#include <pthread.h>
-}
+#include <boost/thread.hpp>
 
 #include "realtimeplot/plot.h"
 
@@ -33,7 +31,7 @@ static long sleep_millis = 0;
 static int  nthreads = 3;
 
 static
-void*
+void
 do_plot (void* data)
 {
   int i = 0;
@@ -65,20 +63,18 @@ main (int argc, char** argv) {
   config.area = 250 * 250;
 
   std::cout << "#Threads: " << nthreads << std::endl;
-  std::vector<pthread_t> threads;
+  std::vector<boost::thread*> threads;
   
   for (int i = 0; i < nthreads; ++i) {
     Plot* plot = new Plot (config);
-    pthread_t thread;
-
-    pthread_create (&thread, 0, do_plot, plot);
-    threads.push_back (thread);
+		
+    threads.push_back (new boost::thread(&do_plot, plot));
   }
 
-  std::vector<pthread_t>::iterator it;
+  std::vector<boost::thread*>::iterator it;
   it = threads.begin ();
   while (it != threads.end ()) {
-    pthread_join (*it, 0);
+    (*it)->join();
     ++it;
   }
   
