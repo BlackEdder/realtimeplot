@@ -1,7 +1,9 @@
 #
 # -------------------------------------------------------------------
 # 
-# Copyright (C) 2010, 2011, Edwin van Leeuwen
+# Copyright (C) 2010, 2011, Edwin van Leeuwen, 
+#								2011 Juan Carlos Vallejo
+#
 # 
 # This file is part of RealTimePlot.
 # 
@@ -28,7 +30,6 @@ SET (CMAKE_CXX_FLAGS "-O2 -march=native -pipe -ffast-math -fomit-frame-pointer $
 
 SET (CMAKE_CXX_FLAGS "-O1 -ggdb") 
 
-find_library( PANGOMM pangomm-1.4 )
 find_library( PANGOMM pangomm-1.4 )
 if( PANGOMM-NOTFOUND )
 	message( FATAL_ERROR "Could not find pangomm library" )
