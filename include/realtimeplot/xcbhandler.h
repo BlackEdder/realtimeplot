@@ -40,12 +40,10 @@ namespace realtimeplot {
 	 * This class is used in the following way. Each plot will request a window from
 	 * this class. With that request it will also give provide a ptr to itself.
 	 *
-	 * The handler starts a thread that handles all x events and sends those events to
-	 * the plot that belongs with the window. 
+	 * The handler starts a thread that handles all x events, translate them into plot
+	 * events and then send them to the eventhandler that is associated with that plot.
+	 * It uses a std::map to map x windows to eventhandlers.
 	 *
-	 * When a plot is closed it will need to tell the xcb handler that, which will need to
-	 * remove the window/plot from its list of windows/plots. Or (probably better) xcbhandler
-	 * can keep an eye out for unmap/destroy events and remove it itself.
 	 */
 	class XcbHandler {
 		public:
