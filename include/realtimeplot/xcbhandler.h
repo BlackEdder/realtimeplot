@@ -30,10 +30,43 @@
 #include <boost/thread/mutex.hpp>
 #include <xcb/xcb.h>
 
+#include <cairomm/surface.h>
+
 #include "realtimeplot/eventhandler.h"
 
 
 namespace realtimeplot {
+	/**
+	 * \brief Base class that handles display connections
+	 *
+	 * Plotting backends (i.e. xcb, xlib, gtk) should be derived from this base
+	 * class.
+	 */
+	class DisplayHandler {
+		public:
+			static DisplayHandler* Instance();
+			/**
+			 * \brief Opens a window and returns an id
+			 */
+			virtual void* open_window( size_t width, size_t height,
+					boost::shared_ptr<EventHandler> pEventHandler = 
+					boost::shared_ptr<EventHandler>() ) = 0;
+
+			/**
+			 * \brief Return a cairo surface that draws onto a window
+			 *
+			 * Used by BackendPlot to get a surface to draw to.
+			 */
+			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id ) = 0;
+		private:
+			DisplayHandler();
+			~DisplayHandler();
+			static DisplayHandler *pInstance;
+
+			std::map<void*, boost::shared_ptr<EventHandler> > mapWindow;
+
+			void send_event( void* window_id, boost::shared_ptr<Event> pEvent );
+	};
 	/**
 	 *	\brief Singleton class that maintains an x_connection and handles xevents
 	 *
