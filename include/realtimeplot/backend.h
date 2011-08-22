@@ -54,10 +54,8 @@ namespace realtimeplot {
 			//context used for drawing lines
 			Cairo::RefPtr<Cairo::Context> context;
 
-			LineAttributes( float x, float y, int id_value ) {
-				id = id_value;
-				current_x = x;
-				current_y = y;
+			LineAttributes( float x, float y, int id ) 
+				: id( id ), current_x( x ), current_y( y )	{
 			}
 	};
 
