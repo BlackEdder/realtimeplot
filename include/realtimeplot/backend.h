@@ -85,9 +85,9 @@ namespace realtimeplot {
 
 			//temporary surface used when plotting stuff
 			Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
-			Cairo::RefPtr<Cairo::XcbSurface> xSurface;
+			//Cairo::RefPtr<Cairo::XcbSurface> xSurface;
+			Cairo::RefPtr<Cairo::Surface> xSurface;
 			Cairo::RefPtr<Cairo::Context> xContext;
-			xcb_drawable_t win;
 
 			//keep track of plot area pixels
 			int plot_area_width, plot_area_height;
@@ -263,7 +263,8 @@ namespace realtimeplot {
 			 */
 			void zoom( double scale );
 		private:
-			XcbHandler *pXcbHandler;
+			DisplayHandler *pDisplayHandler;
+			void* win;
 
 			//Keep track to lines
 			std::list<boost::shared_ptr<LineAttributes> > lines;

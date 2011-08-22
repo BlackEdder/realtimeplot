@@ -57,10 +57,13 @@ namespace realtimeplot {
 			 *
 			 * Used by BackendPlot to get a surface to draw to.
 			 */
-			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id ) = 0;
+			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id, size_t width, size_t height ) = 0;
+			virtual ~DisplayHandler();
+
+			virtual void set_title( void* window_id, std::string title ) =0;
+			virtual void close_window( void* win ) =0;
 		private:
 			DisplayHandler();
-			~DisplayHandler();
 			static DisplayHandler *pInstance;
 
 			std::map<void*, boost::shared_ptr<EventHandler> > mapWindow;
@@ -78,18 +81,22 @@ namespace realtimeplot {
 	 * It uses a std::map to map x windows to eventhandlers.
 	 *
 	 */
-	class XcbHandler {
+	class XcbHandler : public DisplayHandler {
 		public:
 			xcb_connection_t *connection;
 
 			// Should probably be enough to give access to root visual type
 			// see get_root_visual_type(pXcbHandler->screen) in backend.cc
 			xcb_visualtype_t *visual_type;
-			static XcbHandler* Instance();
+			static DisplayHandler* Instance();
 
-			xcb_drawable_t open_window(size_t width, size_t height,
+			void* open_window(size_t width, size_t height,
 					boost::shared_ptr<EventHandler> pEventHandler = 
 					boost::shared_ptr<EventHandler>() );
+			Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id, size_t width, size_t height );
+
+			void set_title( void* window_id, std::string );
+			void close_window( void* win );
 		private:
 			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
 			int mask;
@@ -103,7 +110,7 @@ namespace realtimeplot {
 
 			XcbHandler();
 			~XcbHandler() { pXEventProcessingThrd->join(); }
-			static XcbHandler *pInstance;
+			static DisplayHandler *pInstance;
 
 			void process_xevents();
 			std::map<xcb_drawable_t, boost::shared_ptr<EventHandler> > mapWindow;

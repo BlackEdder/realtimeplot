@@ -36,7 +36,7 @@ namespace realtimeplot {
 	 */
 	boost::mutex BackendPlot::global_mutex;
 
-	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), pXcbHandler( XcbHandler::Instance() )
+	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), pDisplayHandler( XcbHandler::Instance() )
 	{
 		config = conf;
 
@@ -59,16 +59,12 @@ namespace realtimeplot {
 		//create_xlib_window
 		x_surface_width = plot_area_width+config.margin_y;
 		x_surface_height = plot_area_height+config.margin_x;
-		win = pXcbHandler->open_window(x_surface_width, x_surface_height, pEventHandler);
+		win = pDisplayHandler->open_window(x_surface_width, x_surface_height, pEventHandler);
 		// Set the title
-		xcb_change_property_checked (pXcbHandler->connection, XCB_PROP_MODE_REPLACE, win,
-			XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
-			config.title.length(), config.title.c_str());
+		pDisplayHandler->set_title( win, config.title );
 
-		xSurface = Cairo::XcbSurface::create( pXcbHandler->connection, win, 
-				pXcbHandler->visual_type, 
-				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
-
+		xSurface = pDisplayHandler->get_cairo_surface( win,
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x );
 		if(!xSurface)
 			fprintf(stderr,"Error creating surface\n");
 
@@ -141,7 +137,7 @@ namespace realtimeplot {
 
 		x_surface_width = plot_area_width+config.margin_y;
 		x_surface_height = plot_area_height+config.margin_x;
-		xSurface = Cairo::XcbSurface::create( pXcbHandler->connection, win, pXcbHandler->visual_type, 
+		xSurface = pDisplayHandler->get_cairo_surface( win, 
 				plot_area_width+config.margin_y, plot_area_height+config.margin_x);
 		xContext = Cairo::Context::create( xSurface );
 
@@ -165,9 +161,7 @@ namespace realtimeplot {
 		if (xSurface) {
 			xContext.clear();
 			xSurface.clear();
-			xcb_unmap_window( pXcbHandler->connection, win );
-			xcb_destroy_window( pXcbHandler->connection, win );
-			xcb_flush(pXcbHandler->connection);
+			pDisplayHandler->close_window( win );
 			//xcb_disconnect( pXcbHandler->connection );
 		}
 	}
@@ -705,7 +699,8 @@ namespace realtimeplot {
 			height = x_surface_height;
 			/*width = xSurface->get_width();
 			height = xSurface->get_height();*/
-			xSurface = Cairo::XcbSurface::create( pXcbHandler->connection, win, pXcbHandler->visual_type, plot_area_width+config.margin_y, plot_area_height+config.margin_x);
+		xSurface = pDisplayHandler->get_cairo_surface( win,
+				plot_area_width+config.margin_y, plot_area_height+config.margin_x );
 			scale_xsurface( width, height );
 		}
 		draw_axes_surface();

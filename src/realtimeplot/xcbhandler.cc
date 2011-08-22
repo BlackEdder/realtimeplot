@@ -7,8 +7,8 @@
 #include "realtimeplot/events.h"
 
 namespace realtimeplot {
-	XcbHandler* XcbHandler::pInstance = 0;
-	XcbHandler* XcbHandler::Instance() {
+	DisplayHandler* XcbHandler::pInstance = 0;
+	DisplayHandler* XcbHandler::Instance() {
 		boost::mutex::scoped_lock(i_mutex);
 		if (pInstance == 0) {
 			pInstance = new XcbHandler();
@@ -16,7 +16,7 @@ namespace realtimeplot {
 		return pInstance;
 	}
 
-	xcb_drawable_t XcbHandler::open_window(size_t width, size_t height,
+	void* XcbHandler::open_window(size_t width, size_t height,
 			boost::shared_ptr<EventHandler> pEventHandler ) {
 		xcb_drawable_t win;
 
@@ -36,10 +36,10 @@ namespace realtimeplot {
 
 		//xcb_flush(connection);
 
-		return win;
+		return (void *)win;
 	}
 
-	XcbHandler::XcbHandler() {
+	XcbHandler::XcbHandler() : DisplayHandler() {
 		connection = xcb_connect(NULL,NULL);
 		screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
 
@@ -173,6 +173,26 @@ namespace realtimeplot {
 			}
 		}
 		free(event);
+	}
+	
+	Cairo::RefPtr<Cairo::Surface> XcbHandler::get_cairo_surface( void* window_id, 
+			size_t width, size_t height ) {
+		Cairo::XcbSurface::create( connection, (xcb_drawable_t) win, 
+				visual_type, width, height );
+	}
+
+
+	void XcbHandler::set_title( std::string title, void* win ) {
+		xcb_change_property_checked (connection, XCB_PROP_MODE_REPLACE, 
+				(xcb_drawable_t) win,
+				XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
+				title.length(), title.c_str());
+	}
+
+	void XcbHandler::close_window( void* win ) {
+			xcb_unmap_window( connection, (xcb_drawable_t) win );
+			xcb_destroy_window( connection, (xcb_drawable_t) win );
+			xcb_flush(connection);
 	}
 
 	xcb_visualtype_t *XcbHandler::get_root_visual_type(xcb_screen_t *s)
