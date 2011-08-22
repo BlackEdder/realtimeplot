@@ -122,8 +122,10 @@ namespace realtimeplot {
 					/* Handle the Key Press event type */
 					xcb_key_press_event_t *ev;
 					ev = (xcb_key_press_event_t *)event;
+					xcb_key_symbols_t *p_symbols;
+					p_symbols = xcb_key_symbols_alloc(connection);
 					xcb_keysym_t key;
-					key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(connection),ev->detail,0);
+					key = xcb_key_symbols_get_keysym(p_symbols,ev->detail,0);
 					if (key == XK_space)  {
 						map_mutex.lock();
 						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
@@ -167,6 +169,7 @@ namespace realtimeplot {
 									new ZoomEvent( 1.05 ) ), true );
 						map_mutex.unlock();
 					}
+					xcb_key_symbols_free( p_symbols );
 					break;	
 				default:
 					break;
