@@ -445,7 +445,6 @@ namespace realtimeplot {
 			lines.push_front( line );
 		} else {
 			//plot_surface might have been updated, for example due to rolling_update
-			global_mutex.lock();
 			line->context = Cairo::Context::create( plot_surface );
 			
 			transform_to_device_units( line->context );
@@ -458,6 +457,7 @@ namespace realtimeplot {
 			transform_to_device_units( line->context );
 			// This can cause segmentation faults without log. Seems cairo not completely
 			// thread safe
+			global_mutex.lock();
 			line->context->stroke();
 			global_mutex.unlock();
 
