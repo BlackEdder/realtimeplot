@@ -711,7 +711,7 @@ namespace realtimeplot {
 		if (config.scaling) {
 			x_surface_width = width;
 			x_surface_height = height;
-			xSurface->set_size( width, height );
+			//xSurface->set_size( width, height );
 		}
 		xContext = Cairo::Context::create( xSurface );
 		draw_axes_surface();

@@ -45,6 +45,7 @@ namespace realtimeplot {
 	class DisplayHandler {
 		public:
 			static DisplayHandler* Instance();
+			boost::mutex map_mutex; 
 			/**
 			 * \brief Opens a window and returns an id
 			 */
@@ -58,17 +59,17 @@ namespace realtimeplot {
 			 * Used by BackendPlot to get a surface to draw to.
 			 */
 			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id, size_t width, size_t height ) = 0;
-			virtual ~DisplayHandler();
 
 			virtual void set_title( void* window_id, std::string title ) =0;
 			virtual void close_window( void* win ) =0;
-		private:
-			DisplayHandler();
+		protected:
+			DisplayHandler() {};
+			virtual ~DisplayHandler() {};
 			static DisplayHandler *pInstance;
 
 			std::map<void*, boost::shared_ptr<EventHandler> > mapWindow;
 
-			void send_event( void* window_id, boost::shared_ptr<Event> pEvent );
+			virtual void send_event( void* window_id, boost::shared_ptr<Event> pEvent );
 	};
 	/**
 	 *	\brief Singleton class that maintains an x_connection and handles xevents
@@ -97,7 +98,7 @@ namespace realtimeplot {
 
 			void set_title( void* window_id, std::string );
 			void close_window( void* win );
-		private:
+		protected:
 			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
 			int mask;
 			uint32_t values[2];
@@ -106,14 +107,12 @@ namespace realtimeplot {
 			xcb_intern_atom_reply_t* reply2;
 
 			static boost::mutex i_mutex; 
-			boost::mutex map_mutex; 
 
 			XcbHandler();
 			~XcbHandler() { pXEventProcessingThrd->join(); }
 			static DisplayHandler *pInstance;
 
 			void process_xevents();
-			std::map<xcb_drawable_t, boost::shared_ptr<EventHandler> > mapWindow;
 
 			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
 	};

@@ -16,6 +16,13 @@ namespace realtimeplot {
 		return pInstance;
 	}
 
+	void DisplayHandler::send_event( void* window_id, boost::shared_ptr<Event> pEvent ) {
+		map_mutex.lock();
+		mapWindow[window_id]->add_event( pEvent, true ); 
+		map_mutex.unlock();
+	}
+
+
 	void* XcbHandler::open_window(size_t width, size_t height,
 			boost::shared_ptr<EventHandler> pEventHandler ) {
 		xcb_drawable_t win;
@@ -26,7 +33,7 @@ namespace realtimeplot {
 				XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
 
 		map_mutex.lock();
-		mapWindow[win] = pEventHandler;
+		mapWindow[(void*) win] = pEventHandler;
 		map_mutex.unlock();
 
 		xcb_change_property(connection, XCB_PROP_MODE_REPLACE, win, reply->atom, 4, 32, 1,
@@ -39,7 +46,8 @@ namespace realtimeplot {
 		return (void *)win;
 	}
 
-	XcbHandler::XcbHandler() : DisplayHandler() {
+	XcbHandler::XcbHandler() : DisplayHandler() 
+	{
 		connection = xcb_connect(NULL,NULL);
 		screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
 
@@ -99,10 +107,8 @@ namespace realtimeplot {
 					if(msg->data.data32[0] ==
 							reply2->atom)
 					{
-						map_mutex.lock();
-						mapWindow[msg->window]->add_event( boost::shared_ptr<Event>( 
-									new CloseWindowEvent() ), true ); 
-						map_mutex.unlock();
+						send_event( (void*) msg->window, boost::shared_ptr<Event>( 
+									new CloseWindowEvent() ) ); 
 					}
 					break;
 				case XCB_UNMAP_WINDOW:
@@ -110,10 +116,8 @@ namespace realtimeplot {
 				case XCB_CONFIGURE_NOTIFY:
 					xcb_configure_notify_event_t *conf;
 					conf = (xcb_configure_notify_event_t *)event;
-						map_mutex.lock();
-					mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-								new ScaleXSurfaceEvent( conf->width, conf->height ) ), true ); 
-						map_mutex.unlock();
+					send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+								new ScaleXSurfaceEvent( conf->width, conf->height ) ) ); 
 					break;
 				case XCB_EXPOSE:
 					//display();
@@ -125,47 +129,31 @@ namespace realtimeplot {
 					xcb_keysym_t key;
 					key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(connection),ev->detail,0);
 					if (key == XK_space)  {
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-								new PauseEvent() ), true ); 
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+								new PauseEvent() ) ); 
 					}
 					else if (key == XK_w)  {
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new SaveEvent( "realtimeplot.png" ) ), true );
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+									new SaveEvent( "realtimeplot.png" ) ) );
 					}
 					else if (key == XK_Left) {
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( -1, 0 ) ), true );
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+									new MoveEvent( -1, 0 ) ) );
 					} else if (key == XK_Right) {
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( 1, 0 ) ), true );
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+									new MoveEvent( 1, 0 ) ) );
 					} else if (key == XK_Up) {
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( 0, 1 ) ), true );
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+									new MoveEvent( 0, 1 ) ) );
 					} else if (key == XK_Down) {
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new MoveEvent( 0, -1 ) ), true );
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+									new MoveEvent( 0, -1 ) ) );
 					} else if (key == XK_KP_Add) { 
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new ZoomEvent( 0.95 ) ), true );
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+									new ZoomEvent( 0.95 ) ) );
 					} else if (key == XK_KP_Subtract) { 
-						map_mutex.lock();
-						mapWindow[conf->window]->add_event( boost::shared_ptr<Event>( 
-									new ZoomEvent( 1.05 ) ), true );
-						map_mutex.unlock();
+						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+									new ZoomEvent( 1.05 ) ) );
 					}
 					break;	
 				default:
@@ -177,21 +165,21 @@ namespace realtimeplot {
 	
 	Cairo::RefPtr<Cairo::Surface> XcbHandler::get_cairo_surface( void* window_id, 
 			size_t width, size_t height ) {
-		Cairo::XcbSurface::create( connection, (xcb_drawable_t) win, 
+		Cairo::XcbSurface::create( connection, *(xcb_drawable_t*) window_id, 
 				visual_type, width, height );
 	}
 
 
-	void XcbHandler::set_title( std::string title, void* win ) {
+	void XcbHandler::set_title( void* win, std::string title ) {
 		xcb_change_property_checked (connection, XCB_PROP_MODE_REPLACE, 
-				(xcb_drawable_t) win,
+				*(xcb_drawable_t*) win,
 				XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
 				title.length(), title.c_str());
 	}
 
 	void XcbHandler::close_window( void* win ) {
-			xcb_unmap_window( connection, (xcb_drawable_t) win );
-			xcb_destroy_window( connection, (xcb_drawable_t) win );
+			xcb_unmap_window( connection, *(xcb_drawable_t*) win );
+			xcb_destroy_window( connection, *(xcb_drawable_t*) win );
 			xcb_flush(connection);
 	}
 
@@ -217,6 +205,5 @@ namespace realtimeplot {
 
 		return visual_type;
 	}
-
 
 };
