@@ -92,8 +92,8 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::checkConfig() {
-		if ( config.overlap > 1 )
-			config.overlap = 1;
+		if ( config.overlap >= 1 )
+			config.fixed_plot_area = true;
 		else if (config.overlap < 0)
 			config.overlap = 0;
 	}

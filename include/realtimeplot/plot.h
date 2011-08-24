@@ -123,9 +123,8 @@ namespace realtimeplot {
 			/**
 			 * \brief Fraction of overlap when doing a rolling update
 			 *
-			 * 0 means no overlap. 1 means no overlap. In theory 1 should work fine, but it will
-			 * be highly inefficient. If you want to have complete overlap then it is better to 
-			 * set fixed_plot_area to true.
+			 * 0 means no overlap. 1 means no overlap and is the same as setting
+			 * fixed_plot_area to true.	
 			 */
 			float overlap;
 			float aspect_ratio;
