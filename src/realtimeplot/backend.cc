@@ -39,6 +39,7 @@ namespace realtimeplot {
 	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), pXcbHandler( XcbHandler::Instance() )
 	{
 		config = conf;
+		checkConfig();
 
 		//calculate minimum plot area width/height based on aspect ratio
 		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
@@ -88,6 +89,13 @@ namespace realtimeplot {
 	}
 
 	BackendPlot::~BackendPlot() {
+	}
+
+	void BackendPlot::checkConfig() {
+		if ( config.overlap > 1 )
+			config.overlap = 1;
+		else if (config.overlap < 0)
+			config.overlap = 0;
 	}
 
 	void BackendPlot::display() {

@@ -273,6 +273,9 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
 			
 			static boost::mutex global_mutex;
+
+			//! Check that the config values are valid
+			void checkConfig();
 	};
 
 	/**

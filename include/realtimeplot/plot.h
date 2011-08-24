@@ -120,6 +120,13 @@ namespace realtimeplot {
 			size_t area;
 			float min_x, max_x;
 			float min_y, max_y;
+			/**
+			 * \brief Fraction of overlap when doing a rolling update
+			 *
+			 * 0 means no overlap. 1 means no overlap. In theory 1 should work fine, but it will
+			 * be highly inefficient. If you want to have complete overlap then it is better to 
+			 * set fixed_plot_area to true.
+			 */
 			float overlap;
 			float aspect_ratio;
 			std::string xlabel, ylabel, font, title;
@@ -171,7 +178,7 @@ namespace realtimeplot {
 			void point( float x, float y );
 			void point( float x, float y, Color color );
 			void rectangle( float x, float y, float width_x, float width_y,
-					bool fill = true, Color color = Color::black() );
+			bool fill = true, Color color = Color::black() );
 			//void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id, Color color );
