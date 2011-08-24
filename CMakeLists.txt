@@ -103,6 +103,13 @@ target_link_libraries(plot_rolling_update_stress_test realtimeplot)
 add_executable(plot_heightmap examples/plot_heightmap.cc)
 target_link_libraries(plot_heightmap realtimeplot)
 
+# Refresh tags file after changes
+FIND_PROGRAM(CTAGS ctags)
+if(!CTAGS-NOTFOUND)
+	add_custom_command (TARGET realtimeplot POST_BUILD COMMAND ${CTAGS} -R --c++-kinds=+p
+	--fields=+iaS --extra=+q .)
+endif()
+
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
 install (TARGETS realtimeplot DESTINATION lib)
