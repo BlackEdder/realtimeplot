@@ -183,6 +183,9 @@ namespace realtimeplot {
 			void line_add( float x, float y, int id, Color color );
 			void number( float x, float y, float i );
 			void save( std::string filename );
+			/**
+			 * \brief Clear the plot, i.e. fill it with its background color
+			 */
 			void clear();
 			/**
 			 * \brief Creates a new plot (new surfaces etc) based on the given config
