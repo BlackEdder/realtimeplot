@@ -105,7 +105,7 @@ target_link_libraries(plot_heightmap realtimeplot)
 
 # Refresh tags file after changes
 FIND_PROGRAM(CTAGS ctags)
-if(!CTAGS-NOTFOUND)
+if(CTAGS)
 	add_custom_command (TARGET realtimeplot POST_BUILD COMMAND ${CTAGS} -R --c++-kinds=+p
 	--fields=+iaS --extra=+q .)
 endif()
