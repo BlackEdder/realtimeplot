@@ -128,6 +128,8 @@ namespace realtimeplot {
 		plot_context->fill();
 		set_foreground_color( plot_context );
 		display();
+		//Clear the line cache
+		lines.clear();
 	}
 
 	void BackendPlot::reset( PlotConfig conf ) {
