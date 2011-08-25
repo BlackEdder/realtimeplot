@@ -102,6 +102,7 @@ namespace realtimeplot {
 						map_mutex.lock();
 						mapWindow[msg->window]->add_event( boost::shared_ptr<Event>( 
 									new CloseWindowEvent() ), true ); 
+						mapWindow.erase(msg->window);
 						map_mutex.unlock();
 					}
 					break;
