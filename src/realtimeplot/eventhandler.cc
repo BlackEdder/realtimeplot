@@ -102,7 +102,8 @@ namespace realtimeplot {
 			}
 		}
 		// Make sure we let pBPlot go/freed.
-		pBPlot.reset();
+		if (pBPlot != NULL)
+			pBPlot.reset();
 	}
 }
 
