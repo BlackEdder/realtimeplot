@@ -177,7 +177,7 @@ namespace realtimeplot {
 			xSurface.clear();
 			xcb_unmap_window( pXcbHandler->connection, win );
 			xcb_destroy_window( pXcbHandler->connection, win );
-			xcb_flush(pXcbHandler->connection);
+			xcb_flush( pXcbHandler->connection );
 			//xcb_disconnect( pXcbHandler->connection );
 		}
 	}

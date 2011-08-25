@@ -101,6 +101,8 @@ namespace realtimeplot {
 				force_close = true;
 			}
 		}
+		// Make sure we let pBPlot go/freed.
+		pBPlot.reset();
 	}
 }
 
