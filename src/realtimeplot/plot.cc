@@ -205,11 +205,6 @@ namespace realtimeplot {
 		pEventHandler->add_event( pEvent );
 	}
 
-	void Plot::number( float x, float y, float i ) {
-		boost::shared_ptr<Event> pEvent( new NumberEvent( x, y, i ) );
-		pEventHandler->add_event( pEvent );
-	}
-
 	void Plot::save( std::string filename ) {
 		boost::shared_ptr<Event> pEvent( new SaveEvent( filename ));
 		pEventHandler->add_event( pEvent );

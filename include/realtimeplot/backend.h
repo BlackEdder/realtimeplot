@@ -230,10 +230,6 @@ namespace realtimeplot {
 			 */
 			void close_window();
 
-			//number
-			//draws a number as text on the surface
-			void number( float x, float y, float i );
-
 			//rolling_update
 			//moves the plot bounds to include the point x, y
 			void rolling_update( float x, float y );

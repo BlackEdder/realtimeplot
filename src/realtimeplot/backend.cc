@@ -510,23 +510,6 @@ namespace realtimeplot {
 		pSurface->write_to_png( fn );
 	}
 
-
-
-	void BackendPlot::number( float x, float y, float i) {
-		if (!within_plot_bounds(x,y)) {
-			if (!config.fixed_plot_area)
-				rolling_update(x, y);
-		}
-		transform_to_plot_units(); 
-		plot_context->move_to( x, y );
-		transform_to_device_units( plot_context );
-		set_foreground_color( plot_context );
-		plot_context->show_text( stringify( i ) );
-
-		display();
-	}
-
-
 	void BackendPlot::rolling_update( float x, float y ) {
 		std::vector<int> direction;
 		direction.push_back( 0 );

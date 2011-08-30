@@ -187,7 +187,6 @@ namespace realtimeplot {
 			 * Text will be left justified
 			 */
 			void text( float x, float y, std::string text );
-			void number( float x, float y, float i );
 			void save( std::string filename );
 			/**
 			 * \brief Clear the plot, i.e. fill it with its background color
