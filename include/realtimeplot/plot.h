@@ -181,6 +181,12 @@ namespace realtimeplot {
 			//void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id, Color color );
+			/**
+			 * Add text to the plot
+			 *
+			 * Text will be left justified
+			 */
+			void text( float x, float y, std::string text );
 			void number( float x, float y, float i );
 			void save( std::string filename );
 			/**

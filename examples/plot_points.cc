@@ -34,7 +34,7 @@ int main() {
 	config.aspect_ratio = 0.5;
 	config.point_size = 2;
 	config.xlabel = "Very Long Long label";
-	config.scaling = true;
+	//config.scaling = true;
 
 	Plot pl = Plot( config );
 
@@ -58,8 +58,10 @@ int main() {
 	pl.update_config();
 	pl.point( 0.2, -15 );
 	pl.save( "plot_points.png" );
+	std::string text = "middle";
+	pl.text( 0.5, 0.5, text );
 
-	sleep(1);
+	sleep(5);
 	pl.close();
 	return 0;
 }

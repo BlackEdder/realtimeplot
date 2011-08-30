@@ -207,6 +207,13 @@ namespace realtimeplot {
 				*/
 			void line_add( float x, float y, int id, Color color );
 
+			/** 
+			 * \brief Add text to plot at point x, y.
+			 *
+			 * Currently always left justified
+			 */
+			void text( float x, float y, std::string &text );
+
 			//! Draw rectangle to the surface
 			void rectangle( float min_x, float min_y, float width_x, float width_y, 
 					bool fill = true, Color color = Color::black() );

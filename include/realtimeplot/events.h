@@ -193,6 +193,18 @@ namespace realtimeplot {
 						Color color;
     };
 
+    class TextEvent : public Event {
+        public:
+            TextEvent( float x, float y, std::string text ) 
+							: x(x), y(y), text(text) {}
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+							pBPlot->text( x, y, text );
+						}
+        private:
+            float x, y;
+						std::string text;
+    };
+ 
 		/**
 		 \brief Event that plots a number (float) at the specified x,y coordinate
 		 */

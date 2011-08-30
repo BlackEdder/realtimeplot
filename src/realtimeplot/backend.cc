@@ -264,7 +264,7 @@ namespace realtimeplot {
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(axes_context);
 		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
 		//pango_font.set_weight( Pango::WEIGHT_HEAVY );
-		pango_layout->set_font_description( pango_font );
+		//pango_layout->set_font_description( pango_font );
 
 		/*Cairo::FontOptions font_options = Cairo::FontOptions();
 			font_options.set_hint_metrics( Cairo::HINT_METRICS_OFF );
@@ -475,6 +475,29 @@ namespace realtimeplot {
 			line->current_y = y;
 			display();
 		}
+	}
+
+	void BackendPlot::text( float x, float y, std::string &text ) {
+		if (!within_plot_bounds(x,y)) {
+			if (!config.fixed_plot_area)
+				rolling_update(x, y);
+		}
+		transform_to_plot_units(); 
+		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(plot_context);
+		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
+		//pango_font.set_weight( Pango::WEIGHT_HEAVY );
+		pango_font.set_size( config.numerical_labels_font_size*Pango::SCALE );
+		pango_layout->set_font_description( pango_font );
+
+		plot_context->move_to( x, y );
+		transform_to_device_units( plot_context );
+		set_foreground_color( plot_context );
+		//plot_context->show_text( text );
+		pango_layout->set_text( text );
+		//pango_layout->add_to_cairo_context(plot_context); //adds text to cairos stack of stuff to be drawn
+		pango_layout->show_in_cairo_context( plot_context );
+
+		display();
 	}
 
 	void BackendPlot::save( std::string fn ) {
