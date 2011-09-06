@@ -28,7 +28,7 @@ project(RealTimePlot)
 
 SET (CMAKE_CXX_FLAGS "-O2 -march=native -pipe -ffast-math -fomit-frame-pointer ${CMAKE_CXX_FLAGS}") 
 
-SET (CMAKE_CXX_FLAGS "-O1 -ggdb") 
+#SET (CMAKE_CXX_FLAGS "-O1 -ggdb") 
 
 find_library( PANGOMM pangomm-1.4 )
 if( PANGOMM-NOTFOUND )
