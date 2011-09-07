@@ -41,11 +41,18 @@ namespace realtimeplot {
 		config = conf;
 		checkConfig();
 
+#ifndef NO_X
 		if (config.display)
 			pDisplayHandler = XcbHandler::Instance();
 		else {
 			pDisplayHandler = DummyHandler::Instance();
 		}
+#endif
+#ifdef NO_X
+			pDisplayHandler = DummyHandler::Instance();
+			config.display = false;
+#endif
+		
 		//calculate minimum plot area width/height based on aspect ratio
 		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
 		plot_area_width = round( config.aspect_ratio*x );

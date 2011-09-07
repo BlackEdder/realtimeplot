@@ -28,7 +28,9 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
+#ifndef NO_X
 #include <xcb/xcb.h>
+#endif
 
 #include <cairomm/surface.h>
 
@@ -85,6 +87,7 @@ namespace realtimeplot {
 	 * It uses a std::map to map x windows to eventhandlers.
 	 *
 	 */
+#ifndef NO_X
 	class XcbHandler : public DisplayHandler {
 		public:
 			xcb_connection_t *connection;
@@ -122,6 +125,7 @@ namespace realtimeplot {
 			std::map<xcb_drawable_t, boost::shared_ptr<EventHandler> > mapWindow;
 			std::map<size_t, xcb_drawable_t > mapWindowId;
 	};
+#endif
 
 	/**
 	 * \brief DisplayClass that gives out surfaces, but nothing else

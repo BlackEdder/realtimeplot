@@ -1,8 +1,10 @@
 #include "realtimeplot/xcbhandler.h"
 
-#include <xcb/xcb_keysyms.h>
-#include <xcb/xcb_event.h>
-#include <X11/keysym.h>
+#ifndef NO_X
+	#include <xcb/xcb_keysyms.h>
+	#include <xcb/xcb_event.h>
+	#include <X11/keysym.h>
+#endif
 
 #include "realtimeplot/events.h"
 
@@ -10,6 +12,7 @@ namespace realtimeplot {
 	boost::mutex DisplayHandler::i_mutex;
 	DisplayHandler* DisplayHandler::pInstance = NULL;
 
+#ifndef NO_X
 	DisplayHandler* XcbHandler::Instance() {
 		i_mutex.lock();
 		if (pInstance == NULL) {
@@ -218,6 +221,7 @@ namespace realtimeplot {
 
 		return visual_type;
 	}
+#endif
 
 	// DummyHandler
 	DisplayHandler* DummyHandler::Instance() {
