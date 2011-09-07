@@ -130,11 +130,18 @@ namespace realtimeplot {
 			float aspect_ratio;
 			std::string xlabel, ylabel, font, title;
 			bool fixed_plot_area;
+
+			/**
+			 * \brief Display the plot or not
+			 *
+			 * You'll need to save the plot explicitly if you set this to false
+			 */
+			bool display;
 			int label_font_size, numerical_labels_font_size;
 
 			/// Constructor that sets default values
 			PlotConfig()
-				: scaling( false )
+				: scaling( false ), display( true )
 			{
 				area = 500*500;
 				margin_x = 60;

@@ -72,6 +72,8 @@ namespace realtimeplot {
 
 			//virtual void send_event( size_t window_id, boost::shared_ptr<Event> pEvent );
 	};
+
+
 	/**
 	 *	\brief Singleton class that maintains an x_connection and handles xevents
 	 *
@@ -120,5 +122,36 @@ namespace realtimeplot {
 			std::map<xcb_drawable_t, boost::shared_ptr<EventHandler> > mapWindow;
 			std::map<size_t, xcb_drawable_t > mapWindowId;
 	};
+
+	/**
+	 * \brief DisplayClass that gives out surfaces, but nothing else
+	 * 
+	 * Usefull if you don't want windows to open. You'll need to save plot to
+	 * disk to get any result
+	 */
+	class DummyHandler : public DisplayHandler {
+		public:
+			static DisplayHandler* Instance();
+
+			// Returns an id
+			size_t open_window( size_t width, size_t height,
+					boost::shared_ptr<EventHandler> pEventHandler = 
+					boost::shared_ptr<EventHandler>() );
+
+			/**
+			 * \brief Return a cairo surface that draws onto a window
+			 *
+			 * Used by BackendPlot to get a surface to draw to.
+			 */
+			Cairo::RefPtr<Cairo::Surface> get_cairo_surface( size_t window_id, size_t width, size_t height );
+
+			void set_title( size_t window_id, std::string title );
+			void close_window( size_t window_id );
+		protected:
+			size_t latest_id;
+			DummyHandler();
+			~DummyHandler() {};
+	};
+
 }
 #endif

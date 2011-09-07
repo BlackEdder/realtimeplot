@@ -9,6 +9,7 @@
 namespace realtimeplot {
 	boost::mutex DisplayHandler::i_mutex;
 	DisplayHandler* DisplayHandler::pInstance = NULL;
+
 	DisplayHandler* XcbHandler::Instance() {
 		i_mutex.lock();
 		if (pInstance == NULL) {
@@ -217,5 +218,38 @@ namespace realtimeplot {
 
 		return visual_type;
 	}
+
+	// DummyHandler
+	DisplayHandler* DummyHandler::Instance() {
+		i_mutex.lock();
+		if (pInstance == NULL) {
+			pInstance = new DummyHandler();
+		}
+		i_mutex.unlock();
+		return pInstance;
+	}
+
+	DummyHandler::DummyHandler() : DisplayHandler(), latest_id( 0 ) {
+	}
+
+	size_t DummyHandler::open_window( size_t width, size_t height,
+			boost::shared_ptr<EventHandler> pEventHandler ) {
+		++latest_id;
+		return latest_id-1;
+	}
+
+	/**
+	 * \brief Return a cairo surface that draws onto a window
+	 *
+	 * Used by BackendPlot to get a surface to draw to.
+	 */
+	Cairo::RefPtr<Cairo::Surface> 
+		DummyHandler::get_cairo_surface( size_t window_id, 
+				size_t width, size_t height ) {
+			return Cairo::ImageSurface::create( Cairo::FORMAT_ARGB32, width, height );
+		}
+
+	void DummyHandler::set_title( size_t window_id, std::string title ) {}
+	void DummyHandler::close_window( size_t window_id ) {}
 
 };

@@ -36,11 +36,16 @@ namespace realtimeplot {
 	 */
 	boost::mutex BackendPlot::global_mutex;
 
-	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), pDisplayHandler( XcbHandler::Instance() )
+	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler )
 	{
 		config = conf;
 		checkConfig();
 
+		if (config.display)
+			pDisplayHandler = XcbHandler::Instance();
+		else {
+			pDisplayHandler = DummyHandler::Instance();
+		}
 		//calculate minimum plot area width/height based on aspect ratio
 		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
 		plot_area_width = round( config.aspect_ratio*x );
@@ -95,7 +100,7 @@ namespace realtimeplot {
 
 	void BackendPlot::display() {
 		//Has the display been paused?
-		if ( !pause_display && xSurface ) {
+		if ( !pause_display && config.display && xSurface ) {
 			boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
 			//Only do this if event queue is empty 
 			//or last update was more than a 0.5 seconds ago
