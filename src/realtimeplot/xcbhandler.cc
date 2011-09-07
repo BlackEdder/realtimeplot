@@ -16,12 +16,13 @@ namespace realtimeplot {
 		return pInstance;
 	}
 
-	void DisplayHandler::send_event( size_t window_id, boost::shared_ptr<Event> pEvent ) {
-		map_mutex.lock();
-		mapWindow[window_id]->add_event( pEvent, true ); 
-		map_mutex.unlock();
+	void XcbHandler::send_event( xcb_drawable_t window, 
+			boost::shared_ptr<Event> pEvent ) {
+			std::cout << "Bla " << std::endl;
+		boost::mutex::scoped_lock( map_mutex );
+		mapWindow[window]->add_event( pEvent );
+			std::cout << "Bla " << std::endl;
 	}
-
 
 	size_t XcbHandler::open_window(size_t width, size_t height,
 			boost::shared_ptr<EventHandler> pEventHandler ) {
@@ -33,7 +34,9 @@ namespace realtimeplot {
 				XCB_WINDOW_CLASS_INPUT_OUTPUT,screen->root_visual,mask,values);
 
 		map_mutex.lock();
-		mapWindow[(void*) win] = pEventHandler;
+		mapWindow[win] = pEventHandler;
+		size_t id = mapWindowId.size();
+		mapWindowId[id] = win;
 		map_mutex.unlock();
 
 		xcb_change_property(connection, XCB_PROP_MODE_REPLACE, win, reply->atom, 4, 32, 1,
@@ -43,7 +46,7 @@ namespace realtimeplot {
 
 		//xcb_flush(connection);
 
-		return (void *)win;
+		return id;
 	}
 
 	XcbHandler::XcbHandler() : DisplayHandler() 
@@ -107,7 +110,7 @@ namespace realtimeplot {
 					if(msg->data.data32[0] ==
 							reply2->atom)
 					{
-						send_event( (void*) msg->window, boost::shared_ptr<Event>( 
+						send_event( msg->window, boost::shared_ptr<Event>( 
 									new CloseWindowEvent() ) ); 
 					}
 					break;
@@ -116,7 +119,7 @@ namespace realtimeplot {
 				case XCB_CONFIGURE_NOTIFY:
 					xcb_configure_notify_event_t *conf;
 					conf = (xcb_configure_notify_event_t *)event;
-					send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+					send_event( conf->window, boost::shared_ptr<Event>( 
 								new ScaleXSurfaceEvent( conf->width, conf->height ) ) ); 
 					break;
 				case XCB_EXPOSE:
@@ -131,30 +134,30 @@ namespace realtimeplot {
 					xcb_keysym_t key;
 					key = xcb_key_symbols_get_keysym(p_symbols,ev->detail,0);
 					if (key == XK_space)  {
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 								new PauseEvent() ) ); 
 					}
 					else if (key == XK_w)  {
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 									new SaveEvent( "realtimeplot.png" ) ) );
 					}
 					else if (key == XK_Left) {
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 									new MoveEvent( -1, 0 ) ) );
 					} else if (key == XK_Right) {
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 									new MoveEvent( 1, 0 ) ) );
 					} else if (key == XK_Up) {
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 									new MoveEvent( 0, 1 ) ) );
 					} else if (key == XK_Down) {
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 									new MoveEvent( 0, -1 ) ) );
 					} else if (key == XK_KP_Add) { 
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 									new ZoomEvent( 0.95 ) ) );
 					} else if (key == XK_KP_Subtract) { 
-						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
+						send_event( conf->window, boost::shared_ptr<Event>( 
 									new ZoomEvent( 1.05 ) ) );
 					}
 					xcb_key_symbols_free( p_symbols );
@@ -168,22 +171,24 @@ namespace realtimeplot {
 	
 	Cairo::RefPtr<Cairo::Surface> XcbHandler::get_cairo_surface( size_t window_id, 
 			size_t width, size_t height ) {
-		Cairo::XcbSurface::create( connection, *(xcb_drawable_t*) window_id, 
+		Cairo::XcbSurface::create( connection, mapWindowId[window_id], 
 				visual_type, width, height );
 	}
 
 
-	void XcbHandler::set_title( size_t win_id, std::string title ) {
+	void XcbHandler::set_title( size_t window_id, std::string title ) {
 		xcb_change_property_checked (connection, XCB_PROP_MODE_REPLACE, 
-				*(xcb_drawable_t*) win,
+				mapWindowId[window_id],
 				XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
 				title.length(), title.c_str());
 	}
 
-	void XcbHandler::close_window( size_t win_id ) {
-			xcb_unmap_window( connection, *(xcb_drawable_t*) win );
-			xcb_destroy_window( connection, *(xcb_drawable_t*) win );
+	void XcbHandler::close_window( size_t window_id ) {
+			xcb_unmap_window( connection, mapWindowId[window_id] );
+			xcb_destroy_window( connection,  mapWindowId[window_id] );
 			xcb_flush(connection);
+
+			//Remove from maps!
 	}
 
 	xcb_visualtype_t *XcbHandler::get_root_visual_type(xcb_screen_t *s)

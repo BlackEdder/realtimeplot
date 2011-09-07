@@ -67,9 +67,9 @@ namespace realtimeplot {
 			virtual ~DisplayHandler() {};
 			static DisplayHandler *pInstance;
 
-			std::map<size_t, boost::shared_ptr<EventHandler> > mapWindow;
+			//std::map<size_t, boost::shared_ptr<EventHandler> > mapWindow;
 
-			//virtual void send_event( void* window_id, boost::shared_ptr<Event> pEvent );
+			//virtual void send_event( size_t window_id, boost::shared_ptr<Event> pEvent );
 	};
 	/**
 	 *	\brief Singleton class that maintains an x_connection and handles xevents
@@ -94,7 +94,7 @@ namespace realtimeplot {
 			size_t open_window(size_t width, size_t height,
 					boost::shared_ptr<EventHandler> pEventHandler = 
 					boost::shared_ptr<EventHandler>() );
-			Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id, size_t width, size_t height );
+			Cairo::RefPtr<Cairo::Surface> get_cairo_surface( size_t window_id, size_t width, size_t height );
 
 			void set_title( size_t window_id, std::string );
 			void close_window( size_t window_id );
@@ -117,6 +117,9 @@ namespace realtimeplot {
 			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
 			void send_event( xcb_drawable_t window, 
 					boost::shared_ptr<Event> pEvent );
+
+			std::map<xcb_drawable_t, boost::shared_ptr<EventHandler> > mapWindow;
+			std::map<size_t, xcb_drawable_t > mapWindowId;
 	};
 }
 #endif
