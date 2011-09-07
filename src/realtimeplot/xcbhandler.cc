@@ -18,10 +18,8 @@ namespace realtimeplot {
 
 	void XcbHandler::send_event( xcb_drawable_t window, 
 			boost::shared_ptr<Event> pEvent ) {
-			std::cout << "Bla " << std::endl;
 		boost::mutex::scoped_lock( map_mutex );
 		mapWindow[window]->add_event( pEvent );
-			std::cout << "Bla " << std::endl;
 	}
 
 	size_t XcbHandler::open_window(size_t width, size_t height,
@@ -171,7 +169,7 @@ namespace realtimeplot {
 	
 	Cairo::RefPtr<Cairo::Surface> XcbHandler::get_cairo_surface( size_t window_id, 
 			size_t width, size_t height ) {
-		Cairo::XcbSurface::create( connection, mapWindowId[window_id], 
+		return Cairo::XcbSurface::create( connection, mapWindowId[window_id], 
 				visual_type, width, height );
 	}
 

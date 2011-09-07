@@ -69,7 +69,6 @@ namespace realtimeplot {
 		if(!xSurface)
 			fprintf(stderr,"Error creating surface\n");
 
-
 		//draw initial axes etc
 		draw_axes_surface();
 		
