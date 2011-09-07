@@ -54,10 +54,8 @@ namespace realtimeplot {
 			//context used for drawing lines
 			Cairo::RefPtr<Cairo::Context> context;
 
-			LineAttributes( float x, float y, int id_value ) {
-				id = id_value;
-				current_x = x;
-				current_y = y;
+			LineAttributes( float x, float y, int id ) 
+				: id( id ), current_x( x ), current_y( y )	{
 			}
 	};
 
@@ -209,6 +207,13 @@ namespace realtimeplot {
 				*/
 			void line_add( float x, float y, int id, Color color );
 
+			/** 
+			 * \brief Add text to plot at point x, y.
+			 *
+			 * Currently always left justified
+			 */
+			void text( float x, float y, std::string &text );
+
 			//! Draw rectangle to the surface
 			void rectangle( float min_x, float min_y, float width_x, float width_y, 
 					bool fill = true, Color color = Color::black() );
@@ -224,10 +229,6 @@ namespace realtimeplot {
 			 * \brief Close the current xwindow
 			 */
 			void close_window();
-
-			//number
-			//draws a number as text on the surface
-			void number( float x, float y, float i );
 
 			//rolling_update
 			//moves the plot bounds to include the point x, y
@@ -264,7 +265,7 @@ namespace realtimeplot {
 			void zoom( double scale );
 		private:
 			DisplayHandler *pDisplayHandler;
-			void* win;
+			size_t win;
 
 			//Keep track to lines
 			std::list<boost::shared_ptr<LineAttributes> > lines;
@@ -276,6 +277,9 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
 			
 			static boost::mutex global_mutex;
+
+			//! Check that the config values are valid
+			void checkConfig();
 	};
 
 	/**

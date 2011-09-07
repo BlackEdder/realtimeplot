@@ -49,7 +49,7 @@ namespace realtimeplot {
 			/**
 			 * \brief Opens a window and returns an id
 			 */
-			virtual void* open_window( size_t width, size_t height,
+			virtual size_t open_window( size_t width, size_t height,
 					boost::shared_ptr<EventHandler> pEventHandler = 
 					boost::shared_ptr<EventHandler>() ) = 0;
 
@@ -58,18 +58,18 @@ namespace realtimeplot {
 			 *
 			 * Used by BackendPlot to get a surface to draw to.
 			 */
-			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id, size_t width, size_t height ) = 0;
+			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( size_t window_id, size_t width, size_t height ) = 0;
 
-			virtual void set_title( void* window_id, std::string title ) =0;
-			virtual void close_window( void* win ) =0;
+			virtual void set_title( size_t window_id, std::string title ) =0;
+			virtual void close_window( size_t window_id ) =0;
 		protected:
 			DisplayHandler() {};
 			virtual ~DisplayHandler() {};
 			static DisplayHandler *pInstance;
 
-			std::map<void*, boost::shared_ptr<EventHandler> > mapWindow;
+			std::map<size_t, boost::shared_ptr<EventHandler> > mapWindow;
 
-			virtual void send_event( void* window_id, boost::shared_ptr<Event> pEvent );
+			//virtual void send_event( void* window_id, boost::shared_ptr<Event> pEvent );
 	};
 	/**
 	 *	\brief Singleton class that maintains an x_connection and handles xevents
@@ -91,13 +91,13 @@ namespace realtimeplot {
 			xcb_visualtype_t *visual_type;
 			static DisplayHandler* Instance();
 
-			void* open_window(size_t width, size_t height,
+			size_t open_window(size_t width, size_t height,
 					boost::shared_ptr<EventHandler> pEventHandler = 
 					boost::shared_ptr<EventHandler>() );
 			Cairo::RefPtr<Cairo::Surface> get_cairo_surface( void* window_id, size_t width, size_t height );
 
-			void set_title( void* window_id, std::string );
-			void close_window( void* win );
+			void set_title( size_t window_id, std::string );
+			void close_window( size_t window_id );
 		protected:
 			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
 			int mask;
@@ -115,6 +115,8 @@ namespace realtimeplot {
 			void process_xevents();
 
 			xcb_visualtype_t *get_root_visual_type(xcb_screen_t *s);
+			void send_event( xcb_drawable_t window, 
+					boost::shared_ptr<Event> pEvent );
 	};
 }
 #endif

@@ -114,16 +114,6 @@ namespace realtimeplot {
 	}
 
 
-	NumberEvent::NumberEvent( float x, float y, float i ) {
-		x_crd = x;
-		y_crd = y;
-		nr = i;
-	}
-
-	void NumberEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
-		pBPlot->number( x_crd, y_crd, nr );
-	}
-
 	SaveEvent::SaveEvent( std::string fn ) {
 		filename = fn;
 	}

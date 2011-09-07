@@ -120,6 +120,12 @@ namespace realtimeplot {
 			size_t area;
 			float min_x, max_x;
 			float min_y, max_y;
+			/**
+			 * \brief Fraction of overlap when doing a rolling update
+			 *
+			 * 0 means no overlap. 1 means no overlap and is the same as setting
+			 * fixed_plot_area to true.	
+			 */
 			float overlap;
 			float aspect_ratio;
 			std::string xlabel, ylabel, font, title;
@@ -171,12 +177,20 @@ namespace realtimeplot {
 			void point( float x, float y );
 			void point( float x, float y, Color color );
 			void rectangle( float x, float y, float width_x, float width_y,
-					bool fill = true, Color color = Color::black() );
+			bool fill = true, Color color = Color::black() );
 			//void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id, Color color );
-			void number( float x, float y, float i );
+			/**
+			 * Add text to the plot
+			 *
+			 * Text will be left justified
+			 */
+			void text( float x, float y, std::string text );
 			void save( std::string filename );
+			/**
+			 * \brief Clear the plot, i.e. fill it with its background color
+			 */
 			void clear();
 			/**
 			 * \brief Creates a new plot (new surfaces etc) based on the given config

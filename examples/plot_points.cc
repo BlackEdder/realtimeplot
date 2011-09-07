@@ -58,8 +58,9 @@ int main() {
 	pl.update_config();
 	pl.point( 0.2, -15 );
 	pl.save( "plot_points.png" );
+	pl.text( 0.5, 0.5, "middle" );
 
-	sleep(1);
+	sleep(5);
 	pl.close();
 	return 0;
 }

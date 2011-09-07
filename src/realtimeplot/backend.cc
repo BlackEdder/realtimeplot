@@ -39,6 +39,7 @@ namespace realtimeplot {
 	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), pDisplayHandler( XcbHandler::Instance() )
 	{
 		config = conf;
+		checkConfig();
 
 		//calculate minimum plot area width/height based on aspect ratio
 		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
@@ -86,6 +87,13 @@ namespace realtimeplot {
 	BackendPlot::~BackendPlot() {
 	}
 
+	void BackendPlot::checkConfig() {
+		if ( config.overlap >= 1 )
+			config.fixed_plot_area = true;
+		else if (config.overlap < 0)
+			config.overlap = 0;
+	}
+
 	void BackendPlot::display() {
 		//Has the display been paused?
 		if ( !pause_display && xSurface ) {
@@ -116,6 +124,8 @@ namespace realtimeplot {
 		plot_context->fill();
 		set_foreground_color( plot_context );
 		display();
+		//Clear the line cache
+		lines.clear();
 	}
 
 	void BackendPlot::reset( PlotConfig conf ) {
@@ -248,7 +258,7 @@ namespace realtimeplot {
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(axes_context);
 		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
 		//pango_font.set_weight( Pango::WEIGHT_HEAVY );
-		pango_layout->set_font_description( pango_font );
+		//pango_layout->set_font_description( pango_font );
 
 		/*Cairo::FontOptions font_options = Cairo::FontOptions();
 			font_options.set_hint_metrics( Cairo::HINT_METRICS_OFF );
@@ -461,6 +471,29 @@ namespace realtimeplot {
 		}
 	}
 
+	void BackendPlot::text( float x, float y, std::string &text ) {
+		if (!within_plot_bounds(x,y)) {
+			if (!config.fixed_plot_area)
+				rolling_update(x, y);
+		}
+		transform_to_plot_units(); 
+		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(plot_context);
+		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
+		//pango_font.set_weight( Pango::WEIGHT_HEAVY );
+		pango_font.set_size( config.numerical_labels_font_size*Pango::SCALE );
+		pango_layout->set_font_description( pango_font );
+
+		plot_context->move_to( x, y );
+		transform_to_device_units( plot_context );
+		set_foreground_color( plot_context );
+		//plot_context->show_text( text );
+		pango_layout->set_text( text );
+		//pango_layout->add_to_cairo_context(plot_context); //adds text to cairos stack of stuff to be drawn
+		pango_layout->show_in_cairo_context( plot_context );
+
+		display();
+	}
+
 	void BackendPlot::save( std::string fn ) {
 		Cairo::RefPtr<Cairo::ImageSurface> surface = create_temporary_surface();
 		save( fn, surface );
@@ -470,23 +503,6 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::ImageSurface> pSurface ) {
 		pSurface->write_to_png( fn );
 	}
-
-
-
-	void BackendPlot::number( float x, float y, float i) {
-		if (!within_plot_bounds(x,y)) {
-			if (!config.fixed_plot_area)
-				rolling_update(x, y);
-		}
-		transform_to_plot_units(); 
-		plot_context->move_to( x, y );
-		transform_to_device_units( plot_context );
-		set_foreground_color( plot_context );
-		plot_context->show_text( stringify( i ) );
-
-		display();
-	}
-
 
 	void BackendPlot::rolling_update( float x, float y ) {
 		std::vector<int> direction;

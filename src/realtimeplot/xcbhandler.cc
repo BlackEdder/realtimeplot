@@ -16,14 +16,14 @@ namespace realtimeplot {
 		return pInstance;
 	}
 
-	void DisplayHandler::send_event( void* window_id, boost::shared_ptr<Event> pEvent ) {
+	void DisplayHandler::send_event( size_t window_id, boost::shared_ptr<Event> pEvent ) {
 		map_mutex.lock();
 		mapWindow[window_id]->add_event( pEvent, true ); 
 		map_mutex.unlock();
 	}
 
 
-	void* XcbHandler::open_window(size_t width, size_t height,
+	size_t XcbHandler::open_window(size_t width, size_t height,
 			boost::shared_ptr<EventHandler> pEventHandler ) {
 		xcb_drawable_t win;
 
@@ -126,8 +126,10 @@ namespace realtimeplot {
 					/* Handle the Key Press event type */
 					xcb_key_press_event_t *ev;
 					ev = (xcb_key_press_event_t *)event;
+					xcb_key_symbols_t *p_symbols;
+					p_symbols = xcb_key_symbols_alloc(connection);
 					xcb_keysym_t key;
-					key = xcb_key_symbols_get_keysym(xcb_key_symbols_alloc(connection),ev->detail,0);
+					key = xcb_key_symbols_get_keysym(p_symbols,ev->detail,0);
 					if (key == XK_space)  {
 						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
 								new PauseEvent() ) ); 
@@ -155,6 +157,7 @@ namespace realtimeplot {
 						send_event( (void*) conf->window, boost::shared_ptr<Event>( 
 									new ZoomEvent( 1.05 ) ) );
 					}
+					xcb_key_symbols_free( p_symbols );
 					break;	
 				default:
 					break;
@@ -163,21 +166,21 @@ namespace realtimeplot {
 		free(event);
 	}
 	
-	Cairo::RefPtr<Cairo::Surface> XcbHandler::get_cairo_surface( void* window_id, 
+	Cairo::RefPtr<Cairo::Surface> XcbHandler::get_cairo_surface( size_t window_id, 
 			size_t width, size_t height ) {
 		Cairo::XcbSurface::create( connection, *(xcb_drawable_t*) window_id, 
 				visual_type, width, height );
 	}
 
 
-	void XcbHandler::set_title( void* win, std::string title ) {
+	void XcbHandler::set_title( size_t win_id, std::string title ) {
 		xcb_change_property_checked (connection, XCB_PROP_MODE_REPLACE, 
 				*(xcb_drawable_t*) win,
 				XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
 				title.length(), title.c_str());
 	}
 
-	void XcbHandler::close_window( void* win ) {
+	void XcbHandler::close_window( size_t win_id ) {
 			xcb_unmap_window( connection, *(xcb_drawable_t*) win );
 			xcb_destroy_window( connection, *(xcb_drawable_t*) win );
 			xcb_flush(connection);

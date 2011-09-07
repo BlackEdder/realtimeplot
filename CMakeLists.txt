@@ -28,7 +28,7 @@ project(RealTimePlot)
 
 SET (CMAKE_CXX_FLAGS "-O2 -march=native -pipe -ffast-math -fomit-frame-pointer ${CMAKE_CXX_FLAGS}") 
 
-SET (CMAKE_CXX_FLAGS "-O1 -ggdb") 
+#SET (CMAKE_CXX_FLAGS "-O1 -ggdb") 
 
 find_library( PANGOMM pangomm-1.4 )
 if( PANGOMM-NOTFOUND )
@@ -102,6 +102,13 @@ target_link_libraries(plot_rolling_update_stress_test realtimeplot)
 
 add_executable(plot_heightmap examples/plot_heightmap.cc)
 target_link_libraries(plot_heightmap realtimeplot)
+
+# Refresh tags file after changes
+FIND_PROGRAM(CTAGS ctags)
+if(CTAGS)
+	add_custom_command (TARGET realtimeplot POST_BUILD COMMAND ${CTAGS} -R --c++-kinds=+p
+	--fields=+iaS --extra=+q .)
+endif()
 
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)

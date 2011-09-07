@@ -199,9 +199,9 @@ namespace realtimeplot {
 		boost::shared_ptr<Event> pEvent( new LineAddEvent( x, y, id, color ) );
 		pEventHandler->add_event( pEvent );
 	}
-
-	void Plot::number( float x, float y, float i ) {
-		boost::shared_ptr<Event> pEvent( new NumberEvent( x, y, i ) );
+	
+	void Plot::text( float x, float y, std::string text ) {
+		boost::shared_ptr<Event> pEvent( new TextEvent( x, y, text ) );
 		pEventHandler->add_event( pEvent );
 	}
 
