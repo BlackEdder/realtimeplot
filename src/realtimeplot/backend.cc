@@ -727,6 +727,7 @@ namespace realtimeplot {
 			x_surface_width = width;
 			x_surface_height = height;
 			//xSurface->set_size( width, height );
+			xSurface = pDisplayHandler->get_cairo_surface( win, width, height );
 		}
 		xContext = Cairo::Context::create( xSurface );
 		draw_axes_surface();

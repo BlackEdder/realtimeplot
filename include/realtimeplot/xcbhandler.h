@@ -44,7 +44,7 @@ namespace realtimeplot {
 	 */
 	class DisplayHandler {
 		public:
-			static DisplayHandler* Instance();
+			//static DisplayHandler* Instance();
 			boost::mutex map_mutex; 
 			/**
 			 * \brief Opens a window and returns an id
@@ -66,6 +66,7 @@ namespace realtimeplot {
 			DisplayHandler() {};
 			virtual ~DisplayHandler() {};
 			static DisplayHandler *pInstance;
+			static boost::mutex i_mutex; 
 
 			//std::map<size_t, boost::shared_ptr<EventHandler> > mapWindow;
 
@@ -106,11 +107,9 @@ namespace realtimeplot {
 			xcb_intern_atom_reply_t* reply;
 			xcb_intern_atom_reply_t* reply2;
 
-			static boost::mutex i_mutex; 
-
 			XcbHandler();
 			~XcbHandler() { pXEventProcessingThrd->join(); }
-			static DisplayHandler *pInstance;
+			//static DisplayHandler *pInstance;
 
 			void process_xevents();
 

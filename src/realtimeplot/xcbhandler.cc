@@ -7,19 +7,21 @@
 #include "realtimeplot/events.h"
 
 namespace realtimeplot {
-	DisplayHandler* XcbHandler::pInstance = 0;
+	boost::mutex DisplayHandler::i_mutex;
+	DisplayHandler* DisplayHandler::pInstance = NULL;
 	DisplayHandler* XcbHandler::Instance() {
-		boost::mutex::scoped_lock(i_mutex);
-		if (pInstance == 0) {
+		i_mutex.lock();
+		if (pInstance == NULL) {
 			pInstance = new XcbHandler();
 		}
+		i_mutex.unlock();
 		return pInstance;
 	}
 
 	void XcbHandler::send_event( xcb_drawable_t window, 
 			boost::shared_ptr<Event> pEvent ) {
 		boost::mutex::scoped_lock( map_mutex );
-		mapWindow[window]->add_event( pEvent );
+		mapWindow[window]->add_event( pEvent, true );
 	}
 
 	size_t XcbHandler::open_window(size_t width, size_t height,
@@ -182,11 +184,15 @@ namespace realtimeplot {
 	}
 
 	void XcbHandler::close_window( size_t window_id ) {
-			xcb_unmap_window( connection, mapWindowId[window_id] );
-			xcb_destroy_window( connection,  mapWindowId[window_id] );
-			xcb_flush(connection);
+		boost::mutex::scoped_lock( map_mutex );
+		xcb_drawable_t win = mapWindowId[window_id];
+			xcb_unmap_window( connection, win );
+		xcb_destroy_window( connection, win );
+		xcb_flush(connection);
 
-			//Remove from maps!
+		//Remove from maps!
+		mapWindowId.erase( window_id );
+		mapWindow.erase( win );
 	}
 
 	xcb_visualtype_t *XcbHandler::get_root_visual_type(xcb_screen_t *s)
