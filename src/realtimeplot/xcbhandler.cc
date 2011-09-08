@@ -1,9 +1,15 @@
 #include "realtimeplot/xcbhandler.h"
 
 #ifndef NO_X
-	#include <xcb/xcb_keysyms.h>
-	#include <xcb/xcb_event.h>
-	#include <X11/keysym.h>
+#include <xcb/xcb_keysyms.h>
+#include <xcb/xcb_event.h>
+#include <X11/keysym.h>
+
+#ifndef CAIRO_HAS_XCB_SURFACE
+#error Cairo was not compiled with XCB support
+#endif
+
+#include <cairomm/xcb_surface.h>
 #endif
 
 #include "realtimeplot/events.h"

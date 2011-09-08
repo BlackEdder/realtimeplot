@@ -33,7 +33,6 @@
 #include <pangomm/layout.h>
 
 #include <cairomm/context.h>
-#include <cairomm/xcb_surface.h>
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 

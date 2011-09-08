@@ -26,10 +26,6 @@
 
 #include <boost/math/special_functions/beta.hpp>
 
-#ifndef CAIRO_HAS_XCB_SURFACE
-#error Cairo was not compiled with XCB support
-#endif
-
 namespace realtimeplot {
 	/*
 	 * BackendPlot
