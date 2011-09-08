@@ -221,9 +221,8 @@ namespace realtimeplot {
 			void save( std::string fn );
 			void save( std::string fn, Cairo::RefPtr<Cairo::ImageSurface> pSurface );
 
-			//handle_xevent
-			//Called by event handler when an xevent happens
-			void handle_xevent( xcb_generic_event_t *e );
+			//Moved to xcbhandler
+			//void handle_xevent( xcb_generic_event_t *e );
 
 			/**
 			 * \brief Close the current xwindow

@@ -162,9 +162,9 @@ namespace realtimeplot {
 		display();
 	}
 
-	void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
+	/*void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
 		throw;
-	}
+	}*/
 
 	void BackendPlot::close_window() {
 		if (xSurface) {
