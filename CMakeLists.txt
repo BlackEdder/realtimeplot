@@ -26,14 +26,17 @@
 cmake_minimum_required(VERSION 2.6)
 project(RealTimePlot)
 
-SET (CMAKE_CXX_FLAGS "-O2 -march=native -pipe -ffast-math -fomit-frame-pointer ${CMAKE_CXX_FLAGS}") 
+SET (CMAKE_CXX_FLAGS "-O2 -march=native -pipe -ffast-math -fomit-frame-pointer ${CMAKE_CXX_FLAGS}")
+
+if(NO_X)
+	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_X")
+endif()
 
 #SET (CMAKE_CXX_FLAGS "-O1 -ggdb") 
-
 find_library( PANGOMM pangomm-1.4 )
-if( PANGOMM-NOTFOUND )
+if( NOT PANGOMM )
 	message( FATAL_ERROR "Could not find pangomm library" )
-	endif()
+endif()
 
 # PANGOMM already depends on cairomm, so no need to check
 #find_library( CAIROMM cairomm-1.0 )
@@ -41,15 +44,19 @@ if( PANGOMM-NOTFOUND )
 #message( FATAL_ERROR "Could not find cairomm library" )
 #endif()
 
-
-	find_library( XCB-UTIL xcb-keysyms xcb-util )
-	if( XCB-UTIL-NOTFOUND )
-		message( FATAL_ERROR "Could not find xcb-util(-keysyms) library" )
-	endif()
-
-
 set(BOOST_LIBS thread date_time math_tr1 )
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
+
+SET(LIBS "${PANGOMM};${Boost_LIBRARIES}")
+
+if( NOT NO_X)
+	find_library( XCB-UTIL xcb-keysyms xcb-util )
+	if( NOT XCB-UTIL )
+		message( FATAL_ERROR "Could not find xcb-util(-keysyms) library\n You
+		could compile without X support" )
+	endif()
+	SET(LIBS "${LIBS};${XCB-UTIL}")
+endif()
 
 include_directories("include")
 include_directories("/usr/include/pangomm-1.4")
@@ -72,7 +79,7 @@ add_library( realtimeplot SHARED src/realtimeplot/plot.cc
 	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
 	src/realtimeplot/events.cc src/realtimeplot/delaunay.cc
 	src/realtimeplot/xcbhandler.cc src/cairomm/xcb_surface.cc )
-target_link_libraries(realtimeplot ${PANGOMM} ${Boost_LIBRARIES} ${XCB-UTIL})
+target_link_libraries(realtimeplot ${LIBS})
 
 #Examples.. should be under own build target -> make examples
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
@@ -127,17 +134,19 @@ include(UseDoxygen)
 find_package(CxxTest)
 if(CXXTEST_FOUND)
 	#include_directories(tests)
-  enable_testing()
+	enable_testing()
 
-  CXXTEST_ADD_TEST(unittest_delaunay test_delaunay.cc
+	CXXTEST_ADD_TEST(unittest_delaunay test_delaunay.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_delaunay.h)
-  target_link_libraries(unittest_delaunay realtimeplot) # as needed
-  CXXTEST_ADD_TEST(unittest_backend test_backend.cc
+	target_link_libraries(unittest_delaunay realtimeplot) # as needed
+	CXXTEST_ADD_TEST(unittest_backend test_backend.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_backend.h)
-  target_link_libraries(unittest_backend realtimeplot) # as needed
-  CXXTEST_ADD_TEST(unittest_xcbhandler test_xcbhandler.cc
-		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xcbhandler.h)
-  target_link_libraries(unittest_xcbhandler realtimeplot) # as needed
+	target_link_libraries(unittest_backend realtimeplot) # as needed
+	if(NOT NO_X)
+		CXXTEST_ADD_TEST(unittest_xcbhandler test_xcbhandler.cc
+			${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xcbhandler.h)
+		target_link_libraries(unittest_xcbhandler realtimeplot) # as needed
+	endif()
 endif()
 
 #
