@@ -48,6 +48,8 @@ set(BOOST_LIBS thread date_time math_tr1 )
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
 SET(LIBS "${PANGOMM};${Boost_LIBRARIES}")
+SET(SRC
+	"src/realtimeplot/plot.cc;src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;")
 
 if( NOT NO_X)
 	find_library( XCB-UTIL xcb-keysyms xcb-util )
@@ -56,6 +58,7 @@ if( NOT NO_X)
 		could compile without X support" )
 	endif()
 	SET(LIBS "${LIBS};${XCB-UTIL}")
+	SET(SRC "${SRC};src/cairomm/xcb_surface.cc")
 endif()
 
 include_directories("include")
@@ -75,10 +78,7 @@ include_directories("/usr/include/sigc++-2.0")
 include_directories("/usr/lib/sigc++-2.0/include")
 
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
-add_library( realtimeplot SHARED src/realtimeplot/plot.cc
-	src/realtimeplot/backend.cc src/realtimeplot/eventhandler.cc
-	src/realtimeplot/events.cc src/realtimeplot/delaunay.cc
-	src/realtimeplot/xcbhandler.cc src/cairomm/xcb_surface.cc )
+add_library( realtimeplot SHARED ${SRC} )
 target_link_libraries(realtimeplot ${LIBS})
 
 #Examples.. should be under own build target -> make examples
