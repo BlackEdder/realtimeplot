@@ -51,9 +51,9 @@ SET(LIBS "${PANGOMM};${Boost_LIBRARIES}")
 SET(SRC
 	"src/realtimeplot/plot.cc;src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;")
 
-if( NOT NO_X)
+if(NOT NO_X)
 	find_library( XCB-UTIL xcb-keysyms xcb-util )
-	if( NOT XCB-UTIL )
+	if(NOT XCB-UTIL)
 		message( FATAL_ERROR "Could not find xcb-util(-keysyms) library\n You
 		could compile without X support" )
 	endif()
