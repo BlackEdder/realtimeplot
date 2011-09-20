@@ -188,6 +188,12 @@ namespace realtimeplot {
 			//void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id, Color color );
+
+			/**
+			 * \brief set a new title
+			 */
+			void title( std::string title );
+
 			/**
 			 * Add text to the plot
 			 *

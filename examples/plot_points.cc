@@ -59,6 +59,7 @@ int main() {
 	pl.point( 0.2, -15 );
 	pl.save( "plot_points.png" );
 	pl.text( 0.5, 0.5, "middle" );
+	pl.title( "abc" );
 
 	sleep(5);
 	pl.close();

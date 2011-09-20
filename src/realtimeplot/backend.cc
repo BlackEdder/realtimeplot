@@ -478,6 +478,10 @@ namespace realtimeplot {
 		}
 	}
 
+	void BackendPlot::title( std::string &title ) {
+		pDisplayHandler->set_title( win, title );
+	}
+
 	void BackendPlot::text( float x, float y, std::string &text ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)

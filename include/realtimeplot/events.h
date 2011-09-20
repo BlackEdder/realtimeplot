@@ -193,7 +193,18 @@ namespace realtimeplot {
 						Color color;
     };
 
-    class TextEvent : public Event {
+    class TitleEvent : public Event {
+        public:
+            TitleEvent( std::string title ) 
+							: title(title) {}
+						virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+							pBPlot->title( title );
+						}
+        private:
+						std::string title;
+    };
+
+     class TextEvent : public Event {
         public:
             TextEvent( float x, float y, std::string text ) 
 							: x(x), y(y), text(text) {}

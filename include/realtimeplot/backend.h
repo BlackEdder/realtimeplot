@@ -206,6 +206,8 @@ namespace realtimeplot {
 				*/
 			void line_add( float x, float y, int id, Color color );
 
+			void title( std::string &title );
+
 			/** 
 			 * \brief Add text to plot at point x, y.
 			 *
