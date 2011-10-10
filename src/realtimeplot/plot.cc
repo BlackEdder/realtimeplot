@@ -256,7 +256,7 @@ namespace realtimeplot {
 		Plot( false )
 	{
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHistogramEvent( config, 
-						pEventHandler, 0, -1, 4 ) ) );
+						pEventHandler, 0, -1, no_bins ) ) );
 	}
 
 	Histogram::Histogram( double min_x, double max_x, size_t no_bins )
