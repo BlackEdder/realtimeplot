@@ -805,7 +805,7 @@ namespace realtimeplot {
 				//choose arbitrary bin_width
 				bin_width = 1;
 				for (int i=0; i<no_bins; ++i) {
-					bins_x.push_back( data.front()+(i-no_bins/2)*bin_width );
+					bins_x.push_back( data.front()+(i-no_bins/2.0)*bin_width );
 				}
 				min_x = data.front();
 				max_x = data.front();
