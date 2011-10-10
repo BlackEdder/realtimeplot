@@ -261,6 +261,59 @@ namespace realtimeplot {
 		};
 
 		/*
+		 * Histogram specific events
+		 */
+
+		/**
+		 * \brief Opens a Histogram 
+		 */
+		class OpenHistogramEvent : public Event {
+			public:
+				OpenHistogramEvent( PlotConfig plot_conf, boost::shared_ptr<EventHandler> pEventHandler, 
+						double min_x, double max_x, size_t no_bins ) 
+					: plot_conf( plot_conf ),
+					pEventHandler( pEventHandler->shared_from_this() ),
+					min_x( min_x ), max_x( max_x ), no_bins( no_bins ) {}
+
+
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					pBPlot.reset( new BackendHistogram( plot_conf, pEventHandler, min_x, max_x, no_bins ) );
+				}
+
+			private:
+				PlotConfig plot_conf;
+				boost::shared_ptr<EventHandler> pEventHandler;
+				double min_x, max_x;
+				size_t no_bins;
+		};
+
+		class HistDataEvent : public Event {
+			public:
+				HistDataEvent( double new_data, bool show, 
+						bool freq, size_t n_no_bins, bool n_frozen_bins_x )
+					: new_data( new_data ), show( show ), freq( freq ), 
+					n_frozen_bins_x( n_frozen_bins_x ), n_no_bins( n_no_bins )
+			{}
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					boost::static_pointer_cast<BackendHistogram, 
+						BackendPlot>(pBPlot)->add_data( new_data, show, freq, n_no_bins, n_frozen_bins_x );
+				}
+			private:
+				double new_data;
+				bool show, freq, n_frozen_bins_x;
+				size_t n_no_bins;
+		};
+
+		class HistPlotEvent : public Event {
+			public:
+				HistPlotEvent() {};
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					boost::static_pointer_cast<BackendHistogram, 
+						BackendPlot>(pBPlot)->plot();
+				}
+		};
+
+		/*
 		 * HeightMap specific events
 		 */
 

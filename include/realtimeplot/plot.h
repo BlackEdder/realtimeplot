@@ -259,11 +259,7 @@ namespace realtimeplot {
 		*/
 	class Histogram : public Plot {
 		public:
-			int no_bins, max_y, min_x, max_x;
-			std::vector<double> data;
-			std::vector<double> bins_x;
-			std::vector<double> bins_y;
-			double bin_width;
+			int no_bins;
 
 			//! If true plot frequencies, instead of counts
 			bool frequency;
@@ -286,8 +282,8 @@ namespace realtimeplot {
 			 * immediately show the histogram.
 			 *
 			 */
-			void set_counts_data( std::vector<double> values, 
-					std::vector<int> counts, bool show = true );
+			/*void set_counts_data( std::vector<double> values, 
+					std::vector<int> counts, bool show = true );*/
 
 			/**
 			 * \brief Add a new measurement/data
@@ -295,9 +291,9 @@ namespace realtimeplot {
 			 * Might be usefull to only set show true sometimes, since it can be costly to
 			 * replot every time.
 			 */
-
 			void add_data( double data, bool show = true );
 			void plot();
+
 		private:
 			bool frozen_bins_x;
 			/**

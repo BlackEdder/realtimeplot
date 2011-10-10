@@ -343,6 +343,44 @@ namespace realtimeplot {
 
 			std::vector<boost::shared_ptr<Vertex3D> > vertices;
 	};
+	/**
+	 * \brief Provides backend functions specific for Histogram
+	 */
+	
+	class BackendHistogram : public BackendPlot {
+		public:
+			int no_bins, max_y, min_x, max_x;
+			std::vector<double> data;
+			std::vector<double> bins_x;
+			std::vector<double> bins_y;
+			double bin_width;
+
+			//! If true plot frequencies, instead of counts
+			bool frequency;
+
+			//! Creates a histogram with a set min_x and max_x
+			BackendHistogram( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler,
+					double min_x, double max_x, size_t no_bins );
+
+			/**
+			 * \brief Add a new measurement/data
+			 *
+			 * Might be usefull to only set show true sometimes, since it can be costly to
+			 * replot every time.
+			 */
+			void add_data( double data, bool show, bool frequency, size_t no_bins, bool frozen_bins_x );
+			void plot();
+		private:
+			bool frozen_bins_x;
+			/**
+			 * \brief Fill bins
+			 *
+			 * Terribly inefficient at the moment, since it always redos all data
+			 * \todo Fix inefficiency.
+			 * \todo Fix dropping data outside bin range when frozen_bins_x is set end
+			 */
+			void fill_bins();
+	};
 
 
 

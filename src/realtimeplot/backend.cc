@@ -747,6 +747,119 @@ namespace realtimeplot {
 		//        float(xSurface->get_height())/(plot_area_height+config.margin_x) );
 	}
 
+	BackendHistogram::BackendHistogram( PlotConfig config, 
+			boost::shared_ptr<EventHandler> pEventHandler,
+					double min_x, double max_x, size_t no_bins ) :
+				BackendPlot( config, pEventHandler ),
+				min_x( min_x ), max_x( max_x ), no_bins( no_bins )
+	{
+		bin_width = (max_x-min_x)/(no_bins-1);
+		for (int i=0; i<no_bins; ++i) {
+			bins_x.push_back( min_x+i*bin_width );
+			bins_y.push_back( 0 );
+		}
+	}
+
+	void BackendHistogram::add_data( double new_data, bool show, 
+			bool freq, size_t n_no_bins, bool n_frozen_bins_x ) {
+		frequency = freq;
+		no_bins = n_no_bins;
+		frozen_bins_x = n_frozen_bins_x;
+		data.push_back( new_data );
+		//First check that data is not smaller or larger than the current range
+		if (new_data < min_x) {
+			fill_bins();
+		} else if (new_data > max_x) {
+			fill_bins();
+		} else if (data.size() == 1) {
+			fill_bins();
+		} else {
+			unsigned int current_bin;
+			for (current_bin=0; current_bin<bins_x.size(); ++current_bin) {
+				if (new_data < bins_x[current_bin]+0.5*bin_width)
+					break;
+			}
+			++bins_y[current_bin];
+			if (bins_y[current_bin]>max_y)
+				max_y = bins_y[current_bin];
+		}
+		if (show)
+			plot();
+	}
+
+	void BackendHistogram::fill_bins() {
+		sort( data.begin(), data.end() );
+
+		if (!frozen_bins_x) {
+			bins_x.clear();
+
+			if (data.front() != data.back() ) {
+				bin_width = (data.back()-data.front())/(no_bins-1);
+				for (int i=0; i<no_bins; ++i) {
+					bins_x.push_back( data.front()+i*bin_width );
+				}
+
+				min_x = data.front()-0.5*bin_width;
+				max_x = data.back()+0.5*bin_width;
+			} else {
+				//choose arbitrary bin_width
+				bin_width = 1;
+				for (int i=0; i<no_bins; ++i) {
+					bins_x.push_back( data.front()+(i-no_bins/2)*bin_width );
+				}
+				min_x = data.front();
+				max_x = data.front();
+			}
+		}
+		bins_y.clear();
+
+		for (size_t i=0; i<bins_x.size(); ++i) {
+			bins_y.push_back( 0 );
+		}
+		max_y = 0;
+
+		int current_bin = 0;
+		//should use iterator
+		for (size_t i=0; i<data.size(); ++i) {
+			while (data[i] > bins_x[current_bin]+0.5*bin_width) {
+				++current_bin;
+			}
+			if (current_bin<bins_x.size()) {
+				++bins_y[current_bin];
+				if (bins_y[current_bin]>max_y)
+					max_y = bins_y[current_bin];
+			}
+		}
+	}
+
+	void BackendHistogram::plot() {
+		if ( (min_x == max_x) || 
+				!(frequency && config.max_y >= max_y && config.max_y <= 2*max_y) ||
+				!(config.max_x >= max_x && config.max_x <= max_x + 4*bin_width	) ||
+				!(config.min_x <= min_x && config.min_x >= min_x - 4*bin_width	) ) {
+			PlotConfig new_config = PlotConfig(config);
+			new_config.min_x = bins_x.front()-bin_width;
+			new_config.max_x = bins_x.back()+bin_width;
+			if (!frequency)
+				new_config.max_y = 1.1*max_y;
+			else
+				new_config.max_y = 1.1;
+
+			reset( new_config );
+		} else {
+			clear();
+		}
+		for (unsigned int i=0; i<bins_x.size(); ++i) {
+			double height = bins_y[i];
+			if (frequency)
+				height/=data.size();
+			line_add( bins_x[i]-0.5*bin_width, 0, -1, Color::black() );
+			line_add( bins_x[i]-0.5*bin_width, height, -1, Color::black() );
+			line_add( bins_x[i]+0.5*bin_width, height, -1, Color::black() );
+			line_add( bins_x[i]+0.5*bin_width, 0, -1, Color::black() );
+		}
+	}
+
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler ) : 
 				BackendPlot( cfg, pEventHandler ),

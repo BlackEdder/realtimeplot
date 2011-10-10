@@ -172,5 +172,3 @@ namespace realtimeplot {
 	}
 
 }
-
-
