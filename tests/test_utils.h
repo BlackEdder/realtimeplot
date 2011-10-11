@@ -40,12 +40,13 @@ class TestUtils : public CxxTest::TestSuite {
 		//		const std::vector<double> &data )
 		void testBins() {
 			std::vector<double> data;
-			data.push_back( 0.0999999 );
-			data.push_back( 0.1000001 );
-			data.push_back( 0.1 );
-			data.push_back( 0.0 );
 			data.push_back( 0.1999999 );
-			std::vector<double> bins = calculate_bins( 0, 0.2, 2, data );
+			data.push_back( 0.2000001 );
+			data.push_back( 0.2 );
+			data.push_back( 0.1 );
+			data.push_back( 0.2999999 );
+			data.push_back( 0.3999999 );
+			std::vector<double> bins = calculate_bins( 0.1, 0.3, 2, data );
 			TS_ASSERT_EQUALS( bins.size(), 2 );
 			TS_ASSERT_EQUALS( bins[0], 2 );
 			TS_ASSERT_EQUALS( bins[1], 3 );

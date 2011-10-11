@@ -28,7 +28,8 @@ namespace realtimeplot {
 			std::vector<double> binned(no_bins);
 			double bin_width = (max_x-min_x)/no_bins;
 			for (size_t i=0; i<data.size(); ++i) {
-				++binned[bin_id(min_x, bin_width, data[i])];
+				if (data[i]>=min_x && data[i]<max_x)
+					++binned[bin_id(min_x, bin_width, data[i])];
 			}
 			return binned;
 		}

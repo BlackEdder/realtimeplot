@@ -349,10 +349,8 @@ namespace realtimeplot {
 	
 	class BackendHistogram : public BackendPlot {
 		public:
-			int no_bins, max_y, min_x, max_x;
+			int no_bins, min_x, max_x;
 			std::vector<double> data;
-			std::vector<double> bins_x;
-			std::vector<double> bins_y;
 			double bin_width;
 
 			//! If true plot frequencies, instead of counts
@@ -372,14 +370,9 @@ namespace realtimeplot {
 			void plot();
 		private:
 			bool frozen_bins_x;
-			/**
-			 * \brief Fill bins
-			 *
-			 * Terribly inefficient at the moment, since it always redos all data
-			 * \todo Fix inefficiency.
-			 * \todo Fix dropping data outside bin range when frozen_bins_x is set end
-			 */
-			void fill_bins();
+
+			bool rebin;
+			std::vector<double> bins_y;
 	};
 
 

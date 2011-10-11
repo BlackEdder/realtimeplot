@@ -23,6 +23,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include "realtimeplot/backend.h"
+#include "realtimeplot/utils.h"
 
 #include <boost/math/special_functions/beta.hpp>
 
@@ -751,13 +752,12 @@ namespace realtimeplot {
 			boost::shared_ptr<EventHandler> pEventHandler,
 					double min_x, double max_x, size_t no_bins ) :
 				BackendPlot( config, pEventHandler ),
-				min_x( min_x ), max_x( max_x ), no_bins( no_bins )
+				min_x( min_x ), max_x( max_x ), no_bins( no_bins ), rebin( false ), 
+				bins_y(no_bins)
 	{
-		bin_width = (max_x-min_x)/(no_bins-1);
-		for (int i=0; i<no_bins; ++i) {
-			bins_x.push_back( min_x+i*bin_width );
-			bins_y.push_back( 0 );
-		}
+		if (max_x<min_x)
+			max_x = min_x;
+		bin_width = ( max_x-min_x )/no_bins;
 	}
 
 	void BackendHistogram::add_data( double new_data, bool show, 
@@ -766,80 +766,51 @@ namespace realtimeplot {
 		no_bins = n_no_bins;
 		frozen_bins_x = n_frozen_bins_x;
 		data.push_back( new_data );
-		//First check that data is not smaller or larger than the current range
-		if (new_data < min_x) {
-			fill_bins();
-		} else if (new_data > max_x) {
-			fill_bins();
-		} else if (data.size() == 1) {
-			fill_bins();
+		if (frozen_bins_x) {
+			// No need to reset bounds, just add it to the correct bin
+			if (new_data>=min_x && new_data<max_x)
+				bins_y[utils::bin_id(min_x, bin_width, new_data)];
 		} else {
-			unsigned int current_bin;
-			for (current_bin=0; current_bin<bins_x.size(); ++current_bin) {
-				if (new_data < bins_x[current_bin]+0.5*bin_width)
-					break;
+			//First check that data is not smaller or larger than the current range
+			if (new_data < min_x) {
+				min_x == new_data;
+				bin_width = ( max_x-min_x )/no_bins;
+				rebin = true;
+			} else if (new_data >= max_x) {
+				max_x = new_data + 0.5*bin_width;
+				bin_width = ( max_x-min_x )/no_bins;
+				rebin = true;
+			} else if (!rebin) {
+				bins_y[utils::bin_id(min_x, bin_width, new_data)];
 			}
-			++bins_y[current_bin];
-			if (bins_y[current_bin]>max_y)
-				max_y = bins_y[current_bin];
 		}
+
 		if (show)
 			plot();
 	}
 
-	void BackendHistogram::fill_bins() {
-		sort( data.begin(), data.end() );
-
-		if (!frozen_bins_x) {
-			bins_x.clear();
-
-			if (data.front() != data.back() ) {
-				bin_width = (data.back()-data.front())/(no_bins-1);
-				for (int i=0; i<no_bins; ++i) {
-					bins_x.push_back( data.front()+i*bin_width );
-				}
-
-				min_x = data.front()-0.5*bin_width;
-				max_x = data.back()+0.5*bin_width;
-			} else {
-				//choose arbitrary bin_width
-				bin_width = 0.000001;
-				for (int i=0; i<no_bins; ++i) {
-					bins_x.push_back( data.front()+(i-no_bins/2.0)*bin_width );
-				}
-				min_x = data.front();
-				max_x = data.front();
-			}
-		}
-		bins_y.clear();
-
-		for (size_t i=0; i<bins_x.size(); ++i) {
-			bins_y.push_back( 0 );
-		}
-		max_y = 0;
-
-		int current_bin = 0;
-		//should use iterator
-		for (size_t i=0; i<data.size(); ++i) {
-			while (data[i] > bins_x[current_bin]+0.5*bin_width) {
-				++current_bin;
-			}
-			if (current_bin<bins_x.size()) {
-				++bins_y[current_bin];
-				if (bins_y[current_bin]>max_y)
-					max_y = bins_y[current_bin];
-			}
-		}
-	}
-
 	void BackendHistogram::plot() {
+
+		if (rebin) {
+			bins_y = utils::calculate_bins( min_x, max_x, no_bins, data );
+			rebin = false;
+		}
+		
+		double max_y = 1.1;
+		if (!frequency) {
+			for (size_t i=0; i<no_bins; ++i) {
+				if (bins_y[i] > max_y)
+					max_y = 1.1*bins_y[i];
+			}
+		}
+
 		if ( (min_x == max_x) || 
-				!(frequency && config.max_y >= max_y && config.max_y <= 2*max_y) ||
+				!(frequency && config.max_y > max_y && config.max_y <= 2*max_y) ||
 				!(config.max_x >= max_x && config.max_x <= max_x + 4*bin_width	) ||
 				!(config.min_x <= min_x && config.min_x >= min_x - 4*bin_width	) ) {
 			PlotConfig new_config = PlotConfig(config);
-			new_config.min_x = bins_x.front()-bin_width;
-			new_config.max_x = bins_x.back()+bin_width;
+			new_config.min_x = min_x-bin_width;
+			new_config.max_x = max_x+bin_width;
 			if (!frequency)
 				new_config.max_y = 1.1*max_y;
 			else
@@ -849,14 +820,15 @@ namespace realtimeplot {
 		} else {
 			clear();
 		}
-		for (unsigned int i=0; i<bins_x.size(); ++i) {
+
+		for (size_t i=0; i<no_bins; ++i) {
 			double height = bins_y[i];
 			if (frequency)
 				height/=data.size();
-			line_add( bins_x[i]-0.5*bin_width, 0, -1, Color::black() );
-			line_add( bins_x[i]-0.5*bin_width, height, -1, Color::black() );
-			line_add( bins_x[i]+0.5*bin_width, height, -1, Color::black() );
-			line_add( bins_x[i]+0.5*bin_width, 0, -1, Color::black() );
+			line_add( min_x+i*bin_width, 0, -1, Color::black() );
+			line_add( min_x+i*bin_width, height, -1, Color::black() );
+			line_add( min_x+(i+1)*bin_width, height, -1, Color::black() );
+			line_add( min_x+(i+1)*bin_width, 0, -1, Color::black() );
 		}
 	}
 

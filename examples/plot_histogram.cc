@@ -49,20 +49,4 @@ int main() {
 	hist2.add_data( 1 );
 	hist2.add_data( 5 );
 	hist2.add_data( 5 );
-
-	//sleep( 1 );
-
-	/*sleep( 1 );
-
-	std::vector<double> values;
-	std::vector<int> counts;
-	values.push_back( 1 );
-	values.push_back( 2 );
-	values.push_back( 2.1 );
-	counts.push_back( 15 );
-	counts.push_back( 10 );
-	counts.push_back( 10 );
-
-	hist.set_counts_data( values, counts );
-	sleep( 2 );*/
 }
