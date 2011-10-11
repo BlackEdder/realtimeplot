@@ -376,6 +376,8 @@ namespace realtimeplot {
 			std::vector<double> bins_y;
 			/**
 			 * \brief Smallest bin_size we can plot
+			 *
+			 * 
 			 */
 			double min_bin_size;
 	};

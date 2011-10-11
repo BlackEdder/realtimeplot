@@ -777,7 +777,6 @@ namespace realtimeplot {
 			if (data.size() == 1) {
 				min_x = new_data;
 				max_x = min_x + no_bins*min_bin_size;
-				std::cout << min_x << " " << max_x << " " << no_bins << std::endl;
 				bin_width = ( max_x-min_x )/no_bins;
 				rebin = true;
 			} else {
@@ -801,7 +800,6 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::plot() {
-		std::cout << min_x << " " << max_x << " " << no_bins << " " << bin_width << std::endl;
 		if (rebin) {
 			bins_y = utils::calculate_bins( min_x, max_x, no_bins, data );
 			rebin = false;
