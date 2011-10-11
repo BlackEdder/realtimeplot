@@ -282,6 +282,7 @@ namespace realtimeplot {
 	}
 
 	void Histogram::add_data( double new_data, bool show ) {
+		std::cout << new_data << " " << show << std::endl;
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
 					new HistDataEvent( new_data, show,
 						frequency, no_bins, frozen_bins_x ) ) ); 

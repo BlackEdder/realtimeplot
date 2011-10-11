@@ -27,6 +27,8 @@
 
 #include <boost/math/special_functions/beta.hpp>
 
+#include <limits>
+
 namespace realtimeplot {
 	/*
 	 * BackendPlot
@@ -753,10 +755,10 @@ namespace realtimeplot {
 					double min_x, double max_x, size_t no_bins ) :
 				BackendPlot( config, pEventHandler ),
 				min_x( min_x ), max_x( max_x ), no_bins( no_bins ), rebin( false ), 
-				bins_y(no_bins)
+				bins_y(no_bins), min_bin_size( 1e-06)
 	{
 		if (max_x<min_x)
-			max_x = min_x;
+			max_x = min_x+no_bins*min_bin_size;
 		bin_width = ( max_x-min_x )/no_bins;
 	}
 
@@ -771,17 +773,26 @@ namespace realtimeplot {
 			if (new_data>=min_x && new_data<max_x)
 				bins_y[utils::bin_id(min_x, bin_width, new_data)];
 		} else {
-			//First check that data is not smaller or larger than the current range
-			if (new_data < min_x) {
-				min_x == new_data;
+			// Special cases, using the first data point to initialize binsize etc
+			if (data.size() == 1) {
+				min_x = new_data;
+				max_x = min_x + no_bins*min_bin_size;
+				std::cout << min_x << " " << max_x << " " << no_bins << std::endl;
 				bin_width = ( max_x-min_x )/no_bins;
 				rebin = true;
-			} else if (new_data >= max_x) {
-				max_x = new_data + 0.5*bin_width;
-				bin_width = ( max_x-min_x )/no_bins;
-				rebin = true;
-			} else if (!rebin) {
-				bins_y[utils::bin_id(min_x, bin_width, new_data)];
+			} else {
+				//First check that data is not smaller or larger than the current range
+				if (new_data < min_x) {
+					min_x = new_data;
+					bin_width = ( max_x-min_x )/no_bins;
+					rebin = true;
+				} else if (new_data >= max_x) {
+					max_x = new_data + 0.5*bin_width;
+					bin_width = ( max_x-min_x )/no_bins;
+					rebin = true;
+				} else if (!rebin) {
+					++bins_y[utils::bin_id(min_x, bin_width, new_data)];
+				}
 			}
 		}
 
@@ -790,12 +801,12 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::plot() {
-
+		std::cout << min_x << " " << max_x << " " << no_bins << " " << bin_width << std::endl;
 		if (rebin) {
 			bins_y = utils::calculate_bins( min_x, max_x, no_bins, data );
 			rebin = false;
 		}
-		
+
 		double max_y = 1.1;
 		if (!frequency) {
 			for (size_t i=0; i<no_bins; ++i) {
@@ -830,6 +841,7 @@ namespace realtimeplot {
 			line_add( min_x+(i+1)*bin_width, height, -1, Color::black() );
 			line_add( min_x+(i+1)*bin_width, 0, -1, Color::black() );
 		}
+		display();
 	}
 
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 

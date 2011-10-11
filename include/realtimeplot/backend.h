@@ -349,7 +349,8 @@ namespace realtimeplot {
 	
 	class BackendHistogram : public BackendPlot {
 		public:
-			int no_bins, min_x, max_x;
+			size_t no_bins;
+			double min_x, max_x;
 			std::vector<double> data;
 			double bin_width;
 
@@ -373,6 +374,10 @@ namespace realtimeplot {
 
 			bool rebin;
 			std::vector<double> bins_y;
+			/**
+			 * \brief Smallest bin_size we can plot
+			 */
+			double min_bin_size;
 	};
 
 

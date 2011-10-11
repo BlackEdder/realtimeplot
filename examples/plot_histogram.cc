@@ -49,4 +49,5 @@ int main() {
 	hist2.add_data( 1 );
 	hist2.add_data( 5 );
 	hist2.add_data( 5 );
+	sleep(2);
 }
