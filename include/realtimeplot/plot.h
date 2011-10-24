@@ -33,12 +33,12 @@
 #include <vector>
 #include <algorithm>
 
+
 #include <boost/shared_ptr.hpp>
 
 //#include "realtimeplot/eventhandler.h"
 
 namespace realtimeplot {
-
 	class EventHandler;
 	/**
 		\brief Util function to turn doubles into strings
