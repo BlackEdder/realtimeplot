@@ -36,8 +36,6 @@ class TestUtils : public CxxTest::TestSuite {
 			TS_ASSERT_EQUALS( 1, bin_id( 0, 1.1, 1.11 ) );
 		}
 
-		//std::vector<double> bins( double min_x, double max_x, size_t no_bins, 
-		//		const std::vector<double> &data )
 		void testBins() {
 			std::vector<double> data;
 			data.push_back( 0.1999999 );
@@ -50,6 +48,12 @@ class TestUtils : public CxxTest::TestSuite {
 			TS_ASSERT_EQUALS( bins.size(), 2 );
 			TS_ASSERT_EQUALS( bins[0], 2 );
 			TS_ASSERT_EQUALS( bins[1], 3 );
+		}
+
+		void testStringify() {
+			TS_ASSERT_EQUALS( stringify( 1 ), "1" );
+			TS_ASSERT_EQUALS( stringify( 10 ), "10" );
+			TS_ASSERT_EQUALS( stringify( 3 ), "3" );
 		}
 };
 
