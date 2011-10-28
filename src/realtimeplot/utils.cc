@@ -21,6 +21,8 @@
 	 -------------------------------------------------------------------
 	 */
 #include "realtimeplot/utils.h"
+
+#include <sstream>
 namespace realtimeplot {
 	namespace utils {
 		std::vector<double> calculate_bins( double min_x, double max_x, size_t no_bins, 
@@ -37,5 +39,14 @@ namespace realtimeplot {
 		size_t bin_id( double min_x, double bin_width, double data ) {
 			return (data-min_x)/bin_width;
 		}
+
+		std::string stringify(double x)
+		{
+			std::ostringstream o;
+			o << x;
+			return o.str();
+		}   
+
+
 	};
 };

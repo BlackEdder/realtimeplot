@@ -43,6 +43,10 @@ namespace realtimeplot {
 		 */
 		size_t bin_id( double min_x, double bin_width, double data );
 
+		/**
+			\brief Util function to turn doubles into strings
+			*/
+		std::string stringify(double x);
 	};
 };
 #endif

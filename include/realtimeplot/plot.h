@@ -28,7 +28,6 @@
 	*/
 
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -40,18 +39,6 @@
 
 namespace realtimeplot {
 	class EventHandler;
-	/**
-		\brief Util function to turn doubles into strings
-
-		\future Move to util file at some point?
-		*/
-	inline std::string stringify(double x)
-	{
-		std::ostringstream o;
-		o << x;
-		return o.str();
-	}   
-
 	/**
 	 * \brief Class used to set color data
 

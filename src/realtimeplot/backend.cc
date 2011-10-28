@@ -320,7 +320,7 @@ namespace realtimeplot {
 			//Do not add text to last tick (this will be cut off otherwise
 			if (i != xaxis_ticks.size()-1) {
 				transform_to_device_units( axes_context );
-				pango_layout->set_text( stringify( xaxis_ticks[i] ) );
+				pango_layout->set_text( utils::stringify( xaxis_ticks[i] ) );
 				pango_layout->get_pixel_size( text_width, text_height );
 				axes_context->rel_move_to( -0.5*text_width, 1*text_height );
 				//pango_layout->add_to_cairo_context(axes_context); //adds text to cairos stack of stuff to be drawn
@@ -338,7 +338,7 @@ namespace realtimeplot {
 			if (i != yaxis_ticks.size()-1) {
 				transform_to_device_units( axes_context );
 				axes_context->rotate_degrees( -90 );
-				pango_layout->set_text( stringify( yaxis_ticks[i] ) );
+				pango_layout->set_text( utils::stringify( yaxis_ticks[i] ) );
 				pango_layout->get_pixel_size( text_width, text_height );
 				axes_context->rel_move_to( -0.5*text_width, -2*text_height );
 				pango_layout->show_in_cairo_context( axes_context );
