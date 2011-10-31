@@ -126,9 +126,9 @@ namespace realtimeplot {
 		margin_x = 60;
 		margin_y = 60;
 		min_x = 0;
-		max_x = 10;
+		max_x = 1;
 		min_y = 0;
-		max_y = 50;
+		max_y = 1;
 		nr_of_ticks = 10;
 		ticks_length = 7;
 		xlabel = "x";

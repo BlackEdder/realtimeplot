@@ -8,6 +8,11 @@ class TestBackend : public CxxTest::TestSuite
 {
 	public:
 		void testPlotConfig() {
+			PlotConfig conf = PlotConfig();
+			TS_ASSERT_EQUALS( conf.max_x, 1 );
+			TS_ASSERT_EQUALS( conf.min_x, 0 );
+			TS_ASSERT_EQUALS( conf.max_y, 1 );
+			TS_ASSERT_EQUALS( conf.min_y, 0 );
 		}
 
 		void testVertex3DCrossProduct() {
