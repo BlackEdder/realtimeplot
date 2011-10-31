@@ -21,7 +21,7 @@
 	 -------------------------------------------------------------------
 	 */
 
-#include "realtimeplot/plot.h"
+#include "realtimeplot/realtimeplot.h"
 
 using namespace realtimeplot;
 
