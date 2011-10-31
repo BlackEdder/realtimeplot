@@ -120,9 +120,14 @@ endif()
 #Install the library
 SET (CMAKE_INSTALL_PREFIX /usr)
 install (TARGETS realtimeplot DESTINATION lib)
-install (FILES include/realtimeplot/backend.h
+install (FILES include/realtimeplot/realtimeplot.h
+	include/realtimeplot/backend.h
 	include/realtimeplot/eventhandler.h
-	include/realtimeplot/events.h include/realtimeplot/plot.h DESTINATION 
+	include/realtimeplot/xcbhandler.h
+	include/realtimeplot/utils.h
+	include/realtimeplot/events.h
+	include/realtimeplot/delaunay.h
+ 	include/realtimeplot/plot.h DESTINATION 
 	include/realtimeplot)
 
 #Documentation
