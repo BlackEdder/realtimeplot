@@ -7,6 +7,9 @@ using namespace realtimeplot;
 class TestBackend : public CxxTest::TestSuite 
 {
 	public:
+		void testPlotConfig() {
+		}
+
 		void testVertex3DCrossProduct() {
 			boost::shared_ptr<Vertex3D> pV1( new Vertex3D( 1,0,0 ) );
 			boost::shared_ptr<Vertex3D> pV2( new Vertex3D( 0,1,0 ) );

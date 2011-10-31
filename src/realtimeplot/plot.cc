@@ -119,6 +119,30 @@ namespace realtimeplot {
 		return colors;
 	}
 
+	void PlotConfig::setDefaults() {
+		scaling = false;
+		display = true;
+		area = 500*500;
+		margin_x = 60;
+		margin_y = 60;
+		min_x = 0;
+		max_x = 10;
+		min_y = 0;
+		max_y = 50;
+		nr_of_ticks = 10;
+		ticks_length = 7;
+		xlabel = "x";
+		ylabel = "y";
+		font = "sans";
+		label_font_size = 12;
+		numerical_labels_font_size = 10;
+		overlap = 0.1;
+		aspect_ratio = 1;
+		fixed_plot_area = false;
+		point_size = 4;
+		title = "RealTimePlot";
+	};
+
 	Plot::Plot()
 		: config( PlotConfig() ),
 		pEventHandler( new EventHandler( config ) ), detach( false )
