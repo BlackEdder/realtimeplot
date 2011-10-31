@@ -5,7 +5,6 @@
 	* Probably just add function to Plot like setTitle() etc.
 * Top and right margin for axis numerical labels overflow
 * Allow multiple data sets in one histogram/histogram3d plot
-* Move bin calculation to the backend
 * Rename SurfacePlot to Histogram3d
 * Rescale Histogram3d coloring
 * PDF backend

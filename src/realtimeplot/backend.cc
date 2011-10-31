@@ -483,6 +483,7 @@ namespace realtimeplot {
 
 	void BackendPlot::title( std::string &title ) {
 		pDisplayHandler->set_title( win, title );
+		config.title = title;
 	}
 
 	void BackendPlot::text( float x, float y, std::string &text ) {
