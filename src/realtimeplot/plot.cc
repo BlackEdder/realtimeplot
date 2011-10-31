@@ -227,7 +227,7 @@ namespace realtimeplot {
 	void Plot::title( std::string title ) {
 		pEventHandler->add_event( boost::shared_ptr<Event> ( new TitleEvent( title ) ) );
 	}
-	
+
 	void Plot::text( float x, float y, std::string text ) {
 		boost::shared_ptr<Event> pEvent( new TextEvent( x, y, text ) );
 		pEventHandler->add_event( pEvent );

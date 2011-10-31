@@ -126,7 +126,9 @@ namespace realtimeplot {
 			bool display;
 			int label_font_size, numerical_labels_font_size;
 
-			/// Constructor that sets default values
+			/***
+			 * \brief Constructor that sets default values
+			 */
 			PlotConfig() 
 				{setDefaults();}
 
@@ -153,7 +155,14 @@ namespace realtimeplot {
 			void point( float x, float y, Color color );
 			void rectangle( float x, float y, float width_x, float width_y,
 			bool fill = true, Color color = Color::black() );
+
 			//void line_add( float x, float y, int id=-1 );
+			/***
+			 * \brief Add a point to a line
+			 *
+			 * If the line with that id does not exist yet the point will be the start of 
+			 * a new line.
+			 */
 			void line_add( float x, float y, int id=-1 );
 			void line_add( float x, float y, int id, Color color );
 
@@ -233,8 +242,10 @@ namespace realtimeplot {
 			bool frequency;
 
 			Histogram();
+
 			//! Creates a histogram with a set min_x and max_x
 			Histogram( double min_x, double max_x, size_t no_bins );
+
 			~Histogram();
 			/**
 			 * \brief Set data based on a vector containing all the measurements
