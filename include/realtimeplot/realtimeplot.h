@@ -24,6 +24,15 @@
 #define REALTIMEPLOT_H
 #include "realtimeplot/plot.h"
 
+/**
+ * \brief RealTimePlot namespace
+ *
+ * For normal usage one should use the classes defined in realtimeplot.h. 
+ * These are the frontend classes that are used for different types of plots,
+ * e.g. normal plot, histogram, heightmap or surfaceplot. These classes will
+ * then call the backend classes to actually perform the plotting (in a separate
+ * thread). See the files in the examples folder for more details.
+ */
 namespace realtimeplot {
 };
 #endif

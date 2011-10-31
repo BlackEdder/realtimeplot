@@ -27,7 +27,7 @@
 #include <vector>
 #include <boost/thread/mutex.hpp>
 
-/// Needs to be before cairomm, due to Xlib.h macros
+// Needs to be before cairomm, due to Xlib.h macros
 #include <pangomm/init.h>
 #include <pangomm/context.h>
 #include <pangomm/layout.h>
