@@ -23,6 +23,8 @@
 #ifndef PLOTAREA_H
 #define PLOTAREA_H
 
+#include <cairomm/context.h>
+
 namespace realtimeplot {
 	/**
 	 * \brief Manage the actual area used for plotting
