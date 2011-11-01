@@ -23,9 +23,15 @@
 #ifndef PLOTAREA_H
 #define PLOTAREA_H
 
+/**
+ * \brief Manage the actual area used for plotting
+ */
 class PlotArea {
 };
 
+/**
+ * \brief Manage the area containing the axes
+ */
 class AxesArea {
 };
 #endif
