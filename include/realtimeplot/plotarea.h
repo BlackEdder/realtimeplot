@@ -1,7 +1,7 @@
 /*
 	 -------------------------------------------------------------------
 
-	 Copyright (C) 2010, Edwin van Leeuwen
+	 Copyright (C) 2010, 2011 Edwin van Leeuwen
 
 	 This file is part of RealTimePlot.
 
@@ -23,15 +23,32 @@
 #ifndef PLOTAREA_H
 #define PLOTAREA_H
 
-/**
- * \brief Manage the actual area used for plotting
- */
-class PlotArea {
-};
+namespace realtimeplot {
+	/**
+	 * \brief Manage the actual area used for plotting
+	 *
+	 * The actual PlotArea is by default 25 times the size of the shown plot area.
+	 * This is too facilitate things such as move, scale, zoom etc. This class should
+	 * not have to be aware of this though.
+	 */
+	class PlotArea {
+		public:
+			Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
+			Cairo::RefPtr<Cairo::Context> plot_context;
 
-/**
- * \brief Manage the area containing the axes
- */
-class AxesArea {
+			int plot_area_width, plot_area_height;
+
+			//Keep track of the maximum/minimum values of the plot_surface in plot units
+			float plot_surface_max_x, plot_surface_min_x;
+			float plot_surface_max_y, plot_surface_min_y;
+			/// Device units (pixels)
+			float plot_surface_width, plot_surface_height;
+	};
+
+	/**
+	 * \brief Manage the area containing the axes
+	 */
+	class AxesArea {
+	};
 };
 #endif
