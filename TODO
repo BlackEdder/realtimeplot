@@ -1,3 +1,4 @@
+* Refactor backend to make it easier to change
 * Provide a combine method that easily allows you to combine one plot with another
 	* Probably need to make plot surface transparent
 * Redesign PlotConfig and allow plots to be changed on the fly
