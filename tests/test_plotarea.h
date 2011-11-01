@@ -37,10 +37,28 @@ class TestPlotArea : public CxxTest::TestSuite
 			conf.min_y = -5;
 			conf.max_y = 5;
 			PlotArea pl_area = PlotArea( conf );
-			TS_ASSERT_EQUALS( pl_area.min_x, -12.5 );
-			TS_ASSERT_EQUALS( pl_area.max_x, 12.5 );
-			TS_ASSERT_EQUALS( pl_area.min_y, -12.5 );
-			TS_ASSERT_EQUALS( pl_area.max_y, 12.5 );
+			TS_ASSERT_EQUALS( pl_area.min_x, -25 );
+			TS_ASSERT_EQUALS( pl_area.max_x, 25 );
+			TS_ASSERT_EQUALS( pl_area.min_y, -25 );
+			TS_ASSERT_EQUALS( pl_area.max_y, 25 );
+
+
+			TS_ASSERT_EQUALS( pl_area.plot_surface_width, 500 );
+			TS_ASSERT_EQUALS( pl_area.plot_surface_height, 500 );
 		}
+
+		void testAspectRatio() {
+			PlotConfig conf = PlotConfig();
+			conf.area = 100*100;
+			conf.min_x = -5;
+			conf.max_x = 5;
+			conf.min_y = -5;
+			conf.max_y = 5;
+			conf.aspect_ratio = 1.5;
+
+			PlotArea pl_area = PlotArea( conf );
+			TS_ASSERT_DELTA( pl_area.plot_surface_width/pl_area.plot_surface_height, 1.5, 0.2 );
+		}
+
 };
 	

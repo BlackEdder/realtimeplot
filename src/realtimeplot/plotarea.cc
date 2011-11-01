@@ -24,5 +24,26 @@
 #include "realtimeplot/plotarea.h"
 
 namespace realtimeplot {
-	PlotArea::PlotArea( PlotConfig &conf ) {}	
+	PlotArea::PlotArea( PlotConfig &config ) {
+
+		//calculate minimum plot area width/height based on aspect ratio
+		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
+		plot_area_width = round( config.aspect_ratio*x );
+		plot_area_height = round( x );
+
+		//plot_surface, the shown part of this surface is by default 250000 pixels (default 500x500)
+		//The rest is for when plotting outside of the area
+		double ratio_surface_to_area = 5;
+
+		plot_surface_width = ratio_surface_to_area*plot_area_width;
+		plot_surface_height = ratio_surface_to_area*plot_area_height;
+
+		double xratio = (ratio_surface_to_area-1)/2.0;
+		double yratio = (ratio_surface_to_area-1)/2.0;
+		min_x = config.min_x-xratio*(config.max_x-config.min_x);
+		max_x = config.max_x+xratio*(config.max_x-config.min_x);
+		min_y = config.min_y-yratio*(config.max_y-config.min_y);
+		max_y = config.max_y+yratio*(config.max_y-config.min_y);
+	
+	}	
 };
