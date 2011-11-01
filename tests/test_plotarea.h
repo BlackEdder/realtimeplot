@@ -45,6 +45,9 @@ class TestPlotArea : public CxxTest::TestSuite
 
 			TS_ASSERT_EQUALS( pl_area.plot_surface_width, 500 );
 			TS_ASSERT_EQUALS( pl_area.plot_surface_height, 500 );
+
+			TS_ASSERT( pl_area.surface );
+			TS_ASSERT( pl_area.context );
 		}
 
 		void testAspectRatio() {

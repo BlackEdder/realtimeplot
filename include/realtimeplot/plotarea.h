@@ -36,8 +36,10 @@ namespace realtimeplot {
 	 */
 	class PlotArea {
 		public:
-			Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
-			Cairo::RefPtr<Cairo::Context> plot_context;
+			/*Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
+			Cairo::RefPtr<Cairo::Context> plot_context;*/
+			Cairo::RefPtr<Cairo::ImageSurface> surface;
+			Cairo::RefPtr<Cairo::Context> context;
 
 			int plot_area_width, plot_area_height;
 

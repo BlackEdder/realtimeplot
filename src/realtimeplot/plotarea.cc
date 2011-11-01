@@ -44,6 +44,18 @@ namespace realtimeplot {
 		max_x = config.max_x+xratio*(config.max_x-config.min_x);
 		min_y = config.min_y-yratio*(config.max_y-config.min_y);
 		max_y = config.max_y+yratio*(config.max_y-config.min_y);
-	
+
+		surface = 
+			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+					plot_surface_width, plot_surface_height );
+
+		//Create context to draw background color
+		context = Cairo::Context::create(surface);
+
+		//give the plot its background color
+		context->set_source_rgba(1, 1, 1, 1);
+		context->rectangle( 0, 0,
+				surface->get_width(), surface->get_height() );
+		context->fill();
 	}	
 };
