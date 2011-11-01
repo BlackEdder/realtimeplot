@@ -30,6 +30,17 @@ class TestPlotArea : public CxxTest::TestSuite
 {
 	public:
 		void testPlotArea() {
+			PlotConfig conf = PlotConfig();
+			conf.area = 100*100;
+			conf.min_x = -5;
+			conf.max_x = 5;
+			conf.min_y = -5;
+			conf.max_y = 5;
+			PlotArea pl_area = PlotArea( conf );
+			TS_ASSERT_EQUALS( pl_area.min_x, -12.5 );
+			TS_ASSERT_EQUALS( pl_area.max_x, 12.5 );
+			TS_ASSERT_EQUALS( pl_area.min_y, -12.5 );
+			TS_ASSERT_EQUALS( pl_area.max_y, 12.5 );
 		}
 };
 	

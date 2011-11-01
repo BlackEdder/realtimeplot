@@ -42,8 +42,10 @@ namespace realtimeplot {
 			int plot_area_width, plot_area_height;
 
 			//Keep track of the maximum/minimum values of the plot_surface in plot units
-			float plot_surface_max_x, plot_surface_min_x;
-			float plot_surface_max_y, plot_surface_min_y;
+			//float plot_surface_max_x, plot_surface_min_x;
+			//float plot_surface_max_y, plot_surface_min_y;
+			float max_x, min_x;
+			float max_y, min_y;
 			/// Device units (pixels)
 			float plot_surface_width, plot_surface_height;
 
