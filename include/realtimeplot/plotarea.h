@@ -52,6 +52,10 @@ namespace realtimeplot {
 			float plot_surface_width, plot_surface_height;
 
 			PlotArea( PlotConfig &conf );	
+
+			void transform_to_plot_units();
+
+			void transform_to_device_units();
 	};
 
 	/**

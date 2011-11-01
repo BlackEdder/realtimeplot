@@ -58,4 +58,6 @@ namespace realtimeplot {
 				surface->get_width(), surface->get_height() );
 		context->fill();
 	}	
+
+	void PlotArea::transform_to_plot_units() {};
 };

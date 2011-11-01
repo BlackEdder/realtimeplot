@@ -63,5 +63,21 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_DELTA( pl_area.plot_surface_width/pl_area.plot_surface_height, 1.5, 0.2 );
 		}
 
+		void testTransformToPlotUnits() {
+			PlotConfig conf = PlotConfig();
+			conf.area = 100*100;
+			conf.min_x = -5;
+			conf.max_x = 5;
+			conf.min_y = -5;
+			conf.max_y = 5;
+			PlotArea pl_area = PlotArea( conf );
+			pl_area.transform_to_plot_units();
+			double x = 0;
+			double y = 0;
+			pl_area.context->user_to_device( x, y );
+			TS_ASSERT_EQUALS( x, 250 );
+			TS_ASSERT_EQUALS( y, 250 );
+		}
+
 };
 	
