@@ -49,7 +49,7 @@ find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
 SET(LIBS "${PANGOMM};${Boost_LIBRARIES}")
 SET(SRC
-	"src/realtimeplot/plot.cc;src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;")
+	"src/realtimeplot/plot.cc;src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;src/realtimeplot/plotarea.cc;")
 
 if(NOT NO_X)
 	find_library( XCB-UTIL xcb-keysyms xcb-util )

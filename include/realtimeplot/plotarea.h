@@ -24,6 +24,7 @@
 #define PLOTAREA_H
 
 #include <cairomm/context.h>
+#include "realtimeplot/plot.h"
 
 namespace realtimeplot {
 	/**
@@ -45,6 +46,8 @@ namespace realtimeplot {
 			float plot_surface_max_y, plot_surface_min_y;
 			/// Device units (pixels)
 			float plot_surface_width, plot_surface_height;
+
+			PlotArea( PlotConfig &conf );	
 	};
 
 	/**
