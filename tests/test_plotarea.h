@@ -53,13 +53,18 @@ bool compare_files( std::string fn1, std::string fn2 ) {
 class TestPlotArea : public CxxTest::TestSuite 
 {
 	public:
-		void testPlotArea() {
-			PlotConfig conf = PlotConfig();
+		PlotConfig conf;
+
+		void setUp() {
+			conf = PlotConfig();
 			conf.area = 100*100;
 			conf.min_x = -5;
 			conf.max_x = 5;
 			conf.min_y = -5;
 			conf.max_y = 5;
+		}
+
+		void testPlotArea() {
 			PlotArea pl_area = PlotArea( conf );
 			TS_ASSERT_EQUALS( pl_area.min_x, -25 );
 			TS_ASSERT_EQUALS( pl_area.max_x, 25 );
