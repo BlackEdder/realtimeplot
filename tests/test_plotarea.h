@@ -57,7 +57,7 @@ class TestPlotArea : public CxxTest::TestSuite
 
 		void setUp() {
 			conf = PlotConfig();
-			conf.area = 100*100;
+			conf.area = 50*50;
 			conf.min_x = -5;
 			conf.max_x = 5;
 			conf.min_y = -5;
@@ -72,40 +72,29 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pl_area.max_y, 25 );
 
 
-			TS_ASSERT_EQUALS( pl_area.width, 500 );
-			TS_ASSERT_EQUALS( pl_area.height, 500 );
+			TS_ASSERT_EQUALS( pl_area.width, 250 );
+			TS_ASSERT_EQUALS( pl_area.height, 250 );
 
 			TS_ASSERT( pl_area.surface );
 			TS_ASSERT( pl_area.context );
 		}
 
 		void testAspectRatio() {
-			PlotConfig conf = PlotConfig();
-			conf.area = 100*100;
-			conf.min_x = -5;
-			conf.max_x = 5;
-			conf.min_y = -5;
-			conf.max_y = 5;
 			conf.aspect_ratio = 1.5;
 
 			PlotArea pl_area = PlotArea( conf );
 			TS_ASSERT_DELTA( pl_area.width/pl_area.height, 1.5, 0.2 );
+			conf.aspect_ratio = 1.0;
 		}
 
 		void testTransformToPlotUnits() {
-			PlotConfig conf = PlotConfig();
-			conf.area = 100*100;
-			conf.min_x = -5;
-			conf.max_x = 5;
-			conf.min_y = -5;
-			conf.max_y = 5;
 			PlotArea pl_area = PlotArea( conf );
 			pl_area.transform_to_plot_units();
 			double x = 0;
 			double y = 0;
 			pl_area.context->user_to_device( x, y );
-			TS_ASSERT_EQUALS( x, 250 );
-			TS_ASSERT_EQUALS( y, 250 );
+			TS_ASSERT_EQUALS( x, 125 );
+			TS_ASSERT_EQUALS( y, 125 );
 			pl_area.transform_to_device_units();
 			x=0; y=0;
 			pl_area.context->user_to_device( x, y );
@@ -114,12 +103,6 @@ class TestPlotArea : public CxxTest::TestSuite
 		}
 
 		void testDrawRectangle() {
-			PlotConfig conf = PlotConfig();
-			conf.area = 50*50;
-			conf.min_x = -5;
-			conf.max_x = 5;
-			conf.min_y = -5;
-			conf.max_y = 5;
 			PlotArea pl_area = PlotArea( conf );
 			pl_area.rectangle( -4, -4, 8, 8, true, Color::red() );
 			pl_area.surface->write_to_png( "tests/tmp_plots/test_draw_rectangle_fill.png" );
