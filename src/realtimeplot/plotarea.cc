@@ -25,7 +25,10 @@
 
 namespace realtimeplot {
 	PlotArea::PlotArea( PlotConfig &config ) {
+		setup( config );
+	}	
 
+	void PlotArea::setup( PlotConfig &config ) {
 		//calculate minimum plot area width/height based on aspect ratio
 		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
 		plot_area_width = round( config.aspect_ratio*x );
@@ -55,8 +58,7 @@ namespace realtimeplot {
 		transform_to_plot_units();
 
 		//give the plot its background color
-		clear();
-	}	
+		clear();	}
 
 	void PlotArea::transform_to_plot_units() {
 		transform_to_device_units();

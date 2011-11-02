@@ -51,7 +51,9 @@ namespace realtimeplot {
 			/// Device units (pixels)
 			float width, height;
 
-			PlotArea( PlotConfig &conf );	
+			PlotArea( PlotConfig &config );
+
+			void setup( PlotConfig &config );	
 
 			void transform_to_plot_units();
 

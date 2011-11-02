@@ -113,12 +113,7 @@ namespace realtimeplot {
 
 	void BackendPlot::clear() {
 		//give the plot its background color
-		transform_to_device_units( pPlotArea->context );
-		set_background_color( pPlotArea->context );
-		pPlotArea->context->rectangle( 0, 0,
-				pPlotArea->surface->get_width(), pPlotArea->surface->get_height() );
-		pPlotArea->context->fill();
-		set_foreground_color( pPlotArea->context );
+		pPlotArea->clear();
 		display();
 		//Clear the line cache
 		lines.clear();
