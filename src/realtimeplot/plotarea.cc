@@ -35,8 +35,8 @@ namespace realtimeplot {
 		//The rest is for when plotting outside of the area
 		double ratio_surface_to_area = 5;
 
-		plot_surface_width = ratio_surface_to_area*plot_area_width;
-		plot_surface_height = ratio_surface_to_area*plot_area_height;
+		width = ratio_surface_to_area*plot_area_width;
+		height = ratio_surface_to_area*plot_area_height;
 
 		double xratio = (ratio_surface_to_area-1)/2.0;
 		double yratio = (ratio_surface_to_area-1)/2.0;
@@ -47,7 +47,7 @@ namespace realtimeplot {
 
 		surface = 
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					plot_surface_width, plot_surface_height );
+					width, height );
 
 		//Create context to draw background color
 		context = Cairo::Context::create(surface);
@@ -61,9 +61,9 @@ namespace realtimeplot {
 
 	void PlotArea::transform_to_plot_units() {
 		transform_to_device_units();
-		context->translate( 0, plot_surface_height );
-		context->scale( plot_surface_width/(max_x-min_x),
-				-plot_surface_height/(max_y-min_y) );
+		context->translate( 0, height );
+		context->scale( width/(max_x-min_x),
+				-height/(max_y-min_y) );
 		context->translate( -min_x, -min_y );
 	}
 

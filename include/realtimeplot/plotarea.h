@@ -49,7 +49,7 @@ namespace realtimeplot {
 			float max_x, min_x;
 			float max_y, min_y;
 			/// Device units (pixels)
-			float plot_surface_width, plot_surface_height;
+			float width, height;
 
 			PlotArea( PlotConfig &conf );	
 

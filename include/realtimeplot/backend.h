@@ -40,6 +40,7 @@
 #include "realtimeplot/eventhandler.h"
 #include "realtimeplot/delaunay.h"
 #include "realtimeplot/xcbhandler.h"
+#include "realtimeplot/plotarea.h"
 
 namespace realtimeplot {
 	/**
@@ -75,10 +76,6 @@ namespace realtimeplot {
 	class BackendPlot {
 		public:
 			friend class BackendHeightMap;
-			//plot_surface, an imagesurface that contains the plotted points
-			//plot_context, the corresponding context
-			Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
-			Cairo::RefPtr<Cairo::Context> plot_context;
 
 			//temporary surface used when plotting stuff
 			Cairo::RefPtr<Cairo::ImageSurface> temporary_display_surface;
@@ -86,8 +83,8 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::Surface> xSurface;
 			Cairo::RefPtr<Cairo::Context> xContext;
 
-			//keep track of plot area pixels
-			int plot_area_width, plot_area_height;
+			boost::shared_ptr<PlotArea> pPlotArea;
+
 			int x_surface_width, x_surface_height;
 
 			//axes_surface, surface that contains the axes + labels, 
@@ -101,12 +98,6 @@ namespace realtimeplot {
 
 			//pointer to the eventhandler class, so we can check the queue
 			boost::shared_ptr<EventHandler> pEventHandler;
-
-			//Keep track of the maximum/minimum values of the plot_surface in plot units
-			float plot_surface_max_x, plot_surface_min_x;
-			float plot_surface_max_y, plot_surface_min_y;
-			/// Device units (pixels)
-			float plot_surface_width, plot_surface_height;
 
 			//last_update_time (display at least every second)
 			boost::posix_time::ptime time_of_last_update;

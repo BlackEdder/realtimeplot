@@ -67,8 +67,8 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pl_area.max_y, 25 );
 
 
-			TS_ASSERT_EQUALS( pl_area.plot_surface_width, 500 );
-			TS_ASSERT_EQUALS( pl_area.plot_surface_height, 500 );
+			TS_ASSERT_EQUALS( pl_area.width, 500 );
+			TS_ASSERT_EQUALS( pl_area.height, 500 );
 
 			TS_ASSERT( pl_area.surface );
 			TS_ASSERT( pl_area.context );
@@ -84,7 +84,7 @@ class TestPlotArea : public CxxTest::TestSuite
 			conf.aspect_ratio = 1.5;
 
 			PlotArea pl_area = PlotArea( conf );
-			TS_ASSERT_DELTA( pl_area.plot_surface_width/pl_area.plot_surface_height, 1.5, 0.2 );
+			TS_ASSERT_DELTA( pl_area.width/pl_area.height, 1.5, 0.2 );
 		}
 
 		void testTransformToPlotUnits() {
