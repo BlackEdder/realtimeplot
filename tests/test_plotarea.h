@@ -26,29 +26,11 @@
 
 #include <cxxtest/TestSuite.h>
 
+#include "testhelpers.h"
+
 #include "realtimeplot/plotarea.h"
 
 using namespace realtimeplot;
-
-bool compare_files( std::string fn1, std::string fn2 ) {
-	std::ifstream file1 (fn1.c_str(), std::ios::in|std::ios::binary);
-	std::ifstream file2 (fn2.c_str(), std::ios::in|std::ios::binary);
-
-  if (file1.is_open() && file2.is_open())
-  {
-    while ( file1.good() && file2.good() )
-    {
-			if (file1.get() != file2.get())
-				return false;
-      
-    }
-		if (file1.good() != file2.good())
-			return false;
-  } else {
-		return false;
-	}
-	return true;
-}
 
 class TestPlotArea : public CxxTest::TestSuite 
 {
