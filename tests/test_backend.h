@@ -22,6 +22,8 @@
 	 */
 #include <cxxtest/TestSuite.h>
 
+#include "testhelpers.h"
+
 #include "realtimeplot/backend.h"
 
 using namespace realtimeplot;
@@ -29,12 +31,33 @@ using namespace realtimeplot;
 class TestBackend : public CxxTest::TestSuite 
 {
 	public:
+		PlotConfig conf;
+
+		void setUp() {
+			conf = PlotConfig();
+			conf.area = 50*50;
+			conf.min_x = -5;
+			conf.max_x = 5;
+			conf.min_y = -5;
+			conf.max_y = 5;
+			conf.margin_x = 20;
+			conf.margin_y = 20;
+			conf.display = false;
+		}
+
 		void testPlotConfig() {
 			PlotConfig conf = PlotConfig();
 			TS_ASSERT_EQUALS( conf.max_x, 1 );
 			TS_ASSERT_EQUALS( conf.min_x, 0 );
 			TS_ASSERT_EQUALS( conf.max_y, 1 );
 			TS_ASSERT_EQUALS( conf.min_y, 0 );
+		}
+
+		void testEmptyPlot() {
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.save( "tests/tmp_plots/test_empty_plot.png" );
+			TS_ASSERT( compare_files( "tests/tmp_plots/test_empty_plot.png", 
+				"tests/correct_plots/test_empty_plot.png" ) );
 		}
 
 		void testVertex3DCrossProduct() {
