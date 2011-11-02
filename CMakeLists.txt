@@ -138,6 +138,7 @@ include(UseDoxygen)
 # Tests
 find_package(CxxTest)
 if(CXXTEST_FOUND)
+	file(MAKE_DIRECTORY tests/tmp_plots)
 	#include_directories(tests)
 	enable_testing()
 

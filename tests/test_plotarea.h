@@ -86,7 +86,7 @@ class TestPlotArea : public CxxTest::TestSuite
 
 		void testDrawRectangle() {
 			PlotConfig conf = PlotConfig();
-			conf.area = 100*100;
+			conf.area = 10*10;
 			conf.min_x = -5;
 			conf.max_x = 5;
 			conf.min_y = -5;
