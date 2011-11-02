@@ -71,6 +71,17 @@ namespace realtimeplot {
 		context->set_identity_matrix();
 	}
 
-	void PlotArea::rectangle( float min_x, float min_y, float width_x, float width_y, 
-			bool fill, Color color ) {}
+	void PlotArea::set_color( Color color ) {
+		context->set_source_rgba( color.r, color.g, color.b, color.a );
+	}
+
+	void PlotArea::rectangle( float rect_min_x, float rect_min_y, float width_x, float width_y, 
+			bool fill, Color color ) {
+		transform_to_plot_units();
+		set_color( color );
+		context->rectangle( rect_min_x, rect_min_y, width_x, width_y );
+		if (fill) 
+			context->fill_preserve();
+		context->stroke();
+	}
 };
