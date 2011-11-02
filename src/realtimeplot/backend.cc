@@ -120,20 +120,7 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::reset( PlotConfig conf ) {
-		config = conf;
-		double x = 500/sqrt(config.aspect_ratio);
-		pPlotArea->plot_area_width = round( config.aspect_ratio*x );
-		pPlotArea->plot_area_height = round( x );
-		//create the surfaces and contexts
-		//
-		//plot_surface, the shown part of this surface is 250000 pixels (default 500x500)
-		//The rest is for when plotting outside of the area
-		pPlotArea->width = 5*pPlotArea->plot_area_width;
-		pPlotArea->height = 5*pPlotArea->plot_area_height;
-
-		//create the surface to draw on
-		pPlotArea->surface = create_plot_surface();
-		pPlotArea->context = Cairo::Context::create(pPlotArea->surface);
+		pPlotArea->setup( conf );
 		set_foreground_color();
 
 		x_surface_width = pPlotArea->plot_area_width+config.margin_y;
