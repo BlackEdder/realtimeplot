@@ -61,6 +61,8 @@ namespace realtimeplot {
 
 			void rectangle( float min_x, float min_y, float width_x, float width_y, 
 				bool fill, Color color );
+
+			void clear();
 	};
 
 	/**

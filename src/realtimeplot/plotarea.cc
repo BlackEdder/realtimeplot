@@ -52,11 +52,10 @@ namespace realtimeplot {
 		//Create context to draw background color
 		context = Cairo::Context::create(surface);
 
+		transform_to_plot_units();
+
 		//give the plot its background color
-		context->set_source_rgba(1, 1, 1, 1);
-		context->rectangle( 0, 0,
-				surface->get_width(), surface->get_height() );
-		context->fill();
+		clear();
 	}	
 
 	void PlotArea::transform_to_plot_units() {
@@ -75,13 +74,17 @@ namespace realtimeplot {
 		context->set_source_rgba( color.r, color.g, color.b, color.a );
 	}
 
-	void PlotArea::rectangle( float rect_min_x, float rect_min_y, float width_x, float width_y, 
-			bool fill, Color color ) {
-		transform_to_plot_units();
+	void PlotArea::rectangle( float rect_min_x, float rect_min_y,
+		 float width_x, float width_y, bool fill, Color color ) {
 		set_color( color );
 		context->rectangle( rect_min_x, rect_min_y, width_x, width_y );
 		if (fill) 
 			context->fill_preserve();
 		context->stroke();
+	}
+
+	void PlotArea::clear() {
+		rectangle( min_x, min_y, max_x-min_x, max_y-min_y,
+				true, Color::white() );
 	}
 };
