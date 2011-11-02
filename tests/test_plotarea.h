@@ -77,6 +77,24 @@ class TestPlotArea : public CxxTest::TestSuite
 			pl_area.context->user_to_device( x, y );
 			TS_ASSERT_EQUALS( x, 250 );
 			TS_ASSERT_EQUALS( y, 250 );
+			pl_area.transform_to_device_units();
+			x=0; y=0;
+			pl_area.context->user_to_device( x, y );
+			TS_ASSERT_EQUALS( x, 0 );
+			TS_ASSERT_EQUALS( y, 0 );
+		}
+
+		void testDrawRectangle() {
+			PlotConfig conf = PlotConfig();
+			conf.area = 100*100;
+			conf.min_x = -5;
+			conf.max_x = 5;
+			conf.min_y = -5;
+			conf.max_y = 5;
+			PlotArea pl_area = PlotArea( conf );
+			pl_area.rectangle( -4, -4, 8, 8, true, Color::red() );
+			pl_area.surface->write_to_png( "tests/tmp_plots/test_draw_rectangle.png" );
+			// Somehow compare to tests/correct_plots/test_draw_rectangle.png"
 		}
 
 };

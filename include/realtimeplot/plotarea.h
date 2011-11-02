@@ -56,6 +56,10 @@ namespace realtimeplot {
 			void transform_to_plot_units();
 
 			void transform_to_device_units();
+
+
+			void rectangle( float min_x, float min_y, float width_x, float width_y, 
+				bool fill, Color color );
 	};
 
 	/**

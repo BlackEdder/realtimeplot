@@ -59,5 +59,18 @@ namespace realtimeplot {
 		context->fill();
 	}	
 
-	void PlotArea::transform_to_plot_units() {};
+	void PlotArea::transform_to_plot_units() {
+		transform_to_device_units();
+		context->translate( 0, plot_surface_height );
+		context->scale( plot_surface_width/(max_x-min_x),
+				-plot_surface_height/(max_y-min_y) );
+		context->translate( -min_x, -min_y );
+	}
+
+	void PlotArea::transform_to_device_units() {
+		context->set_identity_matrix();
+	}
+
+	void PlotArea::rectangle( float min_x, float min_y, float width_x, float width_y, 
+			bool fill, Color color ) {}
 };
