@@ -349,12 +349,13 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::set_color( Color color ) {
-		pPlotArea->context->save();
-		pPlotArea->context->set_source_rgba( color.r, color.g, color.b, color.a );
+		//pPlotArea->context->save();
+		//pPlotArea->context->set_source_rgba( color.r, color.g, color.b, color.a );
+		pPlotArea->set_color( color );
 	}
 
 	void BackendPlot::restore() {
-		pPlotArea->context->restore();
+		//pPlotArea->context->restore();
 	}
 
 	void BackendPlot::point( float x, float y ) {
