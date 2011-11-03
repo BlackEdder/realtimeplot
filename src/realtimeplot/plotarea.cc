@@ -80,6 +80,7 @@ namespace realtimeplot {
 
 	void PlotArea::rectangle( float rect_min_x, float rect_min_y,
 		 float width, float height, bool fill ) {
+		context->save();
 		context->rectangle( rect_min_x, rect_min_y, width, height );
 		// So strange that this is needed, but fill seems 
 		// somehow to convert back to device units 
@@ -87,7 +88,7 @@ namespace realtimeplot {
 		if (fill) 
 			context->fill_preserve();
 		context->stroke();
-		transform_to_plot_units();
+		context->restore();
 	}
 
 	void PlotArea::point( float x, float y ) {

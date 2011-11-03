@@ -116,6 +116,7 @@ class TestPlotArea : public CxxTest::TestSuite
 		void testPoint() {
 			PlotArea pl_area = PlotArea( conf );
 			pl_area.point( 1, 1 );
+			pl_area.point( 23, 23 );
 			pl_area.surface->write_to_png( fn( "pa_point" ) );
 			TS_ASSERT( check_plot( "pa_point" ) );
 		}
