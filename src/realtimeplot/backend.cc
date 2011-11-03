@@ -457,26 +457,8 @@ namespace realtimeplot {
 		config.max_y = config.min_y+yrange;
 
 		if (!plot_bounds_within_surface_bounds()) {
-			//copy old plot surface
-			double old_plot_max_y = pPlotArea->max_y;
-			double old_plot_min_x = pPlotArea->min_x;
-
-			//create new blank surface
-			Cairo::RefPtr<Cairo::ImageSurface> surface = create_plot_surface();
-			Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
-
-			//copy old plot surface onto the blank surface
-			transform_to_plot_units( context );
-			context->user_to_device( old_plot_min_x, old_plot_max_y );
-			transform_to_device_units( context );
-			context->set_source( pPlotArea->surface, old_plot_min_x, old_plot_max_y );
-			context->paint();
-
-			//copy the newly created surface over the old plot
-			pPlotArea->context->set_source( surface, 0, 0 );
-			pPlotArea->context->paint();
-
-			set_foreground_color();
+			pPlotArea->reposition( config.min_x + (config.max_x-config.min_x)/2.0,
+					config.min_y + (config.max_y-config.min_y)/2.0 );
 		}
 		//be recursive about it :)
 		if (within_plot_bounds( x, y )) {

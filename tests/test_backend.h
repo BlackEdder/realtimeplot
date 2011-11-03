@@ -94,9 +94,9 @@ class TestBackend : public CxxTest::TestSuite
 			bpl.save( fn( "bpl_rolling1" ) );
 			TS_ASSERT( check_plot( "bpl_rolling1" ) );
 			// Rolling beyond PlotArea.surface
-			bpl.point( 12, -12 );
-			bpl.point( 16, -16 );
-			bpl.point( 17, -17 );
+			bpl.point( 52, -52 );
+			bpl.point( 56, -56 );
+			bpl.point( 57, -57 );
 			bpl.save( fn( "bpl_rolling2" ) );
 			TS_ASSERT( check_plot( "bpl_rolling2" ) );
 		}
