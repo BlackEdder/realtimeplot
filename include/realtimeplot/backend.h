@@ -99,13 +99,6 @@ namespace realtimeplot {
 			//Destructor, wait for event_loop thread to finish (join)
 			~BackendPlot();
 
-			/**
-			 * \brief returns a blank (background color) create_plot_surface
-			 *
-			 * Also sets helper variables, such as plot_surface_min_x
-			 */
-			Cairo::RefPtr<Cairo::ImageSurface> create_plot_surface();
-
 			//draw_axes_surface
 			void draw_axes_surface();
 

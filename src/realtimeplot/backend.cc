@@ -143,40 +143,14 @@ namespace realtimeplot {
 		display();
 	}
 
-	/*void BackendPlot::handle_xevent( xcb_generic_event_t *e ) {
-		throw;
-	}*/
-
 	void BackendPlot::close_window() {
 		if (xSurface) {
 			xContext.clear();
 			xSurface.clear();
 			pDisplayHandler->close_window( win );
-			//xcb_disconnect( pXcbHandler->connection );
 		}
 	}
 
-
-	Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_plot_surface() {
-
-		Cairo::RefPtr<Cairo::ImageSurface> surface = 
-			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					pPlotArea->width, pPlotArea->height );
-
-		//Create context to draw background color
-		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
-
-		//give the plot its background color
-		set_background_color( context );
-		context->rectangle( 0, 0,
-				surface->get_width(), surface->get_height() );
-		context->fill();
-
-		//set helper variables
-		double xratio = ((double(pPlotArea->width)/pPlotArea->plot_area_width)-1)/2.0;
-		double yratio = ((double(pPlotArea->height)/pPlotArea->plot_area_height)-1)/2.0;
-		return surface;
-	}
 
 	void BackendPlot::transform_to_plot_units( ) {
 		transform_to_plot_units( pPlotArea->context );
@@ -194,7 +168,6 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::ImageSurface> pSurface, 
 			Cairo::RefPtr<Cairo::Context> pContext, int margin_x, int margin_y ) {
 		transform_to_device_units( pContext );
-		//pContext->translate( margin_y, pSurface->get_height()-margin_x );
 		pContext->translate( margin_y, pSurface->get_height()-margin_x );
 		pContext->scale( (pSurface->get_width()-margin_y)/((config.max_x-config.min_x)),
 				-(pSurface->get_height()-margin_x)/((config.max_y-config.min_y)) );
@@ -352,13 +325,12 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::set_color( Color color ) {
-		//pPlotArea->context->save();
-		//pPlotArea->context->set_source_rgba( color.r, color.g, color.b, color.a );
+		pPlotArea->context->save();
 		pPlotArea->set_color( color );
 	}
 
 	void BackendPlot::restore() {
-		//pPlotArea->context->restore();
+		pPlotArea->context->restore();
 	}
 
 	void BackendPlot::point( float x, float y ) {
