@@ -152,6 +152,21 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "bhm_data4" ) );
 		}
 
+		void testHeightMapSimple() {
+			//conf.area = 500*500;
+			BackendHeightMap bhm = BackendHeightMap( conf, 
+					boost::shared_ptr<EventHandler>() );
+			bhm.add_data( 0,0,1, true );
+			bhm.add_data( 0.1,1,0.2, true );
+			bhm.add_data( -1,1.1,0.2, true );
+			bhm.save( fn( "bhm_3points" ) );
+			TS_ASSERT( check_plot( "bhm_3points" ) );
+			bhm.calculate_height_scaling();
+			bhm.plot();
+			bhm.save( fn( "bhm_3points_rescale" ) );
+			TS_ASSERT( check_plot( "bhm_3points_rescale" ) );
+		}
+
 
 		void testVertex3DCrossProduct() {
 			boost::shared_ptr<Vertex3D> pV1( new Vertex3D( 1,0,0 ) );
