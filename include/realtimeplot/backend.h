@@ -44,22 +44,6 @@
 
 namespace realtimeplot {
 	/**
-	 * \brief Class that is used to keep stats of existing lines
-	 */
-	class LineAttributes {
-		public:
-			int id;
-			float current_x, current_y;
-
-			//context used for drawing lines
-			Cairo::RefPtr<Cairo::Context> context;
-
-			LineAttributes( float x, float y, int id ) 
-				: id( id ), current_x( x ), current_y( y )	{
-			}
-	};
-
-	/**
 		\brief BackendPlot that waits for events and then plots them
 
 		Users should almost never create an object based on this class themself, but

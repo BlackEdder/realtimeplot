@@ -378,12 +378,8 @@ namespace realtimeplot {
 			if (!config.fixed_plot_area)
 			rolling_update(max_x, max_y);
 			}*/
-		transform_to_plot_units(); 
-		pPlotArea->context->rectangle( min_x, min_y, width_x, width_y );
-		transform_to_device_units( pPlotArea->context );
-		if (fill) 
-			pPlotArea->context->fill_preserve();
-		pPlotArea->context->stroke();
+		pPlotArea->set_color( color );
+		pPlotArea->rectangle( min_x, min_y, width_x, width_y, fill );
 		display();
 	}
 

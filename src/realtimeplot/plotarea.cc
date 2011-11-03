@@ -60,7 +60,8 @@ namespace realtimeplot {
 		transform_to_plot_units();
 
 		//give the plot its background color
-		clear();	}
+		clear();
+	}
 
 	void PlotArea::transform_to_plot_units() {
 		transform_to_device_units();
@@ -98,11 +99,46 @@ namespace realtimeplot {
 		rectangle( x-0.5*dx, y-0.5*dy, dx, dy, true );
 	}
 
+	void PlotArea::line_add( float x, float y, int id ) {
+		boost::shared_ptr<LineAttributes> line( new LineAttributes( x, y, id ) );
+
+		//check if line already exists
+		bool exists = false;
+		std::list<boost::shared_ptr<LineAttributes> >::iterator i;
+		for (i=lines.begin(); i != lines.end(); ++i) {
+			if ((*i)->id == id) {
+				line = (*i);
+				exists = true;
+				break;
+			}
+		}
+
+		if (!exists) {
+			//Push to the front assuming that new lines are more likely to added to
+			//and the check if line already exists will be quicker
+			lines.push_front( line );
+		} else {
+			context->save();
+			//plot_surface might have been updated, for example due to rolling_update
+			context->move_to( line->current_x, line->current_y );
+			context->line_to( x, y );
+			transform_to_device_units();
+			// This can cause segmentation faults without log. Seems cairo not completely
+			// thread safe
+			context->stroke();
+			context->restore();
+
+			line->current_x = x;
+			line->current_y = y;
+		}
+	}
+
 	void PlotArea::clear() {
 		context->save();
 		set_color( Color::white() );
 		rectangle( min_x, min_y, max_x-min_x, max_y-min_y,
 				true );
 		context->restore();
+		lines.clear();
 	}
 };

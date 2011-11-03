@@ -28,6 +28,23 @@
 
 namespace realtimeplot {
 	/**
+	 * \brief Class that is used to keep stats of existing lines
+	 */
+	class LineAttributes {
+		public:
+			int id;
+			float current_x, current_y;
+
+			//context used for drawing lines
+			Cairo::RefPtr<Cairo::Context> context;
+
+			LineAttributes( float x, float y, int id ) 
+				: id( id ), current_x( x ), current_y( y )	{
+			}
+	};
+
+
+	/**
 	 * \brief Manage the actual area used for plotting
 	 *
 	 * The actual PlotArea is by default 25 times the size of the shown plot area.
@@ -68,7 +85,12 @@ namespace realtimeplot {
 
 			void point( float x, float y );
 
+			void line_add( float x, float y, int id );
+
 			void clear();
+		private:
+			//Keep track to lines
+			std::list<boost::shared_ptr<LineAttributes> > lines;
 	};
 
 	/**
