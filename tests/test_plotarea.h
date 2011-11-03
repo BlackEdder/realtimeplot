@@ -87,31 +87,26 @@ class TestPlotArea : public CxxTest::TestSuite
 		void testDrawRectangle() {
 			PlotArea pl_area = PlotArea( conf );
 			pl_area.rectangle( -4, -4, 8, 8, true, Color::red() );
-			pl_area.surface->write_to_png( "tests/tmp_plots/test_draw_rectangle_fill.png" );
-			TS_ASSERT( compare_files( "tests/tmp_plots/test_draw_rectangle_fill.png", 
-				"tests/correct_plots/test_draw_rectangle_fill.png" ) );
+			pl_area.surface->write_to_png( fn( "draw_rectangle_fill" ) );
+			TS_ASSERT( check_plot( "draw_rectangle_fill" ) );
 
 			pl_area = PlotArea( conf );
 			pl_area.rectangle( -4, -4, 8, 8, false, Color::red() );
-			pl_area.surface->write_to_png( "tests/tmp_plots/test_draw_rectangle_unfill.png" );
-			TS_ASSERT( compare_files( "tests/tmp_plots/test_draw_rectangle_unfill.png", 
-				"tests/correct_plots/test_draw_rectangle_unfill.png" ) );
+			pl_area.surface->write_to_png( fn( "draw_rectangle_unfill" ) );
+			TS_ASSERT( check_plot( "draw_rectangle_unfill" ) );
 		}
 		void testClear() {
 			PlotArea pl_area = PlotArea( conf );
-			pl_area.surface->write_to_png( "tests/tmp_plots/test_empty.png" );
-			TS_ASSERT( compare_files( "tests/tmp_plots/test_empty.png", 
-				"tests/correct_plots/test_empty.png" ) );
+			pl_area.surface->write_to_png( fn( "empty" ) );
+			TS_ASSERT( check_plot( "empty" ) );
 
 			pl_area.rectangle( -4, -4, 8, 8, true, Color::red() );
-			pl_area.surface->write_to_png( "tests/tmp_plots/test_draw_rectangle_fill.png" );
-			TS_ASSERT( compare_files( "tests/tmp_plots/test_draw_rectangle_fill.png", 
-				"tests/correct_plots/test_draw_rectangle_fill.png" ) );
+			pl_area.surface->write_to_png( fn( "draw_rectangle_fill" ) );
+			TS_ASSERT( check_plot( "draw_rectangle_fill" ) );
 
 			pl_area.clear();
-			pl_area.surface->write_to_png( "tests/tmp_plots/test_empty.png" );
-			TS_ASSERT( compare_files( "tests/tmp_plots/test_empty.png", 
-				"tests/correct_plots/test_empty.png" ) );
+			pl_area.surface->write_to_png( fn( "empty" ) );
+			TS_ASSERT( check_plot( "empty" ) );
 		}
 };
 	

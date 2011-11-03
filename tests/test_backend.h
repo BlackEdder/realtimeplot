@@ -55,9 +55,8 @@ class TestBackend : public CxxTest::TestSuite
 
 		void testEmptyPlot() {
 			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
-			bpl.save( "tests/tmp_plots/test_empty_plot.png" );
-			TS_ASSERT( compare_files( "tests/tmp_plots/test_empty_plot.png", 
-				"tests/correct_plots/test_empty_plot.png" ) );
+			bpl.save( fn( "empty_plot" ) );
+			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
 
 		void testVertex3DCrossProduct() {
