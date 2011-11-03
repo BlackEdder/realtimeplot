@@ -43,7 +43,6 @@ namespace realtimeplot {
 			}
 	};
 
-
 	/**
 	 * \brief Manage the actual area used for plotting
 	 *
@@ -53,6 +52,7 @@ namespace realtimeplot {
 	 */
 	class PlotArea {
 		public:
+
 			/*Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
 			Cairo::RefPtr<Cairo::Context> plot_context;*/
 			Cairo::RefPtr<Cairo::ImageSurface> surface;
@@ -88,7 +88,7 @@ namespace realtimeplot {
 			void line_add( float x, float y, int id );
 
 			void clear();
-		private:
+		//private:
 			//Keep track to lines
 			std::list<boost::shared_ptr<LineAttributes> > lines;
 	};
