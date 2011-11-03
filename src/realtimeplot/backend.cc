@@ -96,7 +96,7 @@ namespace realtimeplot {
 			boost::posix_time::ptime now = boost::posix_time::microsec_clock::local_time();
 			//Only do this if event queue is empty 
 			//or last update was more than a 0.5 seconds ago
-			if  (pEventHandler->get_queue_size() < 1 
+			if  (pEventHandler && pEventHandler->get_queue_size() < 1 
 					|| (( now-time_of_last_update )>( boost::posix_time::microseconds(500000))))  {
 				temporary_display_surface = create_temporary_surface();
 				//copy the temporary surface onto the xcb surface
@@ -120,13 +120,15 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::reset( PlotConfig conf ) {
+		config = conf;
 		pPlotArea->setup( conf );
 		set_foreground_color();
 
 		x_surface_width = pPlotArea->plot_area_width+config.margin_y;
 		x_surface_height = pPlotArea->plot_area_height+config.margin_x;
 		xSurface = pDisplayHandler->get_cairo_surface( win, 
-				pPlotArea->plot_area_width+config.margin_y, pPlotArea->plot_area_height+config.margin_x);
+				pPlotArea->plot_area_width+config.margin_y, 
+				pPlotArea->plot_area_height+config.margin_x);
 		xContext = Cairo::Context::create( xSurface );
 
 		//draw initial axes etc
