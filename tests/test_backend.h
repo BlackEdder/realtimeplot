@@ -85,6 +85,23 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "line_plot2" ) );
 		}
 
+		void testRollingUpdate() {
+			//conf.area = 500*500;
+			conf.overlap = 0.6;
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.point( 0, 0 );
+			bpl.point( -7, -7 );
+			bpl.save( fn( "bpl_rolling1" ) );
+			TS_ASSERT( check_plot( "bpl_rolling1" ) );
+			// Rolling beyond PlotArea.surface
+			bpl.point( 12, -12 );
+			bpl.point( 16, -16 );
+			bpl.point( 17, -17 );
+			bpl.save( fn( "bpl_rolling2" ) );
+			TS_ASSERT( check_plot( "bpl_rolling2" ) );
+		}
+
+
 		void testVertex3DCrossProduct() {
 			boost::shared_ptr<Vertex3D> pV1( new Vertex3D( 1,0,0 ) );
 			boost::shared_ptr<Vertex3D> pV2( new Vertex3D( 0,1,0 ) );

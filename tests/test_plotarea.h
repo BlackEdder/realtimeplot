@@ -137,7 +137,7 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pl_area.lines.size(), 2 );
 			pl_area.line_add( -6, 6, 2 );
 			pl_area.surface->write_to_png( fn( "pa_line" ) );
-			TS_ASSERT( check_plot( "pa_line1" ) );
+			TS_ASSERT( check_plot( "pa_line" ) );
 			// Make sure lines get cleared, i.e. line 1 is not at 2,2 anymore
 			pl_area.clear();
 			TS_ASSERT_EQUALS( pl_area.lines.size(), 0 );
