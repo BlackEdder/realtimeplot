@@ -133,6 +133,41 @@ namespace realtimeplot {
 		}
 	}
 
+	void PlotArea::reposition( float x, float y ) {
+		double dx = x - (min_x + (max_x-min_x)/2.0);
+		double dy = y - (min_y + (max_y-min_y)/2.0);
+		double old_plot_min_x = min_x;
+		double old_plot_max_y = max_y;
+		min_x += dx;
+		max_x += dx;
+		min_y += dy;
+		max_y += dy;
+
+		Cairo::RefPtr<Cairo::ImageSurface> old_surface = surface;
+
+		surface = 
+			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+					width, height );
+		//Create context to draw background color
+		context = Cairo::Context::create(surface);
+
+		//transform_to_plot_units();
+		transform_to_plot_units();
+		//give the plot its background color
+		clear();
+
+		context->save();
+		context->user_to_device(old_plot_min_x, old_plot_max_y);
+		transform_to_device_units();
+		context->set_source( old_surface, old_plot_min_x, old_plot_max_y );
+		context->paint();
+		context->restore();
+		//surface = old_surface;
+		//context = Cairo::Context::create(surface);
+
+		//transform_to_plot_units();
+	}
+
 	void PlotArea::clear() {
 		context->save();
 		set_color( Color::white() );

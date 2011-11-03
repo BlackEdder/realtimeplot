@@ -86,6 +86,13 @@ namespace realtimeplot {
 			void point( float x, float y );
 
 			void line_add( float x, float y, int id );
+			
+			/**
+			 * \brief Reposition to a new center
+			 *
+			 * Needs to copy old surface on top of the newer
+			 */
+			void reposition( float center_x, float center_y);
 
 			void clear();
 		//private:

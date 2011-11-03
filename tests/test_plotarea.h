@@ -147,4 +147,25 @@ class TestPlotArea : public CxxTest::TestSuite
 			//pl_area.surface->write_to_png( fn( "pa_line2" ) );
 			//TS_ASSERT( check_plot( "pa_line2" ) );
 		}
+
+		void testReposition() {
+			PlotArea pl_area = PlotArea( conf  );
+			pl_area.reposition( 5, 5 );
+			TS_ASSERT_EQUALS( pl_area.min_x, -20 );
+			TS_ASSERT_EQUALS( pl_area.max_x, 30 );
+			TS_ASSERT_EQUALS( pl_area.min_y, -20 );
+			TS_ASSERT_EQUALS( pl_area.max_y, 30 );
+			pl_area.point( 15, -5 );
+			pl_area.reposition( 15, -5 );
+			TS_ASSERT_EQUALS( pl_area.min_x, -10 );
+			TS_ASSERT_EQUALS( pl_area.max_x, 40 );
+			TS_ASSERT_EQUALS( pl_area.min_y, -30 );
+			TS_ASSERT_EQUALS( pl_area.max_y, 20 );
+			pl_area.set_color( Color::red() );
+			pl_area.point( 15, -10 );
+			pl_area.set_color( Color::green() );
+			pl_area.point( 10, -10 );
+			pl_area.surface->write_to_png( fn( "pa_reposition" ) );
+			TS_ASSERT( check_plot( "pa_reposition" ) );
+		}
 };
