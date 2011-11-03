@@ -366,7 +366,9 @@ namespace realtimeplot {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);
 		}
+		global_mutex.lock();
 		pPlotArea->point( x, y );
+		global_mutex.unlock();
 
 		display();
 	}
@@ -381,8 +383,10 @@ namespace realtimeplot {
 			if (!config.fixed_plot_area)
 			rolling_update(max_x, max_y);
 			}*/
+		global_mutex.lock();
 		pPlotArea->set_color( color );
 		pPlotArea->rectangle( min_x, min_y, width_x, width_y, fill );
+		global_mutex.unlock();
 		display();
 	}
 
@@ -393,8 +397,10 @@ namespace realtimeplot {
 				rolling_update(x, y);
 		}
 
+		global_mutex.lock();
 		pPlotArea->set_color( color );
 		pPlotArea->line_add( x, y, id );
+		global_mutex.unlock();
 
 		display();
 	}
@@ -410,7 +416,8 @@ namespace realtimeplot {
 				rolling_update(x, y);
 		}
 		transform_to_plot_units(); 
-		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(pPlotArea->context);
+		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(
+				pPlotArea->context);
 		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
 		//pango_font.set_weight( Pango::WEIGHT_HEAVY );
 		pango_font.set_size( config.numerical_labels_font_size*Pango::SCALE );
