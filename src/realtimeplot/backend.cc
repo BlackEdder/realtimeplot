@@ -390,45 +390,10 @@ namespace realtimeplot {
 				rolling_update(x, y);
 		}
 
-		boost::shared_ptr<LineAttributes> line( new LineAttributes( x, y, id ) );
+		pPlotArea->set_color( color );
+		pPlotArea->line_add( x, y, id );
 
-		//check if line already exists
-		bool exists = false;
-		std::list<boost::shared_ptr<LineAttributes> >::iterator i;
-		for (i=lines.begin(); i != lines.end(); ++i) {
-			if ((*i)->id == id) {
-				line = (*i);
-				exists = true;
-				break;
-			}
-		}
-
-		if (!exists) {
-			//Push to the front assuming that new lines are more likely to added to
-			//and the check if line already exists will be quicker
-			lines.push_front( line );
-		} else {
-			//plot_surface might have been updated, for example due to rolling_update
-			line->context = Cairo::Context::create( pPlotArea->surface );
-			
-			transform_to_device_units( line->context );
-			set_foreground_color( line->context );
-
-			line->context->set_source_rgba( color.r, color.g, color.b, color.a );    
-			transform_to_plot_units( line->context );
-			line->context->move_to( line->current_x, line->current_y );
-			line->context->line_to( x, y );
-			transform_to_device_units( line->context );
-			// This can cause segmentation faults without log. Seems cairo not completely
-			// thread safe
-			global_mutex.lock();
-			line->context->stroke();
-			global_mutex.unlock();
-
-			line->current_x = x;
-			line->current_y = y;
-			display();
-		}
+		display();
 	}
 
 	void BackendPlot::title( std::string &title ) {
