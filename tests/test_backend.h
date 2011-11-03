@@ -59,6 +59,14 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
 
+		void testPointPlot() {
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.point( 1, 1 );
+			bpl.save( fn( "point_plot" ) );
+			TS_ASSERT( check_plot( "point_plot" ) );
+		}
+
+
 		void testVertex3DCrossProduct() {
 			boost::shared_ptr<Vertex3D> pV1( new Vertex3D( 1,0,0 ) );
 			boost::shared_ptr<Vertex3D> pV2( new Vertex3D( 0,1,0 ) );

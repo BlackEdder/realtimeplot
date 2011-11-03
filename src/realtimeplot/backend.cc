@@ -357,24 +357,13 @@ namespace realtimeplot {
 		pPlotArea->context->restore();
 	}
 
-
-
 	void BackendPlot::point( float x, float y ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);
 		}
-		double dx = config.point_size;
-		double dy = config.point_size;
-		transform_to_plot_units(); 
-		pPlotArea->context->device_to_user_distance(dx,dy);
-		pPlotArea->context->rectangle( x-0.5*dx, y-0.5*dy, dx, dy );
-		transform_to_device_units( pPlotArea->context );
+		pPlotArea->point( x, y );
 
-		global_mutex.lock();
-		pPlotArea->context->fill();
-		global_mutex.unlock();
-	
 		display();
 	}
 

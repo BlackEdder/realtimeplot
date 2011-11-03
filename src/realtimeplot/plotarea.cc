@@ -29,6 +29,8 @@ namespace realtimeplot {
 	}	
 
 	void PlotArea::setup( PlotConfig &config ) {
+		point_size = config.point_size;
+
 		//calculate minimum plot area width/height based on aspect ratio
 		double x = sqrt(config.area)/sqrt(config.aspect_ratio);
 		plot_area_width = round( config.aspect_ratio*x );
@@ -77,16 +79,29 @@ namespace realtimeplot {
 	}
 
 	void PlotArea::rectangle( float rect_min_x, float rect_min_y,
-		 float width_x, float width_y, bool fill, Color color ) {
-		set_color( color );
-		context->rectangle( rect_min_x, rect_min_y, width_x, width_y );
+		 float width, float height, bool fill ) {
+		context->rectangle( rect_min_x, rect_min_y, width, height );
+		// So strange that this is needed, but fill seems 
+		// somehow to convert back to device units 
+		transform_to_device_units();
 		if (fill) 
 			context->fill_preserve();
 		context->stroke();
+		transform_to_plot_units();
+	}
+
+	void PlotArea::point( float x, float y ) {
+		double dx = point_size;
+		double dy = point_size;
+		context->device_to_user_distance(dx,dy);
+		rectangle( x-0.5*dx, y-0.5*dy, dx, dy, true );
 	}
 
 	void PlotArea::clear() {
+		context->save();
+		set_color( Color::white() );
 		rectangle( min_x, min_y, max_x-min_x, max_y-min_y,
-				true, Color::white() );
+				true );
+		context->restore();
 	}
 };

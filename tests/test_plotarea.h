@@ -86,27 +86,38 @@ class TestPlotArea : public CxxTest::TestSuite
 
 		void testDrawRectangle() {
 			PlotArea pl_area = PlotArea( conf );
-			pl_area.rectangle( -4, -4, 8, 8, true, Color::red() );
+			pl_area.set_color( Color::red() );
+			pl_area.rectangle( -4, -4, 8, 8, true );
 			pl_area.surface->write_to_png( fn( "draw_rectangle_fill" ) );
 			TS_ASSERT( check_plot( "draw_rectangle_fill" ) );
 
 			pl_area = PlotArea( conf );
-			pl_area.rectangle( -4, -4, 8, 8, false, Color::red() );
+			pl_area.set_color( Color::red() );
+			pl_area.rectangle( -4, -4, 8, 8, false );
 			pl_area.surface->write_to_png( fn( "draw_rectangle_unfill" ) );
 			TS_ASSERT( check_plot( "draw_rectangle_unfill" ) );
 		}
+
 		void testClear() {
 			PlotArea pl_area = PlotArea( conf );
 			pl_area.surface->write_to_png( fn( "empty" ) );
 			TS_ASSERT( check_plot( "empty" ) );
 
-			pl_area.rectangle( -4, -4, 8, 8, true, Color::red() );
+			pl_area.set_color( Color::red() );
+			pl_area.rectangle( -4, -4, 8, 8, true );
 			pl_area.surface->write_to_png( fn( "draw_rectangle_fill" ) );
 			TS_ASSERT( check_plot( "draw_rectangle_fill" ) );
 
 			pl_area.clear();
 			pl_area.surface->write_to_png( fn( "empty" ) );
 			TS_ASSERT( check_plot( "empty" ) );
+		}
+
+		void testPoint() {
+			PlotArea pl_area = PlotArea( conf );
+			pl_area.point( 1, 1 );
+			pl_area.surface->write_to_png( fn( "pa_point" ) );
+			TS_ASSERT( check_plot( "pa_point" ) );
 		}
 };
 	

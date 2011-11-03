@@ -41,7 +41,9 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::ImageSurface> surface;
 			Cairo::RefPtr<Cairo::Context> context;
 
-			int plot_area_width, plot_area_height;
+			size_t plot_area_width, plot_area_height;
+
+			size_t point_size;
 
 			//Keep track of the maximum/minimum values of the plot_surface in plot units
 			//float plot_surface_max_x, plot_surface_min_x;
@@ -62,7 +64,9 @@ namespace realtimeplot {
 			void set_color( Color color );
 
 			void rectangle( float min_x, float min_y, float width_x, float width_y, 
-				bool fill, Color color );
+				bool fill );
+
+			void point( float x, float y );
 
 			void clear();
 	};
