@@ -672,7 +672,7 @@ namespace realtimeplot {
 		if (frozen_bins_x) {
 			// No need to reset bounds, just add it to the correct bin
 			if (new_data>=min_x && new_data<max_x)
-				bins_y[utils::bin_id(min_x, bin_width, new_data)];
+				++bins_y[utils::bin_id(min_x, bin_width, new_data)];
 		} else {
 			// Special cases, using the first data point to initialize binsize etc
 			if (data.size() == 1) {
