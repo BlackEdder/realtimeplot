@@ -86,7 +86,6 @@ class TestBackend : public CxxTest::TestSuite
 		}
 
 		void testRollingUpdate() {
-			//conf.area = 500*500;
 			conf.overlap = 0.6;
 			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
 			bpl.point( 0, 0 );
@@ -99,6 +98,20 @@ class TestBackend : public CxxTest::TestSuite
 			bpl.point( 57, -57 );
 			bpl.save( fn( "bpl_rolling2" ) );
 			TS_ASSERT( check_plot( "bpl_rolling2" ) );
+		}
+
+		void testHistogramSimple() {
+			conf.area = 500*500;
+
+			BackendHistogram bhm = BackendHistogram( conf, 
+					boost::shared_ptr<EventHandler>(), 0, 5, 20 );
+			std::cout << "bla" << std::endl;
+			bhm.plot();
+			bhm.save( fn( "bhm_empty" ) );
+			TS_ASSERT( check_plot( "bhm_empty" ) );
+			bhm.add_data( 1.1, true, true, 20, true );
+			std::cout << bhm.pPlotArea->max_y << std::endl;
+			bhm.save( fn( "bhm_data1" ) );
 		}
 
 

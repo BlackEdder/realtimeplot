@@ -342,7 +342,8 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::set_foreground_color() {
-		set_foreground_color( pPlotArea->context );
+		pPlotArea->set_color(Color::black());
+		//set_foreground_color( pPlotArea->context );
 	}
 	void BackendPlot::set_foreground_color( Cairo::RefPtr<Cairo::Context> pContext ) {
 		pContext->set_source_rgba(0, 0, 0, 1);
@@ -730,7 +731,7 @@ namespace realtimeplot {
 
 		for (size_t i=0; i<no_bins; ++i) {
 			double height = bins_y[i];
-			if (frequency)
+			if (frequency && data.size()>0)
 				height/=data.size();
 			line_add( min_x+i*bin_width, 0, -1, Color::black() );
 			line_add( min_x+i*bin_width, height, -1, Color::black() );
