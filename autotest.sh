@@ -1,6 +1,12 @@
 #!/bin/sh
-while inotifywait bin/unittest_* -q; do
-	sleep 1
-	clear
-	ctest
+# Immediately run once
+ctest
+
+while : 
+do
+	file=`inotifywait -q -e CREATE bin/ --format %f`
+	if [[ "$file" =~ unittest_* ]]
+	then
+		ctest
+	fi
 done

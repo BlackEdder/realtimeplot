@@ -53,7 +53,6 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pl_area.min_y, -25 );
 			TS_ASSERT_EQUALS( pl_area.max_y, 25 );
 
-
 			TS_ASSERT_EQUALS( pl_area.width, 250 );
 			TS_ASSERT_EQUALS( pl_area.height, 250 );
 
