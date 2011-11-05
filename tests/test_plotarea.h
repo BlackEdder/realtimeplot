@@ -187,8 +187,8 @@ class TestPlotArea : public CxxTest::TestSuite
 			double x = 0;
 			double y = 0;
 			ax_area.context->user_to_device( x, y );
-			TS_ASSERT_EQUALS( x, 50 );
-			TS_ASSERT_EQUALS( y, 50 );
+			TS_ASSERT_EQUALS( x, 75 );
+			TS_ASSERT_EQUALS( y, 75 );
 			ax_area.transform_to_device_units();
 			x=0; y=0;
 			ax_area.context->user_to_device( x, y );
