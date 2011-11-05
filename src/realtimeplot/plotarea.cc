@@ -318,7 +318,7 @@ namespace realtimeplot {
 		transform_to_device_units();
 		context->translate( left_margin, height-bottom_margin );
 		context->scale( (width-left_margin)/((max_x-min_x)),
-				-(height-bottom_margin)/((max_y-min_y)) );
+				-((double) height-bottom_margin)/((max_y-min_y)) );
 		context->translate( -min_x, -min_y );
 	}
 
