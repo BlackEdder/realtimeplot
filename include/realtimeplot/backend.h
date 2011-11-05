@@ -235,10 +235,6 @@ namespace realtimeplot {
 			DisplayHandler *pDisplayHandler;
 			size_t win;
 
-			//Keep track to lines
-			std::list<boost::shared_ptr<LineAttributes> > lines;
-
-
 			//function to calculate the "optimal" tick values/positions
 			std::vector<float> axes_ticks( float min, float max, int nr );
 

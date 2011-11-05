@@ -57,7 +57,8 @@ namespace realtimeplot {
 		//create_xlib_window
 		x_surface_width = pPlotArea->plot_area_width+config.margin_y;
 		x_surface_height = pPlotArea->plot_area_height+config.margin_x;
-		win = pDisplayHandler->open_window(x_surface_width, x_surface_height, pEventHandler);
+		win = pDisplayHandler->open_window(x_surface_width, x_surface_height,
+			 pEventHandler);
 		// Set the title
 		pDisplayHandler->set_title( win, config.title );
 
@@ -115,8 +116,6 @@ namespace realtimeplot {
 		//give the plot its background color
 		pPlotArea->clear();
 		display();
-		//Clear the line cache
-		lines.clear();
 	}
 
 	void BackendPlot::reset( PlotConfig conf ) {
