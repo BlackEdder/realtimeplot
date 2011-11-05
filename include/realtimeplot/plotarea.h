@@ -54,8 +54,7 @@ namespace realtimeplot {
 	 * \brief Manage the actual area used for plotting
 	 *
 	 * The actual PlotArea is by default 25 times the size of the shown plot area.
-	 * This is too facilitate things such as move, scale, zoom etc. This class should
-	 * not have to be aware of this though.
+	 * This is too facilitate things such as move, scale, zoom etc.	
 	 */
 	class PlotArea : public Area {
 		public:
@@ -100,7 +99,10 @@ namespace realtimeplot {
 	/**
 	 * \brief Manage the area containing the axes
 	 */
-	class AxesArea {
+	class AxesArea : public Area {
+		public:
+			AxesArea( PlotConfig &config, size_t width, size_t height );
+			void setup( PlotConfig &config, size_t width, size_t height  );
 	};
 };
 #endif

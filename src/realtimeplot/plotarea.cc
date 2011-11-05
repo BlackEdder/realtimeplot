@@ -176,4 +176,16 @@ namespace realtimeplot {
 		context->restore();
 		lines.clear();
 	}
+
+	/*
+	 * AxesArea
+	 */
+	AxesArea::AxesArea( PlotConfig &config, size_t width, size_t height  ) 
+		: Area() {
+		setup( config, width, height );
+	}
+
+	void AxesArea::setup( PlotConfig &config, size_t w, size_t h ) {
+		width = w; height = h;
+	}
 };

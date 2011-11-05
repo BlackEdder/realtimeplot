@@ -168,4 +168,11 @@ class TestPlotArea : public CxxTest::TestSuite
 			pl_area.surface->write_to_png( fn( "pa_reposition" ) );
 			TS_ASSERT( check_plot( "pa_reposition" ) );
 		}
+
+		void testAxesArea() {
+			AxesArea ax_area = AxesArea( conf, 
+					50 + conf.margin_y, 50 + conf.margin_x );
+			TS_ASSERT_EQUALS( ax_area.width, 50 + conf.margin_y );
+			TS_ASSERT_EQUALS( ax_area.height, 50 + conf.margin_x );
+		}
 };
