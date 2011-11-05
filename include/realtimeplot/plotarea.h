@@ -103,6 +103,11 @@ namespace realtimeplot {
 		public:
 			AxesArea( PlotConfig &config, size_t width, size_t height );
 			void setup( PlotConfig &config, size_t width, size_t height  );
+
+			/**
+			 * \brief Calculate power of step (i.e. 0.01 -> power is -2)
+			 */
+			int power_of_step( float step );
 	};
 };
 #endif

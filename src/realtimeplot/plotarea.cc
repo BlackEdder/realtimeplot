@@ -188,4 +188,19 @@ namespace realtimeplot {
 	void AxesArea::setup( PlotConfig &config, size_t w, size_t h ) {
 		width = w; height = h;
 	}
+
+	int AxesArea::power_of_step( float step ) {
+		int power = 0;
+		//Using straightforward method. There might be a better way 
+		if (step <= 1) {
+			while (step/pow(10,power)<=1) {
+				--power;
+			}
+		} else if (step >=10) {
+			while (step/pow(10,power)>=10) {
+				++power;
+			}
+		}
+		return power;
+	}
 };

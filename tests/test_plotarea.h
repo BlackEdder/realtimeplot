@@ -175,4 +175,13 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( ax_area.width, 50 + conf.margin_y );
 			TS_ASSERT_EQUALS( ax_area.height, 50 + conf.margin_x );
 		}
+
+		void testAAPower() {
+			AxesArea ax_area = AxesArea( conf, 50, 50 );
+			TS_ASSERT_EQUALS( ax_area.power_of_step( 0.02101 ), -2 );
+			TS_ASSERT_EQUALS( ax_area.power_of_step( 0.09101e-5 ), -7 );
+			TS_ASSERT_EQUALS( ax_area.power_of_step( 5.901 ), 0 );
+			TS_ASSERT_EQUALS( ax_area.power_of_step( 43.901 ), 1 );
+			TS_ASSERT_EQUALS( ax_area.power_of_step( 105.901 ), 2 );
+		}
 };
