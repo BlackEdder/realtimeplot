@@ -478,7 +478,7 @@ namespace realtimeplot {
 				--power;
 			}
 		} else if (step >=10) {
-			while (step/pow(10,power)<=1) {
+			while (step/pow(10,power)>=10) {
 				++power;
 			}
 		}
