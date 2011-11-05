@@ -172,9 +172,30 @@ class TestPlotArea : public CxxTest::TestSuite
 		void testAxesArea() {
 			AxesArea ax_area = AxesArea( conf, 
 					50 + conf.margin_y, 50 + conf.margin_x );
+			TS_ASSERT_EQUALS( ax_area.bottom_margin, conf.margin_x );
+			TS_ASSERT_EQUALS( ax_area.left_margin, conf.margin_x );
 			TS_ASSERT_EQUALS( ax_area.width, 50 + conf.margin_y );
 			TS_ASSERT_EQUALS( ax_area.height, 50 + conf.margin_x );
 		}
+
+		void testAATransformToPlotUnits() {
+			conf.margin_y = 50;
+			conf.margin_x = 50;
+			AxesArea ax_area = AxesArea( conf, 
+					50 + conf.margin_y, 50 + conf.margin_x );
+			ax_area.transform_to_plot_units();
+			double x = 0;
+			double y = 0;
+			ax_area.context->user_to_device( x, y );
+			TS_ASSERT_EQUALS( x, 50 );
+			TS_ASSERT_EQUALS( y, 50 );
+			ax_area.transform_to_device_units();
+			x=0; y=0;
+			ax_area.context->user_to_device( x, y );
+			TS_ASSERT_EQUALS( x, 0 );
+			TS_ASSERT_EQUALS( y, 0 );
+		}
+
 
 		void testAAPower() {
 			AxesArea ax_area = AxesArea( conf, 50, 50 );

@@ -192,6 +192,10 @@ namespace realtimeplot {
 
 	void AxesArea::setup( PlotConfig &config, size_t w, size_t h ) {
 		width = w; height = h;
+		bottom_margin = config.margin_x;
+		left_margin = config.margin_y;
+		min_x = config.min_x; max_x = config.max_x;
+		min_y = config.min_y; max_y = config.max_y;
 		
 
 		//draw them non transparent (else we get weird interactions that when 
@@ -306,6 +310,14 @@ namespace realtimeplot {
 		pango_layout->show_in_cairo_context( context );
 
 		context->stroke();*/
+	}
+
+	void AxesArea::transform_to_plot_units() {
+		transform_to_device_units();
+		context->translate( left_margin, height-bottom_margin );
+		context->scale( (width-left_margin)/((max_x-min_x)),
+				-(height-bottom_margin)/((max_y-min_y)) );
+		context->translate( -min_x, -min_y );
 	}
 
 	int AxesArea::power_of_step( float step ) {
