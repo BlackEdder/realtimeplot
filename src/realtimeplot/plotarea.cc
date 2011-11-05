@@ -23,9 +23,18 @@
 
 #include "realtimeplot/plotarea.h"
 
+#include <pangomm/init.h>
+#include <pangomm/context.h>
+#include <pangomm/layout.h>
+
+
 namespace realtimeplot {
 	void Area::transform_to_device_units() {
 		context->set_identity_matrix();
+	}
+
+	void Area::set_color( Color color ) {
+		context->set_source_rgba( color.r, color.g, color.b, color.a );
 	}
 
 	PlotArea::PlotArea( PlotConfig &config ) : Area() {
@@ -73,10 +82,6 @@ namespace realtimeplot {
 		context->scale( width/(max_x-min_x),
 				-height/(max_y-min_y) );
 		context->translate( -min_x, -min_y );
-	}
-
-	void PlotArea::set_color( Color color ) {
-		context->set_source_rgba( color.r, color.g, color.b, color.a );
 	}
 
 	void PlotArea::rectangle( float rect_min_x, float rect_min_y,
@@ -187,13 +192,13 @@ namespace realtimeplot {
 
 	void AxesArea::setup( PlotConfig &config, size_t w, size_t h ) {
 		width = w; height = h;
+		
 
-		/*
 		//draw them non transparent (else we get weird interactions that when 
 		//drawing a transparent point and a rolling update happens the axes 
 		//become transparent as well)
-		std::vector<float> xaxis_ticks;
-		std::vector<float> yaxis_ticks;
+		std::vector<double> xaxis_ticks;
+		std::vector<double> yaxis_ticks;
 
 		Pango::init();
 
@@ -203,11 +208,11 @@ namespace realtimeplot {
 				//xSurface->get_height() );
 		context = Cairo::Context::create(surface);
 
-		int text_width, text_height;
+		size_t text_width, text_height;
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(context);
 		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
 
-		transform_to_plot_units_with_origin( surface, context, 
+		/*transform_to_plot_units_with_origin( surface, context, 
 				config.margin_x, config.margin_y );
 		//plot background color outside the axes (to cover points plotted outside)
 		set_background_color( context );
@@ -300,10 +305,8 @@ namespace realtimeplot {
 				surface->get_height()-config.margin_x+1.5*text_height );
 		pango_layout->show_in_cairo_context( context );
 
-		context->stroke();
-
-		*/
-}
+		context->stroke();*/
+	}
 
 	int AxesArea::power_of_step( float step ) {
 		int power = 0;
