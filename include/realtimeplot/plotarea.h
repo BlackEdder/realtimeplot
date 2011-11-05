@@ -47,7 +47,7 @@ namespace realtimeplot {
 		public:
 			Cairo::RefPtr<Cairo::ImageSurface> surface;
 			Cairo::RefPtr<Cairo::Context> context;
-			float width, height;
+			size_t width, height;
 	};
 
 	/**
@@ -57,26 +57,15 @@ namespace realtimeplot {
 	 * This is too facilitate things such as move, scale, zoom etc. This class should
 	 * not have to be aware of this though.
 	 */
-	class PlotArea {
+	class PlotArea : public Area {
 		public:
-
-			/*Cairo::RefPtr<Cairo::ImageSurface> plot_surface;
-			Cairo::RefPtr<Cairo::Context> plot_context;*/
-			Cairo::RefPtr<Cairo::ImageSurface> surface;
-			Cairo::RefPtr<Cairo::Context> context;
-
 			size_t plot_area_width, plot_area_height;
 
 			size_t point_size;
 
 			//Keep track of the maximum/minimum values of the plot_surface in plot units
-			//float plot_surface_max_x, plot_surface_min_x;
-			//float plot_surface_max_y, plot_surface_min_y;
 			float max_x, min_x;
 			float max_y, min_y;
-
-			/// Device units (pixels)
-			size_t width, height;
 
 			PlotArea( PlotConfig &config );
 

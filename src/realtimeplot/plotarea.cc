@@ -24,7 +24,7 @@
 #include "realtimeplot/plotarea.h"
 
 namespace realtimeplot {
-	PlotArea::PlotArea( PlotConfig &config ) {
+	PlotArea::PlotArea( PlotConfig &config ) : Area() {
 		setup( config );
 	}	
 
