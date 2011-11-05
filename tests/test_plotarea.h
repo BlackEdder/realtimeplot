@@ -171,15 +171,17 @@ class TestPlotArea : public CxxTest::TestSuite
 
 		void testAxesArea() {
 			AxesArea ax_area = AxesArea( conf, 
-					50 + conf.margin_y, 50 + conf.margin_x );
+					100 + conf.margin_y, 100 + conf.margin_x );
 			TS_ASSERT_EQUALS( ax_area.bottom_margin, conf.margin_x );
 			TS_ASSERT_EQUALS( ax_area.left_margin, conf.margin_x );
 			TS_ASSERT_EQUALS( ax_area.max_x, conf.max_x );
 			TS_ASSERT_EQUALS( ax_area.min_x, conf.min_x );
 			TS_ASSERT_EQUALS( ax_area.max_y, conf.max_y );
 			TS_ASSERT_EQUALS( ax_area.min_y, conf.min_y );
-			TS_ASSERT_EQUALS( ax_area.width, 50 + conf.margin_y );
-			TS_ASSERT_EQUALS( ax_area.height, 50 + conf.margin_x );
+			TS_ASSERT_EQUALS( ax_area.width, 100 + conf.margin_y );
+			TS_ASSERT_EQUALS( ax_area.height, 100 + conf.margin_x );
+			ax_area.surface->write_to_png( fn( "aa_empty" ) );
+			TS_ASSERT( check_plot( "aa_empty" ) );
 		}
 
 		void testAATransformToPlotUnits() {
