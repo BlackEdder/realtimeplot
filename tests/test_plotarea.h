@@ -64,7 +64,7 @@ class TestPlotArea : public CxxTest::TestSuite
 			conf.aspect_ratio = 1.5;
 
 			PlotArea pl_area = PlotArea( conf );
-			TS_ASSERT_DELTA( pl_area.width/pl_area.height, 1.5, 0.2 );
+			TS_ASSERT_DELTA( ((double) pl_area.width)/pl_area.height, 1.5, 0.2 );
 			conf.aspect_ratio = 1.0;
 		}
 

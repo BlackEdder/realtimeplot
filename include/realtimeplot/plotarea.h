@@ -43,6 +43,13 @@ namespace realtimeplot {
 			}
 	};
 
+	class Area {
+		public:
+			Cairo::RefPtr<Cairo::ImageSurface> surface;
+			Cairo::RefPtr<Cairo::Context> context;
+			float width, height;
+	};
+
 	/**
 	 * \brief Manage the actual area used for plotting
 	 *
@@ -67,8 +74,9 @@ namespace realtimeplot {
 			//float plot_surface_max_y, plot_surface_min_y;
 			float max_x, min_x;
 			float max_y, min_y;
+
 			/// Device units (pixels)
-			float width, height;
+			size_t width, height;
 
 			PlotArea( PlotConfig &config );
 
