@@ -108,6 +108,12 @@ namespace realtimeplot {
 			 * \brief Calculate power of step (i.e. 0.01 -> power is -2)
 			 */
 			int power_of_step( float step );
+
+			/**
+			 * \brief Calculate the "optimal" tick values/positions
+			 */
+			std::vector<double> axes_ticks( float min, float max, int nr );
+
 	};
 };
 #endif

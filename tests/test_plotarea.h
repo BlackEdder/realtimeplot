@@ -184,4 +184,23 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( ax_area.power_of_step( 43.901 ), 1 );
 			TS_ASSERT_EQUALS( ax_area.power_of_step( 105.901 ), 2 );
 		}
+		void testAAaxesTicks() {
+			AxesArea ax_area = AxesArea( conf, 50, 50 );
+			std::vector<double> ticks = ax_area.axes_ticks( 0, 10, 10 );
+			TS_ASSERT_EQUALS( ticks[0], 0 );
+			TS_ASSERT_EQUALS( ticks[1], 1 );
+			TS_ASSERT_EQUALS( ticks.back(), 10 );
+			ticks = ax_area.axes_ticks( 0, 10, 5 );
+			TS_ASSERT_EQUALS( ticks[0], 0 );
+			TS_ASSERT_EQUALS( ticks[1], 2 );
+			TS_ASSERT_EQUALS( ticks.back(), 10 );
+			ticks = ax_area.axes_ticks( 0.002, 0.1, 10 );
+			TS_ASSERT_EQUALS( ticks[0], 0.0120 );
+			TS_ASSERT_EQUALS( ticks[1], 0.0220 );
+			TS_ASSERT_EQUALS( ticks.back(), 0.092 );
+			ticks = ax_area.axes_ticks( 1000, 1210, 5 );
+			TS_ASSERT_EQUALS( ticks[0], 1000 );
+			TS_ASSERT_EQUALS( ticks[1], 1040 );
+			TS_ASSERT_EQUALS( ticks.back(), 1200 );
+		}
 };

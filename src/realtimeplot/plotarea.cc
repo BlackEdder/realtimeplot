@@ -203,4 +203,25 @@ namespace realtimeplot {
 		}
 		return power;
 	}
+
+	std::vector<double> AxesArea::axes_ticks( float min, float max, int nr ) {
+		std::vector<double> ticks;
+		double tick;
+		double step = (max-min)/nr;
+		int power = power_of_step( step );
+
+		//round our step
+		step = round(step/pow(10,power)) * pow(10,power);
+
+		//first tick is rounded version of min
+		tick = round(min/pow(10,power)) * pow(10,power);
+
+		while (tick <= max ) {
+			if (tick >= min) {
+				ticks.push_back( tick );
+			}
+			tick += step;
+		}
+		return ticks;
+	}
 };
