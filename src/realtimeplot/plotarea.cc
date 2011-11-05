@@ -24,6 +24,10 @@
 #include "realtimeplot/plotarea.h"
 
 namespace realtimeplot {
+	void Area::transform_to_device_units() {
+		context->set_identity_matrix();
+	}
+
 	PlotArea::PlotArea( PlotConfig &config ) : Area() {
 		setup( config );
 	}	
@@ -69,10 +73,6 @@ namespace realtimeplot {
 		context->scale( width/(max_x-min_x),
 				-height/(max_y-min_y) );
 		context->translate( -min_x, -min_y );
-	}
-
-	void PlotArea::transform_to_device_units() {
-		context->set_identity_matrix();
 	}
 
 	void PlotArea::set_color( Color color ) {
@@ -187,7 +187,123 @@ namespace realtimeplot {
 
 	void AxesArea::setup( PlotConfig &config, size_t w, size_t h ) {
 		width = w; height = h;
-	}
+
+		/*
+		//draw them non transparent (else we get weird interactions that when 
+		//drawing a transparent point and a rolling update happens the axes 
+		//become transparent as well)
+		std::vector<float> xaxis_ticks;
+		std::vector<float> yaxis_ticks;
+
+		Pango::init();
+
+		surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+					width, height);
+				//xSurface->get_width(), 
+				//xSurface->get_height() );
+		context = Cairo::Context::create(surface);
+
+		int text_width, text_height;
+		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(context);
+		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
+
+		transform_to_plot_units_with_origin( surface, context, 
+				config.margin_x, config.margin_y );
+		//plot background color outside the axes (to cover points plotted outside)
+		set_background_color( context );
+		double dx=config.margin_x;
+		double dy=-config.margin_y;
+		context->device_to_user_distance( dx, dy );
+		context->move_to( config.min_x, config.min_y );
+		context->line_to( config.min_x, config.max_y );
+		context->line_to( config.min_x-dx, config.max_y );
+		context->line_to( config.min_x-dx, config.min_y-dy );
+		context->line_to( config.max_x, config.min_y-dy );
+		context->line_to( config.max_x, config.min_y );
+		context->move_to( config.min_x, config.min_y );
+		context->fill();
+
+		//Plot the main axes lines
+		set_foreground_color( context );
+		context->move_to( config.min_x, config.min_y );
+		context->line_to( config.min_x, config.max_y );
+		context->move_to( config.min_x, config.min_y );
+		context->line_to( config.max_x, config.min_y );
+
+		//Plot the ticks + tick labels
+		xaxis_ticks = axes_ticks( config.min_x, config.max_x, config.nr_of_ticks );
+		yaxis_ticks = axes_ticks( config.min_y, config.max_y, config.nr_of_ticks );
+
+		double length_tick_x = config.ticks_length;
+		double length_tick_y = -config.ticks_length;
+		context->device_to_user_distance( length_tick_x, length_tick_y );
+
+		//set font size. 
+		//Thought pango_font.set_absolute_size would work, like this 
+		//(i.e. wouldn't need Pango::SCALE, but apparently not)
+		pango_font.set_size( config.numerical_labels_font_size*Pango::SCALE );
+		pango_layout->set_font_description( pango_font );
+
+		for (unsigned int i = 0; i < xaxis_ticks.size(); ++i) {
+			context->move_to( xaxis_ticks[i], config.min_y );
+			context->rel_line_to( 0, length_tick_y );
+			//Do not add text to last tick (this will be cut off otherwise
+			if (i != xaxis_ticks.size()-1) {
+				transform_to_device_units( context );
+				pango_layout->set_text( utils::stringify( xaxis_ticks[i] ) );
+				pango_layout->get_pixel_size( text_width, text_height );
+				context->rel_move_to( -0.5*text_width, 1*text_height );
+				//pango_layout->add_to_cairo_context(context); //adds text to cairos stack of stuff to be drawn
+				pango_layout->show_in_cairo_context( context );
+				transform_to_plot_units_with_origin( surface, context, 
+						config.margin_x, config.margin_y );
+			}
+		}
+
+		for (unsigned int i = 0; i < yaxis_ticks.size(); ++i) {
+			context->move_to( config.min_x, yaxis_ticks[i] );
+			context->rel_line_to( length_tick_x, 0 );
+
+			//Do not add text to last tick (this will be cut off otherwise
+			if (i != yaxis_ticks.size()-1) {
+				transform_to_device_units( context );
+				context->rotate_degrees( -90 );
+				pango_layout->set_text( utils::stringify( yaxis_ticks[i] ) );
+				pango_layout->get_pixel_size( text_width, text_height );
+				context->rel_move_to( -0.5*text_width, -2*text_height );
+				pango_layout->show_in_cairo_context( context );
+				context->rotate_degrees( 90 ); //think the tranform_to_plot_units also unrotates
+				transform_to_plot_units_with_origin( surface, context, 
+						config.margin_x, config.margin_y );
+			}
+		}
+
+		transform_to_device_units();
+
+		pango_font.set_size( config.label_font_size*Pango::SCALE );
+		pango_layout->set_font_description( pango_font );
+
+		pango_layout->set_text( config.ylabel );
+		pango_layout->get_pixel_size( text_width, text_height );
+
+		context->move_to( config.margin_y-3*text_height, 
+				0.5*surface->get_height()+0.5*text_width );
+		context->save();
+		context->rotate_degrees( -90 );
+		pango_layout->show_in_cairo_context( context );
+		context->restore();
+
+		pango_layout->set_text( config.xlabel );
+		pango_layout->get_pixel_size( text_width, text_height );
+		context->move_to( 
+				config.margin_y+0.5*surface->get_width()-0.5*text_width, 
+				surface->get_height()-config.margin_x+1.5*text_height );
+		pango_layout->show_in_cairo_context( context );
+
+		context->stroke();
+
+		*/
+}
 
 	int AxesArea::power_of_step( float step ) {
 		int power = 0;

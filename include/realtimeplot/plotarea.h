@@ -48,6 +48,8 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::ImageSurface> surface;
 			Cairo::RefPtr<Cairo::Context> context;
 			size_t width, height;
+
+			void transform_to_device_units();
 	};
 
 	/**
@@ -71,8 +73,6 @@ namespace realtimeplot {
 			void setup( PlotConfig &config );	
 
 			void transform_to_plot_units();
-
-			void transform_to_device_units();
 			
 			void set_color( Color color );
 
