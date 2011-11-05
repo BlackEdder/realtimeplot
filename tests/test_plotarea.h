@@ -174,6 +174,10 @@ class TestPlotArea : public CxxTest::TestSuite
 					50 + conf.margin_y, 50 + conf.margin_x );
 			TS_ASSERT_EQUALS( ax_area.bottom_margin, conf.margin_x );
 			TS_ASSERT_EQUALS( ax_area.left_margin, conf.margin_x );
+			TS_ASSERT_EQUALS( ax_area.max_x, conf.max_x );
+			TS_ASSERT_EQUALS( ax_area.min_x, conf.min_x );
+			TS_ASSERT_EQUALS( ax_area.max_y, conf.max_y );
+			TS_ASSERT_EQUALS( ax_area.min_y, conf.min_y );
 			TS_ASSERT_EQUALS( ax_area.width, 50 + conf.margin_y );
 			TS_ASSERT_EQUALS( ax_area.height, 50 + conf.margin_x );
 		}

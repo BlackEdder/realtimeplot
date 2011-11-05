@@ -194,8 +194,10 @@ namespace realtimeplot {
 		width = w; height = h;
 		bottom_margin = config.margin_x;
 		left_margin = config.margin_y;
-		min_x = config.min_x; max_x = config.max_x;
-		min_y = config.min_y; max_y = config.max_y;
+		min_x = config.min_x;
+	 	max_x = config.max_x;
+		min_y = config.min_y;
+	 	max_y = config.max_y;
 		
 
 		//draw them non transparent (else we get weird interactions that when 

@@ -102,7 +102,7 @@ namespace realtimeplot {
 	class AxesArea : public Area {
 		public:
 			size_t left_margin, right_margin, bottom_margin, top_margin;
-			size_t min_x, max_x, min_y, max_y;
+			float min_x, max_x, min_y, max_y;
 
 			AxesArea( PlotConfig &config, size_t width, size_t height );
 
