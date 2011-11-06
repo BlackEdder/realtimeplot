@@ -182,6 +182,19 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( ax_area.height, 100 + conf.margin_x );
 			ax_area.surface->write_to_png( fn( "aa_empty" ) );
 			TS_ASSERT( check_plot( "aa_empty" ) );
+			conf = PlotConfig();
+			conf.area = 50*50;
+			conf.min_x = -5;
+			conf.max_x = 5;
+			conf.min_y = -5;
+			conf.max_y = 5;
+			conf.margin_x = 20;
+			conf.margin_y = 20;
+			conf.display = false;
+			ax_area.setup( conf, 
+					70, 70 );
+			ax_area.surface->write_to_png( fn( "aa_empty2" ) );
+			TS_ASSERT( check_plot( "aa_empty2" ) );
 		}
 
 		void testAATransformToPlotUnits() {
