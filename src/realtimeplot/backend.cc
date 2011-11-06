@@ -188,8 +188,8 @@ namespace realtimeplot {
 		if (xSurface) {
 			pAxesArea->setup( config, x_surface_width, x_surface_height );
 		} else {
-			pAxesArea->setup( config, pPlotArea->plot_area_width+config.margin_y,
-				 	pPlotArea->plot_area_height+config.margin_x );
+			pAxesArea->setup_with_plot_size( config, pPlotArea->plot_area_width,
+				 	pPlotArea->plot_area_height );
 		}
 	}
 
