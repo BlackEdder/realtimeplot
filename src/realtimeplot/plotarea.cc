@@ -186,8 +186,14 @@ namespace realtimeplot {
 	/*
 	 * AxesArea
 	 */
+	AxesArea::AxesArea() 
+		: Area() {
+		Pango::init();
+	}
+
 	AxesArea::AxesArea( PlotConfig &config, size_t width, size_t height  ) 
 		: Area() {
+		Pango::init();
 		setup( config, width, height );
 	}
 
@@ -207,7 +213,6 @@ namespace realtimeplot {
 		std::vector<double> xaxis_ticks;
 		std::vector<double> yaxis_ticks;
 
-		Pango::init();
 
 		surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					width, height);

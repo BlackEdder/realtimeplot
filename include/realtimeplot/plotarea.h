@@ -104,6 +104,13 @@ namespace realtimeplot {
 			size_t left_margin, right_margin, bottom_margin, top_margin;
 			float min_x, max_x, min_y, max_y;
 
+			/**
+			 * \brief Mostly dummy constructor
+			 *
+			 * Call setup afterwards to actually draw the axes area
+			 */
+			AxesArea();
+
 			AxesArea( PlotConfig &config, size_t width, size_t height );
 
 			void setup( PlotConfig &config, size_t width, size_t height  );

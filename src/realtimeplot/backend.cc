@@ -68,8 +68,9 @@ namespace realtimeplot {
 			fprintf(stderr,"Error creating surface\n");
 
 		//draw initial axes etc
-		pAxesArea = boost::shared_ptr<AxesArea>( new AxesArea( config, x_surface_width,
-					x_surface_height ) );
+		global_mutex.lock();
+		pAxesArea = boost::shared_ptr<AxesArea>( new AxesArea() );
+		global_mutex.unlock();
 		draw_axes_surface();
 		
 		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
