@@ -185,43 +185,38 @@ namespace realtimeplot {
 		//draw them non transparent (else we get weird interactions that when 
 		//drawing a transparent point and a rolling update happens the axes 
 		//become transparent as well)
-		std::vector<float> xaxis_ticks;
+		/*std::vector<float> xaxis_ticks;
 		std::vector<float> yaxis_ticks;
 
-		Pango::init();
+		Pango::init();*/
 
 		//axes_surface, extra margin_x/margin_y pixels for axes and labels
 		//if xSurface is not closed, width depends on xSurface width.
 		//FIXME: shouldn't x_surface_* already be set correctly before here?
 		if (xSurface) {
 			pAxesArea->setup( config, x_surface_width, x_surface_height );
-			pAxesArea->surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+			/*pAxesArea->surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					x_surface_width, x_surface_height);
 				//xSurface->get_width(), 
 				//xSurface->get_height() );
-			pAxesArea->context = Cairo::Context::create(pAxesArea->surface);
+			pAxesArea->context = Cairo::Context::create(pAxesArea->surface);*/
 		} else {
 			pAxesArea->setup( config, pPlotArea->plot_area_width+config.margin_y,
 				 	pPlotArea->plot_area_height+config.margin_x );
 
-			pAxesArea->surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
+			/*pAxesArea->surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					pPlotArea->plot_area_width+config.margin_y,
 				 	pPlotArea->plot_area_height+config.margin_x);
-			pAxesArea->context = Cairo::Context::create(pAxesArea->surface);
+			pAxesArea->context = Cairo::Context::create(pAxesArea->surface);*/
 		}
 
-		int text_width, text_height;
+
+
+		/*int text_width, text_height;
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(pAxesArea->context);
 		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
 		//pango_font.set_weight( Pango::WEIGHT_HEAVY );
 		//pango_layout->set_font_description( pango_font );
-
-		/*Cairo::FontOptions font_options = Cairo::FontOptions();
-			font_options.set_hint_metrics( Cairo::HINT_METRICS_OFF );
-			font_options.set_hint_style( Cairo::HINT_STYLE_NONE );
-			font_options.set_antialias( Cairo::ANTIALIAS_NONE );
-			pango_layout->get_context()->set_cairo_font_options( font_options );*/
-
 
 		transform_to_plot_units_with_origin( pAxesArea->surface, pAxesArea->context, 
 				config.margin_x, config.margin_y );
@@ -316,7 +311,7 @@ namespace realtimeplot {
 				pAxesArea->surface->get_height()-config.margin_x+1.5*text_height );
 		pango_layout->show_in_cairo_context( pAxesArea->context );
 
-		pAxesArea->context->stroke();
+		pAxesArea->context->stroke();*/
 	}
 
 	void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
