@@ -68,6 +68,8 @@ namespace realtimeplot {
 			fprintf(stderr,"Error creating surface\n");
 
 		//draw initial axes etc
+		pAxesArea = boost::shared_ptr<AxesArea>( new AxesArea( config, x_surface_width,
+					x_surface_height ) );
 		draw_axes_surface();
 		
 		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
@@ -190,15 +192,21 @@ namespace realtimeplot {
 
 		//axes_surface, extra margin_x/margin_y pixels for axes and labels
 		//if xSurface is not closed, width depends on xSurface width.
+		//FIXME: shouldn't x_surface_* already be set correctly before here?
 		if (xSurface) {
+			pAxesArea->setup( config, x_surface_width, x_surface_height );
 			axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					x_surface_width, x_surface_height);
 				//xSurface->get_width(), 
 				//xSurface->get_height() );
 			axes_context = Cairo::Context::create(axes_surface);
 		} else {
+			pAxesArea->setup( config, pPlotArea->plot_area_width+config.margin_y,
+				 	pPlotArea->plot_area_height+config.margin_x );
+
 			axes_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					pPlotArea->plot_area_width+config.margin_y, pPlotArea->plot_area_height+config.margin_x);
+					pPlotArea->plot_area_width+config.margin_y,
+				 	pPlotArea->plot_area_height+config.margin_x);
 			axes_context = Cairo::Context::create(axes_surface);
 		}
 

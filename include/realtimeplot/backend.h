@@ -68,6 +68,7 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::Context> xContext;
 
 			boost::shared_ptr<PlotArea> pPlotArea;
+			boost::shared_ptr<AxesArea> pAxesArea;
 
 			int x_surface_width, x_surface_height;
 
