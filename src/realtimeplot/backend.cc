@@ -182,136 +182,14 @@ namespace realtimeplot {
 
 	void BackendPlot::draw_axes_surface() {
 		boost::mutex::scoped_lock lock(global_mutex);
-		//draw them non transparent (else we get weird interactions that when 
-		//drawing a transparent point and a rolling update happens the axes 
-		//become transparent as well)
-		/*std::vector<float> xaxis_ticks;
-		std::vector<float> yaxis_ticks;
-
-		Pango::init();*/
-
-		//axes_surface, extra margin_x/margin_y pixels for axes and labels
 		//if xSurface is not closed, width depends on xSurface width.
 		//FIXME: shouldn't x_surface_* already be set correctly before here?
 		if (xSurface) {
 			pAxesArea->setup( config, x_surface_width, x_surface_height );
-			/*pAxesArea->surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					x_surface_width, x_surface_height);
-				//xSurface->get_width(), 
-				//xSurface->get_height() );
-			pAxesArea->context = Cairo::Context::create(pAxesArea->surface);*/
 		} else {
 			pAxesArea->setup( config, pPlotArea->plot_area_width+config.margin_y,
 				 	pPlotArea->plot_area_height+config.margin_x );
-
-			/*pAxesArea->surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					pPlotArea->plot_area_width+config.margin_y,
-				 	pPlotArea->plot_area_height+config.margin_x);
-			pAxesArea->context = Cairo::Context::create(pAxesArea->surface);*/
 		}
-
-
-
-		/*int text_width, text_height;
-		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(pAxesArea->context);
-		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
-		//pango_font.set_weight( Pango::WEIGHT_HEAVY );
-		//pango_layout->set_font_description( pango_font );
-
-		transform_to_plot_units_with_origin( pAxesArea->surface, pAxesArea->context, 
-				config.margin_x, config.margin_y );
-		//plot background color outside the axes (to cover points plotted outside)
-		set_background_color( pAxesArea->context );
-		double dx=config.margin_x;
-		double dy=-config.margin_y;
-		pAxesArea->context->device_to_user_distance( dx, dy );
-		pAxesArea->context->move_to( config.min_x, config.min_y );
-		pAxesArea->context->line_to( config.min_x, config.max_y );
-		pAxesArea->context->line_to( config.min_x-dx, config.max_y );
-		pAxesArea->context->line_to( config.min_x-dx, config.min_y-dy );
-		pAxesArea->context->line_to( config.max_x, config.min_y-dy );
-		pAxesArea->context->line_to( config.max_x, config.min_y );
-		pAxesArea->context->move_to( config.min_x, config.min_y );
-		pAxesArea->context->fill();
-
-		//Plot the main axes lines
-		set_foreground_color( pAxesArea->context );
-		pAxesArea->context->move_to( config.min_x, config.min_y );
-		pAxesArea->context->line_to( config.min_x, config.max_y );
-		pAxesArea->context->move_to( config.min_x, config.min_y );
-		pAxesArea->context->line_to( config.max_x, config.min_y );
-
-		//Plot the ticks + tick labels
-		xaxis_ticks = axes_ticks( config.min_x, config.max_x, config.nr_of_ticks );
-		yaxis_ticks = axes_ticks( config.min_y, config.max_y, config.nr_of_ticks );
-
-		double length_tick_x = config.ticks_length;
-		double length_tick_y = -config.ticks_length;
-		pAxesArea->context->device_to_user_distance( length_tick_x, length_tick_y );
-
-		//set font size. 
-		//Thought pango_font.set_absolute_size would work, like this 
-		//(i.e. wouldn't need Pango::SCALE, but apparently not)
-		pango_font.set_size( config.numerical_labels_font_size*Pango::SCALE );
-		pango_layout->set_font_description( pango_font );
-
-		for (unsigned int i = 0; i < xaxis_ticks.size(); ++i) {
-			pAxesArea->context->move_to( xaxis_ticks[i], config.min_y );
-			pAxesArea->context->rel_line_to( 0, length_tick_y );
-			//Do not add text to last tick (this will be cut off otherwise
-			if (i != xaxis_ticks.size()-1) {
-				transform_to_device_units( pAxesArea->context );
-				pango_layout->set_text( utils::stringify( xaxis_ticks[i] ) );
-				pango_layout->get_pixel_size( text_width, text_height );
-				pAxesArea->context->rel_move_to( -0.5*text_width, 1*text_height );
-				//pango_layout->add_to_cairo_context(pAxesArea->context); //adds text to cairos stack of stuff to be drawn
-				pango_layout->show_in_cairo_context( pAxesArea->context );
-				transform_to_plot_units_with_origin( pAxesArea->surface, pAxesArea->context, 
-						config.margin_x, config.margin_y );
-			}
-		}
-
-		for (unsigned int i = 0; i < yaxis_ticks.size(); ++i) {
-			pAxesArea->context->move_to( config.min_x, yaxis_ticks[i] );
-			pAxesArea->context->rel_line_to( length_tick_x, 0 );
-
-			//Do not add text to last tick (this will be cut off otherwise
-			if (i != yaxis_ticks.size()-1) {
-				transform_to_device_units( pAxesArea->context );
-				pAxesArea->context->rotate_degrees( -90 );
-				pango_layout->set_text( utils::stringify( yaxis_ticks[i] ) );
-				pango_layout->get_pixel_size( text_width, text_height );
-				pAxesArea->context->rel_move_to( -0.5*text_width, -2*text_height );
-				pango_layout->show_in_cairo_context( pAxesArea->context );
-				pAxesArea->context->rotate_degrees( 90 ); //think the tranform_to_plot_units also unrotates
-				transform_to_plot_units_with_origin( pAxesArea->surface, pAxesArea->context, 
-						config.margin_x, config.margin_y );
-			}
-		}
-
-		transform_to_device_units( pAxesArea->context );
-
-		pango_font.set_size( config.label_font_size*Pango::SCALE );
-		pango_layout->set_font_description( pango_font );
-
-		pango_layout->set_text( config.ylabel );
-		pango_layout->get_pixel_size( text_width, text_height );
-
-		pAxesArea->context->move_to( config.margin_y-3*text_height, 
-				0.5*pAxesArea->surface->get_height()+0.5*text_width );
-		pAxesArea->context->save();
-		pAxesArea->context->rotate_degrees( -90 );
-		pango_layout->show_in_cairo_context( pAxesArea->context );
-		pAxesArea->context->restore();
-
-		pango_layout->set_text( config.xlabel );
-		pango_layout->get_pixel_size( text_width, text_height );
-		pAxesArea->context->move_to( 
-				config.margin_y+0.5*pAxesArea->surface->get_width()-0.5*text_width, 
-				pAxesArea->surface->get_height()-config.margin_x+1.5*text_height );
-		pango_layout->show_in_cairo_context( pAxesArea->context );
-
-		pAxesArea->context->stroke();*/
 	}
 
 	void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {
