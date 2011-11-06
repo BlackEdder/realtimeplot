@@ -206,7 +206,6 @@ namespace realtimeplot {
 		min_y = config.min_y;
 	 	max_y = config.max_y;
 		
-
 		//draw them non transparent (else we get weird interactions that when 
 		//drawing a transparent point and a rolling update happens the axes 
 		//become transparent as well)
@@ -322,6 +321,11 @@ namespace realtimeplot {
 
 		context->stroke();
 	}
+
+	void AxesArea::setup_with_plot_size( PlotConfig &config, 
+					size_t width, size_t height ) {
+		setup( config, width+config.margin_y, height+config.margin_x );
+	}	
 
 	void AxesArea::transform_to_plot_units() {
 		transform_to_device_units();

@@ -197,6 +197,16 @@ class TestPlotArea : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "aa_empty2" ) );
 		}
 
+		void testAAbyplot_size() {
+			AxesArea ax_area = AxesArea();
+			ax_area.setup_with_plot_size( conf, 
+					100, 100 );
+			TS_ASSERT_EQUALS( ax_area.width, 100 + conf.margin_y );
+			TS_ASSERT_EQUALS( ax_area.height, 100 + conf.margin_x );
+			ax_area.surface->write_to_png( fn( "aa_empty" ) );
+			TS_ASSERT( check_plot( "aa_empty" ) );
+		}
+
 		void testAATransformToPlotUnits() {
 			conf.margin_y = 50;
 			conf.margin_x = 50;

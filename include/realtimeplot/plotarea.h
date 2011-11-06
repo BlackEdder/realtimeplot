@@ -114,6 +114,14 @@ namespace realtimeplot {
 			AxesArea( PlotConfig &config, size_t width, size_t height );
 
 			void setup( PlotConfig &config, size_t width, size_t height  );
+			
+			/**
+			 * \brief Setup base on plot width and height
+			 *
+			 * Calculate total size based on plot width and height
+			 */
+			void setup_with_plot_size( PlotConfig &config, 
+					size_t width, size_t height  );
 
 			void transform_to_plot_units();
 			/**
