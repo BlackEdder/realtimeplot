@@ -287,7 +287,6 @@ namespace realtimeplot {
 			}
 		}
 
-		transform_to_device_units();
 
 		pango_font.set_size( config.label_font_size*Pango::SCALE );
 		pango_layout->set_font_description( pango_font );
@@ -295,8 +294,11 @@ namespace realtimeplot {
 		pango_layout->set_text( config.ylabel );
 		pango_layout->get_pixel_size( text_width, text_height );
 
-		context->move_to( config.margin_y-3*text_height, 
-				0.5*surface->get_height()+0.5*text_width );
+		context->move_to( min_x, min_y+(0.5*(max_y-min_y)) ); 
+		transform_to_device_units();
+		context->rel_move_to( -2.5*text_height, 0.5*text_width );
+		//context->move_to( config.margin_y-3*text_height, 
+		//			0.5*surface->get_height()+0.5*text_width );
 		context->save();
 		context->rotate_degrees( -90 );
 		pango_layout->show_in_cairo_context( context );
@@ -304,9 +306,13 @@ namespace realtimeplot {
 
 		pango_layout->set_text( config.xlabel );
 		pango_layout->get_pixel_size( text_width, text_height );
-		context->move_to( 
-				config.margin_y+0.5*surface->get_width()-0.5*text_width, 
-				surface->get_height()-config.margin_x+1.5*text_height );
+		transform_to_plot_units();
+		context->move_to( min_x + (0.5*(max_x-min_x) ), min_y );
+		transform_to_device_units();
+		context->rel_move_to( -0.5*text_width, 1.5*text_height );
+		//context->move_to( 
+		//			config.margin_y+0.5*surface->get_width()-0.5*text_width, 
+		//		surface->get_height()-config.margin_x+1.5*text_height );
 		pango_layout->show_in_cairo_context( context );
 
 		context->stroke();
