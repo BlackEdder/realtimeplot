@@ -604,8 +604,6 @@ namespace realtimeplot {
 	Color BackendHeightMap::colorMap( float z ) {
 		float fraction = (z-zmin)/(zmax-zmin);
 		float r, g, b;
-
-		//FIXME: divide the new fraction to the max ibeta value (value at the mode
 		if (scale && fraction >= 0 && fraction <= 1)
 			fraction = boost::math::ibeta(alpha, beta, fraction);
 		/* // Red green blue
