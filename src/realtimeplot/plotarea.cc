@@ -125,12 +125,9 @@ namespace realtimeplot {
 			lines.push_front( line );
 		} else {
 			context->save();
-			//plot_surface might have been updated, for example due to rolling_update
 			context->move_to( line->current_x, line->current_y );
 			context->line_to( x, y );
 			transform_to_device_units();
-			// This can cause segmentation faults without log. Seems cairo not completely
-			// thread safe
 			context->stroke();
 			context->restore();
 
@@ -157,7 +154,6 @@ namespace realtimeplot {
 		//Create context to draw background color
 		context = Cairo::Context::create(surface);
 
-		//transform_to_plot_units();
 		transform_to_plot_units();
 		//give the plot its background color
 		clear();
@@ -168,10 +164,6 @@ namespace realtimeplot {
 		context->set_source( old_surface, old_plot_min_x, old_plot_max_y );
 		context->paint();
 		context->restore();
-		//surface = old_surface;
-		//context = Cairo::Context::create(surface);
-
-		//transform_to_plot_units();
 	}
 
 	void PlotArea::clear() {
@@ -209,17 +201,12 @@ namespace realtimeplot {
 		min_y = config.min_y;
 	 	max_y = config.max_y;
 		
-		//draw them non transparent (else we get weird interactions that when 
-		//drawing a transparent point and a rolling update happens the axes 
-		//become transparent as well)
 		std::vector<double> xaxis_ticks;
 		std::vector<double> yaxis_ticks;
 
 
 		surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					width, height );
-				//xSurface->get_width(), 
-				//xSurface->get_height() );
 		context = Cairo::Context::create(surface);
 
 		int text_width, text_height;
@@ -285,7 +272,6 @@ namespace realtimeplot {
 			pango_layout->get_pixel_size( text_width, text_height );
 			context->rel_move_to( -0.5*text_width, -2*text_height );
 			pango_layout->show_in_cairo_context( context );
-			context->rotate_degrees( 90 ); //think the tranform_to_plot_units also unrotates
 			transform_to_plot_units();
 		}
 
@@ -299,8 +285,6 @@ namespace realtimeplot {
 		context->move_to( min_x, min_y+(0.5*(max_y-min_y)) ); 
 		transform_to_device_units();
 		context->rel_move_to( -2.5*text_height, 0.5*text_width );
-		//context->move_to( config.margin_y-3*text_height, 
-		//			0.5*surface->get_height()+0.5*text_width );
 		context->save();
 		context->rotate_degrees( -90 );
 		pango_layout->show_in_cairo_context( context );
@@ -312,9 +296,6 @@ namespace realtimeplot {
 		context->move_to( min_x + (0.5*(max_x-min_x) ), min_y );
 		transform_to_device_units();
 		context->rel_move_to( -0.5*text_width, 1.5*text_height );
-		//context->move_to( 
-		//			config.margin_y+0.5*surface->get_width()-0.5*text_width, 
-		//		surface->get_height()-config.margin_x+1.5*text_height );
 		pango_layout->show_in_cairo_context( context );
 
 		context->stroke();
