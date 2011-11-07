@@ -171,15 +171,18 @@ class TestPlotArea : public CxxTest::TestSuite
 
 		void testAxesArea() {
 			AxesArea ax_area = AxesArea( conf, 
-					100 + conf.left_margin, 100 + conf.bottom_margin );
+					100 + conf.right_margin + conf.left_margin, 
+					100 + conf.top_margin + conf.bottom_margin );
 			TS_ASSERT_EQUALS( ax_area.bottom_margin, conf.bottom_margin );
 			TS_ASSERT_EQUALS( ax_area.left_margin, conf.bottom_margin );
+			TS_ASSERT_EQUALS( ax_area.top_margin, conf.top_margin );
+			TS_ASSERT_EQUALS( ax_area.right_margin, conf.right_margin );
 			TS_ASSERT_EQUALS( ax_area.max_x, conf.max_x );
 			TS_ASSERT_EQUALS( ax_area.min_x, conf.min_x );
 			TS_ASSERT_EQUALS( ax_area.max_y, conf.max_y );
 			TS_ASSERT_EQUALS( ax_area.min_y, conf.min_y );
-			TS_ASSERT_EQUALS( ax_area.width, 100 + conf.left_margin );
-			TS_ASSERT_EQUALS( ax_area.height, 100 + conf.bottom_margin );
+			TS_ASSERT_EQUALS( ax_area.width, 100 + conf.left_margin + conf.right_margin );
+			TS_ASSERT_EQUALS( ax_area.height, 100 + conf.bottom_margin + conf.top_margin );
 			ax_area.surface->write_to_png( fn( "aa_empty" ) );
 			TS_ASSERT( check_plot( "aa_empty" ) );
 			conf = PlotConfig();
@@ -192,7 +195,7 @@ class TestPlotArea : public CxxTest::TestSuite
 			conf.left_margin = 20;
 			conf.display = false;
 			ax_area.setup( conf, 
-					70, 70 );
+					80, 80 );
 			ax_area.surface->write_to_png( fn( "aa_empty2" ) );
 			TS_ASSERT( check_plot( "aa_empty2" ) );
 		}
@@ -201,8 +204,8 @@ class TestPlotArea : public CxxTest::TestSuite
 			AxesArea ax_area = AxesArea();
 			ax_area.setup_with_plot_size( conf, 
 					100, 100 );
-			TS_ASSERT_EQUALS( ax_area.width, 100 + conf.left_margin );
-			TS_ASSERT_EQUALS( ax_area.height, 100 + conf.bottom_margin );
+			TS_ASSERT_EQUALS( ax_area.width, 100 + conf.left_margin + conf.right_margin );
+			TS_ASSERT_EQUALS( ax_area.height, 100 + conf.bottom_margin + conf.top_margin );
 			ax_area.surface->write_to_png( fn( "aa_empty" ) );
 			TS_ASSERT( check_plot( "aa_empty" ) );
 		}
@@ -211,13 +214,14 @@ class TestPlotArea : public CxxTest::TestSuite
 			conf.left_margin = 50;
 			conf.bottom_margin = 50;
 			AxesArea ax_area = AxesArea( conf, 
-					50 + conf.left_margin, 50 + conf.bottom_margin );
+					50 + conf.left_margin + conf.right_margin,
+					50 + conf.bottom_margin + conf.top_margin );
 			ax_area.transform_to_plot_units();
 			double x = 0;
 			double y = 0;
 			ax_area.context->user_to_device( x, y );
 			TS_ASSERT_EQUALS( x, 75 );
-			TS_ASSERT_EQUALS( y, 25 );
+			TS_ASSERT_EQUALS( y, 35 );
 			ax_area.transform_to_device_units();
 			x=0; y=0;
 			ax_area.context->user_to_device( x, y );

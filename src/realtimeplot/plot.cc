@@ -127,6 +127,8 @@ namespace realtimeplot {
 		bottom_margin = 60;
 		margin_y = 0;
 		left_margin = 60;
+		top_margin = 10;
+		right_margin = 10;
 		min_x = 0;
 		max_x = 1;
 		min_y = 0;

@@ -201,6 +201,8 @@ namespace realtimeplot {
 		width = w; height = h;
 		bottom_margin = config.bottom_margin;
 		left_margin = config.left_margin;
+		top_margin = config.top_margin;
+		right_margin = config.right_margin;
 		min_x = config.min_x;
 	 	max_x = config.max_x;
 		min_y = config.min_y;
@@ -214,7 +216,7 @@ namespace realtimeplot {
 
 
 		surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					width, height);
+					width, height );
 				//xSurface->get_width(), 
 				//xSurface->get_height() );
 		context = Cairo::Context::create(surface);
@@ -223,19 +225,20 @@ namespace realtimeplot {
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(context);
 		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
 
-		transform_to_plot_units();
+
 		//plot background color outside the axes (to cover points plotted outside)
 		set_color( Color::white() );
-		double dx=bottom_margin;
-		double dy=-(double) left_margin;
-		context->device_to_user_distance( dx, dy );
+		transform_to_device_units();
+		context->move_to( 0, 0 );
+		context->line_to( 0, height );
+		context->line_to( width, height );
+		context->line_to( width, 0 );
+		transform_to_plot_units();
 		context->move_to( config.min_x, config.min_y );
 		context->line_to( config.min_x, config.max_y );
-		context->line_to( config.min_x-dx, config.max_y );
-		context->line_to( config.min_x-dx, config.min_y-dy );
-		context->line_to( config.max_x, config.min_y-dy );
+		context->line_to( config.max_x, config.max_y );
 		context->line_to( config.max_x, config.min_y );
-		context->move_to( config.min_x, config.min_y );
+		context->line_to( config.min_x, config.min_y );
 		context->fill();
 
 		//Plot the main axes lines
@@ -324,14 +327,15 @@ namespace realtimeplot {
 
 	void AxesArea::setup_with_plot_size( PlotConfig &config, 
 					size_t width, size_t height ) {
-		setup( config, width+config.left_margin, height+config.bottom_margin );
+		setup( config, width+config.left_margin + config.right_margin,
+				height+config.bottom_margin+config.top_margin );
 	}	
 
 	void AxesArea::transform_to_plot_units() {
 		transform_to_device_units();
 		context->translate( left_margin, height-bottom_margin );
-		context->scale( (width-left_margin)/((max_x-min_x)),
-				-((double) height-bottom_margin)/((max_y-min_y)) );
+		context->scale( (width-left_margin-right_margin)/((max_x-min_x)),
+				-((double) height-bottom_margin-top_margin)/((max_y-min_y)) );
 		context->translate( -min_x, -min_y );
 	}
 
