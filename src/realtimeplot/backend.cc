@@ -134,8 +134,7 @@ namespace realtimeplot {
 		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
 		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.top_margin;
 		xSurface = pDisplayHandler->get_cairo_surface( win, 
-				pPlotArea->plot_area_width+config.left_margin+config.right_margin, 
-				pPlotArea->plot_area_height+config.bottom_margin+config.bottom_margin);
+				x_surface_width, x_surface_height );
 		xContext = Cairo::Context::create( xSurface );
 
 		//draw initial axes etc
@@ -233,6 +232,7 @@ namespace realtimeplot {
 		config.title = title;
 	}
 
+	// FIXME: Move to pPlotArea
 	void BackendPlot::text( float x, float y, std::string &text ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)
@@ -315,39 +315,6 @@ namespace realtimeplot {
 			return false;
 		else
 			return true;
-	}
-
-	std::vector<float> BackendPlot::axes_ticks( float min, float max, int nr ) {
-		std::vector<float> ticks;
-		int power = 0;
-		float tick;
-		float step = (max-min)/nr;
-
-		//Calculate power of step (i.e. 0.01 -> power is -2)
-		//Using straightforward method. Is probably much easier way
-		if (step <= 1) {
-			while (step/pow(10,power)<=1) {
-				--power;
-			}
-		} else if (step >=10) {
-			while (step/pow(10,power)>=10) {
-				++power;
-			}
-		}
-
-		//round our step
-		step = round(step/pow(10,power))*pow(10,power);
-
-		//first tick is rounded version of min
-		tick = round(min/pow(10,power))*pow(10,power);
-
-		while (tick <= max ) {
-			if (tick>=min) {
-				ticks.push_back( tick );
-			}
-			tick += step;
-		}
-		return ticks;
 	}
 
 	/** \brief Create an temporary imagesurface 
@@ -448,14 +415,8 @@ namespace realtimeplot {
 		pPlotArea->plot_area_width = round(width);
 		pPlotArea->plot_area_height = round(-height);
 		if (xSurface) {
-			width = x_surface_width;
-			height = x_surface_height;
-			/*width = xSurface->get_width();
-			height = xSurface->get_height();*/
-		xSurface = pDisplayHandler->get_cairo_surface( win,
-				pPlotArea->plot_area_width+config.left_margin+config.right_margin, 
-				pPlotArea->plot_area_height+config.bottom_margin+config.top_margin );
-			scale_xsurface( width, height );
+			xSurface = pDisplayHandler->get_cairo_surface( win,
+					x_surface_width, x_surface_height );
 		}
 		draw_axes_surface();
 		display();
@@ -470,8 +431,6 @@ namespace realtimeplot {
 		}
 		xContext = Cairo::Context::create( xSurface );
 		draw_axes_surface();
-		//xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
-		//        float(xSurface->get_height())/(plot_area_height+config.bottom_margin) );
 	}
 
 	BackendHistogram::BackendHistogram( PlotConfig config, 

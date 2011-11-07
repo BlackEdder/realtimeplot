@@ -212,9 +212,6 @@ namespace realtimeplot {
 			DisplayHandler *pDisplayHandler;
 			size_t win;
 
-			//function to calculate the "optimal" tick values/positions
-			std::vector<float> axes_ticks( float min, float max, int nr );
-
 			Cairo::RefPtr<Cairo::ImageSurface> create_temporary_surface();
 			
 			static boost::mutex global_mutex;

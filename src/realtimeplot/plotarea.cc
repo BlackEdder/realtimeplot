@@ -197,6 +197,7 @@ namespace realtimeplot {
 		setup( config, width, height );
 	}
 
+	// FIXME: Should be split up for change in w, h vs change in config etc.
 	void AxesArea::setup( PlotConfig &config, size_t w, size_t h ) {
 		width = w; height = h;
 		bottom_margin = config.bottom_margin;
