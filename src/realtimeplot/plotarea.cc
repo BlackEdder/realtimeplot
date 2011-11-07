@@ -199,8 +199,8 @@ namespace realtimeplot {
 
 	void AxesArea::setup( PlotConfig &config, size_t w, size_t h ) {
 		width = w; height = h;
-		bottom_margin = config.margin_x;
-		left_margin = config.margin_y;
+		bottom_margin = config.bottom_margin;
+		left_margin = config.left_margin;
 		min_x = config.min_x;
 	 	max_x = config.max_x;
 		min_y = config.min_y;
@@ -226,8 +226,8 @@ namespace realtimeplot {
 		transform_to_plot_units();
 		//plot background color outside the axes (to cover points plotted outside)
 		set_color( Color::white() );
-		double dx=config.margin_x;
-		double dy=-config.margin_y;
+		double dx=bottom_margin;
+		double dy=-(double) left_margin;
 		context->device_to_user_distance( dx, dy );
 		context->move_to( config.min_x, config.min_y );
 		context->line_to( config.min_x, config.max_y );
@@ -324,7 +324,7 @@ namespace realtimeplot {
 
 	void AxesArea::setup_with_plot_size( PlotConfig &config, 
 					size_t width, size_t height ) {
-		setup( config, width+config.margin_y, height+config.margin_x );
+		setup( config, width+config.left_margin, height+config.bottom_margin );
 	}	
 
 	void AxesArea::transform_to_plot_units() {

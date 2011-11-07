@@ -124,7 +124,9 @@ namespace realtimeplot {
 		display = true;
 		area = 500*500;
 		margin_x = 60;
+		bottom_margin = 60;
 		margin_y = 60;
+		left_margin = 60;
 		min_x = 0;
 		max_x = 1;
 		min_y = 0;

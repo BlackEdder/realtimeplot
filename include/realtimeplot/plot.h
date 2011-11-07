@@ -99,6 +99,8 @@ namespace realtimeplot {
 			//! Scale to window size?
 			bool scaling;
 			int margin_x, margin_y;
+			size_t bottom_margin, top_margin, left_margin, right_margin;
+
 			int nr_of_ticks, ticks_length;
 			//! Size of a point (4 by default)
 			int point_size;
