@@ -162,12 +162,12 @@ namespace realtimeplot {
 		boost::mutex::scoped_lock lock(global_mutex);
 		//if xSurface is not closed, width depends on xSurface width.
 		//FIXME: shouldn't x_surface_* already be set correctly before here?
-		if (xSurface) {
+		//if (xSurface) {
 			pAxesArea->setup( config, x_surface_width, x_surface_height );
-		} else {
-			pAxesArea->setup_with_plot_size( config, pPlotArea->plot_area_width,
-				 	pPlotArea->plot_area_height );
-		}
+		//} else {
+		//	pAxesArea->setup_with_plot_size( config, pPlotArea->plot_area_width,
+		//		 	pPlotArea->plot_area_height );
+		//}
 	}
 
 	void BackendPlot::set_background_color( Cairo::RefPtr<Cairo::Context> pContext ) {

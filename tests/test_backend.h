@@ -66,6 +66,17 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "point_plot" ) );
 		}
 
+		void testScaling() {
+			conf.scaling = true;
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.point( 1, 1 );
+			bpl.save( fn( "point_plot" ) );
+			TS_ASSERT( check_plot( "point_plot" ) );
+			bpl.scale_xsurface( 120, 90 );
+			bpl.save( fn( "scaled_plot" ) );
+			TS_ASSERT( check_plot( "scaled_plot" ) );
+		}
+
 		void testLinePlot() {
 			//conf.area = 500*500;
 			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
