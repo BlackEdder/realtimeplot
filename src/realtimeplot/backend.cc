@@ -171,16 +171,6 @@ namespace realtimeplot {
 		pContext->translate( -pPlotArea->min_x, -pPlotArea->min_y );
 	}
 
-	void BackendPlot::transform_to_plot_units_with_origin( 
-			Cairo::RefPtr<Cairo::ImageSurface> pSurface, 
-			Cairo::RefPtr<Cairo::Context> pContext, int bottom_margin, int left_margin ) {
-		transform_to_device_units( pContext );
-		pContext->translate( left_margin, pSurface->get_height()-bottom_margin );
-		pContext->scale( (pSurface->get_width()-left_margin)/((config.max_x-config.min_x)),
-				-(pSurface->get_height()-bottom_margin)/((config.max_y-config.min_y)) );
-		pContext->translate( -config.min_x, -config.min_y );
-	}
-
 	void BackendPlot::transform_to_device_units(
 			Cairo::RefPtr<Cairo::Context> pContext) {
 		pContext->set_identity_matrix();
