@@ -55,8 +55,8 @@ namespace realtimeplot {
 		pPlotArea = boost::shared_ptr<PlotArea> (new PlotArea( config ));
 
 		//create_xlib_window
-		x_surface_width = pPlotArea->plot_area_width+config.margin_y;
-		x_surface_height = pPlotArea->plot_area_height+config.margin_x;
+		x_surface_width = pPlotArea->plot_area_width+config.left_margin;
+		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin;
 		win = pDisplayHandler->open_window(x_surface_width, x_surface_height,
 			 pEventHandler);
 		// Set the title
@@ -88,6 +88,11 @@ namespace realtimeplot {
 	}
 
 	void BackendPlot::checkConfig() {
+		if (config.margin_x > 0)
+			config.bottom_margin = config.margin_x;
+		if (config.margin_y > 0)
+			config.left_margin = config.margin_y;
+
 		if ( config.overlap >= 1 )
 			config.fixed_plot_area = true;
 		else if (config.overlap < 0)
@@ -126,11 +131,11 @@ namespace realtimeplot {
 		pPlotArea->setup( conf );
 		set_foreground_color();
 
-		x_surface_width = pPlotArea->plot_area_width+config.margin_y;
-		x_surface_height = pPlotArea->plot_area_height+config.margin_x;
+		x_surface_width = pPlotArea->plot_area_width+config.left_margin;
+		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin;
 		xSurface = pDisplayHandler->get_cairo_surface( win, 
-				pPlotArea->plot_area_width+config.margin_y, 
-				pPlotArea->plot_area_height+config.margin_x);
+				pPlotArea->plot_area_width+config.left_margin, 
+				pPlotArea->plot_area_height+config.bottom_margin);
 		xContext = Cairo::Context::create( xSurface );
 
 		//draw initial axes etc
@@ -168,11 +173,11 @@ namespace realtimeplot {
 
 	void BackendPlot::transform_to_plot_units_with_origin( 
 			Cairo::RefPtr<Cairo::ImageSurface> pSurface, 
-			Cairo::RefPtr<Cairo::Context> pContext, int margin_x, int margin_y ) {
+			Cairo::RefPtr<Cairo::Context> pContext, int bottom_margin, int left_margin ) {
 		transform_to_device_units( pContext );
-		pContext->translate( margin_y, pSurface->get_height()-margin_x );
-		pContext->scale( (pSurface->get_width()-margin_y)/((config.max_x-config.min_x)),
-				-(pSurface->get_height()-margin_x)/((config.max_y-config.min_y)) );
+		pContext->translate( left_margin, pSurface->get_height()-bottom_margin );
+		pContext->scale( (pSurface->get_width()-left_margin)/((config.max_x-config.min_x)),
+				-(pSurface->get_height()-bottom_margin)/((config.max_y-config.min_y)) );
 		pContext->translate( -config.min_x, -config.min_y );
 	}
 
@@ -395,8 +400,8 @@ namespace realtimeplot {
 			/*surface_width = xSurface->get_width();
 			surface_height = xSurface->get_height();*/
 		} else {
-			surface_width = pPlotArea->plot_area_width+config.margin_y;
-			surface_height = pPlotArea->plot_area_height+config.margin_x;
+			surface_width = pPlotArea->plot_area_width+config.left_margin;
+			surface_height = pPlotArea->plot_area_height+config.bottom_margin;
 		}
 		Cairo::RefPtr<Cairo::ImageSurface> surface = 
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
@@ -406,13 +411,13 @@ namespace realtimeplot {
 		double x = pPlotArea->min_x;
 		double y = pPlotArea->max_y;
 		transform_to_plot_units_with_origin( surface, context,
-				config.margin_x, config.margin_y );
+				config.bottom_margin, config.left_margin );
 		context->user_to_device( x, y );
 
 		transform_to_device_units( context );
 		context->translate( x, y );
-		context->scale( double(surface_width-config.margin_y)/pPlotArea->plot_area_width,
-				double(surface_height-config.margin_x)/pPlotArea->plot_area_height );
+		context->scale( double(surface_width-config.left_margin)/pPlotArea->plot_area_width,
+				double(surface_height-config.bottom_margin)/pPlotArea->plot_area_height );
 
 		//copy the plot onto our temporary image surface
 		context->set_source( pPlotArea->surface, 0, 0 );
@@ -491,7 +496,7 @@ namespace realtimeplot {
 			/*width = xSurface->get_width();
 			height = xSurface->get_height();*/
 		xSurface = pDisplayHandler->get_cairo_surface( win,
-				pPlotArea->plot_area_width+config.margin_y, pPlotArea->plot_area_height+config.margin_x );
+				pPlotArea->plot_area_width+config.left_margin, pPlotArea->plot_area_height+config.bottom_margin );
 			scale_xsurface( width, height );
 		}
 		draw_axes_surface();
@@ -508,7 +513,7 @@ namespace realtimeplot {
 		xContext = Cairo::Context::create( xSurface );
 		draw_axes_surface();
 		//xContext->scale( float(xSurface->get_width())/(plot_area_width+config.margin_y),
-		//        float(xSurface->get_height())/(plot_area_height+config.margin_x) );
+		//        float(xSurface->get_height())/(plot_area_height+config.bottom_margin) );
 	}
 
 	BackendHistogram::BackendHistogram( PlotConfig config, 
