@@ -55,8 +55,8 @@ namespace realtimeplot {
 		pPlotArea = boost::shared_ptr<PlotArea> (new PlotArea( config ));
 
 		//create_xlib_window
-		x_surface_width = pPlotArea->plot_area_width+config.left_margin;
-		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin;
+		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
+		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.bottom_margin;
 		win = pDisplayHandler->open_window(x_surface_width, x_surface_height,
 			 pEventHandler);
 		// Set the title
@@ -131,11 +131,11 @@ namespace realtimeplot {
 		pPlotArea->setup( conf );
 		set_foreground_color();
 
-		x_surface_width = pPlotArea->plot_area_width+config.left_margin;
-		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin;
+		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
+		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.top_margin;
 		xSurface = pDisplayHandler->get_cairo_surface( win, 
-				pPlotArea->plot_area_width+config.left_margin, 
-				pPlotArea->plot_area_height+config.bottom_margin);
+				pPlotArea->plot_area_width+config.left_margin+config.right_margin, 
+				pPlotArea->plot_area_height+config.bottom_margin+config.bottom_margin);
 		xContext = Cairo::Context::create( xSurface );
 
 		//draw initial axes etc
@@ -368,7 +368,7 @@ namespace realtimeplot {
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					pAxesArea->width, pAxesArea->height );
 		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
-		
+	
 		double x = pPlotArea->min_x;
 		double y = pPlotArea->max_y;
 		pAxesArea->transform_to_plot_units();
@@ -377,8 +377,11 @@ namespace realtimeplot {
 		context->save();
 
 		context->translate( x, y );
-		context->scale( double(pAxesArea->width-config.left_margin)/pPlotArea->plot_area_width,
-				double(pAxesArea->height-config.bottom_margin)/pPlotArea->plot_area_height );
+		context->scale( 
+				double(
+					pAxesArea->width-config.left_margin-config.right_margin)/pPlotArea->plot_area_width,
+				double(
+					pAxesArea->height-config.bottom_margin-config.top_margin)/pPlotArea->plot_area_height );
 
 		//copy the plot onto our temporary image surface
 		context->set_source( pPlotArea->surface, 0, 0 );
@@ -457,7 +460,8 @@ namespace realtimeplot {
 			/*width = xSurface->get_width();
 			height = xSurface->get_height();*/
 		xSurface = pDisplayHandler->get_cairo_surface( win,
-				pPlotArea->plot_area_width+config.left_margin, pPlotArea->plot_area_height+config.bottom_margin );
+				pPlotArea->plot_area_width+config.left_margin+config.right_margin, 
+				pPlotArea->plot_area_height+config.bottom_margin+config.top_margin );
 			scale_xsurface( width, height );
 		}
 		draw_axes_surface();

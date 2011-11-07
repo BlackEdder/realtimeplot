@@ -1,9 +1,7 @@
-* Refactor backend to make it easier to change
 * Provide a combine method that easily allows you to combine one plot with another
 	* Probably need to make plot surface transparent
 * Redesign PlotConfig and allow plots to be changed on the fly
 	* Probably just add function to Plot like setTitle() etc.
-* Top and right margin for axis numerical labels overflow
 * Allow multiple data sets in one histogram/histogram3d plot
 * Rename SurfacePlot to Histogram3d
 * Rescale Histogram3d coloring

@@ -107,6 +107,7 @@ class TestBackend : public CxxTest::TestSuite
 		}
 
 		void testRollingUpdate() {
+			//conf.area = 500*500;
 			conf.overlap = 0.6;
 			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
 			bpl.point( 0, 0 );
