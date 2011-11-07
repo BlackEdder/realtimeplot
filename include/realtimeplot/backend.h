@@ -108,15 +108,6 @@ namespace realtimeplot {
 			 */
 			void reset( PlotConfig config );
 
-			//transform_to_plot_units
-			//rescale image to plot scale
-			void transform_to_plot_units( );
-			void transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext );
-
-			//transform_to_device_units
-			//rescales context to device units
-			void transform_to_device_units( Cairo::RefPtr<Cairo::Context> pContext );
-
 			//set_background_color
 			//takes the context to do it to
 			void set_background_color( Cairo::RefPtr<Cairo::Context> pContext );
