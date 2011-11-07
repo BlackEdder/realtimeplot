@@ -98,6 +98,7 @@ namespace realtimeplot {
 			/// All the needed variables
 			//! Scale to window size?
 			bool scaling;
+			//! Obsolete, use bottom_margin/left_margin instead
 			int margin_x, margin_y;
 			size_t bottom_margin, top_margin, left_margin, right_margin;
 
