@@ -392,32 +392,20 @@ namespace realtimeplot {
 	 * directly onto xlibsurface
 	 */
 	Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_temporary_surface() {
-
-		size_t surface_width, surface_height; 
-		if (xSurface) {
-			surface_width = x_surface_width;
-			surface_height = x_surface_height;
-			/*surface_width = xSurface->get_width();
-			surface_height = xSurface->get_height();*/
-		} else {
-			surface_width = pPlotArea->plot_area_width+config.left_margin;
-			surface_height = pPlotArea->plot_area_height+config.bottom_margin;
-		}
 		Cairo::RefPtr<Cairo::ImageSurface> surface = 
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					surface_width, surface_height );
+					pAxesArea->width, pAxesArea->height );
 		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
 		
 		double x = pPlotArea->min_x;
 		double y = pPlotArea->max_y;
-		transform_to_plot_units_with_origin( surface, context,
-				config.bottom_margin, config.left_margin );
-		context->user_to_device( x, y );
+		pAxesArea->transform_to_plot_units();
+		pAxesArea->context->user_to_device( x, y );
 
 		transform_to_device_units( context );
 		context->translate( x, y );
-		context->scale( double(surface_width-config.left_margin)/pPlotArea->plot_area_width,
-				double(surface_height-config.bottom_margin)/pPlotArea->plot_area_height );
+		context->scale( double(pAxesArea->width-config.left_margin)/pPlotArea->plot_area_width,
+				double(pAxesArea->height-config.bottom_margin)/pPlotArea->plot_area_height );
 
 		//copy the plot onto our temporary image surface
 		context->set_source( pPlotArea->surface, 0, 0 );
