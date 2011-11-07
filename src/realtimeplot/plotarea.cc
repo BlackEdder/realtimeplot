@@ -155,8 +155,13 @@ namespace realtimeplot {
 		context = Cairo::Context::create(surface);
 
 		transform_to_plot_units();
-		//give the plot its background color
-		clear();
+
+		//give the plot its background color (don't use clear(), since it also clears the lines cache)
+		context->save();
+		set_color( Color::white() );
+		rectangle( min_x, min_y, max_x-min_x, max_y-min_y,
+				true );
+		context->restore();
 
 		context->save();
 		context->user_to_device(old_plot_min_x, old_plot_max_y);
