@@ -158,34 +158,6 @@ namespace realtimeplot {
 		}
 	}
 
-
-	void BackendPlot::transform_to_plot_units( ) {
-		transform_to_plot_units( pPlotArea->context );
-	}
-
-	void BackendPlot::transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext ) {
-		transform_to_device_units( pContext );
-		pContext->translate( 0, pPlotArea->height );
-		pContext->scale( pPlotArea->width/(pPlotArea->max_x-pPlotArea->min_x),
-				-pPlotArea->height/(pPlotArea->max_y-pPlotArea->min_y) );
-		pContext->translate( -pPlotArea->min_x, -pPlotArea->min_y );
-	}
-
-	void BackendPlot::transform_to_plot_units_with_origin( 
-			Cairo::RefPtr<Cairo::ImageSurface> pSurface, 
-			Cairo::RefPtr<Cairo::Context> pContext, int bottom_margin, int left_margin ) {
-		transform_to_device_units( pContext );
-		pContext->translate( left_margin, pSurface->get_height()-bottom_margin );
-		pContext->scale( (pSurface->get_width()-left_margin)/((config.max_x-config.min_x)),
-				-(pSurface->get_height()-bottom_margin)/((config.max_y-config.min_y)) );
-		pContext->translate( -config.min_x, -config.min_y );
-	}
-
-	void BackendPlot::transform_to_device_units(
-			Cairo::RefPtr<Cairo::Context> pContext) {
-		pContext->set_identity_matrix();
-	}
-
 	void BackendPlot::draw_axes_surface() {
 		boost::mutex::scoped_lock lock(global_mutex);
 		//if xSurface is not closed, width depends on xSurface width.
@@ -273,7 +245,7 @@ namespace realtimeplot {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);
 		}
-		transform_to_plot_units(); 
+		pPlotArea->transform_to_plot_units(); 
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(
 				pPlotArea->context);
 		Pango::FontDescription pango_font = Pango::FontDescription(config.font);
@@ -282,7 +254,7 @@ namespace realtimeplot {
 		pango_layout->set_font_description( pango_font );
 
 		pPlotArea->context->move_to( x, y );
-		transform_to_device_units( pPlotArea->context );
+		pPlotArea->transform_to_device_units();
 		set_foreground_color( pPlotArea->context );
 		//plot_context->show_text( text );
 		pango_layout->set_text( text );
@@ -392,38 +364,27 @@ namespace realtimeplot {
 	 * directly onto xlibsurface
 	 */
 	Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_temporary_surface() {
-
-		size_t surface_width, surface_height; 
-		if (xSurface) {
-			surface_width = x_surface_width;
-			surface_height = x_surface_height;
-			/*surface_width = xSurface->get_width();
-			surface_height = xSurface->get_height();*/
-		} else {
-			surface_width = pPlotArea->plot_area_width+config.left_margin;
-			surface_height = pPlotArea->plot_area_height+config.bottom_margin;
-		}
 		Cairo::RefPtr<Cairo::ImageSurface> surface = 
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
-					surface_width, surface_height );
+					pAxesArea->width, pAxesArea->height );
 		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
 		
 		double x = pPlotArea->min_x;
 		double y = pPlotArea->max_y;
-		transform_to_plot_units_with_origin( surface, context,
-				config.bottom_margin, config.left_margin );
-		context->user_to_device( x, y );
+		pAxesArea->transform_to_plot_units();
+		pAxesArea->context->user_to_device( x, y );
 
-		transform_to_device_units( context );
+		context->save();
+
 		context->translate( x, y );
-		context->scale( double(surface_width-config.left_margin)/pPlotArea->plot_area_width,
-				double(surface_height-config.bottom_margin)/pPlotArea->plot_area_height );
+		context->scale( double(pAxesArea->width-config.left_margin)/pPlotArea->plot_area_width,
+				double(pAxesArea->height-config.bottom_margin)/pPlotArea->plot_area_height );
 
 		//copy the plot onto our temporary image surface
 		context->set_source( pPlotArea->surface, 0, 0 );
 		context->paint();
 		//copy the axes onto our temporary image surface
-		transform_to_device_units( context );
+		context->restore();
 		context->set_source( pAxesArea->surface, 0, 0 );
 		context->paint();
 		return surface;
@@ -482,12 +443,12 @@ namespace realtimeplot {
 			config.min_y = pPlotArea->min_y;
 		//Temporary put here, should only be done when min_x/max_x change
 		//recalculate plot_area_width
-		transform_to_plot_units( pPlotArea->context );
+		pPlotArea->transform_to_plot_units();
 		double width, height;
 		width = config.max_x-config.min_x;
 		height = config.max_y-config.min_y;
 		pPlotArea->context->user_to_device_distance( width, height );
-		transform_to_device_units( pPlotArea->context );
+		pPlotArea->transform_to_device_units();
 		pPlotArea->plot_area_width = round(width);
 		pPlotArea->plot_area_height = round(-height);
 		if (xSurface) {
@@ -666,14 +627,14 @@ namespace realtimeplot {
 				pGradient->add_color_stop_rgba( 0, shade.r, shade.g, shade.b, shade.a ); 
 				shade = colorMap( v[1]->z );
 				pGradient->add_color_stop_rgba( 1, shade.r, shade.g, shade.b, shade.a ); 
-				transform_to_plot_units();
+				pPlotArea->transform_to_plot_units();
 				pPlotArea->context->move_to( tr.vertices[2]->x, tr.vertices[2]->y );
 
 				for (size_t j=0; j<3; ++j) {
 					pPlotArea->context->line_to( tr.vertices[j]->x, tr.vertices[j]->y );
 				}
 				pPlotArea->context->set_source( pGradient );
-				transform_to_device_units(pPlotArea->context);
+				pPlotArea->transform_to_device_units();
 				pPlotArea->context->fill_preserve();
 				pPlotArea->context->stroke();
 				//line_add( delaunay.triangles[i]->corners[0]->vertex->x,

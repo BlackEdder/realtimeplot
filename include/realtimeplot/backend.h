@@ -108,24 +108,6 @@ namespace realtimeplot {
 			 */
 			void reset( PlotConfig config );
 
-			//transform_to_plot_units
-			//rescale image to plot scale
-			void transform_to_plot_units( );
-			void transform_to_plot_units( Cairo::RefPtr<Cairo::Context> pContext );
-
-			//transform_to_plot_units_with_origin
-			//rescale image to plot scale, taking into account the origin
-			//Used for axes, and keeping 50 device pixels at each side 
-			//for the axes + labels
-			void transform_to_plot_units_with_origin( 
-					Cairo::RefPtr<Cairo::ImageSurface> pSurface,
-					Cairo::RefPtr<Cairo::Context> pContext,
-					int origin_x, int origin_y );
-
-			//transform_to_device_units
-			//rescales context to device units
-			void transform_to_device_units( Cairo::RefPtr<Cairo::Context> pContext );
-
 			//set_background_color
 			//takes the context to do it to
 			void set_background_color( Cairo::RefPtr<Cairo::Context> pContext );
