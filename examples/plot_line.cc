@@ -27,16 +27,16 @@ using namespace realtimeplot;
 
 int main() {
 	PlotConfig config = PlotConfig();
-	config.min_x = -10;
-	config.max_x = 90;
+	config.min_x = -0.00001;
+	config.max_x = 0.00001;
 	config.min_y = -20;
 	config.max_y = 30;
-	config.area = 250*250;
+	config.area = 500*500;
 
 	Plot pl = Plot( config );
 	for (int i=0; i<50;++i) {
-		pl.line_add( (i-1)*10, (i-4)*5 );
-		pl.line_add( (i-1)*10, (i-5)*5, 2, Color::grey()  );
+		pl.line_add( (i-1)*0.000005, (i-4)*5 );
+		pl.line_add( (i-1)*0.000005, (i-5)*5, 2, Color::grey()  );
 		sleep(1);
 	}
 	pl.line_add( 10, 10, 2 );

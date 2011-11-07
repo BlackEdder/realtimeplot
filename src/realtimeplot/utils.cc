@@ -43,6 +43,7 @@ namespace realtimeplot {
 		std::string stringify(double x)
 		{
 			std::ostringstream o;
+			o.precision( 2 );
 			o << x;
 			return o.str();
 		}   
