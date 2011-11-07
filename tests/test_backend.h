@@ -153,7 +153,7 @@ class TestBackend : public CxxTest::TestSuite
 		}
 
 		void testHeightMapSimple() {
-			//conf.area = 500*500;
+			conf.area = 60*60;
 			BackendHeightMap bhm = BackendHeightMap( conf, 
 					boost::shared_ptr<EventHandler>() );
 			bhm.add_data( 0,0,1, true );
