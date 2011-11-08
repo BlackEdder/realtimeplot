@@ -433,9 +433,25 @@ namespace realtimeplot {
 		draw_axes_surface();
 	}
 
+	/*
+	 * Histogram
+	 */
+
+	BackendHistogram::BackendHistogram( PlotConfig conf, bool frequency, 
+			size_t no_bins, boost::shared_ptr<EventHandler> pEventHandler ) 
+		: BackendPlot( conf, pEventHandler ), frequency( frequency ),
+		no_bins( no_bins ), rebin( false )
+	{
+		config.min_y = 0;
+		config.max_y = 1.2;
+		reset( config );
+		bin_width = ( config.max_x-config.min_x )/no_bins;
+		bins_y = utils::calculate_bins( config.min_x, config.max_x, no_bins, data );
+	}
+
 	BackendHistogram::BackendHistogram( PlotConfig config, 
 			boost::shared_ptr<EventHandler> pEventHandler,
-					double min_x, double max_x, size_t no_bins ) :
+			double min_x, double max_x, size_t no_bins ) :
 				BackendPlot( config, pEventHandler ),
 				min_x( min_x ), max_x( max_x ), no_bins( no_bins ), rebin( false ), 
 				bins_y(no_bins), min_bin_size( 1e-06)

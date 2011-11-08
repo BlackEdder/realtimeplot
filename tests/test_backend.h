@@ -136,6 +136,20 @@ class TestBackend : public CxxTest::TestSuite
 		/*
 		 * Histogram
 		 */
+		void testHistogram() {
+			conf.area = 500*500;
+			conf.fixed_plot_area = true;
+			BackendHistogram bh = BackendHistogram( conf, true, 20,
+					boost::shared_ptr<EventHandler>() );
+			TS_ASSERT_EQUALS( bh.frequency, true );
+			TS_ASSERT_EQUALS( bh.no_bins, 20 );
+			TS_ASSERT_EQUALS( bh.rebin, false );
+			TS_ASSERT_EQUALS( bh.config.min_y, 0 );
+			TS_ASSERT_DELTA( bh.config.max_y, 1.2, 1e-5 );
+			TS_ASSERT_EQUALS( bh.bin_width, 0.5 );
+			TS_ASSERT_EQUALS( bh.bins_y.size(), 20 );
+		}
+
 		void testHistogramSimple() {
 			//conf.area = 500*500;
 			conf.min_y = 0;

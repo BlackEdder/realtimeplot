@@ -294,6 +294,18 @@ namespace realtimeplot {
 
 			//! If true plot frequencies, instead of counts
 			bool frequency;
+			bool rebin;
+
+			std::vector<double> bins_y;
+			/**
+			 * \brief Creates a histogram
+			 *
+			 * If frequency is true then relative counts will be used. If config.fixed_plot_are is true
+			 * then the provided config.min_x, config.max_x will be used, otherwise they will be
+			 * adjusted on the fly.
+			 */
+			BackendHistogram( PlotConfig config, bool frequency, size_t no_bins, 
+					boost::shared_ptr<EventHandler> pEventHandler );
 
 			//! Creates a histogram with a set min_x and max_x
 			BackendHistogram( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler,
@@ -310,8 +322,6 @@ namespace realtimeplot {
 		private:
 			bool frozen_bins_x;
 
-			bool rebin;
-			std::vector<double> bins_y;
 			/**
 			 * \brief Smallest bin_size we can plot
 			 *
