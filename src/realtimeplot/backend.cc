@@ -470,7 +470,10 @@ namespace realtimeplot {
 		data.push_back( new_data );
 		if (config.fixed_plot_area) {
 			if (new_data>=config.min_x && new_data<config.max_x) {
-				++bins_y[utils::bin_id(config.min_x, bin_width, new_data)];
+				size_t id = utils::bin_id(config.min_x, bin_width, new_data);
+				++bins_y[id];
+				if (!frequency && bins_y[id]>config.max_y)
+					config.max_y = bins_y[id]*1.2;
 			}
 		} else if (!min_max_initialized) {
 			if (data.size()==1) {
@@ -490,7 +493,12 @@ namespace realtimeplot {
 			rebin = true;
 		} else {
 			if (new_data>=config.min_x && new_data<config.max_x) {
-				++bins_y[utils::bin_id(config.min_x, bin_width, new_data)];
+				if (!rebin) {
+					size_t id = utils::bin_id(config.min_x, bin_width, new_data);
+					++bins_y[id];
+					if (!frequency && bins_y[id]>config.max_y)
+						config.max_y = bins_y[id]*1.2;
+				}
 			}
 			else if (new_data<=config.min_x) {
 				rebin = true;
@@ -505,6 +513,13 @@ namespace realtimeplot {
 	void BackendHistogram::rebin_data() {
 		bin_width = ( config.max_x-config.min_x )/no_bins;
 		bins_y = utils::calculate_bins( config.min_x, config.max_x, no_bins, data );
+
+		if (!frequency) {
+			for (size_t i=0; i<no_bins; ++i) {
+				if (bins_y[i] > config.max_y)
+					config.max_y = 1.2*bins_y[i];
+			}
+		}
 		rebin = false;
 	}
 
