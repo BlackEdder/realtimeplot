@@ -49,6 +49,7 @@ class TestPlot : public CxxTest::TestSuite {
 			ColorMap cm = ColorMap();
 			TS_ASSERT_EQUALS( cm.scale( 0.5 ), 0.5 );
 			ColorMap cms = ColorMap();
+			TS_ASSERT_EQUALS( cm( 0.1 ), cms(0.1) );
 			cms.calculate_height_scaling( 0.5, 0.01 );
 			TS_ASSERT( cms.scaling );
 			TS_ASSERT_LESS_THAN( cms.scale( 0.1 ), cm.scale( 0.1 ) );

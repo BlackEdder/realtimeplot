@@ -113,6 +113,12 @@ namespace realtimeplot {
 			 */
 			Color operator()( double proportion );
 
+			/**
+			 * \brief Height scaling for data with mean and variance
+			 *
+			 * Scaling calculation is based on the assumption that the data is roughly
+			 * beta distributed
+			 */
 			void calculate_height_scaling( double mean, double var );
 
 			double scale( double proportion );
