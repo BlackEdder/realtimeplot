@@ -133,6 +133,9 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "bpl_rolling2" ) );
 		}
 
+		/*
+		 * Histogram
+		 */
 		void testHistogramSimple() {
 			//conf.area = 500*500;
 			conf.min_y = 0;
@@ -164,6 +167,13 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "bhm_data4" ) );
 		}
 
+		/*
+		 * Histogram3d
+		 */
+
+		/*
+		 * HeightMap
+		 */
 		void testHeightMapSimple() {
 			conf.area = 60*60;
 			BackendHeightMap bhm = BackendHeightMap( conf, 
