@@ -325,6 +325,7 @@ namespace realtimeplot {
 			void plot();
 		private:
 			bool frozen_bins_x;
+			bool min_max_initialized;
 
 			/**
 			 * \brief Smallest bin_size we can plot
