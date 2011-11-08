@@ -118,6 +118,17 @@ namespace realtimeplot {
 		colors.push_back( Color::cadetblue() );
 		return colors;
 	}
+	/*
+	 * ColorMap
+	 */
+	ColorMap::ColorMap() :
+	 	alpha(-1), beta(-1) 
+	{}
+
+	Color ColorMap::operator()( double z ) {throw; return Color::black();}
+
+	void ColorMap::calculate_height_scaling( double mean, double var ) {}
+
 
 	void PlotConfig::setDefaults() {
 		scaling = false;

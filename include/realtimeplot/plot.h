@@ -89,6 +89,23 @@ namespace realtimeplot {
 			static std::vector<Color> colors();
 	};
 
+	/**
+	 * \brief Map different colors to different values
+	 *
+	 * Values need to be between 0 and 1. ColorMap can also calculate an optimal scaling
+	 * for your values, to ensure that most color differences are largest in the value
+	 * range where most values are located
+	 */
+	class ColorMap {
+		public:
+			double alpha, beta;
+			ColorMap();
+
+			Color operator()( double z );
+
+			void calculate_height_scaling( double mean, double var );
+	};
+
 
 	/**
 		\brief Class that keeps track of all the config variables used in a plot

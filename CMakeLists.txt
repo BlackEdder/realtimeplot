@@ -151,7 +151,10 @@ if(CXXTEST_FOUND)
 	CXXTEST_ADD_TEST(unittest_plotarea test_plotarea.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_plotarea.h)
 	target_link_libraries(unittest_plotarea realtimeplot cairomm-1.0)
-		CXXTEST_ADD_TEST(unittest_utils test_utils.cc
+	CXXTEST_ADD_TEST(unittest_plot test_plot.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_plot.h)
+	target_link_libraries(unittest_plotarea realtimeplot cairomm-1.0)
+	CXXTEST_ADD_TEST(unittest_utils test_utils.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_utils.h)
 	target_link_libraries(unittest_utils realtimeplot)
 	if(NOT NO_X)
