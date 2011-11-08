@@ -40,6 +40,14 @@ namespace realtimeplot {
 		a = alpha;
 	}
 
+	bool Color::operator==(Color color)
+	{ 
+		if (color.r == r && color.g == g && color.b == b && color.a == a)
+			return true;
+		else
+			return false;
+	}
+
 	Color Color::black() {
 		return Color( 0, 0, 0, 1 );
 	}
@@ -122,12 +130,41 @@ namespace realtimeplot {
 	 * ColorMap
 	 */
 	ColorMap::ColorMap() :
-	 	alpha(-1), beta(-1) 
+	 	alpha(-1), beta(-1), scaling( false ) 
 	{}
 
-	Color ColorMap::operator()( double z ) {throw; return Color::black();}
+	Color ColorMap::operator()( double proportion ) {
+		proportion = scale( proportion );
+		float r, g, b;
+		if (proportion < 0.5) {
+			r = 1;
+			g = 1-2*proportion;
+			b = 0;
+		} else {
+			r = 1-2*(proportion-0.5);
+			g = 0;
+			b = 0;
+		}
+		return Color( r, g, b, 1 );
+	}
 
-	void ColorMap::calculate_height_scaling( double mean, double var ) {}
+	void ColorMap::calculate_height_scaling( double mean, double var ) {
+		alpha = mean*((mean*(1-mean))/var-1);
+		beta = (1-mean)*((mean*(1-mean))/var-1);
+
+		// Sometimes this doesn't work properly -> no scaling
+		if (alpha <=0 || beta <=0)
+			scaling = false;
+		else 
+			scaling = true;
+	}
+
+	double ColorMap::scale( double proportion ) {
+		if (!scaling)
+			return proportion;
+		else
+			return boost::math::ibeta(alpha, beta, proportion);
+	}
 
 
 	void PlotConfig::setDefaults() {

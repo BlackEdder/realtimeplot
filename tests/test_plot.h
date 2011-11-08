@@ -32,7 +32,30 @@ class TestPlot : public CxxTest::TestSuite {
 		 * ColorMap
 		 */
 		void testColorMap() {
-			TS_ASSERT( false );
+			ColorMap cm = ColorMap();
+			TS_ASSERT_EQUALS( cm.alpha, -1 );
+			TS_ASSERT_EQUALS( cm.beta, -1 );
+			TS_ASSERT_EQUALS( cm.scaling, false );
+			Color c1 = cm( 1 );
+			Color c2 = cm( 0.5 );
+			Color c3 = cm( 0 );
+			TS_ASSERT_EQUALS( c1, Color( 0, 0, 0, 1 ) );
+			TS_ASSERT_DIFFERS( c1, Color( 1, 0, 0, 1 ) );
+			TS_ASSERT_EQUALS( c2, Color( 1, 0, 0, 1 ) );
+			TS_ASSERT_EQUALS( c3, Color( 1, 1, 0, 1 ) );
+		}
+
+		void testColorMapScaling() {
+			ColorMap cm = ColorMap();
+			TS_ASSERT_EQUALS( cm.scale( 0.5 ), 0.5 );
+			ColorMap cms = ColorMap();
+			cms.calculate_height_scaling( 0.5, 0.01 );
+			TS_ASSERT( cms.scaling );
+			TS_ASSERT_LESS_THAN( cms.scale( 0.1 ), cm.scale( 0.1 ) );
+			TS_ASSERT_LESS_THAN( cm.scale( 0.9 ), cms.scale( 0.9 ) );
+			TS_ASSERT_EQUALS( cms.scale( 0.5 ), cm.scale( 0.5 ) );
+
+			TS_ASSERT_DIFFERS( cm( 0.1 ), cms(0.1) );
 		}
 };
 

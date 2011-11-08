@@ -34,6 +34,7 @@
 
 
 #include <boost/shared_ptr.hpp>
+#include <boost/math/special_functions/beta.hpp>
 
 //#include "realtimeplot/eventhandler.h"
 
@@ -58,6 +59,9 @@ namespace realtimeplot {
 			Color();
 			Color( double red, double green, double blue, double alpha );
 			~Color() {};
+
+			bool operator==(Color color);
+
 			static Color black();
 			static Color white();
 			static Color red();
@@ -99,11 +103,19 @@ namespace realtimeplot {
 	class ColorMap {
 		public:
 			double alpha, beta;
+			bool scaling;
 			ColorMap();
-
-			Color operator()( double z );
+			
+			/**
+			 * \brief Return color corresponding to proportion
+			 *
+			 * With proportion between 0 and 1
+			 */
+			Color operator()( double proportion );
 
 			void calculate_height_scaling( double mean, double var );
+
+			double scale( double proportion );
 	};
 
 
