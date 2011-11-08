@@ -351,8 +351,7 @@ namespace realtimeplot {
 			float zmin, zmax,;
 			delaunay::Delaunay delaunay;
 
-			double alpha, beta;
-			bool scale;
+			ColorMap color_map;
 
 			inline Color colorMap( float z );
 	};

@@ -530,10 +530,8 @@ namespace realtimeplot {
 				BackendPlot( cfg, pEventHandler ),
 				zmin( 0 ), zmax( 0 ),
 				delaunay( delaunay::Delaunay( config.min_x, 
-					config.max_x, config.min_y, config.max_y ) ),
-				scale(false)
-		{
-		}
+					config.max_x, config.min_y, config.max_y ) )
+	{}
 
 
 	void BackendHeightMap::add_data( float x, float y, float z, bool show) {
@@ -603,31 +601,7 @@ namespace realtimeplot {
 
 	Color BackendHeightMap::colorMap( float z ) {
 		float fraction = (z-zmin)/(zmax-zmin);
-		float r, g, b;
-		if (scale && fraction >= 0 && fraction <= 1)
-			fraction = boost::math::ibeta(alpha, beta, fraction);
-		/* // Red green blue
-		if (fraction < 0.5) {
-			r = 1-2*fraction;
-			g = 2*fraction;
-			b = 0;
-		} else {
-			r = 0;
-			g = 1-2*(fraction-0.5);
-			b = 0+2*(fraction-0.5);
-		}*/
-
-		// Yellow - red - black
-		if (fraction < 0.5) {
-			r = 1;
-			g = 1-2*fraction;
-			b = 0;
-		} else {
-			r = 1-2*(fraction-0.5);
-			g = 0;
-			b = 0;
-		}
-		return Color( r, g, b, 1 );
+		return color_map( fraction );
 	}
 
 	void BackendHeightMap::calculate_height_scaling() {
@@ -655,14 +629,8 @@ namespace realtimeplot {
 						delaunay.vertices[i] )->z-zmin)/dz-mean,2); 
 		}
 		v /= dim;
-		alpha = mean*((mean*(1-mean))/v-1);
-		beta = (1-mean)*((mean*(1-mean))/v-1);
-		// Sometimes this doesn't work properly -> no scaling
-		if (alpha <=0 || beta <=0)
-			scale = false;
-		else 
-			scale = true;
-		
+		color_map.calculate_height_scaling( mean, v );
+	
 		if (delaunay.vertices.size()>=3)
 			plot();
 	}
