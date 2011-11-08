@@ -187,7 +187,7 @@ class TestBackend : public CxxTest::TestSuite
 		void testHistogramAdjustAddData() {
 			conf.area = 500*500;
 			conf.fixed_plot_area = false;
-			BackendHistogram bh = BackendHistogram( conf, true, 3,
+			BackendHistogram bh = BackendHistogram( conf, false, 3,
 					boost::shared_ptr<EventHandler>() );
 
 			bh.add_data( -1.2 );
@@ -224,10 +224,14 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bh.bins_y[0], 3 );
 			TS_ASSERT_EQUALS( bh.bins_y[1], 0 );
 			TS_ASSERT_EQUALS( bh.bins_y[2], 1 );
+			TS_ASSERT_DELTA( bh.config.max_y, 1.2*3, 1e-3 );
 
 			bh.add_data( 0.7 );
 			TS_ASSERT_EQUALS( bh.bins_y[2], 2 );
 			TS_ASSERT_EQUALS( bh.rebin, false );
+			bh.add_data( 0.7 );
+			bh.add_data( 0.7 );
+			TS_ASSERT_DELTA( bh.config.max_y, 1.2*4, 1e-3 );
 
 			bh.add_data( 1.1 );
 			TS_ASSERT_EQUALS( bh.rebin, true );
