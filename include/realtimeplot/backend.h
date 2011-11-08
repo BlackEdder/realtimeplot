@@ -313,6 +313,8 @@ namespace realtimeplot {
 
 			void add_data( double data );
 
+			void rebin_data();
+
 			/**
 			 * \brief Add a new measurement/data
 			 *

@@ -159,10 +159,12 @@ class TestBackend : public CxxTest::TestSuite
 			bh.add_data( 0.1 );
 			TS_ASSERT_EQUALS( bh.data.size(), 1 );
 			TS_ASSERT_EQUALS( bh.data[0], 0.1 );
+			TS_ASSERT_EQUALS( bh.bins_y[10], 1 );
 			TS_ASSERT_EQUALS( bh.rebin, false );
 			bh.add_data( 6 );
 			TS_ASSERT_EQUALS( bh.data.size(), 2 );
 			TS_ASSERT_EQUALS( bh.data[1], 6 );
+			TS_ASSERT_EQUALS( bh.bins_y[19], 0 );
 			TS_ASSERT_EQUALS( bh.rebin, false );
 		}
 	
@@ -181,6 +183,53 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_DELTA( bh.bin_width, 0.05, 1e-4 );
 			TS_ASSERT_EQUALS( bh.bins_y.size(), 20 );
 		}
+
+		void testRebinData() {
+			conf.area = 500*500;
+			conf.fixed_plot_area = false;
+			BackendHistogram bh = BackendHistogram( conf, true, 3,
+					boost::shared_ptr<EventHandler>() );
+			bh.rebin_data();
+			TS_ASSERT_EQUALS( bh.bins_y[0], 0 );
+			TS_ASSERT_EQUALS( bh.bins_y[1], 0 );
+			TS_ASSERT_EQUALS( bh.bins_y[2], 0 );
+			TS_ASSERT_EQUALS( bh.rebin, true );
+
+			bh.add_data( -1.2 );
+			TS_ASSERT_EQUALS( bh.rebin, true );
+			bh.rebin_data();
+			TS_ASSERT_EQUALS( bh.data.size(), 1 );
+			TS_ASSERT_EQUALS( bh.bins_y[0], 0 );
+			TS_ASSERT_EQUALS( bh.bins_y[1], 1 );
+			TS_ASSERT_EQUALS( bh.bins_y[2], 0 );
+			TS_ASSERT_DELTA( bh.config.min_x, -1.7, 1e-3 );
+			TS_ASSERT_DELTA( bh.config.max_x, -0.7, 1e-3 );
+			TS_ASSERT_DELTA( bh.bin_width, 0.333333, 1e-3 );
+
+			bh.add_data( 0.8 );
+			TS_ASSERT_EQUALS( bh.rebin, true );
+			bh.rebin_data();
+			TS_ASSERT_EQUALS( bh.data.size(), 2 );
+			TS_ASSERT_EQUALS( bh.bins_y[0], 1 );
+			TS_ASSERT_EQUALS( bh.bins_y[1], 0 );
+			TS_ASSERT_EQUALS( bh.bins_y[2], 1 );
+			TS_ASSERT_DELTA( bh.config.min_x, -1.4, 1e-3 );
+			TS_ASSERT_DELTA( bh.config.max_x, 1, 1e-3 );
+			TS_ASSERT_DELTA( bh.bin_width, 2.4/3, 1e-3 );
+
+		}
+
+		void testRebinData2() {
+			conf.area = 500*500;
+			conf.fixed_plot_area = false;
+			BackendHistogram bh = BackendHistogram( conf, true, 3,
+					boost::shared_ptr<EventHandler>() );
+			bh.add_data( -1.2 );
+			bh.add_data( -1.2 );
+			bh.rebin_data();
+			TS_ASSERT_DIFFERS( bh.config.max_x-bh.config.min_x, 0 );
+		}
+
 
 		void testHistogramSimple() {
 			//conf.area = 500*500;

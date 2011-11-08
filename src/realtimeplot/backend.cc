@@ -468,6 +468,39 @@ namespace realtimeplot {
 
 	void BackendHistogram::add_data( double new_data ) {
 		data.push_back( new_data );
+		if (!rebin) {
+			// No need to reset bounds, just add it to the correct bin
+			if (new_data>=config.min_x && new_data<config.max_x)
+				++bins_y[utils::bin_id(config.min_x, bin_width, new_data)];
+			else {
+				if (!config.fixed_plot_area)
+					rebin = true;
+			}
+		}
+	}
+
+	void BackendHistogram::rebin_data() {
+		rebin = false;
+		if (data.size()==2) {
+			if (data[1]<data[0]) {
+				double dx = (data[0]-data[1])/10.0;
+				config.min_x = data[1]-dx;
+				config.max_x = data[0]+dx;
+			} else {
+				double dx = (data[1]-data[0])/10.0;
+				config.min_x = data[0]-dx;
+				config.max_x = data[1]+dx;
+			}
+			bin_width = ( config.max_x-config.min_x )/no_bins;
+			bins_y = utils::calculate_bins( config.min_x, config.max_x, no_bins, data );
+		} else if (data.size()==1) {
+			config.min_x = data[0]-0.5;
+			config.max_x = data[0]+0.5;
+			bin_width = ( config.max_x-config.min_x )/no_bins;
+			bins_y = utils::calculate_bins( config.min_x, config.max_x, no_bins, data );
+		} else if (data.size()==0) {
+			rebin = true;
+		}
 	}
 
 	void BackendHistogram::add_data( double new_data, bool show, 
@@ -481,14 +514,15 @@ namespace realtimeplot {
 			if (new_data>=min_x && new_data<max_x)
 				++bins_y[utils::bin_id(min_x, bin_width, new_data)];
 		} else {
-			// Special cases, using the first data point to initialize binsize etc
+			// Special cases, using the first data point t
 			if (data.size() == 1) {
+				// Special cases, using the first data point to initialize binsize etc if (data.size() == 1) {
 				min_x = new_data;
 				max_x = min_x + no_bins*min_bin_size;
 				bin_width = ( max_x-min_x )/no_bins;
 				rebin = true;
-			} else {
-				//First check that data is not smaller or larger than the current range
+		} else {
+			//First check that data is not smaller or larger than the current range
 				if (new_data < min_x) {
 					min_x = new_data;
 					bin_width = ( max_x-min_x )/no_bins;
