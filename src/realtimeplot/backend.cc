@@ -444,6 +444,11 @@ namespace realtimeplot {
 	{
 		config.min_y = 0;
 		config.max_y = 1.2;
+		if (!config.fixed_plot_area) {
+			rebin = true;
+			config.min_x = 0;
+			config.max_x = 1;
+		}
 		reset( config );
 		bin_width = ( config.max_x-config.min_x )/no_bins;
 		bins_y = utils::calculate_bins( config.min_x, config.max_x, no_bins, data );
