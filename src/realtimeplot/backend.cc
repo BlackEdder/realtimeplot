@@ -466,6 +466,10 @@ namespace realtimeplot {
 		bin_width = ( max_x-min_x )/no_bins;
 	}
 
+	void BackendHistogram::add_data( double new_data ) {
+		data.push_back( new_data );
+	}
+
 	void BackendHistogram::add_data( double new_data, bool show, 
 			bool freq, size_t n_no_bins, bool n_frozen_bins_x ) {
 		frequency = freq;

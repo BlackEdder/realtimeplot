@@ -311,6 +311,8 @@ namespace realtimeplot {
 			BackendHistogram( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler,
 					double min_x, double max_x, size_t no_bins );
 
+			void add_data( double data );
+
 			/**
 			 * \brief Add a new measurement/data
 			 *
