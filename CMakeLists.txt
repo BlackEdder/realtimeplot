@@ -122,6 +122,7 @@ SET (CMAKE_INSTALL_PREFIX /usr)
 install (TARGETS realtimeplot DESTINATION lib)
 install (FILES include/realtimeplot/realtimeplot.h
 	include/realtimeplot/backend.h
+	include/realtimeplot/plotarea.h
 	include/realtimeplot/eventhandler.h
 	include/realtimeplot/xcbhandler.h
 	include/realtimeplot/utils.h
