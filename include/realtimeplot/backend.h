@@ -296,6 +296,8 @@ namespace realtimeplot {
 			bool frequency;
 			bool rebin;
 
+			double data_min, data_max;
+
 			std::vector<double> bins_y;
 			/**
 			 * \brief Creates a histogram
@@ -310,6 +312,10 @@ namespace realtimeplot {
 			//! Creates a histogram with a set min_x and max_x
 			BackendHistogram( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler,
 					double min_x, double max_x, size_t no_bins );
+
+			double bin_width2();
+			double min();
+			double max();
 
 			void add_data( double data );
 
