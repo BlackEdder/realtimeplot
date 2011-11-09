@@ -288,9 +288,7 @@ namespace realtimeplot {
 	class BackendHistogram : public BackendPlot {
 		public:
 			size_t no_bins;
-			double min_x, max_x;
 			std::vector<double> data;
-			double bin_width;
 
 			//! If true plot frequencies, instead of counts
 			bool frequency;
@@ -309,7 +307,7 @@ namespace realtimeplot {
 			BackendHistogram( PlotConfig config, bool frequency, size_t no_bins, 
 					boost::shared_ptr<EventHandler> pEventHandler );
 
-			double bin_width2();
+			double bin_width();
 			double min();
 			double max();
 
@@ -321,17 +319,7 @@ namespace realtimeplot {
 			void rebin_data();
 
 			void plot();
-		private:
-			bool frozen_bins_x;
-			bool min_max_initialized;
-
-			/**
-			 * \brief Smallest bin_size we can plot
-			 *
-			 * 
-			 */
-			double min_bin_size;
-	};
+		};
 
 
 

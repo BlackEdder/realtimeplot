@@ -150,8 +150,8 @@ class TestBackend : public CxxTest::TestSuite
 			bh.data.push_back( -0.5 );
 			bh.data_min = -1;
 			bh.data_max = 0.5;
-			TS_ASSERT_DELTA( bh.min()+0.1*bh.bin_width2(), bh.data_min, 1e-4 );
-			TS_ASSERT_DELTA( bh.max()-0.1*bh.bin_width2(), bh.data_max, 1e-4 );
+			TS_ASSERT_DELTA( bh.min()+0.1*bh.bin_width(), bh.data_min, 1e-4 );
+			TS_ASSERT_DELTA( bh.max()-0.1*bh.bin_width(), bh.data_max, 1e-4 );
 
 			conf.fixed_plot_area = false;
 			bh = BackendHistogram( conf, true, 3,
@@ -173,7 +173,7 @@ class TestBackend : public CxxTest::TestSuite
 			conf.fixed_plot_area = true;
 			BackendHistogram bh = BackendHistogram( conf, true, 3,
 					boost::shared_ptr<EventHandler>() );
-			TS_ASSERT_EQUALS( bh.bin_width2(), (bh.max()-bh.min())/bh.no_bins )
+			TS_ASSERT_EQUALS( bh.bin_width(), (bh.max()-bh.min())/bh.no_bins )
 		}
 
 		void testAddDataAdjust() {

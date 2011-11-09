@@ -440,7 +440,7 @@ namespace realtimeplot {
 	BackendHistogram::BackendHistogram( PlotConfig conf, bool frequency, 
 			size_t no_bins, boost::shared_ptr<EventHandler> pEventHandler ) 
 		: BackendPlot( conf, pEventHandler ), frequency( frequency ),
-		no_bins( no_bins ), rebin( false ), min_max_initialized( false )
+		no_bins( no_bins ), rebin( false )
 	{
 		config.min_y = 0;
 		config.max_y = 1.2;
@@ -450,11 +450,10 @@ namespace realtimeplot {
 			rebin = true;
 		}
 		reset( config );
-		bin_width = ( config.max_x-config.min_x )/no_bins;
 		bins_y = utils::calculate_bins( config.min_x, config.max_x, no_bins, data );
 	}
 
-	double BackendHistogram::bin_width2() {
+	double BackendHistogram::bin_width() {
 		return (max()-min())/no_bins;
 	}
 
@@ -486,7 +485,7 @@ namespace realtimeplot {
 		data.push_back( new_data );
 		if (config.fixed_plot_area) {
 			if (new_data>=config.min_x && new_data<config.max_x) {
-				size_t id = utils::bin_id(config.min_x, bin_width, new_data);
+				size_t id = utils::bin_id(config.min_x, bin_width(), new_data);
 				++bins_y[id];
 				if (!frequency && bins_y[id]>config.max_y)
 					config.max_y = bins_y[id]*1.2;
@@ -502,7 +501,7 @@ namespace realtimeplot {
 			data_max = new_data;
 			rebin = true;
 		} else if (!rebin) {
-			size_t id = utils::bin_id(min(), bin_width2(), new_data);
+			size_t id = utils::bin_id(min(), bin_width(), new_data);
 			++bins_y[id];
 			if (!frequency && bins_y[id]>config.max_y)
 				config.max_y = bins_y[id]*1.2;
@@ -522,7 +521,7 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::plot() {
-		double width = bin_width2();
+		double width = bin_width();
 		if (rebin) {
 			rebin_data();
 		}
