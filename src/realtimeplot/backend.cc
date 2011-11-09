@@ -523,6 +523,25 @@ namespace realtimeplot {
 		rebin = false;
 	}
 
+	void BackendHistogram::plot2() {
+		if (!rebin) {
+			rebin_data();
+			reset( config );
+		} else {
+			clear();
+		}
+		for (size_t i=0; i<no_bins; ++i) {
+			double height = bins_y[i];
+			if (frequency && data.size()>0)
+				height/=data.size();
+			line_add( min_x+i*bin_width, 0, -1, Color::black() );
+			line_add( min_x+i*bin_width, height, -1, Color::black() );
+			line_add( min_x+(i+1)*bin_width, height, -1, Color::black() );
+			line_add( min_x+(i+1)*bin_width, 0, -1, Color::black() );
+		}
+		display();
+	}
+
 	void BackendHistogram::add_data( double new_data, bool show, 
 			bool freq, size_t n_no_bins, bool n_frozen_bins_x ) {
 		frequency = freq;

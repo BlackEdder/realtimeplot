@@ -323,6 +323,7 @@ namespace realtimeplot {
 			 */
 			void add_data( double data, bool show, bool frequency, size_t no_bins, bool frozen_bins_x );
 			void plot();
+			void plot2();
 		private:
 			bool frozen_bins_x;
 			bool min_max_initialized;

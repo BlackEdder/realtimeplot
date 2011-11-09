@@ -240,6 +240,37 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_LESS_THAN( bh.config.min_x, -1.5 );
 		}
 
+		void testHistogramPlotFixed() {
+			conf.area = 500*500;
+			conf.min_y = 0;
+			conf.min_x = 0;
+			conf.max_x = 5;
+			conf.fixed_plot_area = true;
+
+			BackendHistogram bh = BackendHistogram( conf, false, 3,
+					boost::shared_ptr<EventHandler>() );
+			bh.plot2();
+			bh.save( fn( "bh_empty" ) );
+			TS_ASSERT( check_plot( "bh_empty" ) );
+			bh.add_data( 1.1 );
+			bh.plot2();
+			bh.save( fn( "bh_data1" ) );
+			TS_ASSERT( check_plot( "bh_data1" ) );
+			bh.add_data( 3.1 );
+			bh.add_data( 3.1 );
+			bh.plot2();
+			bh.save( fn( "bh_data2" ) );
+			TS_ASSERT( check_plot( "bh_data2" ) );
+			bh.add_data( 3.1 );
+			bh.plot2();
+			bh.save( fn( "bh_data3" ) );
+			TS_ASSERT( check_plot( "bh_data3" ) );
+			bh.add_data( 6.1 );
+			bh.plot2();
+			bh.save( fn( "bh_data3" ) );
+			TS_ASSERT( check_plot( "bh_data3" ) );
+		}
+
 		void testHistogramSimple() {
 			//conf.area = 500*500;
 			conf.min_y = 0;
