@@ -334,13 +334,13 @@ namespace realtimeplot {
 						frequency, no_bins, pEventHandler ) ) );
 	}
 
-	/*Histogram::Histogram( PlotConfig config, size_t no_bins, bool frequency )
+	Histogram::Histogram( PlotConfig config, size_t no_bins, bool frequency )
 		: Plot( false ) 
 	{
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
 					new OpenHistogramEvent( config, 
 						frequency, no_bins, pEventHandler ) ) );
-	}*/
+	}
 
 	Histogram::Histogram( double min_x, double max_x, size_t no_bins, bool frequency )
 		:	Plot( false )

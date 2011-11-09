@@ -272,9 +272,9 @@ namespace realtimeplot {
 		*/
 	class Histogram : public Plot {
 		public:
-			Histogram( size_t no_bins = 4, bool frequency = true );
+			Histogram( PlotConfig config, size_t no_bins = 4, bool frequency = true );
 
-			//Histogram( PlotConfig config, size_t no_bins = 4, bool frequency = true );
+			Histogram( size_t no_bins = 4, bool frequency = true );
 
 			//! Creates a histogram with a set min_x and max_x
 			Histogram( double min_x, double max_x, size_t no_bins = 4,
