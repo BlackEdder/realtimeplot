@@ -325,24 +325,32 @@ namespace realtimeplot {
 	 * Histogram
 	 */
 
-	Histogram::Histogram()
-		: frequency( false ),
-		frozen_bins_x( false ),
-		no_bins( 4 ),
-		Plot( false )
+	Histogram::Histogram( size_t no_bins, bool frequency )
+		: Plot( false )
 	{
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHistogramEvent( config, 
-						pEventHandler, 0, -1, no_bins ) ) );
+		config.fixed_plot_area = false;
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenHistogramEvent( config, 
+						frequency, no_bins, pEventHandler ) ) );
 	}
 
-	Histogram::Histogram( double min_x, double max_x, size_t no_bins )
-		: frequency( false ),
-		frozen_bins_x( true ),
-		no_bins( no_bins ),
-		Plot( false )
+	/*Histogram::Histogram( PlotConfig config, size_t no_bins, bool frequency )
+		: Plot( false ) 
+	{
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenHistogramEvent( config, 
+						frequency, no_bins, pEventHandler ) ) );
+	}*/
+
+	Histogram::Histogram( double min_x, double max_x, size_t no_bins, bool frequency )
+		:	Plot( false )
 	{ 
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHistogramEvent( config, 
-						pEventHandler, min_x, max_x, no_bins ) ) );
+		config.fixed_plot_area = true;
+		config.min_x = min_x;
+		config.max_x = max_x;
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenHistogramEvent( config, 
+						frequency, no_bins, pEventHandler ) ) );
 	}
 
 
@@ -359,25 +367,10 @@ namespace realtimeplot {
 
 	void Histogram::add_data( double new_data, bool show ) {
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
-					new HistDataEvent( new_data, show,
-						frequency, no_bins, frozen_bins_x ) ) ); 
-	}
-
-	/*void Histogram::set_counts_data( std::vector<double> values,
-			std::vector<int> counts, bool show ) {
-		bins_x.clear();
-		for (unsigned int i=0;i<values.size();++i) {
-			bins_x.push_back( values[i] ); //This assumes that values are sorted!
-			for (int j=0;j<counts[i];++j) {
-				data.push_back( values[i] );
-			}
-		}
-		bin_width = bins_x[1]-bins_x[0];
-		frozen_bins_x = true;
-		fill_bins();
+					new HistDataEvent( new_data ) ) ); 
 		if (show)
 			plot();
-	}*/
+	}
 
 	void Histogram::plot() {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new HistPlotEvent() ) );

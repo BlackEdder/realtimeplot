@@ -261,28 +261,24 @@ namespace realtimeplot {
 		\brief Class to produce histograms from data, will calculate range etc
 
 		Also allows to add a new data point to the histogram on the fly. Histograms are 
-		relatively costly in that they need to redraw everytime a new point is added. As
-		such it can be usefull to let it redraw sometimes by mostly calling
+		relatively costly in that they need to redraw every time a new point is added. As
+		such it can be useful to let it redraw sometimes by mostly calling
 		add_data( new_data, false ) and only calling add_data( new_data, true ) or plot()
 		when you want to actually redraw.
 
-		For the histogram we also need to recalculate the bins everytime a point is added that falls 
-		outside the current range. Therefore, the class keeps around a vector
-		containing all the old data. Which could in theory lead to memory problems. 
-
-		\todo This could be solved by making an algorithm that updates range until things seem to "quiet" down and from that point onward only keeps bins and total counts around. If a point falls outside the range just or not plot it or add a bin.
+		For the histogram we also need to recalculate the bins every time a point is
+	 	added that falls outside the current range. Therefore, the class keeps around a
+	 	vector containing all the old data. Which could in theory lead to memory problems. 
 		*/
 	class Histogram : public Plot {
 		public:
-			int no_bins;
+			Histogram( size_t no_bins = 4, bool frequency = true );
 
-			//! If true plot frequencies, instead of counts
-			bool frequency;
-
-			Histogram();
+			//Histogram( PlotConfig config, size_t no_bins = 4, bool frequency = true );
 
 			//! Creates a histogram with a set min_x and max_x
-			Histogram( double min_x, double max_x, size_t no_bins );
+			Histogram( double min_x, double max_x, size_t no_bins = 4,
+				bool frequency = true );
 
 			~Histogram();
 			/**
@@ -292,36 +288,18 @@ namespace realtimeplot {
 			 * immediately show the histogram.
 			 */
 			void set_data( std::vector<double> data, bool show = true );
-			/**
-			 * \brief Set data based on two vectors, one containing values and the other how often those values were found (counts)
-			 *
-			 * Will automatically calculate the ranges. If show == true (default) it will
-			 * immediately show the histogram.
-			 *
-			 */
-			/*void set_counts_data( std::vector<double> values, 
-					std::vector<int> counts, bool show = true );*/
 
 			/**
 			 * \brief Add a new measurement/data
 			 *
-			 * Might be usefull to only set show true sometimes, since it can be costly to
+			 * Might be useful to only set show true sometimes, since it can be costly to
 			 * replot every time.
 			 */
 			void add_data( double data, bool show = true );
-			void plot();
-
-		private:
-			bool frozen_bins_x;
 			/**
-			 * \brief Fill bins
-			 *
-			 * Terribly inefficient at the moment, since it always redos all data
-			 * \todo Fix inefficiency.
-			 *
-			 * \todo Fix dropping data outside bin range when frozen_bins_x is set end
+			 * \brief (Re) Plot the data
 			 */
-			void fill_bins();
+			void plot();
 	};
 
 	/**

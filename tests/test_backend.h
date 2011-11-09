@@ -221,24 +221,24 @@ class TestBackend : public CxxTest::TestSuite
 
 			BackendHistogram bh = BackendHistogram( conf, false, 3,
 					boost::shared_ptr<EventHandler>() );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_fixed_empty" ) );
 			TS_ASSERT( check_plot( "bh_fixed_empty" ) );
 			bh.add_data( 1.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_fixed_data1" ) );
 			TS_ASSERT( check_plot( "bh_fixed_data1" ) );
 			bh.add_data( 3.1 );
 			bh.add_data( 3.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_fixed_data2" ) );
 			TS_ASSERT( check_plot( "bh_fixed_data2" ) );
 			bh.add_data( 3.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_fixed_data3" ) );
 			TS_ASSERT( check_plot( "bh_fixed_data3" ) );
 			bh.add_data( 6.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_fixed_data3" ) );
 			TS_ASSERT( check_plot( "bh_fixed_data3" ) );
 		}
@@ -252,58 +252,26 @@ class TestBackend : public CxxTest::TestSuite
 
 			BackendHistogram bh = BackendHistogram( conf, true, 5,
 					boost::shared_ptr<EventHandler>() );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_adjust_empty" ) );
 			TS_ASSERT( check_plot( "bh_adjust_empty" ) );
 			bh.add_data( 1.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_adjust_data1" ) );
 			TS_ASSERT( check_plot( "bh_adjust_data1" ) );
 			bh.add_data( 3.1 );
 			bh.add_data( 3.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_adjust_data2" ) );
 			TS_ASSERT( check_plot( "bh_adjust_data2" ) );
 			bh.add_data( 3.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_adjust_data3" ) );
 			TS_ASSERT( check_plot( "bh_adjust_data3" ) );
 			bh.add_data( 6.1 );
-			bh.plot2();
+			bh.plot();
 			bh.save( fn( "bh_adjust_data4" ) );
 			TS_ASSERT( check_plot( "bh_adjust_data3" ) );
-		}
-
-
-		void testHistogramSimple() {
-			//conf.area = 500*500;
-			conf.min_y = 0;
-			conf.min_x = 0;
-			conf.max_x = 5;
-
-			BackendHistogram bhm = BackendHistogram( conf, 
-					boost::shared_ptr<EventHandler>(), 0, 5, 20 );
-			bhm.plot();
-			bhm.save( fn( "bhm_empty" ) );
-			TS_ASSERT( check_plot( "bhm_empty" ) );
-			bhm.add_data( 1.1, true, true, 20, true );
-			bhm.plot();
-			bhm.save( fn( "bhm_data1" ) );
-			TS_ASSERT( check_plot( "bhm_data1" ) );
-			bhm.add_data( 3.1, true, true, 20, true );
-			bhm.add_data( 3.1, true, true, 20, true );
-			bhm.save( fn( "bhm_data2" ) );
-			TS_ASSERT( check_plot( "bhm_data2" ) );
-			bhm.add_data( 3.1, true, false, 20, true );
-			bhm.save( fn( "bhm_data3" ) );
-			TS_ASSERT( check_plot( "bhm_data3" ) );
-			bhm.add_data( 6.1, true, false, 20, true );
-			// Nothing should have changed
-			bhm.save( fn( "bhm_data3" ) );
-			TS_ASSERT( check_plot( "bhm_data3" ) );
-			bhm.add_data( 6.1, true, false, 20, false );
-			bhm.save( fn( "bhm_data4" ) );
-			TS_ASSERT( check_plot( "bhm_data4" ) );
 		}
 
 		/*

@@ -34,8 +34,7 @@ int main() {
 	}
 
 	Histogram hist = Histogram();
-	Histogram hist2 = Histogram();
-	hist2.frequency = true;
+	Histogram hist2 = Histogram(4, false);
 
 
 	//hist.frequency = true;
