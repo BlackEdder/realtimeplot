@@ -461,7 +461,9 @@ namespace realtimeplot {
 	double BackendHistogram::min() {
 		if (config.fixed_plot_area)
 			return config.min_x;
-		else if (data_min<data_max) {
+		else if (data.size() == 0) {
+			return 0;
+		}	else if (data_min<data_max) {
 			double x = 0.1; // max-x*bin_width = data_max
 			return (data_min*x+data_max*x-data_min*no_bins)/(2*x-no_bins);
 		} else
@@ -471,7 +473,9 @@ namespace realtimeplot {
 	double BackendHistogram::max() {
 		if (config.fixed_plot_area)
 			return config.max_x;
-		else if (data_min<data_max) {
+		else if (data.size() == 0) {
+			return 1;
+		} else if (data_min<data_max) {
 			double x = 0.1; // max-x*bin_width = data_max
 			return (data_min*x+data_max*x-data_max*no_bins)/(2*x-no_bins);
 		} else
@@ -491,7 +495,6 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::add_data( double new_data ) {
-		std::cout << config.min_x << " " << config.max_x << std::endl;
 		data.push_back( new_data );
 		if (config.fixed_plot_area) {
 			if (new_data>=config.min_x && new_data<config.max_x) {
@@ -500,40 +503,21 @@ namespace realtimeplot {
 				if (!frequency && bins_y[id]>config.max_y)
 					config.max_y = bins_y[id]*1.2;
 			}
-		} else if (!min_max_initialized) {
-			if (data.size()==1) {
-				config.min_x = data[0]-0.5;
-				config.max_x = data[0]+0.5;
-			} else if (data.back()<data[0]) {
-				min_max_initialized = true;
-				bin_width = ( config.max_x-config.min_x )/no_bins;
-				config.min_x = data.back()-0.6*bin_width;
-				config.max_x = data[0]+0.6*bin_width;
-			} else if (data.back() > data[0]) {
-				min_max_initialized = true;
-				bin_width = ( config.max_x-config.min_x )/no_bins;
-				config.min_x = data[0]-0.6*bin_width;
-				config.max_x = data.back()+0.6*bin_width;
-			}
+		} else if (data.size() == 1) {
+			data_min = data[0];
+			data_max = data_min;
 			rebin = true;
-		} else {
-			if (new_data>=config.min_x && new_data<config.max_x) {
-				if (!rebin) {
-					size_t id = utils::bin_id(config.min_x, bin_width, new_data);
-					++bins_y[id];
-					if (!frequency && bins_y[id]>config.max_y)
-						config.max_y = bins_y[id]*1.2;
-				}
-			}
-			else if (new_data<config.min_x) {
-				bin_width = ( config.max_x-new_data )/no_bins;
-				config.min_x = new_data - 2*bin_width;
-				rebin = true;
-			} else {
-				bin_width = ( new_data-config.min_x )/no_bins;
-				config.max_x = new_data + 2*bin_width;
-				rebin = true;
-			}
+		} else if (new_data<data_min) {
+			data_min = new_data;
+			rebin = true;
+		} else if (new_data>data_max) {
+			data_max = new_data;
+			rebin = true;
+		} else if (!rebin) {
+			size_t id = utils::bin_id(min(), bin_width2(), new_data);
+			++bins_y[id];
+			if (!frequency && bins_y[id]>config.max_y)
+				config.max_y = bins_y[id]*1.2;
 		}
 	}
 

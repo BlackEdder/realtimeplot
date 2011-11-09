@@ -147,6 +147,7 @@ class TestBackend : public CxxTest::TestSuite
 			conf.fixed_plot_area = false;
 			bh = BackendHistogram( conf, true, 3,
 					boost::shared_ptr<EventHandler>() );
+			bh.data.push_back( -0.5 );
 			bh.data_min = -1;
 			bh.data_max = 0.5;
 			TS_ASSERT_DELTA( bh.min()+0.1*bh.bin_width2(), bh.data_min, 1e-4 );
@@ -155,17 +156,60 @@ class TestBackend : public CxxTest::TestSuite
 			conf.fixed_plot_area = false;
 			bh = BackendHistogram( conf, true, 3,
 					boost::shared_ptr<EventHandler>() );
+			bh.data.push_back( -0.5 );
 			bh.data_min = -1;
 			bh.data_max = bh.data_min;
 			TS_ASSERT_DELTA( bh.min(), -1.5, 1e-4 );
 			TS_ASSERT_DELTA( bh.max(), -0.5, 1e-4 );
-			}
+
+			conf.fixed_plot_area = false;
+			bh = BackendHistogram( conf, true, 3,
+					boost::shared_ptr<EventHandler>() );
+			TS_ASSERT_DELTA( bh.min(), 0, 1e-4 );
+			TS_ASSERT_DELTA( bh.max(), 1, 1e-4 );
+		}
 
 		void testBinWidth() {
 			conf.fixed_plot_area = true;
 			BackendHistogram bh = BackendHistogram( conf, true, 3,
 					boost::shared_ptr<EventHandler>() );
 			TS_ASSERT_EQUALS( bh.bin_width2(), (bh.max()-bh.min())/bh.no_bins )
+		}
+
+		void testAddDataAdjust() {
+			conf.fixed_plot_area = false;
+			BackendHistogram bh = BackendHistogram( conf, true, 3,
+					boost::shared_ptr<EventHandler>() );
+			bh.add_data( -1 );
+			TS_ASSERT_DELTA( bh.data_min, -1, 1e-4 );
+			TS_ASSERT_DELTA( bh.data_max, -1, 1e-4 );
+			bh.add_data( -1 );
+			TS_ASSERT_DELTA( bh.data_min, -1, 1e-4 );
+			TS_ASSERT_DELTA( bh.data_max, -1, 1e-4 );
+			bh.add_data( 1.2 );
+			TS_ASSERT_DELTA( bh.data_min, -1, 1e-4 );
+			TS_ASSERT_DELTA( bh.data_max, 1.2, 1e-4 );
+			bh.add_data( -2 );
+			TS_ASSERT_DELTA( bh.data_min, -2, 1e-4 );
+			TS_ASSERT_DELTA( bh.data_max, 1.2, 1e-4 );
+		}
+
+		void testAddDataFixed() {
+			conf.fixed_plot_area = true;
+			BackendHistogram bh = BackendHistogram( conf, true, 3,
+					boost::shared_ptr<EventHandler>() );
+			bh.add_data( -1 );
+			TS_ASSERT_DELTA( bh.config.min_x, -5, 1e-4 );
+			TS_ASSERT_DELTA( bh.config.max_x, 5, 1e-4 );
+			bh.add_data( -1 );
+			TS_ASSERT_DELTA( bh.config.min_x, -5, 1e-4 );
+			TS_ASSERT_DELTA( bh.config.max_x, 5, 1e-4 );
+			bh.add_data( 1.2 );
+			TS_ASSERT_DELTA( bh.config.min_x, -5, 1e-4 );
+			TS_ASSERT_DELTA( bh.config.max_x, 5, 1e-4 );
+			bh.add_data( 6 );
+			TS_ASSERT_DELTA( bh.config.min_x, -5, 1e-4 );
+			TS_ASSERT_DELTA( bh.config.max_x, 5, 1e-4 );
 		}
 
 		void xtestHistogramFixed() {
