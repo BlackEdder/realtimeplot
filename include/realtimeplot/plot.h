@@ -1,7 +1,7 @@
 /*
 	 -------------------------------------------------------------------
 
-	 Copyright (C) 2010, Edwin van Leeuwen
+	 Copyright (C) 2010, 2011 Edwin van Leeuwen
 
 	 This file is part of RealTimePlot.
 
@@ -24,7 +24,7 @@
 #define REALTIMEPLOT_PLOT_H
 
 /** \file plot.h
-	\brief File containing frontend and backend plotting classes
+	\brief File containing frontend plotting classes
 	*/
 
 #include <iostream>
@@ -336,7 +336,7 @@ namespace realtimeplot {
 	 * \brief Plot a height map from x,y,z points
 	 *
 	 * Using Delauney triangulation, so won't need to be a grid of x,y points
-	 * Need an algorithm that allows us to add point for point (Bowyer-Watson)
+	 * Using an algorithm that allows us to add point for point (Bowyer-Watson)
 	 */
 	class HeightMap : public Plot {
 		public:
