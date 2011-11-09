@@ -482,18 +482,6 @@ namespace realtimeplot {
 			return data_min + 0.5;
 	}
 
-	BackendHistogram::BackendHistogram( PlotConfig config, 
-			boost::shared_ptr<EventHandler> pEventHandler,
-			double min_x, double max_x, size_t no_bins ) :
-				BackendPlot( config, pEventHandler ),
-				min_x( min_x ), max_x( max_x ), no_bins( no_bins ), rebin( false ), 
-				bins_y(no_bins), min_bin_size( 1e-06)
-	{
-		if (max_x<min_x)
-			max_x = min_x+no_bins*min_bin_size;
-		bin_width = ( max_x-min_x )/no_bins;
-	}
-
 	void BackendHistogram::add_data( double new_data ) {
 		data.push_back( new_data );
 		if (config.fixed_plot_area) {
@@ -533,7 +521,7 @@ namespace realtimeplot {
 		rebin = false;
 	}
 
-	void BackendHistogram::plot2() {
+	void BackendHistogram::plot() {
 		double width = bin_width2();
 		if (rebin) {
 			rebin_data();
@@ -551,87 +539,6 @@ namespace realtimeplot {
 			line_add( min()+i*width, height, -1, Color::black() );
 			line_add( min()+(i+1)*width, height, -1, Color::black() );
 			line_add( min()+(i+1)*width, 0, -1, Color::black() );
-		}
-		display();
-	}
-
-	void BackendHistogram::add_data( double new_data, bool show, 
-			bool freq, size_t n_no_bins, bool n_frozen_bins_x ) {
-		frequency = freq;
-		no_bins = n_no_bins;
-		frozen_bins_x = n_frozen_bins_x;
-		data.push_back( new_data );
-		if (frozen_bins_x) {
-			// No need to reset bounds, just add it to the correct bin
-			if (new_data>=min_x && new_data<max_x)
-				++bins_y[utils::bin_id(min_x, bin_width, new_data)];
-		} else {
-			// Special cases, using the first data point t
-			if (data.size() == 1) {
-				// Special cases, using the first data point to initialize binsize etc if (data.size() == 1) {
-				min_x = new_data;
-				max_x = min_x + no_bins*min_bin_size;
-				bin_width = ( max_x-min_x )/no_bins;
-				rebin = true;
-		} else {
-			//First check that data is not smaller or larger than the current range
-				if (new_data < min_x) {
-					min_x = new_data;
-					bin_width = ( max_x-min_x )/no_bins;
-					rebin = true;
-				} else if (new_data >= max_x) {
-					max_x = new_data + 0.5*bin_width;
-					bin_width = ( max_x-min_x )/no_bins;
-					rebin = true;
-				} else if (!rebin) {
-					++bins_y[utils::bin_id(min_x, bin_width, new_data)];
-				}
-			}
-		}
-
-		if (show)
-			plot();
-	}
-
-	void BackendHistogram::plot() {
-		if (rebin) {
-			bins_y = utils::calculate_bins( min_x, max_x, no_bins, data );
-			rebin = false;
-		}
-
-		double max_y = 1.1;
-		if (!frequency) {
-			for (size_t i=0; i<no_bins; ++i) {
-				if (bins_y[i] > max_y)
-					max_y = 1.1*bins_y[i];
-			}
-		}
-
-		if ( (min_x == max_x) || 
-				!(frequency && config.max_y > max_y && config.max_y <= 2*max_y) ||
-				!(config.max_x >= max_x && config.max_x <= max_x + 4*bin_width	) ||
-				!(config.min_x <= min_x && config.min_x >= min_x - 4*bin_width	) ) {
-			PlotConfig new_config = PlotConfig(config);
-			new_config.min_x = min_x-bin_width;
-			new_config.max_x = max_x+bin_width;
-			if (!frequency)
-				new_config.max_y = 1.1*max_y;
-			else
-				new_config.max_y = 1.1;
-
-			reset( new_config );
-		} else {
-			clear();
-		}
-
-		for (size_t i=0; i<no_bins; ++i) {
-			double height = bins_y[i];
-			if (frequency && data.size()>0)
-				height/=data.size();
-			line_add( min_x+i*bin_width, 0, -1, Color::black() );
-			line_add( min_x+i*bin_width, height, -1, Color::black() );
-			line_add( min_x+(i+1)*bin_width, height, -1, Color::black() );
-			line_add( min_x+(i+1)*bin_width, 0, -1, Color::black() );
 		}
 		display();
 	}

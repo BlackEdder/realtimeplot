@@ -309,27 +309,18 @@ namespace realtimeplot {
 			BackendHistogram( PlotConfig config, bool frequency, size_t no_bins, 
 					boost::shared_ptr<EventHandler> pEventHandler );
 
-			//! Creates a histogram with a set min_x and max_x
-			BackendHistogram( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler,
-					double min_x, double max_x, size_t no_bins );
-
 			double bin_width2();
 			double min();
 			double max();
 
+			/**
+			 * \brief Add a new measurement/data
+			 */
 			void add_data( double data );
 
 			void rebin_data();
 
-			/**
-			 * \brief Add a new measurement/data
-			 *
-			 * Might be usefull to only set show true sometimes, since it can be costly to
-			 * replot every time.
-			 */
-			void add_data( double data, bool show, bool frequency, size_t no_bins, bool frozen_bins_x );
 			void plot();
-			void plot2();
 		private:
 			bool frozen_bins_x;
 			bool min_max_initialized;
