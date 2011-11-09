@@ -212,115 +212,8 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_DELTA( bh.config.max_x, 5, 1e-4 );
 		}
 
-		void xtestHistogramFixed() {
-			conf.area = 500*500;
-			conf.fixed_plot_area = true;
-			BackendHistogram bh = BackendHistogram( conf, true, 20,
-					boost::shared_ptr<EventHandler>() );
-			TS_ASSERT_EQUALS( bh.frequency, true );
-			TS_ASSERT_EQUALS( bh.no_bins, 20 );
-			TS_ASSERT_EQUALS( bh.rebin, false );
-			TS_ASSERT_EQUALS( bh.config.min_y, 0 );
-			TS_ASSERT_DELTA( bh.config.max_y, 1.2, 1e-5 );
-			TS_ASSERT_EQUALS( bh.bin_width, 0.5 );
-			TS_ASSERT_EQUALS( bh.bins_y.size(), 20 );
-		}
-
-		void xtestHistogramFixedAddData() {
-			conf.area = 500*500;
-			conf.fixed_plot_area = true;
-			BackendHistogram bh = BackendHistogram( conf, true, 20,
-					boost::shared_ptr<EventHandler>() );
-
-			bh.add_data( 0.1 );
-			TS_ASSERT_EQUALS( bh.data.size(), 1 );
-			TS_ASSERT_EQUALS( bh.data[0], 0.1 );
-			TS_ASSERT_EQUALS( bh.bins_y[10], 1 );
-			TS_ASSERT_EQUALS( bh.rebin, false );
-			bh.add_data( 6 );
-			TS_ASSERT_EQUALS( bh.data.size(), 2 );
-			TS_ASSERT_EQUALS( bh.data[1], 6 );
-			TS_ASSERT_EQUALS( bh.bins_y[19], 0 );
-			TS_ASSERT_EQUALS( bh.rebin, false );
-		}
-	
-		void xtestHistogramAdjust() {
-			conf.area = 500*500;
-			conf.fixed_plot_area = false;
-			BackendHistogram bh = BackendHistogram( conf, true, 20,
-					boost::shared_ptr<EventHandler>() );
-			TS_ASSERT_EQUALS( bh.frequency, true );
-			TS_ASSERT_EQUALS( bh.no_bins, 20 );
-			TS_ASSERT_EQUALS( bh.rebin, true );
-			TS_ASSERT_EQUALS( bh.config.min_y, 0 );
-			TS_ASSERT_DELTA( bh.config.max_y, 1.2, 1e-5 );
-			TS_ASSERT_EQUALS( bh.config.min_x, 0 );
-			TS_ASSERT_EQUALS( bh.config.max_x, 1 );
-			TS_ASSERT_DELTA( bh.bin_width, 0.05, 1e-4 );
-			TS_ASSERT_EQUALS( bh.bins_y.size(), 20 );
-		}
-
-		void xtestHistogramAdjustAddData() {
-			conf.area = 500*500;
-			conf.fixed_plot_area = false;
-			BackendHistogram bh = BackendHistogram( conf, false, 3,
-					boost::shared_ptr<EventHandler>() );
-
-			bh.add_data( -1.2 );
-			TS_ASSERT_EQUALS( bh.rebin, true );
-			TS_ASSERT_EQUALS( bh.data.size(), 1 );
-			TS_ASSERT_DELTA( bh.config.min_x, -1.7, 1e-3 );
-			TS_ASSERT_DELTA( bh.config.max_x, -0.7, 1e-3 );
-			TS_ASSERT_DELTA( bh.bin_width, 0.333333, 1e-3 );
-
-			bh.add_data( -1.2 );
-			TS_ASSERT_EQUALS( bh.rebin, true );
-			TS_ASSERT_EQUALS( bh.data.size(), 2 );
-			TS_ASSERT_DELTA( bh.config.min_x, -1.7, 1e-3 );
-			TS_ASSERT_DELTA( bh.config.max_x, -0.7, 1e-3 );
-			TS_ASSERT_DELTA( bh.bin_width, 0.333333, 1e-3 );
-
-			bh.add_data( 0.8 );
-			TS_ASSERT_EQUALS( bh.rebin, true );
-			TS_ASSERT_EQUALS( bh.data.size(), 3 );
-			TS_ASSERT_DELTA( bh.config.min_x, -1.4, 1e-3 );
-			TS_ASSERT_DELTA( bh.config.max_x, 1, 1e-3 );
-			TS_ASSERT_DELTA( bh.bin_width, 0.333333, 1e-3 );
-
-			bh.add_data( -1.2 );
-			TS_ASSERT_EQUALS( bh.rebin, true );
-			TS_ASSERT_EQUALS( bh.data.size(), 4 );
-			TS_ASSERT_DELTA( bh.config.min_x, -1.4, 1e-3 );
-			TS_ASSERT_DELTA( bh.config.max_x, 1, 1e-3 );
-			TS_ASSERT_DELTA( bh.bin_width, 0.333333, 1e-3 );
-
-			bh.rebin_data();
-			TS_ASSERT_EQUALS( bh.rebin, false );
-			TS_ASSERT_DELTA( bh.bin_width, 2.4/3, 1e-3 );
-			TS_ASSERT_EQUALS( bh.bins_y[0], 3 );
-			TS_ASSERT_EQUALS( bh.bins_y[1], 0 );
-			TS_ASSERT_EQUALS( bh.bins_y[2], 1 );
-			TS_ASSERT_DELTA( bh.config.max_y, 1.2*3, 1e-3 );
-
-			bh.add_data( 0.7 );
-			TS_ASSERT_EQUALS( bh.bins_y[2], 2 );
-			TS_ASSERT_EQUALS( bh.rebin, false );
-			bh.add_data( 0.7 );
-			bh.add_data( 0.7 );
-			TS_ASSERT_DELTA( bh.config.max_y, 1.2*4, 1e-3 );
-
-			bh.add_data( 1.1 );
-			TS_ASSERT_EQUALS( bh.rebin, true );
-			TS_ASSERT_DELTA( -1.4, bh.config.min_x, 1e-3 );
-			double max_x = 1.1+(1.1+1.4)/10.0;
-			TS_ASSERT_DELTA( max_x, bh.config.max_x, 1e-3 );
-			bh.add_data( -1.5 );
-			TS_ASSERT_DELTA( max_x, bh.config.max_x, 1e-3 );
-			TS_ASSERT_DELTA( -1.5-(max_x+1.5)/10, bh.config.min_x, 1e-3 );
-		}
-
-		void xtestHistogramPlotFixed() {
-			conf.area = 500*500;
+		void testHistogramPlotFixed() {
+			//conf.area = 500*500;
 			conf.min_y = 0;
 			conf.min_x = 0;
 			conf.max_x = 5;
@@ -350,8 +243,8 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "bh_fixed_data3" ) );
 		}
 
-		void xtestHistogramPlotAdjust() {
-			conf.area = 500*500;
+		void testHistogramPlotAdjust() {
+			//conf.area = 500*500;
 			conf.min_y = 0;
 			conf.min_x = 0;
 			conf.max_x = 5;

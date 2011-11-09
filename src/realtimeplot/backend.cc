@@ -522,8 +522,7 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::rebin_data() {
-		bin_width = ( config.max_x-config.min_x )/no_bins;
-		bins_y = utils::calculate_bins( config.min_x, config.max_x, no_bins, data );
+		bins_y = utils::calculate_bins( min(), max(), no_bins, data );
 
 		if (!frequency) {
 			for (size_t i=0; i<no_bins; ++i) {
@@ -535,23 +534,25 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::plot2() {
-		std::cout << "Bla1: " << config.min_x << " " << config.max_x << std::endl;
+		double width = bin_width2();
 		if (rebin) {
 			rebin_data();
 		}
+		if (!config.fixed_plot_area) {
+			config.min_x = min() - 0.5*width;
+			config.max_x = max() + 0.5*width;
+		}
 		reset( config );
-		std::cout << "Bla2: " << config.min_x << " " << config.max_x << std::endl;
 		for (size_t i=0; i<no_bins; ++i) {
 			double height = bins_y[i];
 			if (frequency && data.size()>0)
 				height/=data.size();
-			line_add( config.min_x+i*bin_width, 0, -1, Color::black() );
-			line_add( config.min_x+i*bin_width, height, -1, Color::black() );
-			line_add( config.min_x+(i+1)*bin_width, height, -1, Color::black() );
-			line_add( config.min_x+(i+1)*bin_width, 0, -1, Color::black() );
+			line_add( min()+i*width, 0, -1, Color::black() );
+			line_add( min()+i*width, height, -1, Color::black() );
+			line_add( min()+(i+1)*width, height, -1, Color::black() );
+			line_add( min()+(i+1)*width, 0, -1, Color::black() );
 		}
 		display();
-		std::cout << "Bla3: " << config.min_x << " " << config.max_x << std::endl;
 	}
 
 	void BackendHistogram::add_data( double new_data, bool show, 
