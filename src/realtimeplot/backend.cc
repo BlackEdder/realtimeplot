@@ -51,14 +51,14 @@ namespace realtimeplot {
 		pDisplayHandler = DummyHandler::Instance();
 		config.display = false;
 #endif
-	
+
 		pPlotArea = boost::shared_ptr<PlotArea> (new PlotArea( config ));
 
 		//create_xlib_window
 		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
 		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.bottom_margin;
 		win = pDisplayHandler->open_window(x_surface_width, x_surface_height,
-			 pEventHandler);
+				pEventHandler);
 		// Set the title
 		pDisplayHandler->set_title( win, config.title );
 
@@ -72,7 +72,7 @@ namespace realtimeplot {
 		pAxesArea = boost::shared_ptr<AxesArea>( new AxesArea() );
 		global_mutex.unlock();
 		draw_axes_surface();
-		
+
 		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
 			boost::posix_time::microseconds(500000);
 
@@ -128,7 +128,9 @@ namespace realtimeplot {
 
 	void BackendPlot::reset( PlotConfig conf ) {
 		config = conf;
+		global_mutex.lock();
 		pPlotArea->setup( conf );
+		global_mutex.unlock();
 		set_foreground_color();
 
 		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
@@ -139,7 +141,7 @@ namespace realtimeplot {
 
 		//draw initial axes etc
 		draw_axes_surface();
-		
+
 		time_of_last_update = boost::posix_time::microsec_clock::local_time() - 
 			boost::posix_time::microseconds(500000);
 
@@ -238,6 +240,7 @@ namespace realtimeplot {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);
 		}
+		global_mutex.lock();
 		pPlotArea->transform_to_plot_units(); 
 		Glib::RefPtr<Pango::Layout> pango_layout = Pango::Layout::create(
 				pPlotArea->context);
@@ -254,6 +257,7 @@ namespace realtimeplot {
 		//pango_layout->add_to_cairo_context(plot_context); //adds text to cairos stack of stuff to be drawn
 		pango_layout->show_in_cairo_context( pPlotArea->context );
 
+		global_mutex.unlock();
 		display();
 	}
 
@@ -324,11 +328,12 @@ namespace realtimeplot {
 	 * directly onto xlibsurface
 	 */
 	Cairo::RefPtr<Cairo::ImageSurface> BackendPlot::create_temporary_surface() {
+		global_mutex.lock();
 		Cairo::RefPtr<Cairo::ImageSurface> surface = 
 			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 
 					pAxesArea->width, pAxesArea->height );
 		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create( surface );
-	
+
 		double x = pPlotArea->min_x;
 		double y = pPlotArea->max_y;
 		pAxesArea->transform_to_plot_units();
@@ -350,6 +355,7 @@ namespace realtimeplot {
 		context->restore();
 		context->set_source( pAxesArea->surface, 0, 0 );
 		context->paint();
+		global_mutex.unlock();
 		return surface;
 	}
 
@@ -380,7 +386,7 @@ namespace realtimeplot {
 		draw_axes_surface();
 		display();
 	}
-	
+
 	void BackendPlot::zoom( double scale ) {
 		double xrange = config.max_x-config.min_x;
 		double xshift = (scale-1)*xrange/2.0;;
@@ -544,9 +550,9 @@ namespace realtimeplot {
 
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler ) : 
-				BackendPlot( cfg, pEventHandler ),
-				zmin( 0 ), zmax( 0 ),
-				delaunay( delaunay::Delaunay( config.min_x, 
+		BackendPlot( cfg, pEventHandler ),
+		zmin( 0 ), zmax( 0 ),
+		delaunay( delaunay::Delaunay( config.min_x, 
 					config.max_x, config.min_y, config.max_y ) )
 	{}
 
@@ -583,7 +589,7 @@ namespace realtimeplot {
 			if (!part_of_super) {
 				Triangle3D tr = Triangle3D( delaunay.triangles[i] );
 				std::vector<boost::shared_ptr<Vertex3D> > v = tr.gradientVector();
-				
+
 				double x0 = v[0]->x;
 				double y0 = v[0]->y;
 				double x1 = v[1]->x;
@@ -591,7 +597,7 @@ namespace realtimeplot {
 				//plot_context->user_to_device( x0, y0 );
 				//plot_context->user_to_device( x1, y1 );
 
-		    Cairo::RefPtr< Cairo::LinearGradient > pGradient = Cairo::LinearGradient::create(
+				Cairo::RefPtr< Cairo::LinearGradient > pGradient = Cairo::LinearGradient::create(
 						x0, y0, x1, y1 );
 
 				Color shade = colorMap( v[0]->z );
@@ -609,7 +615,7 @@ namespace realtimeplot {
 				pPlotArea->context->fill_preserve();
 				pPlotArea->context->stroke();
 				//line_add( delaunay.triangles[i]->corners[0]->vertex->x,
-						//delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
+				//delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
 			}
 		}
 		pause_display = false;
@@ -632,7 +638,7 @@ namespace realtimeplot {
 						delaunay.vertices[i] )->z-zmin)/dz;
 			if (fraction >= 0 && fraction <= 1)
 				mean += (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
-						delaunay.vertices[i] )->z-zmin)/dz; 
+							delaunay.vertices[i] )->z-zmin)/dz; 
 			else
 				--dim;
 		}
@@ -643,11 +649,11 @@ namespace realtimeplot {
 						delaunay.vertices[i] )->z-zmin)/dz;
 			if (fraction >= 0 && fraction <= 1)
 				v += pow((boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
-						delaunay.vertices[i] )->z-zmin)/dz-mean,2); 
+								delaunay.vertices[i] )->z-zmin)/dz-mean,2); 
 		}
 		v /= dim;
 		color_map.calculate_height_scaling( mean, v );
-	
+
 		if (delaunay.vertices.size()>=3)
 			plot();
 	}
