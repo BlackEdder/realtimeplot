@@ -514,6 +514,7 @@ namespace realtimeplot {
 	void BackendHistogram::rebin_data() {
 		bins_y = utils::calculate_bins( min(), max(), no_bins, data );
 
+		config.max_y = 1.2;
 		if (!frequency) {
 			for (size_t i=0; i<no_bins; ++i) {
 				if (bins_y[i] > config.max_y)
@@ -534,17 +535,25 @@ namespace realtimeplot {
 		double width, tmp_min;
 		std::vector<size_t> range;
 		do {
-			range = utils::range_of_bins_covering( 0.8, bins_y );
+			range = utils::range_of_bins_covering( 0.95, bins_y );
 			width = bin_width();
 			tmp_min = min();
 			config.min_x = tmp_min+range.front()*width;
-			if (config.min_x < data_min) 
-				config.min_x = data_min - 0.5*width;
 			config.max_x = tmp_min+(range.back()+1)*width;
-			if (config.max_x > data_max) 
-				config.max_x = data_max + 0.5*width;
 			bins_y = utils::calculate_bins( min(), max(), no_bins, data );
 		} while (range.size()<2);
+		
+		if (config.min_x < data_min) {
+			double x = 0.1; // max-x*bin_width = data_max
+			config.min_x = (data_min*x+config.max_x*x-data_min*no_bins)/(2*x-no_bins);
+			bins_y = utils::calculate_bins( min(), max(), no_bins, data );
+		}
+		if (config.max_x > data_max ) {
+			double x = 0.1; // max-x*bin_width = data_max
+			config.max_x = (config.min_x*x+data_max*x-data_max*no_bins)/(2*x-no_bins);
+			bins_y = utils::calculate_bins( min(), max(), no_bins, data );
+		}
+		config.max_y = 1.2;
 		if (!frequency) {
 			for (size_t i=0; i<no_bins; ++i) {
 				if (bins_y[i] > config.max_y)
