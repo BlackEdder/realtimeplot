@@ -489,14 +489,7 @@ namespace realtimeplot {
 
 	void BackendHistogram::add_data( double new_data ) {
 		data.push_back( new_data );
-		if (config.fixed_plot_area) {
-			if (new_data>=config.min_x && new_data<config.max_x) {
-				size_t id = utils::bin_id(config.min_x, bin_width(), new_data);
-				++bins_y[id];
-				if (!frequency && bins_y[id]>config.max_y)
-					config.max_y = bins_y[id]*1.2;
-			}
-		} else if (data.size() == 1) {
+		if (data.size() == 1) {
 			data_min = data[0];
 			data_max = data_min;
 			rebin = true;
@@ -506,7 +499,11 @@ namespace realtimeplot {
 		} else if (new_data>data_max) {
 			data_max = new_data;
 			rebin = true;
-		} else if (!rebin) {
+		} 
+		
+		if (config.fixed_plot_area)
+			rebin = false;
+		if (!rebin && new_data>=config.min_x && new_data<config.max_x) {
 			size_t id = utils::bin_id(min(), bin_width(), new_data);
 			++bins_y[id];
 			if (!frequency && bins_y[id]>config.max_y)
