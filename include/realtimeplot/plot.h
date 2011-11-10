@@ -300,6 +300,15 @@ namespace realtimeplot {
 			 * \brief (Re) Plot the data
 			 */
 			void plot();
+
+			/**
+			 * \brief Optimize bounds based on current added data
+			 *
+			 * Tries to calculate min_x, max_x to capture most data, while ingnoring
+			 * outliers.
+			 * Should probably only be called after most/all data is added.
+			 */
+			void optimize_bounds();
 	};
 
 	/**

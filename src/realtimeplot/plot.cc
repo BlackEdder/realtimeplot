@@ -376,6 +376,11 @@ namespace realtimeplot {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new HistPlotEvent() ) );
 	}
 
+	void Histogram::optimize_bounds() {
+		pEventHandler->add_event( boost::shared_ptr<Event>( new HistOptimizeEvent() ) );
+	}
+
+
 	/*
 	 * SurfacePlot
 	 */

@@ -523,6 +523,32 @@ namespace realtimeplot {
 		rebin = false;
 	}
 
+	void BackendHistogram::optimize_bounds() {
+		std::cout << min() << " " << max() << std::endl;
+		config.fixed_plot_area = true;
+		// Calculate mean and var
+		double mean = 0;
+		double var = 0;
+		for (size_t i=0; i<data.size(); ++i) {
+			mean += data[i];
+			var += pow(data[i],2);
+		}
+		mean /= data.size();
+		var /= data.size();
+		var = var - pow(mean,2);
+		config.max_x = mean + 3*sqrt(var);
+		config.min_x = mean - 3*sqrt(var);
+		if (config.min_x < data_min)
+			config.min_x = data_min - sqrt(var)/10;
+		if (config.max_x > data_max)
+			config.max_x = data_max + sqrt(var)/10;
+		rebin_data();
+		reset(config);
+		std::cout << data_min << " " << data_max << std::endl;
+		std::cout << config.min_x << " " << config.max_x << std::endl;
+		rebin = false;
+	}
+
 	void BackendHistogram::plot() {
 		double width = bin_width();
 		if (rebin) {

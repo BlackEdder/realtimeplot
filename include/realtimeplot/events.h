@@ -300,6 +300,15 @@ namespace realtimeplot {
 				double new_data;
 		};
 
+		class HistOptimizeEvent : public Event {
+			public:
+				HistOptimizeEvent() {};
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					boost::static_pointer_cast<BackendHistogram, 
+						BackendPlot>(pBPlot)->optimize_bounds();
+				}
+		};
+
 		class HistPlotEvent : public Event {
 			public:
 				HistPlotEvent() {};
