@@ -503,7 +503,7 @@ namespace realtimeplot {
 		
 		if (config.fixed_plot_area)
 			rebin = false;
-		if (!rebin && new_data>=config.min_x && new_data<config.max_x) {
+		if (!rebin && new_data>=min() && new_data<max()) {
 			size_t id = utils::bin_id(min(), bin_width(), new_data);
 			++bins_y[id];
 			if (!frequency && bins_y[id]>config.max_y)
