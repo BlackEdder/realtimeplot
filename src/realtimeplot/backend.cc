@@ -524,7 +524,7 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::optimize_bounds() {
-		std::cout << min() << " " << max() << std::endl;
+		std::cout << "min() " << min() << " " << max() << std::endl;
 		config.fixed_plot_area = true;
 		// Calculate mean and var
 		double mean = 0;
@@ -544,8 +544,10 @@ namespace realtimeplot {
 			config.max_x = data_max + sqrt(var)/10;
 		rebin_data();
 		reset(config);
-		std::cout << data_min << " " << data_max << std::endl;
-		std::cout << config.min_x << " " << config.max_x << std::endl;
+		std::cout << "data_min " << 
+			data_min << " " << data_max << std::endl;
+		std::cout << "config.min_x " << 
+			config.min_x << " " << config.max_x << std::endl;
 		rebin = false;
 	}
 

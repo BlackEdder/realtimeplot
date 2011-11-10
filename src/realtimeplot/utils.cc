@@ -40,6 +40,51 @@ namespace realtimeplot {
 			return (data-min_x)/bin_width;
 		}
 
+		std::vector<size_t> range_of_bins_covering( double percentage,
+				std::vector<double> bins ) {
+			std::vector<size_t> range;
+			double total_covered = 0;
+			double sum = 0;
+			size_t max_id = 0;
+			// Find biggest bin and calculate sum;
+			for( size_t i=0; i<bins.size(); ++i ) {
+				if (bins[i]>bins[max_id]) {
+					max_id = i; 
+				}
+				sum += bins[i];
+			}
+
+			if (sum == 0) {
+				range.push_back( 0 );
+				range.push_back( bins.size()-1 );
+				return range;
+			}
+
+			total_covered = bins[max_id]/sum;
+			size_t count = 1;
+			size_t first = max_id; size_t last = max_id;
+			while (total_covered < percentage) {
+				if (max_id>count) {
+					total_covered += bins[max_id-count]/sum;
+					first = max_id - count;
+
+				}
+				if (max_id+count < bins.size()) {
+					total_covered += bins[max_id+count]/sum;
+					last = max_id + count;
+				}
+				++count;
+			}
+
+			if (first == last)
+				range.push_back( first );
+			else {
+				range.push_back( first );
+				range.push_back( last );
+			}
+			return range;
+		}
+
 		std::string stringify(double x)
 		{
 			std::ostringstream o;

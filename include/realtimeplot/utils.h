@@ -44,6 +44,15 @@ namespace realtimeplot {
 		size_t bin_id( double min_x, double bin_width, double data );
 
 		/**
+		 * \brief Return a minimal range of bins that together cover at least the given percentage of data
+		 * 
+		 * Will start around the  bin that currently has most data in it.
+		 *
+		 */
+		std::vector<size_t> range_of_bins_covering( double percentage,
+				std::vector<double> bins );
+
+		/**
 			\brief Util function to turn doubles into strings
 			*/
 		std::string stringify(double x);
