@@ -524,31 +524,33 @@ namespace realtimeplot {
 	}
 
 	void BackendHistogram::optimize_bounds() {
-		std::cout << "min() " << min() << " " << max() << std::endl;
-		config.fixed_plot_area = true;
-		// Calculate mean and var
-		double mean = 0;
-		double var = 0;
-		for (size_t i=0; i<data.size(); ++i) {
-			mean += data[i];
-			var += pow(data[i],2);
-		}
-		mean /= data.size();
-		var /= data.size();
-		var = var - pow(mean,2);
-		config.max_x = mean + 3*sqrt(var);
-		config.min_x = mean - 3*sqrt(var);
-		if (config.min_x < data_min)
-			config.min_x = data_min - sqrt(var)/10;
-		if (config.max_x > data_max)
-			config.max_x = data_max + sqrt(var)/10;
+		//Start fresh
+		config.fixed_plot_area = false;
 		rebin_data();
-		reset(config);
-		std::cout << "data_min " << 
-			data_min << " " << data_max << std::endl;
-		std::cout << "config.min_x " << 
-			config.min_x << " " << config.max_x << std::endl;
-		rebin = false;
+		config.min_x = min();
+		config.max_x = max();
+		config.fixed_plot_area = true;
+
+		double width, tmp_min;
+		std::vector<size_t> range;
+		do {
+			range = utils::range_of_bins_covering( 0.8, bins_y );
+			width = bin_width();
+			tmp_min = min();
+			config.min_x = tmp_min+range.front()*width;
+			if (config.min_x < data_min) 
+				config.min_x = data_min - 0.5*width;
+			config.max_x = tmp_min+(range.back()+1)*width;
+			if (config.max_x > data_max) 
+				config.max_x = data_max + 0.5*width;
+			bins_y = utils::calculate_bins( min(), max(), no_bins, data );
+		} while (range.size()<2);
+		if (!frequency) {
+			for (size_t i=0; i<no_bins; ++i) {
+				if (bins_y[i] > config.max_y)
+					config.max_y = 1.2*bins_y[i];
+			}
+		}
 	}
 
 	void BackendHistogram::plot() {
