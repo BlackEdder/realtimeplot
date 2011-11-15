@@ -69,7 +69,7 @@ namespace realtimeplot {
     }
 
     void SetColorEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
-        pBPlot->set_color( color );
+        pBPlot->pPlotArea->set_color( color );
     }
 
 	PointEvent::PointEvent( float x, float y ) {
@@ -92,13 +92,13 @@ namespace realtimeplot {
 
 	RectangleEvent::RectangleEvent( float min_x, float min_y, float width_x, float width_y )
 		: min_x( min_x ),
-			min_y( min_y ),
-			width_x( width_x ),
-			width_y( width_y )
+		min_y( min_y ),
+		width_x( width_x ),
+		width_y( width_y )
 	{}
 
 	void RectangleEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
-		pBPlot->rectangle( min_x, min_y, width_x, width_y );
+		pBPlot->pPlotArea->rectangle( min_x, min_y, width_x, width_y, true );
 	}
 
 

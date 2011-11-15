@@ -254,11 +254,11 @@ namespace realtimeplot {
 
 	void Plot::rectangle( float min_x, float min_y, float width_x, float width_y,
 			bool fill, Color color ) {
-		std::vector<boost::shared_ptr<Event> > events(3);
+		std::vector<boost::shared_ptr<Event> > events(2);
 		events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
 		events[1] = boost::shared_ptr<Event>( new RectangleEvent( 
 					min_x, min_y, width_x, width_y ) );
-		events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
+		//events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
 		pEventHandler->add_event( 
 				boost::shared_ptr<Event>( new MultipleEvents( events ) ));
 	}
@@ -437,7 +437,6 @@ namespace realtimeplot {
 				float shade = 1-double(data[i*resolution+j])/max_z;
 				Color color = Color( shade, shade, shade, 1 );
 				rectangle( bins_x[i], bins_y[j], width_x, width_y, true, color );
-
 			}
 		}
 	}
