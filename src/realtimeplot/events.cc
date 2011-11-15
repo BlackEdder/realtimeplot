@@ -90,15 +90,18 @@ namespace realtimeplot {
 	}
 
 
-	RectangleEvent::RectangleEvent( float min_x, float min_y, float width_x, float width_y )
+	RectangleEvent::RectangleEvent( float min_x, float min_y, float width_x, 
+			float width_y, bool fill, Color color )
 		: min_x( min_x ),
 		min_y( min_y ),
 		width_x( width_x ),
-		width_y( width_y )
+		width_y( width_y ),
+		fill( fill),
+		color( color )
 	{}
 
 	void RectangleEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
-		pBPlot->pPlotArea->rectangle( min_x, min_y, width_x, width_y, true );
+		pBPlot->rectangle( min_x, min_y, width_x, width_y, fill, color );
 	}
 
 

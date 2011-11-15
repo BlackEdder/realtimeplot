@@ -170,10 +170,13 @@ namespace realtimeplot {
 
     class RectangleEvent : public Event {
         public:
-            RectangleEvent( float min_x, float min_y, float width_x, float width_y );
+            RectangleEvent( float min_x, float min_y, float width_x, float width_y,
+								bool fill, Color color );
             virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
         private:
 						float min_x, min_y, width_x, width_y;
+						bool fill;
+						Color color;
     };
 
  		/**

@@ -254,13 +254,14 @@ namespace realtimeplot {
 
 	void Plot::rectangle( float min_x, float min_y, float width_x, float width_y,
 			bool fill, Color color ) {
-		std::vector<boost::shared_ptr<Event> > events(2);
-		events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
-		events[1] = boost::shared_ptr<Event>( new RectangleEvent( 
-					min_x, min_y, width_x, width_y ) );
+		//std::vector<boost::shared_ptr<Event> > events(2);
+		//events[0] = boost::shared_ptr<Event>( new SetColorEvent( color ) );
+		//events[1] = boost::shared_ptr<Event>( new RectangleEvent( 
+		//			min_x, min_y, width_x, width_y ) );
 		//events[2] = boost::shared_ptr<Event>( new RestoreEvent() );
 		pEventHandler->add_event( 
-				boost::shared_ptr<Event>( new MultipleEvents( events ) ));
+				boost::shared_ptr<Event>( new RectangleEvent( min_x, min_y, width_x, width_y,
+						fill, color ) ));
 	}
 
 	/*void Plot::line_add( float x, float y, int id ) {
