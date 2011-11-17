@@ -524,7 +524,7 @@ namespace realtimeplot {
 		rebin = false;
 	}
 
-	void BackendHistogram::optimize_bounds() {
+	void BackendHistogram::optimize_bounds( double proportion ) {
 		//Start fresh
 		config.fixed_plot_area = false;
 		rebin_data();
@@ -535,7 +535,7 @@ namespace realtimeplot {
 		double width, tmp_min;
 		std::vector<size_t> range;
 		do {
-			range = utils::range_of_bins_covering( 0.95, bins_y );
+			range = utils::range_of_bins_covering( proportion, bins_y );
 			width = bin_width();
 			tmp_min = min();
 			config.min_x = tmp_min+range.front()*width;

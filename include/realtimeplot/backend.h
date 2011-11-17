@@ -323,7 +323,7 @@ namespace realtimeplot {
 			 * outliers.
 			 * Should probably only be called after most/all data is added.
 			 */
-			void optimize_bounds();
+			void optimize_bounds( double proportion );
 
 			void rebin_data();
 
