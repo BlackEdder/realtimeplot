@@ -584,6 +584,22 @@ namespace realtimeplot {
 		display();
 	}
 
+	/*
+	 * Histogram3D
+	 */
+	BackendHistogram3D::BackendHistogram3D( PlotConfig cfg, 
+			boost::shared_ptr<EventHandler> pEventHandler ) : 
+		BackendPlot( cfg, pEventHandler ) {
+		}
+	
+	size_t BackendHistogram3D::xytoindex( size_t x, size_t y ) {
+		return x*resolution_y + y;
+	}
+
+	/*
+	 * HeightMap
+	 */
+
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler ) : 
 		BackendPlot( cfg, pEventHandler ),

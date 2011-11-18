@@ -278,6 +278,18 @@ class TestBackend : public CxxTest::TestSuite
 		 * Histogram3d
 		 */
 
+		void testHistogram3DSimple() {
+		}
+
+		void testHistogram3Dxytoindex() {
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.resolution_x = 10;
+			bh3d.resolution_y = 15;
+			TS_ASSERT_EQUALS( bh3d.xytoindex( 5, 5 ), 5*15+5 );
+			TS_ASSERT_EQUALS( bh3d.xytoindex( 9, 14 ), 149 );
+		}
+
 		/*
 		 * HeightMap
 		 */

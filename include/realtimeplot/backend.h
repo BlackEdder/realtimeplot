@@ -330,7 +330,28 @@ namespace realtimeplot {
 			void plot();
 		};
 
+	/**
+	 * \brief Provides backend functions for Histogram3D plots
+	 */
 
+	class BackendHistogram3D : public BackendPlot {
+		public:
+			size_t resolution_x, resolution_y;
+			std::vector<double> data;
+
+			BackendHistogram3D(PlotConfig cfg, 
+				boost::shared_ptr<EventHandler> pEventHandler);
+
+			/**
+			 * \brief Return the array index associated with x index and y index
+			 */
+			size_t xytoindex( size_t x, size_t y );
+
+			/**
+			 * \brief Return x and y index associated with data index
+			 */
+			std::vector<size_t> indextoxy();
+	};
 
 	/**
 	 * \brief Provides backend functions specific for HeightMap plots
