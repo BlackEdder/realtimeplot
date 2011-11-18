@@ -350,7 +350,7 @@ namespace realtimeplot {
 			/**
 			 * \brief Return x and y index associated with data index
 			 */
-			std::vector<size_t> indextoxy();
+			std::vector<size_t> indextoxy( size_t index );
 	};
 
 	/**

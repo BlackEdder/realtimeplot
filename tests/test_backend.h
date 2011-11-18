@@ -290,6 +290,18 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bh3d.xytoindex( 9, 14 ), 149 );
 		}
 
+		void testHistogram3Dindextoxy() {
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.resolution_x = 10;
+			bh3d.resolution_y = 15;
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 5*15+5 )[0], 5  );
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 5*15+5 )[1], 5  );
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 149 )[0], 9  );
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 149 )[1], 14  );
+		}
+
+
 		/*
 		 * HeightMap
 		 */

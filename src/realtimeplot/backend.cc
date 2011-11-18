@@ -596,6 +596,12 @@ namespace realtimeplot {
 		return x*resolution_y + y;
 	}
 
+	std::vector<size_t> BackendHistogram3D::indextoxy( size_t index ) {
+		std::vector<size_t> xy(2);
+		xy[1] = index%resolution_y;
+		xy[0] = (index-xy[1])/resolution_y;
+		return xy;
+	}
 	/*
 	 * HeightMap
 	 */
