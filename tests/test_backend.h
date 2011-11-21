@@ -25,6 +25,7 @@
 #include "testhelpers.h"
 
 #include "realtimeplot/backend.h"
+#include "realtimeplot/utils.h"
 
 using namespace realtimeplot;
 
@@ -301,7 +302,23 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bh3d.indextoxy( 149 )[1], 14  );
 		}
 
-
+		void testHistogramRebinData() {
+			conf.fixed_plot_area = true;
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.no_bins_x = 10;
+			bh3d.no_bins_y = 10;
+			delaunay::Vertex v = delaunay::Vertex( 0, 0 );
+			bh3d.data.push_back( v );
+			TS_ASSERT_EQUALS( utils::bin_id( bh3d.min_x(), bh3d.bin_width_x(), 
+						0), 5 );
+			bh3d.rebin_data();
+			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 1 );
+			bh3d.data.push_back( v );
+			bh3d.rebin_data();
+			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 2 );
+		}
+	
 		/*
 		 * HeightMap
 		 */

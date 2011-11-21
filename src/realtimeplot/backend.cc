@@ -589,7 +589,9 @@ namespace realtimeplot {
 	 */
 	BackendHistogram3D::BackendHistogram3D( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler ) : 
-		BackendPlot( cfg, pEventHandler ) {
+		BackendPlot( cfg, pEventHandler ),
+		data( std::vector<delaunay::Vertex>() )
+ 		{
 		}
 	
 	size_t BackendHistogram3D::xytoindex( size_t x, size_t y ) {
@@ -658,6 +660,23 @@ namespace realtimeplot {
 		} else
 			return data_min_y + 0.5;
 	}
+
+	void BackendHistogram3D::rebin_data() {
+		max_z = 1;
+		//bins_xy.clear();
+		bins_xy = std::vector<size_t>( no_bins_x*no_bins_y );
+		for (size_t i = 0; i<data.size(); ++i) {
+			size_t x_index = utils::bin_id( min_x(), bin_width_x(), data[i].x ); 
+			size_t y_index = utils::bin_id( min_y(), bin_width_y(), data[i].y ); 
+			size_t index = xytoindex( x_index, y_index );
+			++bins_xy[ index ];
+			if (!frequency && max_z < bins_xy[index])
+				max_z = bins_xy[index];
+		}
+
+		rebin = false;
+	}
+
 	/*
 	 * HeightMap
 	 */

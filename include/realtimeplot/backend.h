@@ -337,9 +337,14 @@ namespace realtimeplot {
 	class BackendHistogram3D : public BackendPlot {
 		public:
 			size_t no_bins_x, no_bins_y;
-			std::vector<double> data;
+			std::vector<delaunay::Vertex> data;
 
 			double data_min_x, data_min_y, data_max_x, data_max_y;
+			double max_z;
+
+			bool frequency, rebin;
+
+			std::vector<size_t> bins_xy;
 
 			BackendHistogram3D(PlotConfig cfg, 
 				boost::shared_ptr<EventHandler> pEventHandler);
@@ -356,10 +361,14 @@ namespace realtimeplot {
 
 			double bin_width_x();
 			double bin_width_y();
+
 			double min_x();
 			double min_y();
+
 			double max_x();
 			double max_y();
+
+			void rebin_data();
 	};
 
 	/**
