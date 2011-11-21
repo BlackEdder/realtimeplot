@@ -336,8 +336,10 @@ namespace realtimeplot {
 
 	class BackendHistogram3D : public BackendPlot {
 		public:
-			size_t resolution_x, resolution_y;
+			size_t no_bins_x, no_bins_y;
 			std::vector<double> data;
+
+			double data_min_x, data_min_y, data_max_x, data_max_y;
 
 			BackendHistogram3D(PlotConfig cfg, 
 				boost::shared_ptr<EventHandler> pEventHandler);
@@ -351,6 +353,13 @@ namespace realtimeplot {
 			 * \brief Return x and y index associated with data index
 			 */
 			std::vector<size_t> indextoxy( size_t index );
+
+			double bin_width_x();
+			double bin_width_y();
+			double min_x();
+			double min_y();
+			double max_x();
+			double max_y();
 	};
 
 	/**

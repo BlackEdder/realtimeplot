@@ -593,14 +593,70 @@ namespace realtimeplot {
 		}
 	
 	size_t BackendHistogram3D::xytoindex( size_t x, size_t y ) {
-		return x*resolution_y + y;
+		return x*no_bins_y + y;
 	}
 
 	std::vector<size_t> BackendHistogram3D::indextoxy( size_t index ) {
 		std::vector<size_t> xy(2);
-		xy[1] = index%resolution_y;
-		xy[0] = (index-xy[1])/resolution_y;
+		xy[1] = index%no_bins_y;
+		xy[0] = (index-xy[1])/no_bins_y;
 		return xy;
+	}
+
+	double BackendHistogram3D::bin_width_x() {
+		return (max_x()-min_x())/no_bins_x;
+	}
+
+	double BackendHistogram3D::bin_width_y() {
+		return (max_y()-min_y())/no_bins_y;
+	}
+
+	double BackendHistogram3D::min_x() {
+		if (config.fixed_plot_area)
+			return config.min_x;
+		else if (data.size() == 0) {
+			return 0;
+		}	else if (data_min_x<data_max_x) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_x*x+data_max_x*x-data_min_x*no_bins_x)/(2*x-no_bins_x);
+		} else
+			return data_min_x - 0.5;
+	}
+
+	double BackendHistogram3D::min_y() {
+		if (config.fixed_plot_area)
+			return config.min_y;
+		else if (data.size() == 0) {
+			return 0;
+		}	else if (data_min_y<data_max_y) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_y*x+data_max_y*x-data_min_y*no_bins_y)/(2*x-no_bins_y);
+		} else
+			return data_min_y - 0.5;
+	}
+
+	double BackendHistogram3D::max_x() {
+		if (config.fixed_plot_area)
+			return config.max_x;
+		else if (data.size() == 0) {
+			return 1;
+		} else if (data_min_x<data_max_x) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_x*x+data_max_x*x-data_max_x*no_bins_x)/(2*x-no_bins_x);
+		} else
+			return data_min_x + 0.5;
+	}
+
+	double BackendHistogram3D::max_y() {
+		if (config.fixed_plot_area)
+			return config.max_y;
+		else if (data.size() == 0) {
+			return 1;
+		} else if (data_min_y<data_max_y) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_y*x+data_max_y*x-data_max_y*no_bins_y)/(2*x-no_bins_y);
+		} else
+			return data_min_y + 0.5;
 	}
 	/*
 	 * HeightMap
