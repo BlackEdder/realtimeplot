@@ -721,10 +721,26 @@ namespace realtimeplot {
 		}
 	}
 
+	void BackendHistogram3D::plot() {
+		double width_x = bin_width_x();
+		double width_y = bin_width_y();
+		if (rebin) {
+			rebin_data();
+		}
+		throw;
+		if (!config.fixed_plot_area) {
+			config.min_x = min_x() - 0.5*width_x;
+			config.min_y = min_y() - 0.5*width_y;
+			config.max_x = max_x() + 0.5*width_x;
+			config.max_y = max_y() + 0.5*width_y;
+		}
+		reset( config );
+		throw;
+	}
+
 	/*
 	 * HeightMap
 	 */
-
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler ) : 
 		BackendPlot( cfg, pEventHandler ),

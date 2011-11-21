@@ -346,6 +346,8 @@ namespace realtimeplot {
 
 			std::vector<size_t> bins_xy;
 
+			ColorMap color_map;
+
 			BackendHistogram3D(PlotConfig cfg, 
 				boost::shared_ptr<EventHandler> pEventHandler,
 				size_t no_bins_x = 10, size_t no_bins_y = 10 );
@@ -375,6 +377,8 @@ namespace realtimeplot {
 			void add_data( double x, double y );
 
 			void rebin_data();
+
+			void plot();
 	};
 
 	/**
