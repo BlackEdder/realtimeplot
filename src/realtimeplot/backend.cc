@@ -588,9 +588,12 @@ namespace realtimeplot {
 	 * Histogram3D
 	 */
 	BackendHistogram3D::BackendHistogram3D( PlotConfig cfg, 
-			boost::shared_ptr<EventHandler> pEventHandler ) : 
+			boost::shared_ptr<EventHandler> pEventHandler, 
+			size_t no_bins_x, size_t no_bins_y ) : 
 		BackendPlot( cfg, pEventHandler ),
-		data( std::vector<delaunay::Vertex>() )
+		data( std::vector<delaunay::Vertex>() ), 
+		no_bins_x( no_bins_x ), no_bins_y( no_bins_y ),
+		bins_xy( std::vector<size_t>( no_bins_x*no_bins_y ) )
  		{
 		}
 	
@@ -670,11 +673,52 @@ namespace realtimeplot {
 			size_t y_index = utils::bin_id( min_y(), bin_width_y(), data[i].y ); 
 			size_t index = xytoindex( x_index, y_index );
 			++bins_xy[ index ];
-			if (!frequency && max_z < bins_xy[index])
+			if (max_z < bins_xy[index])
 				max_z = bins_xy[index];
 		}
 
 		rebin = false;
+	}
+
+	void BackendHistogram3D::add_data( double x, double y ) {
+		delaunay::Vertex v = delaunay::Vertex( x, y );
+		data.push_back( v );
+		if (data.size() == 1) {
+			data_min_x = v.x;
+			data_max_x = data_min_x;
+			data_min_y = v.y;
+			data_max_y = data_min_y;
+			rebin = true;
+		} else {
+			if (v.x<data_min_x) {
+				data_min_x = v.x;
+				rebin = true;
+			} else if (v.x>data_max_x) {
+				data_max_x = v.x;
+				rebin = true;
+			}
+			if (v.y<data_min_y) {
+				data_min_y = v.y;
+				rebin = true;
+			} else if (v.y>data_max_y) {
+				data_max_y = v.y;
+				rebin = true;
+			}
+		}
+
+		if (config.fixed_plot_area)
+			rebin = false;
+		if (!rebin && 
+				v.x>=min_x() && v.x<max_x() &&
+				v.y>=min_y() && v.y<max_y()
+			 ) {
+			size_t x_index = utils::bin_id( min_x(), bin_width_x(), v.x ); 
+			size_t y_index = utils::bin_id( min_y(), bin_width_y(), v.y ); 
+			size_t index = xytoindex( x_index, y_index );
+			++bins_xy[ index ];
+			if (max_z < bins_xy[index])
+				max_z = bins_xy[index];
+		}
 	}
 
 	/*

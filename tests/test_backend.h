@@ -306,8 +306,6 @@ class TestBackend : public CxxTest::TestSuite
 			conf.fixed_plot_area = true;
 			BackendHistogram3D bh3d = BackendHistogram3D(conf,
 					boost::shared_ptr<EventHandler>() );
-			bh3d.no_bins_x = 10;
-			bh3d.no_bins_y = 10;
 			delaunay::Vertex v = delaunay::Vertex( 0, 0 );
 			bh3d.data.push_back( v );
 			TS_ASSERT_EQUALS( utils::bin_id( bh3d.min_x(), bh3d.bin_width_x(), 
@@ -318,7 +316,16 @@ class TestBackend : public CxxTest::TestSuite
 			bh3d.rebin_data();
 			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 2 );
 		}
-	
+
+		void testHistogramAddData() {
+			conf.fixed_plot_area = true;
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.add_data( 0, 0 );
+			bh3d.rebin_data();
+			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 1 );
+		}
+		
 		/*
 		 * HeightMap
 		 */

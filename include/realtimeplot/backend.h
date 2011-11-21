@@ -342,12 +342,13 @@ namespace realtimeplot {
 			double data_min_x, data_min_y, data_max_x, data_max_y;
 			double max_z;
 
-			bool frequency, rebin;
+			bool rebin;
 
 			std::vector<size_t> bins_xy;
 
 			BackendHistogram3D(PlotConfig cfg, 
-				boost::shared_ptr<EventHandler> pEventHandler);
+				boost::shared_ptr<EventHandler> pEventHandler,
+				size_t no_bins_x = 10, size_t no_bins_y = 10 );
 
 			/**
 			 * \brief Return the array index associated with x index and y index
@@ -367,6 +368,11 @@ namespace realtimeplot {
 
 			double max_x();
 			double max_y();
+
+			/**
+			 * \brief Add a new measurement/data
+			 */
+			void add_data( double x, double y );
 
 			void rebin_data();
 	};
