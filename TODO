@@ -1,9 +1,9 @@
+* Histogram and Histogram3D should also plot outside the axes, so move
+	works properly
+* Mouse input
 * Provide a combine method that easily allows you to combine one plot with another
 	* Probably need to make plot surface transparent
-* Allow multiple data sets in one histogram/histogram3d plot
-* Rename SurfacePlot to Histogram3d
-* Rescale Histogram3d coloring
 * PDF backend
-* Mouse input
 * Use a key to start (and stop) recording to a png file
+* Allow multiple data sets in one histogram/histogram3d plot
 * GTK backend?
