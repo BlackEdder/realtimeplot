@@ -377,9 +377,9 @@ namespace realtimeplot {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new HistPlotEvent() ) );
 	}
 
-	void Histogram::optimize_bounds() {
+	void Histogram::optimize_bounds( double proportion ) {
 		pEventHandler->add_event( boost::shared_ptr<Event>(
-				 new HistOptimizeEvent() ) );
+				 new HistOptimizeEvent(proportion) ) );
 	}
 
 	/*
