@@ -43,7 +43,7 @@ inline double rnorm( double mean, double sigma ) {
 }
 
 int main() {
-	SurfacePlot pl = SurfacePlot( -1, 1, -1, 1, 50 );
+	Histogram3D pl = Histogram3D( -1, 1, -1, 1, 50 );
 	for( size_t i=0; i<100000; ++i ) {
 		pl.add_data( rnorm( 0, 0.2 ), rnorm( 0, 0.4 ), false );
 		/*std::cout << rnorm( 0, 0.1 ) << std::endl;

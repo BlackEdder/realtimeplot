@@ -584,6 +584,170 @@ namespace realtimeplot {
 		display();
 	}
 
+	/*
+	 * Histogram3D
+	 */
+	BackendHistogram3D::BackendHistogram3D( PlotConfig cfg, 
+			boost::shared_ptr<EventHandler> pEventHandler, 
+			size_t no_bins_x, size_t no_bins_y ) : 
+		BackendPlot( cfg, pEventHandler ),
+		data( std::vector<delaunay::Vertex>() ), 
+		no_bins_x( no_bins_x ), no_bins_y( no_bins_y ),
+		bins_xy( std::vector<size_t>( no_bins_x*no_bins_y ) )
+ 		{
+		}
+	
+	size_t BackendHistogram3D::xytoindex( size_t x, size_t y ) {
+		return x*no_bins_y + y;
+	}
+
+	std::vector<size_t> BackendHistogram3D::indextoxy( size_t index ) {
+		std::vector<size_t> xy(2);
+		xy[1] = index%no_bins_y;
+		xy[0] = (index-xy[1])/no_bins_y;
+		return xy;
+	}
+
+	double BackendHistogram3D::bin_width_x() {
+		return (max_x()-min_x())/no_bins_x;
+	}
+
+	double BackendHistogram3D::bin_width_y() {
+		return (max_y()-min_y())/no_bins_y;
+	}
+
+	double BackendHistogram3D::min_x() {
+		if (config.fixed_plot_area)
+			return config.min_x;
+		else if (data.size() == 0) {
+			return 0;
+		}	else if (data_min_x<data_max_x) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_x*x+data_max_x*x-data_min_x*no_bins_x)/(2*x-no_bins_x);
+		} else
+			return data_min_x - 0.5;
+	}
+
+	double BackendHistogram3D::min_y() {
+		if (config.fixed_plot_area)
+			return config.min_y;
+		else if (data.size() == 0) {
+			return 0;
+		}	else if (data_min_y<data_max_y) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_y*x+data_max_y*x-data_min_y*no_bins_y)/(2*x-no_bins_y);
+		} else
+			return data_min_y - 0.5;
+	}
+
+	double BackendHistogram3D::max_x() {
+		if (config.fixed_plot_area)
+			return config.max_x;
+		else if (data.size() == 0) {
+			return 1;
+		} else if (data_min_x<data_max_x) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_x*x+data_max_x*x-data_max_x*no_bins_x)/(2*x-no_bins_x);
+		} else
+			return data_min_x + 0.5;
+	}
+
+	double BackendHistogram3D::max_y() {
+		if (config.fixed_plot_area)
+			return config.max_y;
+		else if (data.size() == 0) {
+			return 1;
+		} else if (data_min_y<data_max_y) {
+			double x = 0.1; // max-x*bin_width = data_max
+			return (data_min_y*x+data_max_y*x-data_max_y*no_bins_y)/(2*x-no_bins_y);
+		} else
+			return data_min_y + 0.5;
+	}
+
+	void BackendHistogram3D::rebin_data() {
+		max_z = 1;
+		//bins_xy.clear();
+		bins_xy = std::vector<size_t>( no_bins_x*no_bins_y );
+		for (size_t i = 0; i<data.size(); ++i) {
+			size_t x_index = utils::bin_id( min_x(), bin_width_x(), data[i].x ); 
+			size_t y_index = utils::bin_id( min_y(), bin_width_y(), data[i].y ); 
+			size_t index = xytoindex( x_index, y_index );
+			++bins_xy[ index ];
+			if (max_z < bins_xy[index])
+				max_z = bins_xy[index];
+		}
+
+		rebin = false;
+	}
+
+	void BackendHistogram3D::add_data( double x, double y ) {
+		delaunay::Vertex v = delaunay::Vertex( x, y );
+		data.push_back( v );
+		if (data.size() == 1) {
+			data_min_x = v.x;
+			data_max_x = data_min_x;
+			data_min_y = v.y;
+			data_max_y = data_min_y;
+			rebin = true;
+		} else {
+			if (v.x<data_min_x) {
+				data_min_x = v.x;
+				rebin = true;
+			} else if (v.x>data_max_x) {
+				data_max_x = v.x;
+				rebin = true;
+			}
+			if (v.y<data_min_y) {
+				data_min_y = v.y;
+				rebin = true;
+			} else if (v.y>data_max_y) {
+				data_max_y = v.y;
+				rebin = true;
+			}
+		}
+
+		if (config.fixed_plot_area)
+			rebin = false;
+		if (!rebin && 
+				v.x>=min_x() && v.x<max_x() &&
+				v.y>=min_y() && v.y<max_y()
+			 ) {
+			size_t x_index = utils::bin_id( min_x(), bin_width_x(), v.x ); 
+			size_t y_index = utils::bin_id( min_y(), bin_width_y(), v.y ); 
+			size_t index = xytoindex( x_index, y_index );
+			++bins_xy[ index ];
+			if (max_z < bins_xy[index])
+				max_z = bins_xy[index];
+		}
+	}
+
+	void BackendHistogram3D::plot() {
+		double width_x = bin_width_x();
+		double width_y = bin_width_y();
+		if (rebin) {
+			rebin_data();
+		}
+		if (!config.fixed_plot_area) {
+			config.min_x = min_x() - 0.5*width_x;
+			config.min_y = min_y() - 0.5*width_y;
+			config.max_x = max_x() + 0.5*width_x;
+			config.max_y = max_y() + 0.5*width_y;
+		}
+		reset( config );
+		for (size_t x = 0; x<no_bins_x; ++x) {
+			for (size_t y = 0; y<no_bins_y; ++y) {
+				Color color = color_map( 
+							((double) bins_xy[xytoindex(x,y)])/max_z );
+				rectangle( min_x()+width_x*x, min_y()+width_y*y, 
+						width_x, width_y, true, color );
+			}
+		}
+		display();
+	}
+
+	/*
+	 * HeightMap
+	 */
 	BackendHeightMap::BackendHeightMap( PlotConfig cfg, 
 			boost::shared_ptr<EventHandler> pEventHandler ) : 
 		BackendPlot( cfg, pEventHandler ),

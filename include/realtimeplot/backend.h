@@ -330,7 +330,56 @@ namespace realtimeplot {
 			void plot();
 		};
 
+	/**
+	 * \brief Provides backend functions for Histogram3D plots
+	 */
 
+	class BackendHistogram3D : public BackendPlot {
+		public:
+			size_t no_bins_x, no_bins_y;
+			std::vector<delaunay::Vertex> data;
+
+			double data_min_x, data_min_y, data_max_x, data_max_y;
+			double max_z;
+
+			bool rebin;
+
+			std::vector<size_t> bins_xy;
+
+			ColorMap color_map;
+
+			BackendHistogram3D(PlotConfig cfg, 
+				boost::shared_ptr<EventHandler> pEventHandler,
+				size_t no_bins_x = 10, size_t no_bins_y = 10 );
+
+			/**
+			 * \brief Return the array index associated with x index and y index
+			 */
+			size_t xytoindex( size_t x, size_t y );
+
+			/**
+			 * \brief Return x and y index associated with data index
+			 */
+			std::vector<size_t> indextoxy( size_t index );
+
+			double bin_width_x();
+			double bin_width_y();
+
+			double min_x();
+			double min_y();
+
+			double max_x();
+			double max_y();
+
+			/**
+			 * \brief Add a new measurement/data
+			 */
+			void add_data( double x, double y );
+
+			void rebin_data();
+
+			void plot();
+	};
 
 	/**
 	 * \brief Provides backend functions specific for HeightMap plots

@@ -326,6 +326,56 @@ namespace realtimeplot {
 		};
 
 		/*
+		 * Histogram3D specific events
+		 */
+
+		/**
+		 * \brief Opens a 3D Histogram 
+		 */
+		class OpenHistogram3DEvent : public Event {
+			public:
+				OpenHistogram3DEvent( PlotConfig plot_conf, 
+						size_t no_bins_x, size_t no_bins_y,
+						boost::shared_ptr<EventHandler> pEventHandler ) 
+					: plot_conf( plot_conf ), no_bins_x( no_bins_x ),
+						no_bins_y( no_bins_y ), 
+						pEventHandler( pEventHandler->shared_from_this() )
+			{}
+
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					pBPlot.reset( new BackendHistogram3D( plot_conf, 
+								pEventHandler, no_bins_x, no_bins_y ) ); 
+				}
+
+			private:
+				PlotConfig plot_conf;
+				size_t no_bins_x, no_bins_y;
+				boost::shared_ptr<EventHandler> pEventHandler;
+		};
+
+		class Hist3DDataEvent : public Event {
+			public:
+				Hist3DDataEvent( double x, double y )
+					: x( x ), y( y )
+			{}
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					boost::static_pointer_cast<BackendHistogram3D, 
+						BackendPlot>(pBPlot)->add_data( x, y );
+				}
+			private:
+				double x, y;
+		};
+
+		class Hist3DPlotEvent : public Event {
+			public:
+				Hist3DPlotEvent() {};
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+					boost::static_pointer_cast<BackendHistogram3D, 
+						BackendPlot>(pBPlot)->plot();
+				}
+		};
+
+		/*
 		 * HeightMap specific events
 		 */
 

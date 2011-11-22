@@ -25,6 +25,7 @@
 #include "testhelpers.h"
 
 #include "realtimeplot/backend.h"
+#include "realtimeplot/utils.h"
 
 using namespace realtimeplot;
 
@@ -278,6 +279,66 @@ class TestBackend : public CxxTest::TestSuite
 		 * Histogram3d
 		 */
 
+		void testHistogram3DSimple() {
+		}
+
+		void testHistogram3Dxytoindex() {
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.no_bins_x = 10;
+			bh3d.no_bins_y = 15;
+			TS_ASSERT_EQUALS( bh3d.xytoindex( 5, 5 ), 5*15+5 );
+			TS_ASSERT_EQUALS( bh3d.xytoindex( 9, 14 ), 149 );
+		}
+
+		void testHistogram3Dindextoxy() {
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.no_bins_x = 10;
+			bh3d.no_bins_y = 15;
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 5*15+5 )[0], 5  );
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 5*15+5 )[1], 5  );
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 149 )[0], 9  );
+			TS_ASSERT_EQUALS( bh3d.indextoxy( 149 )[1], 14  );
+		}
+
+		void testHistogram3DRebinData() {
+			conf.fixed_plot_area = true;
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			delaunay::Vertex v = delaunay::Vertex( 0, 0 );
+			bh3d.data.push_back( v );
+			TS_ASSERT_EQUALS( utils::bin_id( bh3d.min_x(), bh3d.bin_width_x(), 
+						0), 5 );
+			bh3d.rebin_data();
+			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 1 );
+			bh3d.data.push_back( v );
+			bh3d.rebin_data();
+			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 2 );
+		}
+
+		void testHistogram3DAddData() {
+			conf.fixed_plot_area = true;
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.add_data( 0, 0 );
+			bh3d.rebin_data();
+			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 1 );
+		}
+
+		void testHistogram3DPlot() {
+			conf.fixed_plot_area = true;
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.add_data( 0, 0 );
+			bh3d.add_data( 0.1, 0 );
+			bh3d.add_data( 0.1, 0 );
+			bh3d.add_data( 1, -2 );
+			bh3d.plot();
+			bh3d.save( fn( "bh3D_data" ) );
+			TS_ASSERT( check_plot(  "bh3D_data" ) );
+		}
+			
 		/*
 		 * HeightMap
 		 */

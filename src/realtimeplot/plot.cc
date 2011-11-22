@@ -377,8 +377,62 @@ namespace realtimeplot {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new HistPlotEvent() ) );
 	}
 
-	void Histogram::optimize_bounds( double proportion ) {
-		pEventHandler->add_event( boost::shared_ptr<Event>( new HistOptimizeEvent( proportion ) ) );
+	void Histogram::optimize_bounds() {
+		pEventHandler->add_event( boost::shared_ptr<Event>(
+				 new HistOptimizeEvent() ) );
+	}
+
+	/*
+	 * Histogram3D
+	 */
+
+	Histogram3D::Histogram3D( size_t no_bins_x, size_t no_bins_y )
+		: Plot( false )
+	{
+		config.fixed_plot_area = false;
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenHistogram3DEvent( config, 
+						no_bins_x, no_bins_y, pEventHandler ) ) );
+	}
+
+	Histogram3D::Histogram3D( PlotConfig config,
+		 	size_t no_bins_x, size_t no_bins_y )
+		: Plot( false ) 
+	{
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenHistogram3DEvent( config, 
+						no_bins_x, no_bins_y, pEventHandler ) ) );
+	}
+
+	Histogram3D::Histogram3D( double min_x, double max_x, 
+			double min_y, double max_y,
+			size_t no_bins )
+		:	Plot( false )
+	{ 
+		config.fixed_plot_area = true;
+		config.min_x = min_x;
+		config.max_x = max_x;
+		config.min_y = min_y;
+		config.max_y = max_y;
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenHistogram3DEvent( config, 
+						no_bins, no_bins, pEventHandler ) ) );
+	}
+
+
+	Histogram3D::~Histogram3D() {
+	}
+
+	void Histogram3D::add_data( double x, double y, bool show ) {
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new Hist3DDataEvent( x, y ) ) ); 
+		if (show)
+			plot();
+	}
+
+	void Histogram3D::plot() {
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new Hist3DPlotEvent() ) );
 	}
 
 
