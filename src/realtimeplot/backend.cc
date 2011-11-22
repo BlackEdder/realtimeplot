@@ -734,6 +734,8 @@ namespace realtimeplot {
 			config.max_y = max_y() + 0.5*width_y;
 		}
 		reset( config );
+		bool before = pause_display;
+		pause_display = true; // Don't draw while updating the screen
 		for (size_t x = 0; x<no_bins_x; ++x) {
 			for (size_t y = 0; y<no_bins_y; ++y) {
 				Color color = color_map( 
@@ -742,6 +744,7 @@ namespace realtimeplot {
 						width_x, width_y, true, color );
 			}
 		}
+		pause_display = before;
 		display();
 	}
 
