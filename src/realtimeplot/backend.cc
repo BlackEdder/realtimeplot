@@ -748,6 +748,33 @@ namespace realtimeplot {
 		display();
 	}
 
+	void BackendHistogram3D::calculate_height_scaling() {
+		if (rebin)
+			rebin_data();
+		double mean = 0;
+		double v = 0;
+		size_t dim = 0;
+
+		//We'll ignore values of zero, since they skew the result
+		for (size_t x = 0; x<no_bins_x; ++x) {
+			for (size_t y = 0; y<no_bins_y; ++y) {
+				double fraction = ((double) bins_xy[xytoindex(x,y)])/max_z;
+				if (fraction > 0 && fraction <= 1) {
+					mean += fraction; 
+					v += pow(fraction, 2);
+					++dim;
+				}
+			}
+		}
+	
+		mean /= dim;
+		v = v/dim-pow(mean,2);
+
+		color_map.calculate_height_scaling( mean, v );
+
+		plot();
+	}
+
 	/*
 	 * HeightMap
 	 */
@@ -774,6 +801,7 @@ namespace realtimeplot {
 		if (show && delaunay.vertices.size()>=3)
 			plot();
 	}
+
 
 
 	void BackendHeightMap::plot() {

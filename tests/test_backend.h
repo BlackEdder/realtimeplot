@@ -337,6 +337,10 @@ class TestBackend : public CxxTest::TestSuite
 			bh3d.plot();
 			bh3d.save( fn( "bh3D_data" ) );
 			TS_ASSERT( check_plot(  "bh3D_data" ) );
+
+			bh3d.calculate_height_scaling();
+			bh3d.save( fn( "bh3D_data_rescale" ) );
+			TS_ASSERT( check_plot(  "bh3D_data_rescale" ) );
 		}
 			
 		/*

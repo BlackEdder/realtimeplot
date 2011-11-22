@@ -328,6 +328,7 @@ namespace realtimeplot {
 			void rebin_data();
 
 			void plot();
+
 		};
 
 	/**
@@ -379,6 +380,8 @@ namespace realtimeplot {
 			void rebin_data();
 
 			void plot();
+
+			void calculate_height_scaling();
 	};
 
 	/**
