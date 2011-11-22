@@ -312,6 +312,7 @@ namespace realtimeplot {
 	};
 
 	class Histogram3D : public Plot {
+		public:
 			Histogram3D( PlotConfig config, size_t no_bins_x = 4, 
 					size_t no_bins_y = 4 );
 
