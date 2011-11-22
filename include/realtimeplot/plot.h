@@ -311,6 +311,13 @@ namespace realtimeplot {
 			void optimize_bounds( double proportion = 0.9 );
 	};
 
+	/**
+	 * \brief Produce Histogram 3D plots
+	 *
+	 * This produces a Histogram, with the x value one parameter, the y value the other and
+	 * the color representing the amount of data points with those values. So the 3rd dimension
+	 * is actually represented by a color.
+	 */
 	class Histogram3D : public Plot {
 		public:
 			Histogram3D( PlotConfig config, size_t no_bins_x = 4, 
@@ -340,10 +347,7 @@ namespace realtimeplot {
 	/**
 	 * \brief Produce surface plots
 	 *
-	 * Currently actually more of a "3d" histogram, where colors indicate number of points
-	 * within a certain "rectangle" of values
-	 *
-	 * For now the implementation is quite limited, with always a gray scale palette.
+	 * DEPRECATED: Use Histogram3D instead
 	 */
 	class SurfacePlot : public Plot {
 		public:
