@@ -436,6 +436,11 @@ namespace realtimeplot {
 	}
 
 
+	void Histogram3D::calculate_height_scaling() {
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new Hist3DHeightScalingEvent() ) ); 
+	}
+
 	/*
 	 * SurfacePlot
 	 */

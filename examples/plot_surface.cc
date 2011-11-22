@@ -51,5 +51,7 @@ int main() {
 		std::cout << rnorm( 0, 0.2 ) << std::endl;*/
 	}
 	pl.add_data( rnorm( 0, 0.2 ), rnorm( 0, 0.4 ), true );
+	sleep(1);
+	pl.calculate_height_scaling();
 	return 0;
 }
