@@ -374,6 +374,17 @@ namespace realtimeplot {
 						BackendPlot>(pBPlot)->plot();
 				}
 		};
+		/**
+		 * \brief Causes Histogram3D to calculate it's optimal coloring scheme
+		 */
+		class Hist3DHeightScalingEvent	: public Event {
+			public:
+				Hist3DHeightScalingEvent( ) {};
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				boost::static_pointer_cast<BackendHistogram3D, BackendPlot>( 
+						pBPlot )->calculate_height_scaling();
+				}
+		};
 
 		/*
 		 * HeightMap specific events
