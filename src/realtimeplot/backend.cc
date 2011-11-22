@@ -742,6 +742,7 @@ namespace realtimeplot {
 						width_x, width_y, true, color );
 			}
 		}
+		display();
 	}
 
 	/*

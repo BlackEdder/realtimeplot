@@ -311,6 +311,31 @@ namespace realtimeplot {
 			void optimize_bounds();
 	};
 
+	class Histogram3D : public Plot {
+			Histogram3D( PlotConfig config, size_t no_bins_x = 4, 
+					size_t no_bins_y = 4 );
+
+			Histogram3D( size_t no_bins_x = 4, size_t no_bins_y = 4 );
+
+			//! Creates a histogram with a set min_x and max_x
+			Histogram3D( double min_x, double max_x, 
+					double min_y, double max_y,
+					size_t no_bins = 4);
+
+			~Histogram3D();
+			/**
+			 * \brief Add a new measurement/data
+			 *
+			 * Might be useful to only set show true sometimes, since it can be costly to
+			 * replot every time.
+			 */
+			void add_data( double x, double y, bool show = true );
+			/**
+			 * \brief (Re) Plot the data
+			 */
+			void plot();
+	};
+
 	/**
 	 * \brief Produce surface plots
 	 *
