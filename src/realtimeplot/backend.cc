@@ -839,22 +839,16 @@ namespace realtimeplot {
 		for (size_t i=0; i<delaunay.vertices.size(); ++i) {
 			double fraction = (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
 						delaunay.vertices[i] )->z-zmin)/dz;
-			if (fraction >= 0 && fraction <= 1)
-				mean += (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
-							delaunay.vertices[i] )->z-zmin)/dz; 
+			if (fraction >= 0 && fraction <= 1) {
+				mean += fraction; 
+				v += pow(fraction, 2);
+			}
 			else
 				--dim;
 		}
 		mean /= dim;
-		// calculate alpha beta
-		for (size_t i=0; i<delaunay.vertices.size(); ++i) {
-			double fraction = (boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
-						delaunay.vertices[i] )->z-zmin)/dz;
-			if (fraction >= 0 && fraction <= 1)
-				v += pow((boost::static_pointer_cast<Vertex3D, delaunay::Vertex>( 
-								delaunay.vertices[i] )->z-zmin)/dz-mean,2); 
-		}
-		v /= dim;
+		v = v/dim-pow(mean,2);
+
 		color_map.calculate_height_scaling( mean, v );
 
 		if (delaunay.vertices.size()>=3)
