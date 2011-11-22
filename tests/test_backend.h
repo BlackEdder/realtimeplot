@@ -302,7 +302,7 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bh3d.indextoxy( 149 )[1], 14  );
 		}
 
-		void testHistogramRebinData() {
+		void testHistogram3DRebinData() {
 			conf.fixed_plot_area = true;
 			BackendHistogram3D bh3d = BackendHistogram3D(conf,
 					boost::shared_ptr<EventHandler>() );
@@ -317,7 +317,7 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 2 );
 		}
 
-		void testHistogramAddData() {
+		void testHistogram3DAddData() {
 			conf.fixed_plot_area = true;
 			BackendHistogram3D bh3d = BackendHistogram3D(conf,
 					boost::shared_ptr<EventHandler>() );
@@ -325,7 +325,20 @@ class TestBackend : public CxxTest::TestSuite
 			bh3d.rebin_data();
 			TS_ASSERT_EQUALS( bh3d.bins_xy[55], 1 );
 		}
-		
+
+		void testHistogram3DPlot() {
+			conf.fixed_plot_area = true;
+			BackendHistogram3D bh3d = BackendHistogram3D(conf,
+					boost::shared_ptr<EventHandler>() );
+			bh3d.add_data( 0, 0 );
+			bh3d.add_data( 0.1, 0 );
+			bh3d.add_data( 0.1, 0 );
+			bh3d.add_data( 1, -2 );
+			bh3d.plot();
+			bh3d.save( fn( "bh3D_data" ) );
+			TS_ASSERT( check_plot(  "bh3D_data" ) );
+		}
+			
 		/*
 		 * HeightMap
 		 */

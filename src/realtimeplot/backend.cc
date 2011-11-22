@@ -727,7 +727,6 @@ namespace realtimeplot {
 		if (rebin) {
 			rebin_data();
 		}
-		throw;
 		if (!config.fixed_plot_area) {
 			config.min_x = min_x() - 0.5*width_x;
 			config.min_y = min_y() - 0.5*width_y;
@@ -735,7 +734,14 @@ namespace realtimeplot {
 			config.max_y = max_y() + 0.5*width_y;
 		}
 		reset( config );
-		throw;
+		for (size_t x = 0; x<no_bins_x; ++x) {
+			for (size_t y = 0; y<no_bins_y; ++y) {
+				Color color = color_map( 
+							((double) bins_xy[xytoindex(x,y)])/max_z );
+				rectangle( min_x()+width_x*x, min_y()+width_y*y, 
+						width_x, width_y, true, color );
+			}
+		}
 	}
 
 	/*
