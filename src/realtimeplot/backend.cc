@@ -571,6 +571,8 @@ namespace realtimeplot {
 			config.min_x = min() - 0.5*width;
 			config.max_x = max() + 0.5*width;
 		}
+		bool before = pause_display;
+		pause_display = true; // Don't draw while updating the screen
 		reset( config );
 		for (size_t i=0; i<no_bins; ++i) {
 			double height = bins_y[i];
@@ -581,6 +583,7 @@ namespace realtimeplot {
 			line_add( min()+(i+1)*width, height, -1, Color::black() );
 			line_add( min()+(i+1)*width, 0, -1, Color::black() );
 		}
+		pause_display = before;
 		display();
 	}
 
@@ -733,9 +736,9 @@ namespace realtimeplot {
 			config.max_x = max_x() + 0.5*width_x;
 			config.max_y = max_y() + 0.5*width_y;
 		}
-		reset( config );
 		bool before = pause_display;
 		pause_display = true; // Don't draw while updating the screen
+		reset( config );
 		for (size_t x = 0; x<no_bins_x; ++x) {
 			for (size_t y = 0; y<no_bins_y; ++y) {
 				Color color = color_map( 
@@ -806,7 +809,8 @@ namespace realtimeplot {
 
 	void BackendHeightMap::plot() {
 		// Only display it after it has been drawn completely
-		pause_display = true;
+		bool before = pause_display;
+		pause_display = true; // Don't draw while updating the screen
 		clear();
 		for (size_t i=0; i<delaunay.triangles.size(); ++i) {
 			bool part_of_super = false;
@@ -849,7 +853,7 @@ namespace realtimeplot {
 				//delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
 			}
 		}
-		pause_display = false;
+		pause_display = before;
 		display();
 	}
 
