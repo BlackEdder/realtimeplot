@@ -110,9 +110,6 @@ target_link_libraries(plot_rolling_update_stress_test realtimeplot)
 add_executable(plot_heightmap examples/plot_heightmap.cc)
 target_link_libraries(plot_heightmap realtimeplot)
 
-add_executable(plot_multiple examples/plot_multiple.cc)
-target_link_libraries(plot_multiple realtimeplot)
-
 # Refresh tags file after changes
 FIND_PROGRAM(CTAGS ctags)
 if(CTAGS)

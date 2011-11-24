@@ -92,7 +92,7 @@ namespace realtimeplot {
 			BackendPlot( PlotConfig config, boost::shared_ptr<EventHandler> pEventHandler );
 
 			//Destructor, wait for event_loop thread to finish (join)
-			~BackendPlot();
+			virtual ~BackendPlot();
 
 			//draw_axes_surface
 			void draw_axes_surface();
