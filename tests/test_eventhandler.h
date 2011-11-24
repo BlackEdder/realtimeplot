@@ -37,10 +37,11 @@ class TestEventHandler : public CxxTest::TestSuite
 		void testOpenClose() {
 			boost::shared_ptr<EventHandler> pEventHandler( 
 					new EventHandler() );
-		pEventHandler->add_event( boost::shared_ptr<Event>( 
-					new OpenPlotEvent( conf, pEventHandler ) ) );
-		pEventHandler->add_event( boost::shared_ptr<Event>( 
-					new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new OpenPlotEvent( conf, pEventHandler ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
 		}
 };
 	

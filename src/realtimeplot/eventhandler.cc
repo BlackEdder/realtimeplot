@@ -94,10 +94,12 @@ namespace realtimeplot {
 				}
 				usleep(100000);
 			}
+
 			// After the window has been closed we want to stop
 			// as soon as processing_events = false (FinalEvent has
 			// been sent)
-			if (pBPlot != NULL && !pBPlot->xSurface) {
+			if (pBPlot != NULL && 
+					(!pBPlot->xSurface ||	!pBPlot->config.display) ) {
 				force_close = true;
 			}
 		}
