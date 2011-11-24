@@ -27,7 +27,7 @@
 
 namespace realtimeplot {
 
-	EventHandler::EventHandler( PlotConfig config )
+	EventHandler::EventHandler()
 		: queue_size( 0 ),
 		priority_queue_size( 0 ),
 		processing_events( true ),

@@ -143,6 +143,9 @@ if(CXXTEST_FOUND)
 	#include_directories(tests)
 	enable_testing()
 
+	CXXTEST_ADD_TEST(unittest_eventhandler test_eventhandler.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_eventhandler.h)
+	target_link_libraries(unittest_eventhandler realtimeplot) # as needed
 	CXXTEST_ADD_TEST(unittest_delaunay test_delaunay.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_delaunay.h)
 	target_link_libraries(unittest_delaunay realtimeplot) # as needed
