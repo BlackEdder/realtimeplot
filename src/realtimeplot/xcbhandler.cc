@@ -181,7 +181,9 @@ namespace realtimeplot {
 	
 	Cairo::RefPtr<Cairo::Surface> XcbHandler::get_cairo_surface( size_t window_id, 
 			size_t width, size_t height ) {
-		return Cairo::XcbSurface::create( connection, mapWindowId[window_id], 
+		boost::mutex::scoped_lock( map_mutex );
+		xcb_drawable_t draw = mapWindowId[window_id];
+		return Cairo::XcbSurface::create( connection, draw, 
 				visual_type, width, height );
 	}
 

@@ -60,7 +60,8 @@ namespace realtimeplot {
 			 *
 			 * Used by BackendPlot to get a surface to draw to.
 			 */
-			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( size_t window_id, size_t width, size_t height ) = 0;
+			virtual Cairo::RefPtr<Cairo::Surface> get_cairo_surface( 
+					size_t window_id, size_t width, size_t height ) = 0;
 
 			virtual void set_title( size_t window_id, std::string title ) =0;
 			virtual void close_window( size_t window_id ) =0;
