@@ -34,7 +34,8 @@ class TestEventHandler : public CxxTest::TestSuite
 			conf = PlotConfig();
 			conf.display = false;
 		}
-		void testOpenClose() {
+
+		void testPlotOpenClose() {
 			boost::shared_ptr<EventHandler> pEventHandler( 
 					new EventHandler() );
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
@@ -42,6 +43,64 @@ class TestEventHandler : public CxxTest::TestSuite
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
 						new FinalEvent(pEventHandler, false ) ) );
 			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
+			pEventHandler->add_event( 
+					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
+			// FIXME: Ideally EventHandler should stop accepting 
+			// events when it stopped processing them, but would need more
+			// locking
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
+		}
+
+		void testHistOpenClose() {
+			boost::shared_ptr<EventHandler> pEventHandler( 
+					new EventHandler() );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new OpenHistogramEvent( conf, true, 20, pEventHandler ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
+			pEventHandler->add_event( 
+					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
+			// FIXME: Ideally EventHandler should stop accepting 
+			// events when it stopped processing them, but would need more
+			// locking
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
+		}
+
+		void testHist3DOpenClose() {
+			boost::shared_ptr<EventHandler> pEventHandler( 
+					new EventHandler() );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new OpenHistogram3DEvent( conf, 20, 20, pEventHandler ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
+			pEventHandler->add_event( 
+					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
+			// FIXME: Ideally EventHandler should stop accepting 
+			// events when it stopped processing them, but would need more
+			// locking
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
+		}
+
+		void testHeightMapOpenClose() {
+			boost::shared_ptr<EventHandler> pEventHandler( 
+					new EventHandler() );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new OpenHeightMapEvent( conf, pEventHandler ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
+			pEventHandler->add_event( 
+					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
+			// FIXME: Ideally EventHandler should stop accepting 
+			// events when it stopped processing them, but would need more
+			// locking
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
 		}
 };
 	
