@@ -217,12 +217,14 @@ namespace realtimeplot {
 		: config( conf ),
 		pEventHandler( new EventHandler() ), detach( false )
 	{ 
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenPlotEvent( config, 
 						pEventHandler ) ) );
 	}
 
 	Plot::~Plot() {
-		pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler, false ) ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new FinalEvent(pEventHandler, false ) ) );
 		if (detach)
 			pEventHandler->pEventProcessingThrd->detach();
 		else
