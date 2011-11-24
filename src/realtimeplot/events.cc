@@ -47,7 +47,7 @@ namespace realtimeplot {
 		OpenPlotEvent::OpenPlotEvent( PlotConfig plot_conf, 
 				boost::shared_ptr<EventHandler> pEventHandler ) :
 			plot_conf( plot_conf ),
-			pEventHandler( pEventHandler->shared_from_this() )
+			pEventHandler( pEventHandler )
 		{
 		}
 
@@ -140,7 +140,7 @@ namespace realtimeplot {
 
 	FinalEvent::FinalEvent( boost::shared_ptr<EventHandler> pEventHandler,
 			bool force ) :
-		pEventHandler( pEventHandler->shared_from_this() ),
+		pEventHandler( pEventHandler ),
 		force( force )
 	{
 	}
@@ -158,7 +158,7 @@ namespace realtimeplot {
 	OpenHeightMapEvent::OpenHeightMapEvent( PlotConfig plot_conf, 
 			boost::shared_ptr<EventHandler> pEventHandler ) :
 		plot_conf( plot_conf ),
-		pEventHandler( pEventHandler->shared_from_this() )
+		pEventHandler( pEventHandler )
 	{
 	}
 

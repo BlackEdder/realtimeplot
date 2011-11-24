@@ -275,7 +275,7 @@ namespace realtimeplot {
 				OpenHistogramEvent( PlotConfig plot_conf, bool frequency, 
 						size_t no_bins, boost::shared_ptr<EventHandler> pEventHandler ) 
 					: plot_conf( plot_conf ), frequency( frequency ), no_bins( no_bins ),
-						pEventHandler( pEventHandler->shared_from_this() )
+						pEventHandler( pEventHandler )
 			{}
 
 				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
@@ -339,7 +339,7 @@ namespace realtimeplot {
 						boost::shared_ptr<EventHandler> pEventHandler ) 
 					: plot_conf( plot_conf ), no_bins_x( no_bins_x ),
 						no_bins_y( no_bins_y ), 
-						pEventHandler( pEventHandler->shared_from_this() )
+						pEventHandler( pEventHandler )
 			{}
 
 				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
