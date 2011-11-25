@@ -147,8 +147,10 @@ namespace realtimeplot {
 
 	void FinalEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pEventHandler->processing_events = false;
+		// Close even when window is still open
 		if (force)
-			pEventHandler->force_close = true;
+			pBPlot->close_window();
+			//pEventHandler->window_closed = true;
 	}
 
 	/*

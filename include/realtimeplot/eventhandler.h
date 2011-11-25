@@ -71,7 +71,7 @@ namespace realtimeplot {
 
 					// ! Are/Should we be processing events
 					bool processing_events;
-					bool force_close;
+					bool window_closed;
 					
 					boost::mutex m_mutex;
 

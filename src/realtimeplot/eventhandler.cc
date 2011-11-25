@@ -31,7 +31,7 @@ namespace realtimeplot {
 		: queue_size( 0 ),
 		priority_queue_size( 0 ),
 		processing_events( true ),
-		force_close( false )
+		window_closed( false )
 	{
 		//start processing thread
 		pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
@@ -72,7 +72,7 @@ namespace realtimeplot {
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		size_t count = 0;
-		while ( processing_events || !force_close ) {
+		while ( processing_events || !window_closed ) {
 			if (priority_queue_size > 0) {
 				boost::shared_ptr<Event> pEvent = priority_event_queue.front();
 				m_mutex.lock();
@@ -98,8 +98,8 @@ namespace realtimeplot {
 			// After the window has been closed we want to stop
 			// as soon as processing_events = false (FinalEvent has
 			// been sent)
-			/*if (!force_close && pBPlot != NULL) {
-				force_close = true;
+			/*if (!window_closed && pBPlot != NULL) {
+				window_closed = true;
 			}*/
 		}
 		// Make sure we let pBPlot go/freed.
