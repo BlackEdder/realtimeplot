@@ -280,7 +280,6 @@ namespace realtimeplot {
 			Histogram( double min_x, double max_x, size_t no_bins = 4,
 				bool frequency = true );
 
-			~Histogram();
 			/**
 			 * \brief Set data based on a vector containing all the measurements
 			 *
@@ -330,7 +329,6 @@ namespace realtimeplot {
 					double min_y, double max_y,
 					size_t no_bins = 4);
 
-			~Histogram3D();
 			/**
 			 * \brief Add a new measurement/data
 			 *
