@@ -35,9 +35,9 @@ namespace realtimeplot {
 	 */
 	boost::mutex BackendPlot::global_mutex;
 
-	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler )
+	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), config( conf )
 	{
-		config = conf;
+		//config = conf;
 		checkConfig();
 
 #ifndef NO_X
@@ -101,6 +101,11 @@ namespace realtimeplot {
 			config.fixed_plot_area = true;
 		else if (config.overlap < 0)
 			config.overlap = 0;
+
+		if ( config.min_x >= config.max_x )
+			config.min_x = config.max_x - 1;
+		if ( config.min_y >= config.max_y )
+			config.min_y = config.max_y - 1;
 	}
 
 	void BackendPlot::display() {
