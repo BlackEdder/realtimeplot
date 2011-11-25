@@ -45,11 +45,15 @@ namespace realtimeplot {
 			pDisplayHandler = XcbHandler::Instance();
 		else {
 			pDisplayHandler = DummyHandler::Instance();
+			if (pEventHandler != NULL)
+				pEventHandler->force_close = true;
 		}
 #endif
 #ifdef NO_X
 		pDisplayHandler = DummyHandler::Instance();
 		config.display = false;
+		if (pEventHandler != NULL)
+			pEventHandler->force_close = true;
 #endif
 
 		pPlotArea = boost::shared_ptr<PlotArea> (new PlotArea( config ));
@@ -157,6 +161,8 @@ namespace realtimeplot {
 			xSurface.clear();
 			pDisplayHandler->close_window( win );
 		}
+		if (pEventHandler != NULL)
+			pEventHandler->force_close = true;
 	}
 
 	void BackendPlot::draw_axes_surface() {
