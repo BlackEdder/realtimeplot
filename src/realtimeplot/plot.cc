@@ -149,8 +149,10 @@ namespace realtimeplot {
 	}
 
 	void ColorMap::calculate_height_scaling( double mean, double var ) {
-		alpha = mean*((mean*(1-mean))/var-1);
-		beta = (1-mean)*((mean*(1-mean))/var-1);
+		if (var > 0) {
+			alpha = mean*((mean*(1-mean))/var-1);
+			beta = (1-mean)*((mean*(1-mean))/var-1);
+		}
 
 		// Sometimes this doesn't work properly -> no scaling
 		if (alpha <=0 || beta <=0)
