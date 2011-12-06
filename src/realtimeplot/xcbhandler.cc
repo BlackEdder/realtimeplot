@@ -75,7 +75,7 @@ namespace realtimeplot {
 			XCB_EVENT_MASK_BUTTON_RELEASE |
 			//XCB_EVENT_MASK_ENTER_WINDOW |
 			//XCB_EVENT_MASK_LEAVE_WINDOW |
-			//XCB_EVENT_MASK_POINTER_MOTION |
+			XCB_EVENT_MASK_POINTER_MOTION |
 			//XCB_EVENT_MASK_POINTER_MOTION_HINT |
 			//XCB_EVENT_MASK_BUTTON_1_MOTION |
 			//XCB_EVENT_MASK_BUTTON_2_MOTION |
@@ -112,7 +112,9 @@ namespace realtimeplot {
 	void XcbHandler::process_xevents() {
 		xcb_generic_event_t *event;
 
+		bool move_tracking = false;
 		while (event = xcb_wait_for_event (connection)) {
+			size_t move_x, move_y;
 			switch(XCB_EVENT_RESPONSE_TYPE(event)) {
 				case XCB_CLIENT_MESSAGE:
 					xcb_client_message_event_t* msg;
@@ -184,8 +186,34 @@ namespace realtimeplot {
 							send_event( conf->window, boost::shared_ptr<Event>( 
 										new ZoomEvent( 1/0.95 ) ) );
 							break;
+						case 3:
+							move_tracking = true;
+							move_x = bp->event_x;
+							move_y = bp->event_y;
+							break;
 						default:
 							break;
+					}
+					break;
+				case XCB_BUTTON_RELEASE: 
+					xcb_button_release_event_t *br;
+					br = (xcb_button_release_event_t *) event;
+					switch (br->detail) {
+						case 3:
+							move_tracking = false;
+							break;
+						default:
+							break;
+					}
+					break;
+				case XCB_MOTION_NOTIFY: 
+					xcb_motion_notify_event_t *motion;
+					motion = (xcb_motion_notify_event_t *) event;
+					if (move_tracking) {
+						send_event( conf->window, boost::shared_ptr<Event>( 
+									new MovePixelsEvent( move_x-motion->event_x, move_y-motion->event_y ) ) );
+						move_x = motion->event_x;
+						move_y = motion->event_y;
 					}
 					break;
 				default:

@@ -153,6 +153,20 @@ namespace realtimeplot {
 				int dx, dy;
 		};
 
+		class MovePixelsEvent : public Event {
+			public:
+				MovePixelsEvent( int direction_x, int direction_y ) :
+				dx( direction_x ), dy(direction_y)
+			{
+			}
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				pBPlot->move_pixels( dx, dy );
+			}
+			private:
+				int dx, dy;
+		};
+
+
 		class ZoomEvent : public Event {
 			public:
 				ZoomEvent( double scale ) :

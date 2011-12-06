@@ -375,8 +375,10 @@ namespace realtimeplot {
 		double height = pAxesArea->height-config.bottom_margin-config.top_margin;
 		// standard step size of move is 0.05 -> we multiply by 20, 
 		// i.e. a move where pixels_x == width would result in 20 steps of 0.05 
+		//
+		// Also following convention: positive value for pixels_y results in a move downwards
 		move( pixels_x/width*20,
-			pixels_y/height*20 );
+			-pixels_y/height*20 );
 	}
 
 	void BackendPlot::move( double direction_x, double direction_y ) {

@@ -152,13 +152,13 @@ class TestBackend : public CxxTest::TestSuite
 			bpl.move_pixels( -5, 0 );
 			TS_ASSERT_EQUALS( bpl.config.max_x, 5 );
 			TS_ASSERT_EQUALS( bpl.config.min_x, -5 );
-			bpl.move_pixels( 0, 5 );
+			bpl.move_pixels( 0, -5 );
 			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
 			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
-			bpl.move_pixels( 0, -5 );
+			bpl.move_pixels( 0, 5 );
 			TS_ASSERT_EQUALS( bpl.config.max_y, 5 );
 			TS_ASSERT_EQUALS( bpl.config.min_y, -5 );
-			bpl.move_pixels( 5, 5 );
+			bpl.move_pixels( 5, -5 );
 			TS_ASSERT_EQUALS( bpl.config.max_x, 5.5 );
 			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
 			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
