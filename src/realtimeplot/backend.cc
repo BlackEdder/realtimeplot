@@ -60,7 +60,7 @@ namespace realtimeplot {
 
 		//create_xlib_window
 		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
-		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.bottom_margin;
+		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.top_margin;
 		win = pDisplayHandler->open_window(x_surface_width, x_surface_height,
 				pEventHandler);
 		// Set the title
@@ -370,7 +370,16 @@ namespace realtimeplot {
 		return surface;
 	}
 
-	void BackendPlot::move( int direction_x, int direction_y ) {
+	void BackendPlot::move_pixels( int pixels_x, int pixels_y ) {
+		double width = pAxesArea->width-config.left_margin-config.right_margin;
+		double height = pAxesArea->height-config.bottom_margin-config.top_margin;
+		// standard step size of move is 0.05 -> we multiply by 20, 
+		// i.e. a move where pixels_x == width would result in 20 steps of 0.05 
+		move( pixels_x/width*20,
+			pixels_y/height*20 );
+	}
+
+	void BackendPlot::move( double direction_x, double direction_y ) {
 		double xrange = config.max_x-config.min_x;
 		config.min_x += 0.05*direction_x*xrange;
 		config.max_x = config.min_x+xrange;
