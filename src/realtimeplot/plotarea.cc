@@ -308,8 +308,8 @@ namespace realtimeplot {
 
 	void AxesArea::setup_with_plot_size( PlotConfig &config, 
 					size_t width, size_t height ) {
-		setup( config, width+config.left_margin + config.right_margin,
-				height+config.bottom_margin+config.top_margin );
+		setup( config, width + config.left_margin + config.right_margin,
+				height + config.bottom_margin + config.top_margin );
 	}	
 
 	void AxesArea::transform_to_plot_units() {

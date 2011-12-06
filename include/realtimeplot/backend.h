@@ -201,8 +201,15 @@ namespace realtimeplot {
 			 */
 			void scale_xsurface( double width, double height );
 
-			//move the plotting area around in increments of 5%
-			void move( int direction_x, int direction_y );
+			/**
+			 * \brief Move the plotting area a number of onscreen pixels (xwindow pixels)
+			 */
+			void move_pixels( int pixels_x, int pixels_y );
+
+			/**
+			 * \brief Move the plotting area around in increments of 5%
+			 */
+			void move( double direction_x, double direction_y );
 
 			/**
 			 * \brief Zoom in or out according to the given scale
