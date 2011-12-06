@@ -71,8 +71,8 @@ namespace realtimeplot {
 		values[1] = //XCB_EVENT_MASK_NO_EVENT |
 			XCB_EVENT_MASK_KEY_PRESS |
 			//XCB_EVENT_MASK_KEY_RELEASE |
-			//XCB_EVENT_MASK_BUTTON_PRESS |
-			//XCB_EVENT_MASK_BUTTON_RELEASE |
+			XCB_EVENT_MASK_BUTTON_PRESS |
+			XCB_EVENT_MASK_BUTTON_RELEASE |
 			//XCB_EVENT_MASK_ENTER_WINDOW |
 			//XCB_EVENT_MASK_LEAVE_WINDOW |
 			//XCB_EVENT_MASK_POINTER_MOTION |
@@ -168,10 +168,26 @@ namespace realtimeplot {
 									new ZoomEvent( 0.95 ) ) );
 					} else if (key == XK_KP_Subtract) { 
 						send_event( conf->window, boost::shared_ptr<Event>( 
-									new ZoomEvent( 1.05 ) ) );
+									new ZoomEvent( 1/0.95 ) ) );
 					}
 					xcb_key_symbols_free( p_symbols );
-					break;	
+					break;
+				case XCB_BUTTON_PRESS:
+					xcb_button_press_event_t *bp;
+					bp = (xcb_button_press_event_t *)event;
+					switch (bp->detail) {
+						case 4:
+							send_event( conf->window, boost::shared_ptr<Event>( 
+										new ZoomEvent( 0.95 ) ) );
+							break;
+						case 5:
+							send_event( conf->window, boost::shared_ptr<Event>( 
+										new ZoomEvent( 1/0.95 ) ) );
+							break;
+						default:
+							break;
+					}
+					break;
 				default:
 					break;
 			}
