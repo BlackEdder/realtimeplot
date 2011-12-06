@@ -118,6 +118,27 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "bpl_reset" ) );
 		}
 
+		void testMove() {
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.move( 1, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
+			bpl.move( -1, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -5 );
+			bpl.move( 0, 1 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+			bpl.move( 0, -1 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -5 );
+			bpl.move( 1, 1 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+		}
+
 		void testRollingUpdate() {
 			//conf.area = 500*500;
 			conf.overlap = 0.6;
