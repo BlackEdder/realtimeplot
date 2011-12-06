@@ -1,9 +1,11 @@
 * Histogram and Histogram3D should also plot outside the axes, so move
 	works properly
-* Mouse input
 * Provide a combine method that easily allows you to combine one plot with another
 	* Probably need to make plot surface transparent
 * PDF backend
+* Mouse wheel zoom should zoom around the current position
+* Zoom should not zoom to far (the pPlotArea->max/min_x/y should always 
+		encompass config.min/max_x/y)
 * Use a key to start (and stop) recording to a png file
 * Allow multiple data sets in one histogram/histogram3d plot
 * GTK backend?
