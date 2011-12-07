@@ -172,6 +172,20 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
 			TS_ASSERT_EQUALS( bpl.config.max_y, 4.5 );
 			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+
+			bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.zoom(5.0);
+			TS_ASSERT_EQUALS( bpl.config.max_x, 25.0 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -25.0 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 25 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -25 );
+
+			bpl.zoom(5.1);
+			TS_ASSERT_EQUALS( bpl.config.max_x, bpl.pPlotArea->max_x );
+			TS_ASSERT_EQUALS( bpl.config.min_x, bpl.pPlotArea->min_x );
+			TS_ASSERT_EQUALS( bpl.config.max_y, bpl.pPlotArea->max_y );
+			TS_ASSERT_EQUALS( bpl.config.min_y, bpl.pPlotArea->min_y );
+			
 		}
 
 		void testRollingUpdate() {
