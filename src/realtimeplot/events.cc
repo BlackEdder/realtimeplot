@@ -47,7 +47,7 @@ namespace realtimeplot {
 		OpenPlotEvent::OpenPlotEvent( PlotConfig plot_conf, 
 				boost::shared_ptr<EventHandler> pEventHandler ) :
 			plot_conf( plot_conf ),
-			pEventHandler( pEventHandler->shared_from_this() )
+			pEventHandler( pEventHandler )
 		{
 		}
 
@@ -140,15 +140,17 @@ namespace realtimeplot {
 
 	FinalEvent::FinalEvent( boost::shared_ptr<EventHandler> pEventHandler,
 			bool force ) :
-		pEventHandler( pEventHandler->shared_from_this() ),
+		pEventHandler( pEventHandler ),
 		force( force )
 	{
 	}
 
 	void FinalEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pEventHandler->processing_events = false;
+		// Close even when window is still open
 		if (force)
-			pEventHandler->force_close = true;
+			pBPlot->close_window();
+			//pEventHandler->window_closed = true;
 	}
 
 	/*
@@ -158,7 +160,7 @@ namespace realtimeplot {
 	OpenHeightMapEvent::OpenHeightMapEvent( PlotConfig plot_conf, 
 			boost::shared_ptr<EventHandler> pEventHandler ) :
 		plot_conf( plot_conf ),
-		pEventHandler( pEventHandler->shared_from_this() )
+		pEventHandler( pEventHandler )
 	{
 	}
 

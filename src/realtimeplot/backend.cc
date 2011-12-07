@@ -35,9 +35,9 @@ namespace realtimeplot {
 	 */
 	boost::mutex BackendPlot::global_mutex;
 
-	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler )
+	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), config( conf )
 	{
-		config = conf;
+		//config = conf;
 		checkConfig();
 
 #ifndef NO_X
@@ -45,18 +45,22 @@ namespace realtimeplot {
 			pDisplayHandler = XcbHandler::Instance();
 		else {
 			pDisplayHandler = DummyHandler::Instance();
+			if (pEventHandler != NULL)
+				pEventHandler->window_closed = true;
 		}
 #endif
 #ifdef NO_X
 		pDisplayHandler = DummyHandler::Instance();
 		config.display = false;
+		if (pEventHandler != NULL)
+			pEventHandler->window_closed = true;
 #endif
 
 		pPlotArea = boost::shared_ptr<PlotArea> (new PlotArea( config ));
 
 		//create_xlib_window
 		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
-		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.bottom_margin;
+		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.top_margin;
 		win = pDisplayHandler->open_window(x_surface_width, x_surface_height,
 				pEventHandler);
 		// Set the title
@@ -97,6 +101,11 @@ namespace realtimeplot {
 			config.fixed_plot_area = true;
 		else if (config.overlap < 0)
 			config.overlap = 0;
+
+		if ( config.min_x >= config.max_x )
+			config.min_x = config.max_x - 1;
+		if ( config.min_y >= config.max_y )
+			config.min_y = config.max_y - 1;
 	}
 
 	void BackendPlot::display() {
@@ -157,6 +166,8 @@ namespace realtimeplot {
 			xSurface.clear();
 			pDisplayHandler->close_window( win );
 		}
+		if (pEventHandler != NULL)
+			pEventHandler->window_closed = true;
 	}
 
 	void BackendPlot::draw_axes_surface() {
@@ -359,7 +370,18 @@ namespace realtimeplot {
 		return surface;
 	}
 
-	void BackendPlot::move( int direction_x, int direction_y ) {
+	void BackendPlot::move_pixels( int pixels_x, int pixels_y ) {
+		double width = pAxesArea->width-config.left_margin-config.right_margin;
+		double height = pAxesArea->height-config.bottom_margin-config.top_margin;
+		// standard step size of move is 0.05 -> we multiply by 20, 
+		// i.e. a move where pixels_x == width would result in 20 steps of 0.05 
+		//
+		// Also following convention: positive value for pixels_y results in a move downwards
+		move( pixels_x/width*20,
+			-pixels_y/height*20 );
+	}
+
+	void BackendPlot::move( double direction_x, double direction_y ) {
 		double xrange = config.max_x-config.min_x;
 		config.min_x += 0.05*direction_x*xrange;
 		config.max_x = config.min_x+xrange;

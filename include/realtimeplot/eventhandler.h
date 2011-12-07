@@ -62,7 +62,7 @@ namespace realtimeplot {
         public:
 					boost::shared_ptr<boost::thread> pEventProcessingThrd;
             //Constructor
-					EventHandler( PlotConfig config );
+					EventHandler();
 					~EventHandler();
 
 					//Add an event to the event queue
@@ -71,7 +71,7 @@ namespace realtimeplot {
 
 					// ! Are/Should we be processing events
 					bool processing_events;
-					bool force_close;
+					bool window_closed;
 					
 					boost::mutex m_mutex;
 

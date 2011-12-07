@@ -149,8 +149,10 @@ namespace realtimeplot {
 	}
 
 	void ColorMap::calculate_height_scaling( double mean, double var ) {
-		alpha = mean*((mean*(1-mean))/var-1);
-		beta = (1-mean)*((mean*(1-mean))/var-1);
+		if (var > 0) {
+			alpha = mean*((mean*(1-mean))/var-1);
+			beta = (1-mean)*((mean*(1-mean))/var-1);
+		}
 
 		// Sometimes this doesn't work properly -> no scaling
 		if (alpha <=0 || beta <=0)
@@ -197,15 +199,15 @@ namespace realtimeplot {
 
 	Plot::Plot()
 		: config( PlotConfig() ),
-		pEventHandler( new EventHandler( config ) ), detach( false )
+		pEventHandler( new EventHandler() ), detach( false )
 	{ 
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
-						pEventHandler ) ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenPlotEvent( config, pEventHandler ) ) );
 	}
 
 	Plot::Plot(bool open)
 		: config( PlotConfig() ),
-		pEventHandler( new EventHandler( config ) ), detach( false )
+		pEventHandler( new EventHandler() ), detach( false )
 	{ 
 		if (open)
 			pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
@@ -215,14 +217,16 @@ namespace realtimeplot {
 
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
-		pEventHandler( new EventHandler( config ) ), detach( false )
+		pEventHandler( new EventHandler() ), detach( false )
 	{ 
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenPlotEvent( config, 
 						pEventHandler ) ) );
 	}
 
 	Plot::~Plot() {
-		pEventHandler->add_event( boost::shared_ptr<Event>( new FinalEvent(pEventHandler, false ) ) );
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new FinalEvent(pEventHandler, false ) ) );
 		if (detach)
 			pEventHandler->pEventProcessingThrd->detach();
 		else
@@ -354,10 +358,6 @@ namespace realtimeplot {
 						frequency, no_bins, pEventHandler ) ) );
 	}
 
-
-	Histogram::~Histogram() {
-	}
-
 	void Histogram::set_data( std::vector<double> the_data, bool show ) {
 		for (size_t i=0; i<the_data.size(); ++i) {
 			add_data( the_data[i], false );
@@ -417,10 +417,6 @@ namespace realtimeplot {
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
 					new OpenHistogram3DEvent( config, 
 						no_bins, no_bins, pEventHandler ) ) );
-	}
-
-
-	Histogram3D::~Histogram3D() {
 	}
 
 	void Histogram3D::add_data( double x, double y, bool show ) {
@@ -506,7 +502,8 @@ namespace realtimeplot {
 		//config = PlotConfig();
 		config.fixed_plot_area = true;
 		//pEventHandler.reset( new EventHandler( config ) );
-		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHeightMapEvent( config, 
+		pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new OpenHeightMapEvent( config, 
 						pEventHandler ) ) );
 	}
 
@@ -521,7 +518,6 @@ namespace realtimeplot {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new OpenHeightMapEvent( config, 
 						pEventHandler ) ) );
 	}
-
 
 	void HeightMap::add_data( float x, float y, float z, bool show ) {
 		pEventHandler->add_event( boost::shared_ptr<Event>( new HMDataEvent( x, y, z, show ) ) ); 

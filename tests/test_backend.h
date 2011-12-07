@@ -56,6 +56,10 @@ class TestBackend : public CxxTest::TestSuite
 
 		void testEmptyPlot() {
 			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			TS_ASSERT_EQUALS( bpl.pAxesArea->width, 80 );
+			TS_ASSERT_EQUALS( bpl.pAxesArea->height, 80 );
+			TS_ASSERT_EQUALS( bpl.pPlotArea->plot_area_width, 50 );
+			TS_ASSERT_EQUALS( bpl.pPlotArea->plot_area_height, 50 );
 			bpl.save( fn( "empty_plot" ) );
 			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
@@ -117,6 +121,50 @@ class TestBackend : public CxxTest::TestSuite
 			bpl.save( fn( "bpl_reset" ) );
 			TS_ASSERT( check_plot( "bpl_reset" ) );
 		}
+
+		void testMove() {
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.move( 1, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
+			bpl.move( -1, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -5 );
+			bpl.move( 0, 1 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+			bpl.move( 0, -1 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -5 );
+			bpl.move( 1, 1 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+		}
+
+		void testMovePixels() {
+			conf.area = 100*100;
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.move_pixels( 5, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
+			bpl.move_pixels( -5, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -5 );
+			bpl.move_pixels( 0, -5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+			bpl.move_pixels( 0, 5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -5 );
+			bpl.move_pixels( 5, -5 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -4.5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+		}
+
 
 		void testRollingUpdate() {
 			//conf.area = 500*500;
