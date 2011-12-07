@@ -124,7 +124,7 @@ namespace realtimeplot {
 				xContext->paint();
 				global_mutex.unlock();
 
-				time_of_last_update = boost::posix_time::microsec_clock::local_time();
+				time_of_last_update = now;
 			}
 		}
 	}

@@ -46,9 +46,9 @@ namespace realtimeplot {
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent, 
 			bool high_priority ) {
 		//block if many events are present
-		if (queue_size>10000000) {
+		if (queue_size>1000) {
 			std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
-			while (queue_size>1000) {
+			while (queue_size>10) {
 				usleep(10000);
 			}
 		}
