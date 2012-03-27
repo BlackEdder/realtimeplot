@@ -5,3 +5,17 @@
 *.out
 *.swp
 *.swo
+*.swn
+CTestTestfile.cmake
+CMakeCache.txt
+CMakeFiles/
+Doxyfile
+Makefile
+Testing/
+bin/
+cmake_install.cmake
+doc/
+ext/generated/
+install_manifest.txt
+test_*.cc
+tags
