@@ -48,7 +48,7 @@ bool compare_files( std::string fn1, std::string fn2 ) {
 
 bool check_plot( std::string plotname ) {
 	return compare_files( "tests/tmp_plots/test_" + plotname + ".png", 
-		"tests/correct_plots/test_" + plotname + ".png" ); 
+		"tests/data/correct_plots/test_" + plotname + ".png" ); 
 }
 
 std::string fn( std::string plotname ) {
