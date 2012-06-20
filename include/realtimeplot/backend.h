@@ -42,6 +42,8 @@
 #include "realtimeplot/xcbhandler.h"
 #include "realtimeplot/plotarea.h"
 
+class TestBackend;
+
 namespace realtimeplot {
 	/**
 		\brief BackendPlot that waits for events and then plots them
@@ -215,6 +217,7 @@ namespace realtimeplot {
 			 * \brief Zoom in or out according to the given scale
 			 */
 			void zoom( double scale );
+			friend class ::TestBackend;
 		private:
 			DisplayHandler *pDisplayHandler;
 			size_t win;

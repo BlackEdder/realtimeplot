@@ -64,6 +64,25 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
 
+		void testRangeChecking() {
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			PlotConfig conf2 = PlotConfig();
+			conf2.max_x = -1;
+			conf2.min_x = -1;
+			conf2.max_y = 2;
+			conf2.min_y = 2;
+			bpl.config = conf2;
+			TS_ASSERT_EQUALS( bpl.config.max_x, -1 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -1 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 2 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, 2 );
+			bpl.checkConfig();
+			TS_ASSERT_EQUALS( bpl.config.max_x, -1 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -2 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 2 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, 1 );
+			}
+
 		void testPointPlot() {
 			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
 			bpl.point( 1, 1 );

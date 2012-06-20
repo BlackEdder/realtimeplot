@@ -1,6 +1,5 @@
 * Find out if segmentation fault within screen can be dealt with more gracefully 
 		(segmentation fault also seems to happen when display = false)
-* Check for valid max/min values (if they are invalid it can lead to 'Cairo::logic_error'
 * Histogram and Histogram3D should also plot outside the axes, so move
 	works properly
 * Provide a combine method that easily allows you to combine one plot with another
