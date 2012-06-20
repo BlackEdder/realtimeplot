@@ -48,16 +48,9 @@ namespace realtimeplot {
 	/**
 		\brief BackendPlot that waits for events and then plots them
 
-		Users should almost never create an object based on this class themself, but
-		should use a frontend class or if they need more flexibility create a event 
-		handler and send that custom events.
-
-		Large parts of the class are accessible from events (including the image 
-		surfaces), which should allow one to do everything possible they want using
-		custom events (as long as one knows what's going on in this class :) )
-
-		\future Document the way the plot works (with the different plotting 
-		surfaces etc)
+		Users should almost never create an object based on this class, but
+		should use a frontend class or if they need more flexibility create an event 
+		handler object and send that custom events.
 		*/
 	class BackendPlot {
 		public:
