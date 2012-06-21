@@ -80,8 +80,8 @@ namespace realtimeplot {
 	void PlotArea::transform_to_plot_units() {
 		transform_to_device_units();
 		context->translate( 0, height );
-		context->scale( width/(max_x-min_x),
-				-height/(max_y-min_y) );
+		context->scale( ((double) width)/(max_x-min_x),
+				-((double) height)/(max_y-min_y) );
 		context->translate( -min_x, -min_y );
 	}
 

@@ -136,7 +136,7 @@ namespace realtimeplot {
 		xcb_generic_event_t *event;
 
 		bool move_tracking = false;
-		while (event = xcb_wait_for_event (connection)) {
+		while ((event = xcb_wait_for_event (connection))) {
 			size_t move_x, move_y;
 			switch(XCB_EVENT_RESPONSE_TYPE(event)) {
 				case XCB_CLIENT_MESSAGE:
