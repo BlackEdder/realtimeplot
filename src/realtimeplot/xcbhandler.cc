@@ -229,10 +229,10 @@ namespace realtimeplot {
 							break;
 					}
 					break;
-				case XCB_MOTION_NOTIFY: 
-					xcb_motion_notify_event_t *motion;
-					motion = (xcb_motion_notify_event_t *) event;
+				case XCB_MOTION_NOTIFY: // Mouse motion tracking 
 					if (move_tracking) {
+						xcb_motion_notify_event_t *motion;
+						motion = (xcb_motion_notify_event_t *) event;
 						send_event( conf->window, boost::shared_ptr<Event>( 
 									new MovePixelsEvent( move_x-motion->event_x, move_y-motion->event_y ) ) );
 						move_x = motion->event_x;
