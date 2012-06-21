@@ -199,7 +199,7 @@ namespace realtimeplot {
 
 	Plot::Plot()
 		: config( PlotConfig() ),
-		pEventHandler( new EventHandler() ), detach( false )
+			detach( false ), pEventHandler( new EventHandler() )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
 					new OpenPlotEvent( config, pEventHandler ) ) );
@@ -207,7 +207,7 @@ namespace realtimeplot {
 
 	Plot::Plot(bool open)
 		: config( PlotConfig() ),
-		pEventHandler( new EventHandler() ), detach( false )
+			detach( false ), pEventHandler( new EventHandler() )
 	{ 
 		if (open)
 			pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
@@ -217,7 +217,7 @@ namespace realtimeplot {
 
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
-		pEventHandler( new EventHandler() ), detach( false )
+			detach( false ), pEventHandler( new EventHandler() )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
 					new OpenPlotEvent( config, 
@@ -442,10 +442,9 @@ namespace realtimeplot {
 	 */
 	SurfacePlot::SurfacePlot( float min_x, float max_x, float min_y, float max_y,
 			size_t resolution )
-		: resolution( resolution ),
+		: Plot(), resolution( resolution ),
 		data( resolution*resolution ), 
-		max_z( 1 ), 
-		Plot()
+		max_z( 1 ) 
 	{ 
 		PlotConfig new_config = PlotConfig();
 		new_config.min_x = min_x;

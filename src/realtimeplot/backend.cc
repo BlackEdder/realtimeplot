@@ -35,7 +35,7 @@ namespace realtimeplot {
 	 */
 	boost::mutex BackendPlot::global_mutex;
 
-	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : pEventHandler( pEventHandler ), config( conf )
+	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : config( conf ), pEventHandler( pEventHandler ) 
 	{
 		//config = conf;
 		checkConfig();
@@ -467,8 +467,8 @@ namespace realtimeplot {
 
 	BackendHistogram::BackendHistogram( PlotConfig conf, bool frequency, 
 			size_t no_bins, boost::shared_ptr<EventHandler> pEventHandler ) 
-		: BackendPlot( conf, pEventHandler ), frequency( frequency ),
-		no_bins( no_bins ), rebin( false )
+		: BackendPlot( conf, pEventHandler ), no_bins( no_bins ), 
+		frequency( frequency ), rebin( false )
 	{
 		config.min_y = 0;
 		config.max_y = 1.2;
@@ -616,8 +616,8 @@ namespace realtimeplot {
 			boost::shared_ptr<EventHandler> pEventHandler, 
 			size_t no_bins_x, size_t no_bins_y ) : 
 		BackendPlot( cfg, pEventHandler ),
-		data( std::vector<delaunay::Vertex>() ), 
 		no_bins_x( no_bins_x ), no_bins_y( no_bins_y ),
+		data( std::vector<delaunay::Vertex>() ), 
 		bins_xy( std::vector<size_t>( no_bins_x*no_bins_y ) )
  		{
 		}

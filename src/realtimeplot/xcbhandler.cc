@@ -136,7 +136,7 @@ namespace realtimeplot {
 		xcb_generic_event_t *event;
 
 		bool move_tracking = false;
-		size_t last_tracked_x, last_tracked_y;
+		size_t last_tracked_x=0, last_tracked_y=0;
 		while ((event = xcb_wait_for_event (connection))) {
 			switch(XCB_EVENT_RESPONSE_TYPE(event)) {
 				case XCB_CLIENT_MESSAGE:
@@ -169,30 +169,30 @@ namespace realtimeplot {
 					xcb_keysym_t key;
 					key = xcb_key_symbols_get_keysym(p_symbols,ev->detail,0);
 					if (key == XK_space)  {
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 								new PauseEvent() ) ); 
 					}
 					else if (key == XK_w)  {
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 									new SaveEvent( "realtimeplot.png" ) ) );
 					}
 					else if (key == XK_Left) {
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 									new MoveEvent( -1, 0 ) ) );
 					} else if (key == XK_Right) {
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 									new MoveEvent( 1, 0 ) ) );
 					} else if (key == XK_Up) {
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 									new MoveEvent( 0, 1 ) ) );
 					} else if (key == XK_Down) {
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 									new MoveEvent( 0, -1 ) ) );
 					} else if (key == XK_KP_Add) { 
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 									new ZoomEvent( 0.95 ) ) );
 					} else if (key == XK_KP_Subtract) { 
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( ev->event, boost::shared_ptr<Event>( 
 									new ZoomEvent( 1/0.95 ) ) );
 					}
 					xcb_key_symbols_free( p_symbols );
@@ -202,11 +202,11 @@ namespace realtimeplot {
 					bp = (xcb_button_press_event_t *)event;
 					switch (bp->detail) {
 						case 4:
-							send_event( conf->window, boost::shared_ptr<Event>( 
+							send_event( bp->event, boost::shared_ptr<Event>( 
 										new ZoomEvent( 0.95 ) ) );
 							break;
 						case 5:
-							send_event( conf->window, boost::shared_ptr<Event>( 
+							send_event( bp->event, boost::shared_ptr<Event>( 
 										new ZoomEvent( 1/0.95 ) ) );
 							break;
 						case 3:
@@ -233,7 +233,7 @@ namespace realtimeplot {
 					if (move_tracking) {
 						xcb_motion_notify_event_t *motion;
 						motion = (xcb_motion_notify_event_t *) event;
-						send_event( conf->window, boost::shared_ptr<Event>( 
+						send_event( motion->event, boost::shared_ptr<Event>( 
 									new MovePixelsEvent( last_tracked_x-motion->event_x, 
 										last_tracked_y-motion->event_y ) ) );
 						last_tracked_x = motion->event_x;
@@ -277,7 +277,7 @@ namespace realtimeplot {
 
 	xcb_visualtype_t *XcbHandler::get_root_visual_type(xcb_screen_t *s)
 	{
-		xcb_visualid_t root_visual;
+		//xcb_visualid_t root_visual;
 		xcb_visualtype_t  *visual_type = NULL;
 		xcb_depth_iterator_t depth_iter;
 

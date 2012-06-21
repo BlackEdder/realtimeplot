@@ -21,7 +21,8 @@ class TestXcbHandler : public CxxTest::TestSuite
 		 */
 		void testXcbOpenWindow() {
 			DisplayHandler *xcb = XcbHandler::Instance();
-			size_t win = xcb->open_window(500,500);
+			xcb->open_window(500,500);
+			//size_t win = xcb->open_window(500,500);
 		}
 };
 	

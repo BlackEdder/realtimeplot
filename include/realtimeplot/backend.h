@@ -231,7 +231,7 @@ namespace realtimeplot {
 		public:
 			float z;
 			Vertex3D( float x, float y, float z ) : 
-				z(z), delaunay::Vertex( x, y ) {}
+				delaunay::Vertex( x, y ), z(z) {}
 			boost::shared_ptr<Vertex3D> crossProduct( boost::shared_ptr<Vertex3D> pV ) {
 				return boost::shared_ptr<Vertex3D>( new Vertex3D( y*pV->z-z*pV->y, 
 							z*pV->x-x*pV->z, x*pV->y-y*pV->x ) );
@@ -269,7 +269,7 @@ namespace realtimeplot {
 				boost::shared_ptr<Vertex3D> pEV2( new Vertex3D( vertices[2]->x-vertices[0]->x,
 							vertices[2]->y-vertices[0]->y,
 							vertices[2]->z-vertices[0]->z ) );
-				float x2; float y2; float z2;
+				float y2; float z2;
 				boost::shared_ptr<Vertex3D> pNormal;
 				pNormal = pEV1->crossProduct( pEV2 );
 				y2 = pNormal->y/pNormal->x;
