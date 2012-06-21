@@ -35,6 +35,17 @@ namespace realtimeplot {
 	/**
 	 * Adaptive EventHandler
 	 */
+
+	void AdaptiveEventHandler::reprocess() {
+		std::list<boost::shared_ptr<Event> >::iterator it = processed_events.begin();
+		++it; // Skip openplotevent
+		if ( processing_events || !window_closed ) {
+			for (; it != processed_events.end(); ++it) {
+				(*it)->execute( pBPlot );
+			}
+		}
+	}
+
 	void AdaptiveEventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !window_closed ) {
@@ -44,16 +55,16 @@ namespace realtimeplot {
 				priority_event_queue.pop_front();
 				--priority_queue_size;
 				m_mutex.unlock();
-				pEvent->execute( pBPlot );
 				processed_events.push_back( pEvent );
+				pEvent->execute( pBPlot );
 			} else if ( queue_size>0 ) {
 				boost::shared_ptr<Event> pEvent = event_queue.front();
 				m_mutex.lock();
 				event_queue.pop_front();
 				--queue_size;
 				m_mutex.unlock();
-				pEvent->execute( pBPlot );
 				processed_events.push_back( pEvent );
+				pEvent->execute( pBPlot );
 			}
 			if (queue_size + priority_queue_size == 0) {
 				if (pBPlot != NULL) {

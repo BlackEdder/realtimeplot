@@ -68,6 +68,13 @@ namespace realtimeplot {
 		public:
 			AdaptiveEventHandler() : EventHandler() {}
 
+			/**
+			 * \brief Reprocess events in the processed_events list
+			 * 
+			 * Only called from within process_events_thread, so no locking needed
+			 */
+			void reprocess();
+
 			friend class TestAdaptive;
 		private:
 			std::list<boost::shared_ptr<Event> > processed_events;
