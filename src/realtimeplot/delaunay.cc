@@ -399,12 +399,13 @@ namespace realtimeplot {
 std::ostream & operator<<(std::ostream &out,
 		const realtimeplot::delaunay::Vertex &v ) {
 	out << "(" << v.x << "," << v.y << ")";
+	return out;
 }
 
 std::ostream & operator<<(std::ostream &out,
 		const realtimeplot::delaunay::Edge &e ) {
 	out << (*e.pV0) << "--" << (*e.pV1);
-
+	return out;
 }
 std::ostream & operator<<(std::ostream &out,
 		const realtimeplot::delaunay::Triangle &t ) {
@@ -412,5 +413,6 @@ std::ostream & operator<<(std::ostream &out,
 		out << (*t.corners[i]->vertex) << "--"; 
 	}
 	out << (*t.corners[2]->vertex); 
+	return out;
 }
 
