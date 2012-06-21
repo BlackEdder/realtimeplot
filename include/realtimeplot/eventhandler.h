@@ -76,13 +76,13 @@ namespace realtimeplot {
 					boost::mutex m_mutex;
 
 					friend class TestBackendWithCairo;
-				private:
+				protected:
 					boost::shared_ptr<BackendPlot> pBPlot;
 					std::list<boost::shared_ptr<Event> > event_queue;
 					std::list<boost::shared_ptr<Event> > priority_event_queue;
 					size_t queue_size, priority_queue_size;
 
-					void process_events();
+					virtual void process_events();
 
 		};
 }

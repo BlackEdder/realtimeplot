@@ -223,6 +223,7 @@ namespace realtimeplot {
 			void checkConfig();
 	};
 
+
 	/**
 	 * \brief 3D Triangle for use in HeightMap
 	 */

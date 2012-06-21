@@ -49,7 +49,7 @@ find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
 SET(LIBS "${PANGOMM};${Boost_LIBRARIES}")
 SET(SRC
-	"src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;src/realtimeplot/plotarea.cc;src/realtimeplot/plot.cc;")
+	"src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;src/realtimeplot/plotarea.cc;src/realtimeplot/plot.cc;src/realtimeplot/adaptive.cc")
 
 if(NOT NO_X)
 	find_library( XCB-UTIL xcb-keysyms xcb-util )
@@ -164,6 +164,9 @@ if(CXXTEST_FOUND)
 	CXXTEST_ADD_TEST(unittest_utils test_utils.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_utils.h)
 	target_link_libraries(unittest_utils realtimeplot)
+	CXXTEST_ADD_TEST(unittest_adaptive test_adaptive.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_adaptive.h)
+	target_link_libraries(unittest_adaptive realtimeplot) # as needed
 	if(NOT NO_X)
 		CXXTEST_ADD_TEST(unittest_xcbhandler test_xcbhandler.cc
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/test_xcbhandler.h)

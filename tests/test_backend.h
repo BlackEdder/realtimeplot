@@ -222,7 +222,7 @@ class TestBackend : public CxxTest::TestSuite
 			bpl.save( fn( "bpl_rolling2" ) );
 			TS_ASSERT( check_plot( "bpl_rolling2" ) );
 		}
-
+		
 		/*
 		 * Histogram
 		 */
