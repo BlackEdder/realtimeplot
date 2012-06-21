@@ -26,6 +26,50 @@
 #include <fstream>
 #include <string>
 
+#include "realtimeplot/eventhandler.h"
+#include "realtimeplot/backend.h"
+#include "realtimeplot/utils.h"
+
+using namespace realtimeplot;
+class MockBackendPlot : public realtimeplot::BackendPlot {
+	public:
+		std::string state;
+
+		MockBackendPlot( PlotConfig conf, 
+				boost::shared_ptr<EventHandler> pEH ) : BackendPlot( conf, pEH ) {};
+
+		void text( float x, float y, std::string &text ) {
+			state += text;
+		}
+};
+
+class MockEvent : public realtimeplot::Event {
+	public: 
+		MockEvent( size_t id ) : realtimeplot::Event(), id( id ) {}
+    virtual void execute( boost::shared_ptr<realtimeplot::BackendPlot> &pBPlot ) {
+			std::string s_id = realtimeplot::utils::stringify( id );
+			pBPlot->text(0, 0, s_id );
+		}
+	private:
+		size_t id;
+};
+
+class MockOpenPlotEvent : public Event {
+	public:
+		MockOpenPlotEvent( boost::shared_ptr<MockBackendPlot> pl ) :
+			pl( pl )
+		{}
+
+		virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+			pBPlot = boost::static_pointer_cast< 
+				BackendPlot, MockBackendPlot >( pl );
+		}
+	private:
+		boost::shared_ptr<MockBackendPlot> pl;
+
+};
+
+
 bool compare_files( std::string fn1, std::string fn2 ) {
 	std::ifstream file1 (fn1.c_str(), std::ios::in|std::ios::binary);
 	std::ifstream file2 (fn2.c_str(), std::ios::in|std::ios::binary);

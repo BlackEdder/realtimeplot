@@ -30,6 +30,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
+class TestAdaptive;
 
 namespace realtimeplot {
     class PlotConfig;
@@ -76,6 +77,7 @@ namespace realtimeplot {
 					boost::mutex m_mutex;
 
 					friend class TestBackendWithCairo;
+					friend class ::TestAdaptive;
 				protected:
 					boost::shared_ptr<BackendPlot> pBPlot;
 					std::list<boost::shared_ptr<Event> > event_queue;

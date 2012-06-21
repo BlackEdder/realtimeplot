@@ -62,6 +62,26 @@ class TestAdaptive : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
 		}
 
+		void testMockPlotOpenClose() {
+			boost::shared_ptr<EventHandler> pEventHandler( 
+					new AdaptiveEventHandler() );
+
+			boost::shared_ptr<MockBackendPlot> pl( new MockBackendPlot( conf, 
+						pEventHandler ) );
+
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new MockOpenPlotEvent(  pl ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new MockEvent( 1 ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
+
+			TS_ASSERT_EQUALS( pl->state, "1" );
+		}
+
+
 		void testProcessedEvents() {
 			boost::shared_ptr<AdaptiveEventHandler> pEventHandler( 
 					new AdaptiveEventHandler() );
