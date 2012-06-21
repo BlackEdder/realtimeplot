@@ -136,8 +136,8 @@ namespace realtimeplot {
 		xcb_generic_event_t *event;
 
 		bool move_tracking = false;
+		size_t last_tracked_x, last_tracked_y;
 		while ((event = xcb_wait_for_event (connection))) {
-			size_t move_x, move_y;
 			switch(XCB_EVENT_RESPONSE_TYPE(event)) {
 				case XCB_CLIENT_MESSAGE:
 					xcb_client_message_event_t* msg;
@@ -211,8 +211,8 @@ namespace realtimeplot {
 							break;
 						case 3:
 							move_tracking = true;
-							move_x = bp->event_x;
-							move_y = bp->event_y;
+							last_tracked_x = bp->event_x;
+							last_tracked_y = bp->event_y;
 							break;
 						default:
 							break;
@@ -234,9 +234,10 @@ namespace realtimeplot {
 						xcb_motion_notify_event_t *motion;
 						motion = (xcb_motion_notify_event_t *) event;
 						send_event( conf->window, boost::shared_ptr<Event>( 
-									new MovePixelsEvent( move_x-motion->event_x, move_y-motion->event_y ) ) );
-						move_x = motion->event_x;
-						move_y = motion->event_y;
+									new MovePixelsEvent( last_tracked_x-motion->event_x, 
+										last_tracked_y-motion->event_y ) ) );
+						last_tracked_x = motion->event_x;
+						last_tracked_y = motion->event_y;
 					}
 					break;
 				default:
