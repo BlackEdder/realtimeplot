@@ -33,6 +33,26 @@ namespace realtimeplot {
 		min_data_x( 0 ), min_data_y( 0 )
 	{}
 
+	bool BackendAdaptivePlot::within_plot_bounds( float x, float y ) {
+		// No previous points have been plotted yet
+		if (max_data_x<min_data_x) {
+			max_data_x = x;
+			min_data_x = x;
+			max_data_y = y;
+			min_data_y = y;
+		}
+		if (x > max_data_x)
+			max_data_x = x;
+		else if (x<min_data_x)
+			min_data_x = x;
+		if (y > max_data_y)
+			max_data_y = y;
+		else if (y<min_data_y)
+			min_data_y = y;
+		adapt();
+		return BackendPlot::within_plot_bounds( x, y );
+	}
+
 	void BackendAdaptivePlot::adapt() {
 		// Only one data point
 		if (min_data_x == max_data_x) {

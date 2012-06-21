@@ -213,7 +213,25 @@ class TestAdaptive : public CxxTest::TestSuite
 			TS_ASSERT_DELTA( bpl.config.min_x, -0.2, 0.0001 );
 			TS_ASSERT_EQUALS( bpl.config.max_y, 6 );
 			TS_ASSERT_EQUALS( bpl.config.min_y, -1 );
-			}
+		}
+
+		void testWithinBounds() {
+			BackendAdaptivePlot bpl = BackendAdaptivePlot( conf, 
+					boost::shared_ptr<EventHandler>() );
+			bpl.within_plot_bounds( 0, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -0.5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -0.5 );
+			bpl.max_data_x = 1;
+			bpl.max_data_y = 5;
+			bpl.within_plot_bounds( 1, 5 );
+			TS_ASSERT_DELTA( bpl.config.max_x, 1.2, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.min_x, -0.2, 0.0001 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 6 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -1 );
+		}
+
 
 		void xtestOnePoint() {
 			boost::shared_ptr<MockAdaptiveEventHandler> pEH(

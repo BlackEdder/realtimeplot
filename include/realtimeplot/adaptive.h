@@ -61,6 +61,8 @@ namespace realtimeplot {
 			BackendAdaptivePlot( PlotConfig config, 
 				boost::shared_ptr<EventHandler> pEventHandler );
 
+			bool within_plot_bounds( float x, float y );
+
 			/**
 			 * \brief Adapt the plot to the new x/y coords
 			 */
