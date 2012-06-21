@@ -28,13 +28,15 @@ namespace realtimeplot {
 	 * Adaptive Plot
 	 */
 	BackendAdaptivePlot::BackendAdaptivePlot( PlotConfig conf,
-			boost::shared_ptr<EventHandler> pEventHandler, size_t no_events )
-		: BackendPlot( conf, pEventHandler ), no_events( no_events )
+			boost::shared_ptr<EventHandler> pEventHandler )
+		: BackendPlot( conf, pEventHandler )
 	{}
 
 	/**
 	 * Adaptive EventHandler
 	 */
+	AdaptiveEventHandler::AdaptiveEventHandler( size_t no_events ) : 
+		EventHandler(), max_no_events( no_events ), adaptive( true ) {}
 
 	void AdaptiveEventHandler::reprocess() {
 		std::list<boost::shared_ptr<Event> >::iterator it = processed_events.begin();
@@ -55,7 +57,14 @@ namespace realtimeplot {
 				priority_event_queue.pop_front();
 				--priority_queue_size;
 				m_mutex.unlock();
-				processed_events.push_back( pEvent );
+
+				if (adaptive && processed_events.size() < max_no_events)
+					processed_events.push_back( pEvent );
+				else {
+					adaptive = false;
+					processed_events.clear();
+				}
+
 				pEvent->execute( pBPlot );
 			} else if ( queue_size>0 ) {
 				boost::shared_ptr<Event> pEvent = event_queue.front();
@@ -63,7 +72,13 @@ namespace realtimeplot {
 				event_queue.pop_front();
 				--queue_size;
 				m_mutex.unlock();
-				processed_events.push_back( pEvent );
+				if (adaptive && processed_events.size() < max_no_events)
+					processed_events.push_back( pEvent );
+				else {
+					adaptive = false;
+					processed_events.clear();
+				}
+
 				pEvent->execute( pBPlot );
 			}
 			if (queue_size + priority_queue_size == 0) {

@@ -52,7 +52,6 @@ namespace realtimeplot {
 	 */
 	class BackendAdaptivePlot : public BackendPlot {
 		public:
-			size_t no_events;
 			/**
 			 * \brief Creates an Adaptive Plot 
 			 *
@@ -60,13 +59,24 @@ namespace realtimeplot {
 			 * events than that we won't adapt any more.
 			 */
 			BackendAdaptivePlot( PlotConfig config, 
-				boost::shared_ptr<EventHandler> pEventHandler, size_t no_events = 100 );
+				boost::shared_ptr<EventHandler> pEventHandler );
 		private:
 	};
 
+	/**
+	 * \brief EventHandler that keeps no of events around.
+	 *
+	 * Instead of deleting events will keep them around
+	 * for some time.
+	 */
 	class AdaptiveEventHandler : public EventHandler {
 		public:
-			AdaptiveEventHandler() : EventHandler() {}
+			/**
+			 * \brief Create AdaptiveEventHandler
+			 *
+			 * Optional parameter that defines the number of events to keep around
+			 */
+			AdaptiveEventHandler( size_t no_events = 100 ); 
 
 			/**
 			 * \brief Reprocess events in the processed_events list
@@ -77,6 +87,8 @@ namespace realtimeplot {
 
 			friend class TestAdaptive;
 		private:
+			size_t max_no_events;
+			bool adaptive;
 			std::list<boost::shared_ptr<Event> > processed_events;
 
 			void process_events();

@@ -133,13 +133,60 @@ class TestAdaptive : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pl->state, "112" );
 		}
 
+		void testAEHLimit() {
+			boost::shared_ptr<EventHandler> pEventHandler( 
+					new AdaptiveEventHandler( 3 ) );
+
+			boost::shared_ptr<MockBackendPlot> pl( new MockBackendPlot( conf, 
+						pEventHandler ) );
+
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new MockOpenPlotEvent(  pl ) ) );
+			for (size_t i = 0; i < 2; ++i) {
+				pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new MockEvent( 1 ) ) );
+			}
+
+			while (pEventHandler->get_queue_size() > 0) {
+				usleep(100);
+			}
+			TS_ASSERT_EQUALS( pl->state, "11" );
+			
+			boost::shared_ptr<AdaptiveEventHandler> pAEH =
+				boost::static_pointer_cast<AdaptiveEventHandler, 
+					EventHandler>( pEventHandler );
+
+			// Reprocess is normally only called from BackendPlot etc, where no locking is
+			// needed. We need to lock manually here
+			pAEH->m_mutex.lock();
+			pAEH->reprocess();
+			pAEH->m_mutex.unlock();
+			TS_ASSERT_EQUALS( pl->state, "1111" );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+					new MockEvent( 1 ) ) );
+			while (pEventHandler->get_queue_size() > 0) {
+				usleep(100);
+			}
+			TS_ASSERT_EQUALS( pl->state, "11111" );
+		
+			pAEH->reprocess();
+
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new MockEvent( 2 ) ) );
+
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pl->state, "111112" );
+
+		}
 
 		/*
 		 * Adaptive plot
 		 */
 		void testAPEmptyPlot() {
 			BackendAdaptivePlot bpl = BackendAdaptivePlot( conf, 
-					boost::shared_ptr<EventHandler>()  );
+					boost::shared_ptr<EventHandler>() );
 			TS_ASSERT_EQUALS( bpl.pAxesArea->width, 80 );
 			TS_ASSERT_EQUALS( bpl.pAxesArea->height, 80 );
 			TS_ASSERT_EQUALS( bpl.pPlotArea->plot_area_width, 50 );
