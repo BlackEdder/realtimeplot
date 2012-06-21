@@ -247,6 +247,8 @@ class TestAdaptive : public CxxTest::TestSuite
 			pEH->add_event( boost::shared_ptr<Event>( 
 						new PointEvent( -3, -5 ) ) );
 			TS_ASSERT_DELTA( pEH->pBPlot->config.min_x, -1.2, 0.0001 );
+			pEH->pBPlot->save( fn( "adaptive_plot" ) );
+			TS_ASSERT( check_plot( "adaptive_plot" ) );
 		}
 
 		// Make sure to double check that move events etc update the max_x etc properly
