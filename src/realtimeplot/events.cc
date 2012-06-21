@@ -153,6 +153,22 @@ namespace realtimeplot {
 			//pEventHandler->window_closed = true;
 	}
 
+	/**
+	 * Adaptive Plot
+	 */
+
+	AdaptiveOpenPlotEvent::AdaptiveOpenPlotEvent( PlotConfig plot_conf, 
+			boost::shared_ptr<EventHandler> pEventHandler ) :
+		plot_conf( plot_conf ),
+		pEventHandler( pEventHandler )
+	{
+	}
+
+	void AdaptiveOpenPlotEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+		pBPlot.reset( new BackendAdaptivePlot( plot_conf, pEventHandler ) );
+	}
+
+
 	/*
 	 * HeightMap specific
 	 */

@@ -28,6 +28,7 @@
 
 #include "realtimeplot/eventhandler.h"
 #include "realtimeplot/backend.h"
+#include "realtimeplot/adaptive.h"
 #include "realtimeplot/utils.h"
 
 using namespace realtimeplot;
@@ -67,6 +68,29 @@ class MockOpenPlotEvent : public Event {
 	private:
 		boost::shared_ptr<MockBackendPlot> pl;
 
+};
+
+class MockAdaptiveEventHandler : public AdaptiveEventHandler {
+	public:
+		MockAdaptiveEventHandler() : AdaptiveEventHandler(), no_reprocess( 0 ) {
+			processing_events = false; 
+			window_closed = true;
+			pEventProcessingThrd->join();
+			processing_events = true;
+			window_closed = false;
+		}
+
+		void add_event(	boost::shared_ptr< Event > 	pEvent, bool 	high_priority = false ) {
+			pEvent->execute( pBPlot );
+			processed_events.push_back( pEvent );
+		}
+
+		void reprocess() {
+			++no_reprocess;
+			AdaptiveEventHandler::reprocess();
+		}
+
+		size_t no_reprocess;
 };
 
 

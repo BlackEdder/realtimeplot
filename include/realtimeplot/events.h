@@ -24,6 +24,7 @@
 #define REALTIMEPLOT_EVENTS_H
 #include "realtimeplot/eventhandler.h"
 #include "realtimeplot/backend.h"
+#include "realtimeplot/adaptive.h"
 
 
 namespace realtimeplot {
@@ -398,6 +399,22 @@ namespace realtimeplot {
 				boost::static_pointer_cast<BackendHistogram3D, BackendPlot>( 
 						pBPlot )->calculate_height_scaling();
 				}
+		};
+
+		/*
+		 * Adaptive specific events
+		 */
+
+		/**
+		 * \brief Opens a Adaptive 
+		 */
+		class AdaptiveOpenPlotEvent : public Event {
+			public:
+				AdaptiveOpenPlotEvent( PlotConfig plot_conf, boost::shared_ptr<EventHandler> pEventHandler );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+			private:
+				PlotConfig plot_conf;
+				boost::shared_ptr<EventHandler> pEventHandler;
 		};
 
 		/*

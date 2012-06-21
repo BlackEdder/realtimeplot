@@ -83,10 +83,10 @@ namespace realtimeplot {
 			 * 
 			 * Only called from within process_events_thread, so no locking needed
 			 */
-			void reprocess();
+			virtual void reprocess();
 
 			friend class TestAdaptive;
-		private:
+		protected:
 			size_t max_no_events;
 			bool adaptive;
 			std::list<boost::shared_ptr<Event> > processed_events;

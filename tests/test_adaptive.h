@@ -167,6 +167,7 @@ class TestAdaptive : public CxxTest::TestSuite
 			while (pEventHandler->get_queue_size() > 0) {
 				usleep(100);
 			}
+			usleep(100);
 			TS_ASSERT_EQUALS( pl->state, "11111" );
 		
 			pAEH->reprocess();
@@ -193,6 +194,16 @@ class TestAdaptive : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bpl.pPlotArea->plot_area_height, 50 );
 			bpl.save( fn( "empty_plot" ) );
 			TS_ASSERT( check_plot( "empty_plot" ) );
+		}
+
+		void testOnePoint() {
+			boost::shared_ptr<MockAdaptiveEventHandler> pEH(
+					new MockAdaptiveEventHandler() ); 
+			pEH->add_event( boost::shared_ptr<Event>( 
+						new AdaptiveOpenPlotEvent( conf, pEH ) ) );
+			pEH->add_event( boost::shared_ptr<Event>( 
+						new PointEvent( 0, 0 ) ) );
+
 		}
 
 		// Make sure to double check that move events etc update the max_x etc properly
