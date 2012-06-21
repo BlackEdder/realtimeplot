@@ -28,15 +28,6 @@
 namespace realtimeplot {
 	namespace delaunay {
 		bool Edge::intersect(  Edge& e ) {
-			float x1 = pV0->x;
-			float x2 = pV1->x;
-			float y1 = pV0->y;
-			float y2 = pV1->y;
-			float x3 = e.pV0->x;
-			float x4 = e.pV1->x;
-			float y3 = e.pV0->y;
-			float y4 = e.pV1->y;
-
 			Vertex v = intersectionVertex( e );
 
 			if (e.include( v ) && include( v ))
