@@ -413,7 +413,7 @@ namespace realtimeplot {
 			 */
 			void calculate_height_scaling();
 		private:
-			float zmin, zmax,;
+			float zmin, zmax;
 			delaunay::Delaunay delaunay;
 
 			ColorMap color_map;
