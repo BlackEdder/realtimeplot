@@ -29,8 +29,26 @@ namespace realtimeplot {
 	 */
 	BackendAdaptivePlot::BackendAdaptivePlot( PlotConfig conf,
 			boost::shared_ptr<EventHandler> pEventHandler )
-		: BackendPlot( conf, pEventHandler )
+		: BackendPlot( conf, pEventHandler ), max_data_x( -1 ), max_data_y( -1 ),
+		min_data_x( 0 ), min_data_y( 0 )
 	{}
+
+	void BackendAdaptivePlot::adapt() {
+		// Only one data point
+		if (min_data_x == max_data_x) {
+			config.max_x = max_data_x + 0.5;
+			config.min_x = min_data_x - 0.5;
+			config.max_y = max_data_y + 0.5;
+			config.min_y = min_data_y - 0.5;
+		} else {
+			double xrange = max_data_x-min_data_x;
+			config.max_x = max_data_x + 0.2*xrange;
+			config.min_x = min_data_x - 0.2*xrange;
+			double yrange = max_data_y-min_data_y;
+			config.max_y = max_data_y + 0.2*yrange;
+			config.min_y = min_data_y - 0.2*yrange;
+		}
+	}
 
 	/**
 	 * Adaptive EventHandler

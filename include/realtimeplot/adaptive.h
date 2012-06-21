@@ -60,7 +60,15 @@ namespace realtimeplot {
 			 */
 			BackendAdaptivePlot( PlotConfig config, 
 				boost::shared_ptr<EventHandler> pEventHandler );
+
+			/**
+			 * \brief Adapt the plot to the new x/y coords
+			 */
+			void adapt();
+			friend class TestAdaptive;
 		private:
+			double max_data_x, max_data_y, min_data_x, min_data_y;
+
 	};
 
 	/**

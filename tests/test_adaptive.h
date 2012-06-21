@@ -196,13 +196,33 @@ class TestAdaptive : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
 
-		void testOnePoint() {
+		void testAdapt() {
+			BackendAdaptivePlot bpl = BackendAdaptivePlot( conf, 
+					boost::shared_ptr<EventHandler>() );
+			bpl.max_data_x = bpl.min_data_x;
+			bpl.max_data_y = bpl.min_data_y;
+			bpl.adapt();
+			TS_ASSERT_EQUALS( bpl.config.max_x, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -0.5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -0.5 );
+			bpl.max_data_x = 1;
+			bpl.max_data_y = 5;
+			bpl.adapt();
+			TS_ASSERT_DELTA( bpl.config.max_x, 1.2, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.min_x, -0.2, 0.0001 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 6 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -1 );
+			}
+
+		void xtestOnePoint() {
 			boost::shared_ptr<MockAdaptiveEventHandler> pEH(
 					new MockAdaptiveEventHandler() ); 
 			pEH->add_event( boost::shared_ptr<Event>( 
 						new AdaptiveOpenPlotEvent( conf, pEH ) ) );
 			pEH->add_event( boost::shared_ptr<Event>( 
 						new PointEvent( 0, 0 ) ) );
+			TS_ASSERT_EQUALS( pEH->pBPlot->config.min_x, -0.5 );
 
 		}
 
