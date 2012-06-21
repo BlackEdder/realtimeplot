@@ -223,8 +223,6 @@ class TestAdaptive : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bpl.config.min_x, -0.5 );
 			TS_ASSERT_EQUALS( bpl.config.max_y, 0.5 );
 			TS_ASSERT_EQUALS( bpl.config.min_y, -0.5 );
-			bpl.max_data_x = 1;
-			bpl.max_data_y = 5;
 			bpl.within_plot_bounds( 1, 5 );
 			TS_ASSERT_DELTA( bpl.config.max_x, 1.2, 0.0001 );
 			TS_ASSERT_DELTA( bpl.config.min_x, -0.2, 0.0001 );
@@ -236,12 +234,19 @@ class TestAdaptive : public CxxTest::TestSuite
 		void testOnePoint() {
 			boost::shared_ptr<MockAdaptiveEventHandler> pEH(
 					new MockAdaptiveEventHandler() ); 
+			conf.fixed_plot_area = true;
 			pEH->add_event( boost::shared_ptr<Event>( 
 						new AdaptiveOpenPlotEvent( conf, pEH ) ) );
 			pEH->add_event( boost::shared_ptr<Event>( 
-						new PointEvent( 0, 0 ) ) );
+						new PointEvent( 0, 1 ) ) );
 			TS_ASSERT_EQUALS( pEH->pBPlot->config.min_x, -0.5 );
-
+			pEH->add_event( boost::shared_ptr<Event>( 
+						new PointEvent( -1, -5 ) ) );
+			TS_ASSERT_DELTA( pEH->pBPlot->config.min_x, -1.2, 0.0001 );
+			pEH->adaptive = false;
+			pEH->add_event( boost::shared_ptr<Event>( 
+						new PointEvent( -3, -5 ) ) );
+			TS_ASSERT_DELTA( pEH->pBPlot->config.min_x, -1.2, 0.0001 );
 		}
 
 		// Make sure to double check that move events etc update the max_x etc properly

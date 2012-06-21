@@ -30,26 +30,31 @@ namespace realtimeplot {
 	BackendAdaptivePlot::BackendAdaptivePlot( PlotConfig conf,
 			boost::shared_ptr<EventHandler> pEventHandler )
 		: BackendPlot( conf, pEventHandler ), max_data_x( -1 ), max_data_y( -1 ),
-		min_data_x( 0 ), min_data_y( 0 )
+		min_data_x( 0 ), min_data_y( 0 ), adapting( true )
 	{}
 
 	bool BackendAdaptivePlot::within_plot_bounds( float x, float y ) {
-		// No previous points have been plotted yet
-		if (max_data_x<min_data_x) {
-			max_data_x = x;
-			min_data_x = x;
-			max_data_y = y;
-			min_data_y = y;
+		if (adapting && pEventHandler) {
+			adapting = convert_to_adaptive( pEventHandler )->adaptive;
 		}
-		if (x > max_data_x)
-			max_data_x = x;
-		else if (x<min_data_x)
-			min_data_x = x;
-		if (y > max_data_y)
-			max_data_y = y;
-		else if (y<min_data_y)
-			min_data_y = y;
-		adapt();
+		if (adapting) {
+			// No previous points have been plotted yet
+			if (max_data_x<min_data_x) {
+				max_data_x = x;
+				min_data_x = x;
+				max_data_y = y;
+				min_data_y = y;
+			}
+			if (x > max_data_x)
+				max_data_x = x;
+			else if (x<min_data_x)
+				min_data_x = x;
+			if (y > max_data_y)
+				max_data_y = y;
+			else if (y<min_data_y)
+				min_data_y = y;
+			adapt();
+		}
 		return BackendPlot::within_plot_bounds( x, y );
 	}
 
@@ -68,13 +73,26 @@ namespace realtimeplot {
 			config.max_y = max_data_y + 0.2*yrange;
 			config.min_y = min_data_y - 0.2*yrange;
 		}
+		reset( config );
+		if (pEventHandler) {
+			adapting = false;
+			convert_to_adaptive( pEventHandler )->reprocess();
+			adapting = true;
+		}
 	}
+
+	boost::shared_ptr<AdaptiveEventHandler> BackendAdaptivePlot::convert_to_adaptive( 
+			boost::shared_ptr<EventHandler> pEventHandler ) {
+		return boost::static_pointer_cast<AdaptiveEventHandler, 
+					 EventHandler>( pEventHandler );
+	}
+
 
 	/**
 	 * Adaptive EventHandler
 	 */
 	AdaptiveEventHandler::AdaptiveEventHandler( size_t no_events ) : 
-		EventHandler(), max_no_events( no_events ), adaptive( true ) {}
+		EventHandler(), adaptive( true ), max_no_events( no_events ) {}
 
 	void AdaptiveEventHandler::reprocess() {
 		std::list<boost::shared_ptr<Event> >::iterator it = processed_events.begin();

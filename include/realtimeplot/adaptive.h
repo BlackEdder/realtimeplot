@@ -27,22 +27,37 @@
 class TestAdaptive;
 
 namespace realtimeplot {
-
 	/**
-	 * General ideas about implementation:
+	 * \brief EventHandler that keeps no of events around.
 	 *
-	 * Eventhandler instead of deleting events will keep them around
-	 * for some time. Will also have a function reapply, which will basically
-	 * reapply all the previous events again. Watch for first/openplot event!
-	 *
-	 * BackendAdaptivePlot overrides all functions that take a x/y value. If the 
-	 * x/y value false outside of the plot (maybe just overrid within_bounds function
-	 * or something) we redo our config and then ask the EventHandler to reaplly
-	 * all previous events. Note that during that reapplication we won't need to check
-	 * ranges (since everything should be in range) and also we should set it to 
-	 * unmovalbe etc, so that moving events won't screw it up (pause??).
+	 * Instead of deleting events will keep them around
+	 * for some time.
 	 */
+	class AdaptiveEventHandler : public EventHandler {
+		public:
+			bool adaptive;
+			/**
+			 * \brief Create AdaptiveEventHandler
+			 *
+			 * Optional parameter that defines the number of events to keep around
+			 */
+			AdaptiveEventHandler( size_t no_events = 100 ); 
 
+			/**
+			 * \brief Reprocess events in the processed_events list
+			 * 
+			 * Only called from within process_events_thread, so no locking needed
+			 */
+			virtual void reprocess();
+
+
+			friend class TestAdaptive;
+		protected:
+			size_t max_no_events;
+			std::list<boost::shared_ptr<Event> > processed_events;
+
+			void process_events();
+	};
 
 	/**
 	 * \brief Adaptive plot. Will automatically choose reasonable x/y range
@@ -71,37 +86,17 @@ namespace realtimeplot {
 		private:
 			double max_data_x, max_data_y, min_data_x, min_data_y;
 
-	};
-
-	/**
-	 * \brief EventHandler that keeps no of events around.
-	 *
-	 * Instead of deleting events will keep them around
-	 * for some time.
-	 */
-	class AdaptiveEventHandler : public EventHandler {
-		public:
-			/**
-			 * \brief Create AdaptiveEventHandler
-			 *
-			 * Optional parameter that defines the number of events to keep around
-			 */
-			AdaptiveEventHandler( size_t no_events = 100 ); 
+			bool adapting;
 
 			/**
-			 * \brief Reprocess events in the processed_events list
-			 * 
-			 * Only called from within process_events_thread, so no locking needed
+			 * \brief Convenience method to convert EventHandler 
+			 * 	pointer to AdaptiveEventHandler
 			 */
-			virtual void reprocess();
+			boost::shared_ptr<AdaptiveEventHandler> convert_to_adaptive( 
+					boost::shared_ptr<EventHandler> pEventHandler );
 
-			friend class TestAdaptive;
-		protected:
-			size_t max_no_events;
-			bool adaptive;
-			std::list<boost::shared_ptr<Event> > processed_events;
-
-			void process_events();
 	};
+
+
 };
 #endif
