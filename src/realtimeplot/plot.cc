@@ -199,28 +199,28 @@ namespace realtimeplot {
 
 	Plot::Plot()
 		: config( PlotConfig() ),
-			detach( false ), pEventHandler( new EventHandler() )
+			detach( false ), pEventHandler( new AdaptiveEventHandler() )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
-					new OpenPlotEvent( config, pEventHandler ) ) );
+					new AdaptiveOpenPlotEvent( config, pEventHandler ) ) );
 	}
 
 	Plot::Plot(bool open)
 		: config( PlotConfig() ),
-			detach( false ), pEventHandler( new EventHandler() )
+			detach( false ), pEventHandler( new AdaptiveEventHandler() )
 	{ 
 		if (open)
-			pEventHandler->add_event( boost::shared_ptr<Event>( new OpenPlotEvent( config, 
+			pEventHandler->add_event( boost::shared_ptr<Event>( new AdaptiveOpenPlotEvent( config, 
 						pEventHandler ) ) );
 	}
 
 
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
-			detach( false ), pEventHandler( new EventHandler() )
+			detach( false ), pEventHandler( new AdaptiveEventHandler() )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
-					new OpenPlotEvent( config, 
+					new AdaptiveOpenPlotEvent( config, 
 						pEventHandler ) ) );
 	}
 
