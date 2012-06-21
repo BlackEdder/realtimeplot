@@ -233,7 +233,7 @@ class TestAdaptive : public CxxTest::TestSuite
 		}
 
 
-		void xtestOnePoint() {
+		void testOnePoint() {
 			boost::shared_ptr<MockAdaptiveEventHandler> pEH(
 					new MockAdaptiveEventHandler() ); 
 			pEH->add_event( boost::shared_ptr<Event>( 

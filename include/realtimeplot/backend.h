@@ -176,7 +176,7 @@ namespace realtimeplot {
 
 			//within_plot_bounds
 			//check that a point lies within the bounds of the plot
-			bool within_plot_bounds( float x, float y );
+			virtual bool within_plot_bounds( float x, float y );
 
 			//plot_bounds_within_surface_bounds
 			//check that the plot bounds are within surface bounds of the surface
