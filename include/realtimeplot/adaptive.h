@@ -51,7 +51,7 @@ namespace realtimeplot {
 			virtual void reprocess();
 
 
-			friend class TestAdaptive;
+			friend class ::TestAdaptive;
 		protected:
 			size_t max_no_events;
 			std::list<boost::shared_ptr<Event> > processed_events;
@@ -82,7 +82,7 @@ namespace realtimeplot {
 			 * \brief Adapt the plot to the new x/y coords
 			 */
 			void adapt();
-			friend class TestAdaptive;
+			friend class ::TestAdaptive;
 		private:
 			double max_data_x, max_data_y, min_data_x, min_data_y;
 
