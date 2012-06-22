@@ -2,6 +2,9 @@
 # Immediately run once
 ctest
 
+trap ctest INT
+
+function watch_tests() {
 while : 
 do
 	#file=`inotifywait -q -e CREATE bin/ --format %f`
@@ -12,3 +15,6 @@ do
 		ctest
 	fi
 done
+}
+
+watch_tests
