@@ -94,6 +94,8 @@ namespace realtimeplot {
 
 	void BackendAdaptivePlot::adapt() {
 		// Only one data point
+		bool oldpause = pause_display;
+		pause_display = true;
 		if (min_data_x == max_data_x) {
 			config.max_x = max_data_x + 0.5;
 			config.min_x = min_data_x - 0.5;
@@ -110,13 +112,11 @@ namespace realtimeplot {
 		BackendPlot::reset( config ); // Don't need to reset max_data etc, 
 																	// so call parent reset
 		if (pEventHandler) {
-			bool oldpause = pause_display;
-			pause_display = true;
 			adapting = false;
 			convert_to_adaptive( pEventHandler )->reprocess();
 			adapting = true;
-			pause_display = oldpause;
 		}
+		pause_display = oldpause;
 	}
 
 	boost::shared_ptr<AdaptiveEventHandler> BackendAdaptivePlot::convert_to_adaptive( 
