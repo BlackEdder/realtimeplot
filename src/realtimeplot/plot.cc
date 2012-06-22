@@ -195,11 +195,13 @@ namespace realtimeplot {
 		fixed_plot_area = false;
 		point_size = 4;
 		title = "RealTimePlot";
+		no_adaptive_events = 100;
 	};
 
 	Plot::Plot()
 		: config( PlotConfig() ),
-			detach( false ), pEventHandler( new AdaptiveEventHandler() )
+			detach( false ), pEventHandler( new 
+					AdaptiveEventHandler( config.no_adaptive_events ) )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
 					new AdaptiveOpenPlotEvent( config, pEventHandler ) ) );
@@ -207,7 +209,8 @@ namespace realtimeplot {
 
 	Plot::Plot(bool open)
 		: config( PlotConfig() ),
-			detach( false ), pEventHandler( new AdaptiveEventHandler() )
+			detach( false ), pEventHandler( new AdaptiveEventHandler( 
+						config.no_adaptive_events ) )
 	{ 
 		if (open)
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
@@ -217,7 +220,8 @@ namespace realtimeplot {
 
 	Plot::Plot( PlotConfig conf )
 		: config( conf ),
-			detach( false ), pEventHandler( new AdaptiveEventHandler() )
+			detach( false ), pEventHandler( new AdaptiveEventHandler(
+						config.no_adaptive_events ) )
 	{ 
 		pEventHandler->add_event( boost::shared_ptr<Event>( 
 					new AdaptiveOpenPlotEvent( config, 

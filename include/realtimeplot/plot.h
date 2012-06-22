@@ -155,6 +155,14 @@ namespace realtimeplot {
 			float aspect_ratio;
 			std::string xlabel, ylabel, font, title;
 			bool fixed_plot_area;
+			
+			/** 
+			 * \brief Amount of events to keep adapting plotting range
+			 *
+			 * If this number of events has been exceeded a plotting event outside the
+			 * plotting range will cause a rolling update
+			 */
+			size_t no_adaptive_events;
 
 			/**
 			 * \brief Display the plot or not
