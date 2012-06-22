@@ -65,6 +65,33 @@ namespace realtimeplot {
 		return BackendPlot::within_plot_bounds( x, y );
 	}
 
+	void BackendAdaptivePlot::reset( PlotConfig conf ) {
+		if (adapting) {
+			max_data_x = -1;
+			max_data_y = -1;
+			min_data_x = 0;
+			min_data_y = 0;
+			if (pEventHandler) {
+				convert_to_adaptive( pEventHandler )->processed_events.clear();
+			}
+		}
+		BackendPlot::reset( conf );
+	}
+
+	void BackendAdaptivePlot::clear() {
+		if (adapting) {
+			max_data_x = -1;
+			max_data_y = -1;
+			min_data_x = 0;
+			min_data_y = 0;
+			if (pEventHandler) {
+				convert_to_adaptive( pEventHandler )->processed_events.clear();
+			}
+		}
+		BackendPlot::clear();
+	}
+
+
 	void BackendAdaptivePlot::adapt() {
 		// Only one data point
 		if (min_data_x == max_data_x) {
@@ -80,7 +107,8 @@ namespace realtimeplot {
 			config.max_y = max_data_y + 0.2*yrange;
 			config.min_y = min_data_y - 0.2*yrange;
 		}
-		reset( config );
+		BackendPlot::reset( config ); // Don't need to reset max_data etc, 
+																	// so call parent reset
 		if (pEventHandler) {
 			adapting = false;
 			convert_to_adaptive( pEventHandler )->reprocess();
@@ -120,13 +148,15 @@ namespace realtimeplot {
 				priority_event_queue.pop_front();
 				--priority_queue_size;
 				m_mutex.unlock();
-
-				if (adaptive && processed_events.size() < max_no_events)
+				
+				// Priority queue should only have x related events, which should not
+				// be reprocessed.
+				/*if (adaptive && processed_events.size() < max_no_events)
 					processed_events.push_back( pEvent );
 				else {
 					adaptive = false;
 					processed_events.clear();
-				}
+				}*/
 
 				pEvent->execute( pBPlot );
 			} else if ( queue_size>0 ) {

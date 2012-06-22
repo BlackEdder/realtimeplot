@@ -141,9 +141,12 @@ namespace realtimeplot {
 		pPlotArea->setup( conf );
 		global_mutex.unlock();
 		set_foreground_color();
-
-		x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
-		x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.top_margin;
+		if (!config.scaling) { 
+			// If no scaling then adapt current size to new size
+			// otherwise just use current sizes when setting xsurface etc
+			x_surface_width = pPlotArea->plot_area_width+config.left_margin+config.right_margin;
+			x_surface_height = pPlotArea->plot_area_height+config.bottom_margin+config.top_margin;
+		}
 		xSurface = pDisplayHandler->get_cairo_surface( win, 
 				x_surface_width, x_surface_height );
 		xContext = Cairo::Context::create( xSurface );

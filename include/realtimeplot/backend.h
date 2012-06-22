@@ -96,12 +96,12 @@ namespace realtimeplot {
 			void display();
 
 			//clears the plot
-			void clear();
+			virtual void clear();
 
 			/**
 			 * \brief Resets the plot to use a new config
 			 */
-			void reset( PlotConfig config );
+			virtual void reset( PlotConfig config );
 
 			//set_background_color
 			//takes the context to do it to

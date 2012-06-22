@@ -52,6 +52,7 @@ namespace realtimeplot {
 
 
 			friend class ::TestAdaptive;
+			friend class BackendAdaptivePlot;
 		protected:
 			size_t max_no_events;
 			std::list<boost::shared_ptr<Event> > processed_events;
@@ -77,6 +78,9 @@ namespace realtimeplot {
 				boost::shared_ptr<EventHandler> pEventHandler );
 
 			bool within_plot_bounds( float x, float y );
+
+			void clear();
+			void reset( PlotConfig conf );
 
 			/**
 			 * \brief Adapt the plot to the new x/y coords
