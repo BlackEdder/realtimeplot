@@ -110,9 +110,12 @@ namespace realtimeplot {
 		BackendPlot::reset( config ); // Don't need to reset max_data etc, 
 																	// so call parent reset
 		if (pEventHandler) {
+			bool oldpause = pause_display;
+			pause_display = true;
 			adapting = false;
 			convert_to_adaptive( pEventHandler )->reprocess();
 			adapting = true;
+			pause_display = oldpause;
 		}
 	}
 
