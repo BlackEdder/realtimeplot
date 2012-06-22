@@ -33,21 +33,15 @@ if(NO_X)
 endif()
 
 #SET (CMAKE_CXX_FLAGS "-O1 -ggdb") 
-find_library( PANGOMM pangomm-1.4 )
-if( NOT PANGOMM )
-	message( FATAL_ERROR "Could not find pangomm library" )
-endif()
-
-# PANGOMM already depends on cairomm, so no need to check
-#find_library( CAIROMM cairomm-1.0 )
-#if( CAIROMM-NOTFOUND )
-#message( FATAL_ERROR "Could not find cairomm library" )
-#endif()
+INCLUDE(FindPkgConfig)
+pkg_check_modules(PANGOMM REQUIRED pangomm-1.4)
+pkg_check_modules(CAIROMM REQUIRED cairomm-1.0)
+pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
 
 set(BOOST_LIBS thread date_time math_tr1 )
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
-SET(LIBS "${PANGOMM};${Boost_LIBRARIES}")
+SET(LIBS "${PANGOMM_LIBRARIES};${Boost_LIBRARIES}")
 SET(SRC
 	"src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;src/realtimeplot/plotarea.cc;src/realtimeplot/plot.cc;src/realtimeplot/adaptive.cc")
 
@@ -55,27 +49,18 @@ if(NOT NO_X)
 	find_library( XCB-UTIL xcb-keysyms xcb-util )
 	if(NOT XCB-UTIL)
 		message( FATAL_ERROR "Could not find xcb-util(-keysyms) library\n You
-		could compile without X support" )
+		could compile without X support by adding NO_X=1 to your cmake command
+		line:\ncmake . -DNO_X=1" )
 	endif()
 	SET(LIBS "${LIBS};${XCB-UTIL}")
 	SET(SRC "${SRC};src/cairomm/xcb_surface.cc")
 endif()
 
+include_directories( ${PANGOMM_INCLUDE_DIRS} )
+include_directories( ${CAIROMM_INCLUDE_DIRS} )
+include_directories( ${GLIBMM_INCLUDE_DIRS} )
+
 include_directories("include")
-include_directories("/usr/include/pangomm-1.4")
-include_directories("/usr/include/pango-1.0")
-include_directories("/usr/include/glibmm-2.4")
-include_directories("/usr/lib/glibmm-2.4/include")
-include_directories("/usr/include/glib-2.0")
-include_directories("/usr/lib/glib-2.0/include")
-# Needed under Ubuntu
-include_directories("/usr/lib/i386-linux-gnu/glib-2.0/include")
-include_directories("/usr/lib/x86_64-linux-gnu/glib-2.0/include")
-include_directories("/usr/include/cairomm-1.0")
-include_directories("/usr/include/cairo")
-include_directories("/usr/include/freetype2")
-include_directories("/usr/include/sigc++-2.0")
-include_directories("/usr/lib/sigc++-2.0/include")
 
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY lib)
 add_library( realtimeplot SHARED ${SRC} )
