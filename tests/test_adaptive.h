@@ -230,11 +230,26 @@ class TestAdaptive : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bpl.config.min_y, -1 );
 		}
 
+		void testWithinBoundsFixed() {
+			conf.fixed_plot_area = true;
+			BackendAdaptivePlot bpl = BackendAdaptivePlot( conf, 
+					boost::shared_ptr<EventHandler>() );
+			bpl.within_plot_bounds( 0, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -5 );
+			bpl.within_plot_bounds( 1, 5 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -5 );
+		}
+
 
 		void testOnePoint() {
 			boost::shared_ptr<MockAdaptiveEventHandler> pEH(
 					new MockAdaptiveEventHandler() ); 
-			conf.fixed_plot_area = true;
 			pEH->add_event( boost::shared_ptr<Event>( 
 						new AdaptiveOpenPlotEvent( conf, pEH ) ) );
 			pEH->add_event( boost::shared_ptr<Event>( 
@@ -244,6 +259,7 @@ class TestAdaptive : public CxxTest::TestSuite
 						new PointEvent( -1, -5 ) ) );
 			TS_ASSERT_DELTA( pEH->pBPlot->config.min_x, -1.2, 0.0001 );
 			pEH->adaptive = false;
+			pEH->pBPlot->config.fixed_plot_area = true; // Stop rolling updates from occuring
 			pEH->add_event( boost::shared_ptr<Event>( 
 						new PointEvent( -3, -5 ) ) );
 			TS_ASSERT_DELTA( pEH->pBPlot->config.min_x, -1.2, 0.0001 );

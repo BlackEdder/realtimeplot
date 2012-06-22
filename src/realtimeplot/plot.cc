@@ -210,8 +210,8 @@ namespace realtimeplot {
 			detach( false ), pEventHandler( new AdaptiveEventHandler() )
 	{ 
 		if (open)
-			pEventHandler->add_event( boost::shared_ptr<Event>( new AdaptiveOpenPlotEvent( config, 
-						pEventHandler ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new AdaptiveOpenPlotEvent( config, pEventHandler ) ) );
 	}
 
 

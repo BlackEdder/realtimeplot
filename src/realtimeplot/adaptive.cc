@@ -31,7 +31,14 @@ namespace realtimeplot {
 			boost::shared_ptr<EventHandler> pEventHandler )
 		: BackendPlot( conf, pEventHandler ), max_data_x( -1 ), max_data_y( -1 ),
 		min_data_x( 0 ), min_data_y( 0 ), adapting( true )
-	{}
+	{
+		if( config.fixed_plot_area ) {
+			adapting = false;
+			if (pEventHandler) {
+				convert_to_adaptive( pEventHandler )->adaptive = adapting;
+			}
+		}
+	}
 
 	bool BackendAdaptivePlot::within_plot_bounds( float x, float y ) {
 		if (adapting && pEventHandler) {
