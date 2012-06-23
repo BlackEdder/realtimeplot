@@ -32,11 +32,11 @@
 #include "realtimeplot/utils.h"
 
 using namespace realtimeplot;
-class MockBackendPlot : public realtimeplot::BackendPlot {
+class MockBackendPlot2 : public realtimeplot::BackendPlot {
 	public:
 		std::string state;
 
-		MockBackendPlot( PlotConfig conf, 
+		MockBackendPlot2( PlotConfig conf, 
 				boost::shared_ptr<EventHandler> pEH ) : BackendPlot( conf, pEH ) {};
 
 		void text( float x, float y, std::string &text ) {
@@ -44,9 +44,9 @@ class MockBackendPlot : public realtimeplot::BackendPlot {
 		}
 };
 
-class MockEvent : public realtimeplot::Event {
+class MockEvent2 : public realtimeplot::Event {
 	public: 
-		MockEvent( size_t id ) : realtimeplot::Event(), id( id ) {}
+		MockEvent2( size_t id ) : realtimeplot::Event(), id( id ) {}
     virtual void execute( boost::shared_ptr<realtimeplot::BackendPlot> &pBPlot ) {
 			std::string s_id = realtimeplot::utils::stringify( id );
 			pBPlot->text(0, 0, s_id );
@@ -55,24 +55,24 @@ class MockEvent : public realtimeplot::Event {
 		size_t id;
 };
 
-class MockOpenPlotEvent : public Event {
+class MockOpenPlotEvent2 : public Event {
 	public:
-		MockOpenPlotEvent( boost::shared_ptr<MockBackendPlot> pl ) :
+		MockOpenPlotEvent2( boost::shared_ptr<MockBackendPlot2> pl ) :
 			pl( pl )
 		{}
 
 		virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 			pBPlot = boost::static_pointer_cast< 
-				BackendPlot, MockBackendPlot >( pl );
+				BackendPlot, MockBackendPlot2 >( pl );
 		}
 	private:
-		boost::shared_ptr<MockBackendPlot> pl;
+		boost::shared_ptr<MockBackendPlot2> pl;
 
 };
 
-class MockAdaptiveEventHandler : public AdaptiveEventHandler {
+class MockAdaptiveEventHandler2 : public AdaptiveEventHandler {
 	public:
-		MockAdaptiveEventHandler() : AdaptiveEventHandler(), no_reprocess( 0 ) {
+		MockAdaptiveEventHandler2() : AdaptiveEventHandler(), no_reprocess( 0 ) {
 			processing_events = false; 
 			window_closed = true;
 			pEventProcessingThrd->join();

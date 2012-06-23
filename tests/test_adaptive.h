@@ -23,6 +23,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include "testhelpers.h"
+#include "turtlemock.h"
 
 #include "realtimeplot/events.h"
 #include "realtimeplot/adaptive.h"
@@ -49,37 +50,18 @@ class TestAdaptive : public CxxTest::TestSuite
 		 * Adaptive EventHandler
 		 */
 		void testPlotOpenClose() {
+			boost::shared_ptr<MockEvent> e = boost::shared_ptr<MockEvent>(new MockEvent());
+			MOCK_EXPECT( e->execute ).exactly(1);
 			boost::shared_ptr<EventHandler> pEventHandler( 
 					new AdaptiveEventHandler() );
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
 						new OpenPlotEvent( conf, pEventHandler ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( e ) );
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
 						new FinalEvent(pEventHandler, false ) ) );
 			pEventHandler->pEventProcessingThrd->join();
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
-			pEventHandler->add_event( 
-					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
-			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
-		}
-
-		void testMockPlotOpenClose() {
-			boost::shared_ptr<EventHandler> pEventHandler( 
-					new AdaptiveEventHandler() );
-
-			boost::shared_ptr<MockBackendPlot> pl( new MockBackendPlot( conf, 
-						pEventHandler ) );
-
-			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockOpenPlotEvent(  pl ) ) );
-			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockEvent( 1 ) ) );
-			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new FinalEvent(pEventHandler, false ) ) );
-			pEventHandler->pEventProcessingThrd->join();
-			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
-
-			TS_ASSERT_EQUALS( pl->state, "1" );
-		}
+ 		}
 
 
 		void testProcessedEvents() {
@@ -97,21 +79,21 @@ class TestAdaptive : public CxxTest::TestSuite
 		}
 
 		void testAEHreprocess() {
-			boost::shared_ptr<EventHandler> pEventHandler( 
+			boost::shared_ptr<MockEvent> e1 = boost::shared_ptr<MockEvent>(new MockEvent());
+			MOCK_EXPECT( e1->execute ).exactly(2);
+			boost::shared_ptr<MockEvent> e2 = boost::shared_ptr<MockEvent>(new MockEvent());
+			MOCK_EXPECT( e2->execute ).exactly(1);
+			boost::shared_ptr<AdaptiveEventHandler> pEventHandler( 
 					new AdaptiveEventHandler() );
-
-			boost::shared_ptr<MockBackendPlot> pl( new MockBackendPlot( conf, 
-						pEventHandler ) );
-
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockOpenPlotEvent(  pl ) ) );
-			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockEvent( 1 ) ) );
+						new OpenPlotEvent( conf, pEventHandler ) ) );
 
+			pEventHandler->add_event( e1 );
 			while (pEventHandler->get_queue_size() > 0) {
 				usleep(100);
 			}
-			
+
+
 			boost::shared_ptr<AdaptiveEventHandler> pAEH =
 				boost::static_pointer_cast<AdaptiveEventHandler, 
 					EventHandler>( pEventHandler );
@@ -122,36 +104,34 @@ class TestAdaptive : public CxxTest::TestSuite
 			pAEH->reprocess();
 			pAEH->m_mutex.unlock();
 
-			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockEvent( 2 ) ) );
+			pEventHandler->add_event( e2 );
 
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
 						new FinalEvent(pEventHandler, false ) ) );
 			pEventHandler->pEventProcessingThrd->join();
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
-
-			TS_ASSERT_EQUALS( pl->state, "112" );
 		}
 
 		void testAEHLimit() {
+			boost::shared_ptr<MockEvent> e1 = boost::shared_ptr<MockEvent>(new MockEvent());
+			MOCK_EXPECT( e1->execute ).exactly(5);
+			boost::shared_ptr<MockEvent> e2 = boost::shared_ptr<MockEvent>(new MockEvent());
+			MOCK_EXPECT( e2->execute ).exactly(1);
+
 			boost::shared_ptr<EventHandler> pEventHandler( 
-					new AdaptiveEventHandler( 3 ) );
-
-			boost::shared_ptr<MockBackendPlot> pl( new MockBackendPlot( conf, 
-						pEventHandler ) );
-
+				new AdaptiveEventHandler( 3 ) );
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockOpenPlotEvent(  pl ) ) );
+						new OpenPlotEvent( conf, pEventHandler ) ) );
+
 			for (size_t i = 0; i < 2; ++i) {
-				pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockEvent( 1 ) ) );
+				pEventHandler->add_event( e1 );
 			}
 
 			while (pEventHandler->get_queue_size() > 0) {
 				usleep(100);
 			}
-			TS_ASSERT_EQUALS( pl->state, "11" );
-			
+
+
 			boost::shared_ptr<AdaptiveEventHandler> pAEH =
 				boost::static_pointer_cast<AdaptiveEventHandler, 
 					EventHandler>( pEventHandler );
@@ -161,25 +141,22 @@ class TestAdaptive : public CxxTest::TestSuite
 			pAEH->m_mutex.lock();
 			pAEH->reprocess();
 			pAEH->m_mutex.unlock();
-			TS_ASSERT_EQUALS( pl->state, "1111" );
-			pEventHandler->add_event( boost::shared_ptr<Event>( 
-					new MockEvent( 1 ) ) );
+
+			pEventHandler->add_event( e1 );
+
 			while (pEventHandler->get_queue_size() > 0) {
 				usleep(100);
 			}
-			usleep(100);
-			TS_ASSERT_EQUALS( pl->state, "11111" );
-		
-			pAEH->reprocess();
 
-			pEventHandler->add_event( boost::shared_ptr<Event>( 
-						new MockEvent( 2 ) ) );
+pAEH->m_mutex.lock();
+			pAEH->reprocess();
+			pAEH->m_mutex.unlock();
+
+			pEventHandler->add_event( e2 );
 
 			pEventHandler->add_event( boost::shared_ptr<Event>( 
 						new FinalEvent(pEventHandler, false ) ) );
 			pEventHandler->pEventProcessingThrd->join();
-			TS_ASSERT_EQUALS( pl->state, "111112" );
-
 		}
 
 		/*
@@ -248,8 +225,8 @@ class TestAdaptive : public CxxTest::TestSuite
 
 
 		void testOnePoint() {
-			boost::shared_ptr<MockAdaptiveEventHandler> pEH(
-					new MockAdaptiveEventHandler() ); 
+			boost::shared_ptr<MockAdaptiveEventHandler2> pEH(
+					new MockAdaptiveEventHandler2() ); 
 			pEH->add_event( boost::shared_ptr<Event>( 
 						new AdaptiveOpenPlotEvent( conf, pEH ) ) );
 			pEH->add_event( boost::shared_ptr<Event>( 
