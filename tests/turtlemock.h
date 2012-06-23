@@ -83,7 +83,6 @@ struct custom_policy
 #include "turtle/mock.hpp"
 
 #include "realtimeplot/eventhandler.h"
-#include "realtimeplot/backend.h"
 
 using namespace realtimeplot;
 
@@ -91,10 +90,4 @@ MOCK_BASE_CLASS( MockEvent, realtimeplot::Event )
 {
 	MOCK_METHOD( execute, 1 );
 };
-
-MOCK_BASE_CLASS( MockBackendPlot, realtimeplot::BackendPlot )
-{
-	MOCK_METHOD( text, 3 );
-};
-
 

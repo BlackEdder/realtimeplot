@@ -26,49 +26,9 @@
 #include <fstream>
 #include <string>
 
-#include "realtimeplot/eventhandler.h"
-#include "realtimeplot/backend.h"
 #include "realtimeplot/adaptive.h"
-#include "realtimeplot/utils.h"
-
 using namespace realtimeplot;
-class MockBackendPlot2 : public realtimeplot::BackendPlot {
-	public:
-		std::string state;
 
-		MockBackendPlot2( PlotConfig conf, 
-				boost::shared_ptr<EventHandler> pEH ) : BackendPlot( conf, pEH ) {};
-
-		void text( float x, float y, std::string &text ) {
-			state += text;
-		}
-};
-
-class MockEvent2 : public realtimeplot::Event {
-	public: 
-		MockEvent2( size_t id ) : realtimeplot::Event(), id( id ) {}
-    virtual void execute( boost::shared_ptr<realtimeplot::BackendPlot> &pBPlot ) {
-			std::string s_id = realtimeplot::utils::stringify( id );
-			pBPlot->text(0, 0, s_id );
-		}
-	private:
-		size_t id;
-};
-
-class MockOpenPlotEvent2 : public Event {
-	public:
-		MockOpenPlotEvent2( boost::shared_ptr<MockBackendPlot2> pl ) :
-			pl( pl )
-		{}
-
-		virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
-			pBPlot = boost::static_pointer_cast< 
-				BackendPlot, MockBackendPlot2 >( pl );
-		}
-	private:
-		boost::shared_ptr<MockBackendPlot2> pl;
-
-};
 
 class MockAdaptiveEventHandler2 : public AdaptiveEventHandler {
 	public:
