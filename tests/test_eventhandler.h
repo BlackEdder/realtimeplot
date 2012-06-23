@@ -1,7 +1,7 @@
 /*
   -------------------------------------------------------------------
   
-  Copyright (C) 2011, Edwin van Leeuwen
+  Copyright (C) 2011-2012, Edwin van Leeuwen
   
   This file is part of RealTimePlot.
   
