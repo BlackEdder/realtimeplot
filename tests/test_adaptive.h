@@ -192,6 +192,26 @@ pAEH->m_mutex.lock();
 			TS_ASSERT_EQUALS( bpl.config.min_y, -1 );
 		}
 
+		void testAdaptCloseValues() {
+			BackendAdaptivePlot bpl = BackendAdaptivePlot( conf, 
+					boost::shared_ptr<EventHandler>() );
+			bpl.max_data_x = bpl.min_data_x;
+			bpl.max_data_y = bpl.min_data_y;
+			bpl.adapt();
+			TS_ASSERT_EQUALS( bpl.config.max_x, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -0.5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -0.5 );
+			bpl.max_data_x = 0.1;
+			bpl.max_data_y = 0.5;
+			bpl.adapt();
+			TS_ASSERT_DELTA( bpl.config.max_x, 0.12, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.min_x, -0.02, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.max_y, 0.6, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.min_y, -0.1, 0.0001 );
+		}
+
+
 		void testWithinBounds() {
 			BackendAdaptivePlot bpl = BackendAdaptivePlot( conf, 
 					boost::shared_ptr<EventHandler>() );
@@ -206,6 +226,22 @@ pAEH->m_mutex.lock();
 			TS_ASSERT_EQUALS( bpl.config.max_y, 6 );
 			TS_ASSERT_EQUALS( bpl.config.min_y, -1 );
 		}
+
+		void testWithinBoundsCloseValues() {
+			BackendAdaptivePlot bpl = BackendAdaptivePlot( conf, 
+					boost::shared_ptr<EventHandler>() );
+			bpl.within_plot_bounds( 0, 0 );
+			TS_ASSERT_EQUALS( bpl.config.max_x, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -0.5 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 0.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -0.5 );
+			bpl.within_plot_bounds( 0.1, 0.5 );
+			TS_ASSERT_DELTA( bpl.config.max_x, 0.12, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.min_x, -0.02, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.max_y, 0.6, 0.0001 );
+			TS_ASSERT_DELTA( bpl.config.min_y, -0.1, 0.0001 );
+		}
+
 
 		void testWithinBoundsFixed() {
 			conf.fixed_plot_area = true;
@@ -244,11 +280,4 @@ pAEH->m_mutex.lock();
 			TS_ASSERT( check_plot( "adaptive_plot" ) );
 		}
 
-		// Make sure to double check that move events etc update the max_x etc properly
-		// Probably ok if we use max x given by plotarea
-		//
-		// What about scaling?
-		//
-		// Check for very close together values -> i.e. plot should calculate ranges after
-		// second point, even if second point falls within
 };
