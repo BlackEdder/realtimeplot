@@ -128,12 +128,15 @@ include(UseDoxygen)
 find_package(CxxTest)
 if(CXXTEST_FOUND)
 	file(MAKE_DIRECTORY tests/tmp_plots)
-	#include_directories(tests)
+	include_directories(tests/include)
 	enable_testing()
 
 	CXXTEST_ADD_TEST(unittest_eventhandler test_eventhandler.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_eventhandler.h)
-	target_link_libraries(unittest_eventhandler realtimeplot) # as needed
+	target_link_libraries(unittest_eventhandler realtimeplot)
+	CXXTEST_ADD_TEST(unittest_eventhandler_mock test_eventhandler_mock.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_eventhandler_mock.h)
+	target_link_libraries(unittest_eventhandler_mock realtimeplot) # as needed
 	CXXTEST_ADD_TEST(unittest_delaunay test_delaunay.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_delaunay.h)
 	target_link_libraries(unittest_delaunay realtimeplot) # as needed
