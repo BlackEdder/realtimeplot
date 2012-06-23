@@ -83,6 +83,7 @@ struct custom_policy
 #include "turtle/mock.hpp"
 
 #include "realtimeplot/eventhandler.h"
+#include "realtimeplot/adaptive.h"
 
 using namespace realtimeplot;
 
@@ -90,4 +91,30 @@ MOCK_BASE_CLASS( MockEvent, realtimeplot::Event )
 {
 	MOCK_METHOD( execute, 1 );
 };
+
+// This makes it easy to ensure that events are directly executed (no threading)
+class MockAdaptiveEventHandler2 : public AdaptiveEventHandler {
+	public:
+		MockAdaptiveEventHandler2() : AdaptiveEventHandler(), no_reprocess( 0 ) {
+			processing_events = false; 
+			window_closed = true;
+			pEventProcessingThrd->join();
+			processing_events = true;
+			window_closed = false;
+		}
+
+		void add_event(	boost::shared_ptr< Event > 	pEvent, bool 	high_priority = false ) {
+			pEvent->execute( pBPlot );
+			processed_events.push_back( pEvent );
+		}
+
+		void reprocess() {
+			++no_reprocess;
+			AdaptiveEventHandler::reprocess();
+		}
+
+		size_t no_reprocess;
+};
+
+
 

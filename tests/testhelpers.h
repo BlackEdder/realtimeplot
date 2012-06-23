@@ -26,34 +26,6 @@
 #include <fstream>
 #include <string>
 
-#include "realtimeplot/adaptive.h"
-using namespace realtimeplot;
-
-
-class MockAdaptiveEventHandler2 : public AdaptiveEventHandler {
-	public:
-		MockAdaptiveEventHandler2() : AdaptiveEventHandler(), no_reprocess( 0 ) {
-			processing_events = false; 
-			window_closed = true;
-			pEventProcessingThrd->join();
-			processing_events = true;
-			window_closed = false;
-		}
-
-		void add_event(	boost::shared_ptr< Event > 	pEvent, bool 	high_priority = false ) {
-			pEvent->execute( pBPlot );
-			processed_events.push_back( pEvent );
-		}
-
-		void reprocess() {
-			++no_reprocess;
-			AdaptiveEventHandler::reprocess();
-		}
-
-		size_t no_reprocess;
-};
-
-
 bool compare_files( std::string fn1, std::string fn2 ) {
 	std::ifstream file1 (fn1.c_str(), std::ios::in|std::ios::binary);
 	std::ifstream file2 (fn2.c_str(), std::ios::in|std::ios::binary);
