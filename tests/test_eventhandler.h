@@ -20,6 +20,7 @@
 
   -------------------------------------------------------------------
 */
+#include "turtlemock.h"
 #include <cxxtest/TestSuite.h>
 
 #include "realtimeplot/events.h"
@@ -46,10 +47,35 @@ class TestEventHandler : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
 			pEventHandler->add_event( 
 					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
-			// FIXME: Ideally EventHandler should stop accepting 
-			// events when it stopped processing them, but would need more
-			// locking
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
+		}
+
+		void testEventIsExecuted() {
+			boost::shared_ptr<MockEvent> e = boost::shared_ptr<MockEvent>(new MockEvent());
+			MOCK_EXPECT( e->execute ).exactly(1);
+			boost::shared_ptr<EventHandler> pEventHandler( 
+					new EventHandler() );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new OpenPlotEvent( conf, pEventHandler ) ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( e ) );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
+  	}
+
+		void testProcessingEventsSet() {
+			boost::shared_ptr<EventHandler> pEventHandler( 
+					new EventHandler() );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new OpenPlotEvent( conf, pEventHandler ) ) );
+			TS_ASSERT_EQUALS( pEventHandler->processing_events, true );
+			TS_ASSERT_EQUALS( pEventHandler->window_closed, false );
+			pEventHandler->add_event( boost::shared_ptr<Event>( 
+						new FinalEvent(pEventHandler, false ) ) );
+			pEventHandler->pEventProcessingThrd->join();
+			TS_ASSERT_EQUALS( pEventHandler->processing_events, false );
+			TS_ASSERT_EQUALS( pEventHandler->window_closed, true );
 		}
 
 		void testHistOpenClose() {
@@ -63,9 +89,6 @@ class TestEventHandler : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
 			pEventHandler->add_event( 
 					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
-			// FIXME: Ideally EventHandler should stop accepting 
-			// events when it stopped processing them, but would need more
-			// locking
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
 		}
 
@@ -80,9 +103,6 @@ class TestEventHandler : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
 			pEventHandler->add_event( 
 					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
-			// FIXME: Ideally EventHandler should stop accepting 
-			// events when it stopped processing them, but would need more
-			// locking
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
 		}
 
@@ -97,9 +117,6 @@ class TestEventHandler : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
 			pEventHandler->add_event( 
 					boost::shared_ptr<Event>( new PointEvent(0, 0) ) ); 
-			// FIXME: Ideally EventHandler should stop accepting 
-			// events when it stopped processing them, but would need more
-			// locking
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 1 );
 		}
 };
