@@ -27,9 +27,7 @@ struct custom_policy
 {
    static Result abort()
    {
-		 std::cout << "Unimplemented 1" << std::endl;
-		 throw;
-       // ...
+		 TS_FAIL( "abort in Mock Object" );
    }
    static void checkpoint( const char* file, int line )
    {
