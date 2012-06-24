@@ -42,21 +42,31 @@ namespace realtimeplot {
 
 			ThreadQueue( const ThreadQueue& tq ) { throw;} 
 
+			/**
+			 * \brief Return current size of the queue
+			 */
 			size_t size() {
 				boost::mutex::scoped_lock lock( queue_mutex );
 				size_t dim = queue.size();
 				return dim;
 			}
 
+			/**
+			 * \brief Return max size of the queue
+			 */
 			size_t max_size() {
 				boost::mutex::scoped_lock lock( queue_mutex );
 				size_t dim = m_size;
 				return dim;
 			}
 
+			/**
+			 * \brief Change the max size of the queue
+			 *
+			 * If the current size is larger than the new max size then push will block
+			 * till the size is lower than the new max size
+			 */
 			void set_max_size(size_t msize) {
-				/*if (msize < 1)
-					msize = 1;*/
 				boost::mutex::scoped_lock lock( queue_mutex );
 				m_size = msize;
 				cond.notify_one();
@@ -73,7 +83,12 @@ namespace realtimeplot {
 					cond.wait( lock );
 			}
 
-			void wait_till_full() {
+			/**
+			 * \brief Block till the queue is empty
+			 *
+			 * Usefull when working with multiple threads and can be useful for unit testing
+			 */
+				void wait_till_full() {
 				queue_mutex.lock();
 				size_t msize = m_size;
 				queue_mutex.unlock();
@@ -83,8 +98,9 @@ namespace realtimeplot {
 					cond.wait( lock );
 			}
 
-
-
+			/**
+			 * \brief Add new element to the queue. Will block if the queue is full
+			 */
 			void push( const T& element ) {
 				boost::mutex::scoped_lock lock( m_mutex );
 				while (size() >= max_size())
@@ -94,7 +110,7 @@ namespace realtimeplot {
 			}
 			
 			/**
-			 * \brief Return front element of the queue and deletes it from the queue
+			 * \brief Return front element of the queue and deletes it from the queue. Will block if the queue is empty
 			 */
 			T pop() {
 				boost::mutex::scoped_lock lock( m_mutex );
