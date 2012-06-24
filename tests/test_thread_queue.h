@@ -99,9 +99,40 @@ class TestThreadQueue : public CxxTest::TestSuite {
 			usleep( 100 );
 			TS_ASSERT_EQUALS( qrw.tqueue.size(), 5 );
 			//sleep( 2 );
-			qrw.read_join( 10 );
+			qrw.read_join( 5 );
+			usleep( 100 );
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 5 );
+			qrw.read_join( 5 );
 			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
 		}
+
+		void testReadBlocking() { 
+			QReaderWriter qrw = QReaderWriter( 10 );
+			qrw.read( 10 );
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
+			qrw.write_join( 5 );
+			usleep( 100 );
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
+			qrw.write_join( 5 );
+			usleep( 100 );
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
+		}
+
+		void testSizeChange() { 
+			QReaderWriter qrw = QReaderWriter( 5 );
+			qrw.write( 10 );
+			usleep( 100 );
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 5 );
+			qrw.tqueue.set_max_size( 0 );
+			//sleep( 2 );
+			qrw.read_join( 5 );
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
+			qrw.tqueue.set_max_size( 10 );
+			qrw.read_join( 5 );
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
+		}
+
+
 
 };
 

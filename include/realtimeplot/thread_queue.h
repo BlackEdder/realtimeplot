@@ -54,6 +54,14 @@ namespace realtimeplot {
 				return dim;
 			}
 
+			void set_max_size(size_t msize) {
+				/*if (msize < 1)
+					msize = 1;*/
+				boost::mutex::scoped_lock lock( queue_mutex );
+				m_size = msize;
+				cond.notify_one();
+			}
+
 
 			void push( const T& element ) {
 				boost::mutex::scoped_lock lock( m_mutex );
