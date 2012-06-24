@@ -1,5 +1,3 @@
-* Implement adaptive plot (x/yrange is determined by first "x" number of events)
-		Probably by redrawing it the first x number of events.
 * Find out if segmentation fault within screen can be dealt with more gracefully 
 		(segmentation fault also seems to happen when display = false)
 * Histogram and Histogram3D should also plot outside the axes, so move
