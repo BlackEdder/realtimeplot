@@ -132,6 +132,18 @@ class TestThreadQueue : public CxxTest::TestSuite {
 			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
 		}
 
+		void testWaitTillEmpty() { 
+			QReaderWriter qrw = QReaderWriter( 10000 );
+			qrw.write( 10000 );
+			qrw.tqueue.wait_till_full();
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 10000 );
+			qrw.read( 10000 );
+			qrw.tqueue.wait_till_empty();
+			TS_ASSERT_EQUALS( qrw.tqueue.size(), 0 );
+			qrw.write_join( 1 );
+			qrw.read_join( 1 );
+		}
+
 
 
 };

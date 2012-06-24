@@ -62,6 +62,28 @@ namespace realtimeplot {
 				cond.notify_one();
 			}
 
+			/**
+			 * \brief Block till the queue is empty
+			 *
+			 * Usefull when working with multiple threads
+			 */
+			void wait_till_empty() {
+				boost::mutex::scoped_lock lock( m_mutex );
+				while (size() > 0 )
+					cond.wait( lock );
+			}
+
+			void wait_till_full() {
+				queue_mutex.lock();
+				size_t msize = m_size;
+				queue_mutex.unlock();
+
+				boost::mutex::scoped_lock lock( m_mutex );
+				while (size() < msize )
+					cond.wait( lock );
+			}
+
+
 
 			void push( const T& element ) {
 				boost::mutex::scoped_lock lock( m_mutex );
