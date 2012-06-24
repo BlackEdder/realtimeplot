@@ -131,6 +131,9 @@ if(CXXTEST_FOUND)
 	include_directories(tests/include)
 	enable_testing()
 
+	CXXTEST_ADD_TEST(unittest_thread_queue test_thread_queue.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_thread_queue.h)
+	target_link_libraries(unittest_thread_queue realtimeplot)
 	CXXTEST_ADD_TEST(unittest_eventhandler test_eventhandler.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_eventhandler.h)
 	target_link_libraries(unittest_eventhandler realtimeplot)
