@@ -30,6 +30,8 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
+
+#include "realtimeplot/thread_queue.h"
 class TestAdaptive;
 
 namespace realtimeplot {
@@ -80,9 +82,8 @@ namespace realtimeplot {
 					friend class ::TestAdaptive;
 				protected:
 					boost::shared_ptr<BackendPlot> pBPlot;
-					std::list<boost::shared_ptr<Event> > event_queue;
-					std::list<boost::shared_ptr<Event> > priority_event_queue;
-					size_t queue_size, priority_queue_size;
+					ThreadQueue<boost::shared_ptr<Event> > event_queue;
+					ThreadQueue<boost::shared_ptr<Event> > priority_event_queue;
 
 					virtual void process_events();
 

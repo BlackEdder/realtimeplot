@@ -31,8 +31,8 @@ namespace realtimeplot {
 		: 
 		processing_events( true ),
 		window_closed( false ),
-		queue_size( 0 ), 
-		priority_queue_size( 0 )
+		event_queue( 1000 ),
+		priority_event_queue( 100 )
 	{
 		//start processing thread
 		pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
@@ -46,49 +46,28 @@ namespace realtimeplot {
 
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent, 
 			bool high_priority ) {
-		//block if many events are present
-		if (queue_size>100000) {
-			std::cout << "RealTimePlot: blocking because queue is full" << std::endl;
-			while (queue_size>10) {
-				usleep(10000);
-			}
-		}
 		if (high_priority) {
-			m_mutex.lock();
-			priority_event_queue.push_back( pEvent );
-			++priority_queue_size;
-			m_mutex.unlock();
+			priority_event_queue.push( pEvent );
 		} else {
-			m_mutex.lock();
-			event_queue.push_back( pEvent );
-			++queue_size;
-			m_mutex.unlock();
+			event_queue.push( pEvent );
 		}
 	}
 
 	int EventHandler::get_queue_size() {
-		return queue_size+priority_queue_size;
+		return event_queue.size() + priority_event_queue.size();
 	}
 
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !window_closed ) {
-			if (priority_queue_size > 0) {
-				boost::shared_ptr<Event> pEvent = priority_event_queue.front();
-				m_mutex.lock();
-				priority_event_queue.pop_front();
-				--priority_queue_size;
-				m_mutex.unlock();
+			if ( priority_event_queue.size() > 0 ) {
+				boost::shared_ptr<Event> pEvent = priority_event_queue.pop();
 				pEvent->execute( pBPlot );
-			} else if ( queue_size>0 ) {
-				boost::shared_ptr<Event> pEvent = event_queue.front();
-				m_mutex.lock();
-				event_queue.pop_front();
-				--queue_size;
-				m_mutex.unlock();
+			} else if ( event_queue.size()>0 ) {
+				boost::shared_ptr<Event> pEvent = event_queue.pop();
 				pEvent->execute( pBPlot );
 			}
-			if (queue_size + priority_queue_size == 0) {
+			if (get_queue_size() == 0) {
 				if (pBPlot != NULL) {
 					pBPlot->display();
 				}

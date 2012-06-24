@@ -145,29 +145,12 @@ namespace realtimeplot {
 	void AdaptiveEventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !window_closed ) {
-			if (priority_queue_size > 0) {
-				boost::shared_ptr<Event> pEvent = priority_event_queue.front();
-				m_mutex.lock();
-				priority_event_queue.pop_front();
-				--priority_queue_size;
-				m_mutex.unlock();
-				
-				// Priority queue should only have x related events, which should not
-				// be reprocessed.
-				/*if (adaptive && processed_events.size() < max_no_events)
-					processed_events.push_back( pEvent );
-				else {
-					adaptive = false;
-					processed_events.clear();
-				}*/
-
+			if (priority_event_queue.size() > 0) {
+				boost::shared_ptr<Event> pEvent = priority_event_queue.pop();
 				pEvent->execute( pBPlot );
-			} else if ( queue_size>0 ) {
-				boost::shared_ptr<Event> pEvent = event_queue.front();
-				m_mutex.lock();
-				event_queue.pop_front();
-				--queue_size;
-				m_mutex.unlock();
+			} else if ( event_queue.size()>0 ) {
+				boost::shared_ptr<Event> pEvent = event_queue.pop();
+
 				if (adaptive && processed_events.size() < max_no_events)
 					processed_events.push_back( pEvent );
 				else {
@@ -177,7 +160,7 @@ namespace realtimeplot {
 
 				pEvent->execute( pBPlot );
 			}
-			if (queue_size + priority_queue_size == 0) {
+			if (get_queue_size() == 0) {
 				if (pBPlot != NULL) {
 					pBPlot->display();
 				}
