@@ -39,9 +39,9 @@ struct custom_policy
    template< typename Context >
    static void unexpected_call( const Context& context )
    {
- 		 std::cout << "Unimplemented 3" << std::endl;
-		 throw;
-        // ...
+ 		 std::ostringstream out;
+		 out << "Error: unexpected call " << context;
+		 TS_FAIL(out.str());
    }
    template< typename Context >
    static void expected_call( const Context& context, const char* file, int line )

@@ -148,7 +148,7 @@ class TestAdaptive : public CxxTest::TestSuite
 				usleep(100);
 			}
 
-pAEH->m_mutex.lock();
+			pAEH->m_mutex.lock();
 			pAEH->reprocess();
 			pAEH->m_mutex.unlock();
 
