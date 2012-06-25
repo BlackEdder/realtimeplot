@@ -54,6 +54,7 @@ namespace realtimeplot {
 			friend class ::TestAdaptive;
 			friend class BackendAdaptivePlot;
 		protected:
+			boost::mutex proc_mutex;
 			size_t max_no_events;
 			std::list<boost::shared_ptr<Event> > processed_events;
 

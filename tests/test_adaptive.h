@@ -75,7 +75,9 @@ class TestAdaptive : public CxxTest::TestSuite
 						new FinalEvent(pEventHandler, false ) ) );
 			pEventHandler->pEventProcessingThrd->join();
 			TS_ASSERT_EQUALS( pEventHandler->get_queue_size(), 0 );
+			pEventHandler->proc_mutex.lock();
 			TS_ASSERT_EQUALS( pEventHandler->processed_events.size(), 3 );
+			pEventHandler->proc_mutex.unlock();
 		}
 
 		void testAEHreprocess() {
@@ -90,6 +92,7 @@ class TestAdaptive : public CxxTest::TestSuite
 
 			pEventHandler->add_event( e1 );
 			pEventHandler->event_queue.wait_till_empty();
+			usleep( 100 );
 
 
 			boost::shared_ptr<AdaptiveEventHandler> pAEH =

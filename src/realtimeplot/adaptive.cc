@@ -133,6 +133,7 @@ namespace realtimeplot {
 		EventHandler(), adaptive( true ), max_no_events( no_events ) {}
 
 	void AdaptiveEventHandler::reprocess() {
+		boost::mutex::scoped_lock lock( proc_mutex );
 		std::list<boost::shared_ptr<Event> >::iterator it = processed_events.begin();
 		++it; // Skip openplotevent
 		if ( processing_events || !window_closed ) {
@@ -146,11 +147,14 @@ namespace realtimeplot {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !window_closed ) {
 			boost::shared_ptr<Event> pEvent = event_queue.pop();
-			if (adaptive && processed_events.size() < max_no_events)
-				processed_events.push_back( pEvent );
-			else {
-				adaptive = false;
-				processed_events.clear();
+			if (adaptive ) {
+				boost::mutex::scoped_lock lock( proc_mutex );
+				if (processed_events.size() < max_no_events)
+					processed_events.push_back( pEvent );
+				else {
+					adaptive = false;
+					processed_events.clear();
+				}
 			}
 			pEvent->execute( pBPlot );
 			if (get_queue_size() == 0) {
