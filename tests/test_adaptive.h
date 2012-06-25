@@ -99,8 +99,6 @@ class TestAdaptive : public CxxTest::TestSuite
 				boost::static_pointer_cast<AdaptiveEventHandler, 
 					EventHandler>( pEventHandler );
 
-			// Reprocess is normally only called from BackendPlot etc, where no locking is
-			// needed. We need to lock manually here
 			pAEH->reprocess();
 			pEventHandler->event_queue.wait_till_empty();
 
@@ -133,8 +131,6 @@ class TestAdaptive : public CxxTest::TestSuite
 				boost::static_pointer_cast<AdaptiveEventHandler, 
 					EventHandler>( pEventHandler );
 
-			// Reprocess is normally only called from BackendPlot etc, where no locking is
-			// needed. We need to lock manually here
 			pAEH->reprocess();
 			pEventHandler->event_queue.wait_till_empty();
 
