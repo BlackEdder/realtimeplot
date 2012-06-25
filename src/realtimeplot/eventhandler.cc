@@ -71,7 +71,7 @@ namespace realtimeplot {
 				if (pBPlot != NULL) {
 					pBPlot->display();
 				}
-				usleep(100000);
+				usleep(100);
 			}
 
 			// After the window has been closed we want to stop
