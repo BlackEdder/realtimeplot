@@ -89,9 +89,7 @@ class TestAdaptive : public CxxTest::TestSuite
 						new OpenPlotEvent( conf, pEventHandler ) ) );
 
 			pEventHandler->add_event( e1 );
-			while (pEventHandler->get_queue_size() > 0) {
-				usleep(100);
-			}
+			pEventHandler->event_queue.wait_till_empty();
 
 
 			boost::shared_ptr<AdaptiveEventHandler> pAEH =
@@ -100,9 +98,9 @@ class TestAdaptive : public CxxTest::TestSuite
 
 			// Reprocess is normally only called from BackendPlot etc, where no locking is
 			// needed. We need to lock manually here
-			pAEH->m_mutex.lock();
 			pAEH->reprocess();
-			pAEH->m_mutex.unlock();
+			pEventHandler->event_queue.wait_till_empty();
+
 
 			pEventHandler->add_event( e2 );
 
@@ -134,17 +132,15 @@ class TestAdaptive : public CxxTest::TestSuite
 
 			// Reprocess is normally only called from BackendPlot etc, where no locking is
 			// needed. We need to lock manually here
-			pAEH->m_mutex.lock();
 			pAEH->reprocess();
-			pAEH->m_mutex.unlock();
+			pEventHandler->event_queue.wait_till_empty();
 
 			pEventHandler->add_event( e1 );
 
 			pEventHandler->event_queue.wait_till_empty();
 
-			pAEH->m_mutex.lock();
 			pAEH->reprocess();
-			pAEH->m_mutex.unlock();
+			pEventHandler->event_queue.wait_till_empty();
 
 			pEventHandler->add_event( e2 );
 

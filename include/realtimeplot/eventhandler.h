@@ -76,8 +76,6 @@ namespace realtimeplot {
 					bool processing_events;
 					bool window_closed;
 					
-					boost::mutex m_mutex;
-
 					friend class TestBackendWithCairo;
 					friend class ::TestAdaptive;
 				protected:
