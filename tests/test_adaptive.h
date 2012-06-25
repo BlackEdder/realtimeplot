@@ -126,11 +126,7 @@ class TestAdaptive : public CxxTest::TestSuite
 			for (size_t i = 0; i < 2; ++i) {
 				pEventHandler->add_event( e1 );
 			}
-
-			while (pEventHandler->get_queue_size() > 0) {
-				usleep(100);
-			}
-
+			pEventHandler->event_queue.wait_till_empty();
 
 			boost::shared_ptr<AdaptiveEventHandler> pAEH =
 				boost::static_pointer_cast<AdaptiveEventHandler, 
@@ -144,9 +140,7 @@ class TestAdaptive : public CxxTest::TestSuite
 
 			pEventHandler->add_event( e1 );
 
-			while (pEventHandler->get_queue_size() > 0) {
-				usleep(100);
-			}
+			pEventHandler->event_queue.wait_till_empty();
 
 			pAEH->m_mutex.lock();
 			pAEH->reprocess();

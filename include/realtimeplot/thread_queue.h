@@ -55,7 +55,7 @@ namespace realtimeplot {
 			 * \brief Return max size of the queue
 			 */
 			size_t max_size() {
-				boost::mutex::scoped_lock lock( queue_mutex );
+				boost::mutex::scoped_lock lock( max_size_mutex );
 				size_t dim = m_size;
 				return dim;
 			}
@@ -67,7 +67,7 @@ namespace realtimeplot {
 			 * till the size is lower than the new max size
 			 */
 			void set_max_size(size_t msize) {
-				boost::mutex::scoped_lock lock( queue_mutex );
+				boost::mutex::scoped_lock lock( max_size_mutex );
 				m_size = msize;
 				cond.notify_one();
 			}
@@ -88,10 +88,10 @@ namespace realtimeplot {
 			 *
 			 * Usefull when working with multiple threads and can be useful for unit testing
 			 */
-				void wait_till_full() {
-				queue_mutex.lock();
+			void wait_till_full() {
+				max_size_mutex.lock();
 				size_t msize = m_size;
-				queue_mutex.unlock();
+				max_size_mutex.unlock();
 
 				boost::mutex::scoped_lock lock( m_mutex );
 				while (size() < msize )
@@ -126,6 +126,7 @@ namespace realtimeplot {
 			size_t m_size;
 			boost::mutex m_mutex;
 			boost::mutex queue_mutex;
+			boost::mutex max_size_mutex;
 			boost::condition cond;
 
 			void queue_push( const T& element ) {
@@ -180,7 +181,7 @@ namespace realtimeplot {
 			 * \brief Return max size of the low priority queue
 			 */
 			size_t max_size() {
-				boost::mutex::scoped_lock lock( queue_mutex );
+				boost::mutex::scoped_lock lock( max_size_mutex );
 				size_t dim = m_size;
 				return dim;
 			}
@@ -192,7 +193,7 @@ namespace realtimeplot {
 			 * till the size is lower than the new max size
 			 */
 			void set_max_size(size_t msize) {
-				boost::mutex::scoped_lock lock( queue_mutex );
+				boost::mutex::scoped_lock lock( max_size_mutex );
 				m_size = msize;
 				cond.notify_one();
 			}
@@ -215,9 +216,7 @@ namespace realtimeplot {
 			 * Usefull when working with multiple threads and can be useful for unit testing
 			 */
 			void wait_till_full() {
-				queue_mutex.lock();
-				size_t msize = m_size;
-				queue_mutex.unlock();
+				size_t msize = max_size();
 
 				boost::mutex::scoped_lock lock( m_mutex );
 				while (size() < msize )
@@ -268,6 +267,7 @@ namespace realtimeplot {
 			boost::mutex m_mutex;
 			boost::mutex queue_mutex;
 			boost::mutex priority_queue_mutex;
+			boost::mutex max_size_mutex;
 			boost::condition cond;
 
 			void queue_push( const T& element ) {
