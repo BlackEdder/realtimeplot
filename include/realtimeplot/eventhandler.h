@@ -82,8 +82,7 @@ namespace realtimeplot {
 					friend class ::TestAdaptive;
 				protected:
 					boost::shared_ptr<BackendPlot> pBPlot;
-					ThreadQueue<boost::shared_ptr<Event> > event_queue;
-					ThreadQueue<boost::shared_ptr<Event> > priority_event_queue;
+					ThreadSplitQueue<boost::shared_ptr<Event> > event_queue;
 
 					virtual void process_events();
 

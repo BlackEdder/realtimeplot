@@ -31,8 +31,7 @@ namespace realtimeplot {
 		: 
 		processing_events( true ),
 		window_closed( false ),
-		event_queue( 1000 ),
-		priority_event_queue( 100 )
+		event_queue( 1000 )
 	{
 		//start processing thread
 		pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
@@ -46,32 +45,22 @@ namespace realtimeplot {
 
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent, 
 			bool high_priority ) {
-		if (high_priority) {
-			priority_event_queue.push( pEvent );
-		} else {
-			event_queue.push( pEvent );
-		}
+		event_queue.push( pEvent, high_priority );
 	}
 
 	int EventHandler::get_queue_size() {
-		return event_queue.size() + priority_event_queue.size();
+		return event_queue.size();
 	}
 
 	void EventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !window_closed ) {
-			if ( priority_event_queue.size() > 0 ) {
-				boost::shared_ptr<Event> pEvent = priority_event_queue.pop();
-				pEvent->execute( pBPlot );
-			} else if ( event_queue.size()>0 ) {
-				boost::shared_ptr<Event> pEvent = event_queue.pop();
-				pEvent->execute( pBPlot );
-			}
+			boost::shared_ptr<Event> pEvent = event_queue.pop();
+			pEvent->execute( pBPlot );
 			if (get_queue_size() == 0) {
 				if (pBPlot != NULL) {
 					pBPlot->display();
 				}
-				usleep(100);
 			}
 
 			// After the window has been closed we want to stop

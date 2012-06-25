@@ -145,34 +145,19 @@ namespace realtimeplot {
 	void AdaptiveEventHandler::process_events() {
 		//Ideally event queue would have a blocking get function
 		while ( processing_events || !window_closed ) {
-			if (priority_event_queue.size() > 0) {
-				boost::shared_ptr<Event> pEvent = priority_event_queue.pop();
-				pEvent->execute( pBPlot );
-			} else if ( event_queue.size()>0 ) {
-				boost::shared_ptr<Event> pEvent = event_queue.pop();
-
-				if (adaptive && processed_events.size() < max_no_events)
-					processed_events.push_back( pEvent );
-				else {
-					adaptive = false;
-					processed_events.clear();
-				}
-
-				pEvent->execute( pBPlot );
+			boost::shared_ptr<Event> pEvent = event_queue.pop();
+			if (adaptive && processed_events.size() < max_no_events)
+				processed_events.push_back( pEvent );
+			else {
+				adaptive = false;
+				processed_events.clear();
 			}
+			pEvent->execute( pBPlot );
 			if (get_queue_size() == 0) {
 				if (pBPlot != NULL) {
 					pBPlot->display();
 				}
-				usleep(100);
-			}
-
-			// After the window has been closed we want to stop
-			// as soon as processing_events = false (FinalEvent has
-			// been sent)
-			/*if (!window_closed && pBPlot != NULL) {
-				window_closed = true;
-			}*/
+			}	
 		}
 		// Make sure we let pBPlot go/freed.
 		if (pBPlot != NULL)
