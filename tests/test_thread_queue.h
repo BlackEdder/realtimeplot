@@ -38,14 +38,14 @@ class QReaderWriter {
 		}
 
 		void write_helper( size_t iter ) {
-			for (int n = 0; n < iter; ++n)
+			for (size_t n = 0; n < iter; ++n)
 			{
 				tqueue.push(n);
 			}
 		}
 
 		void read_helper( size_t iter ) {
-			for (int n = 0; n < iter; ++n)
+			for (size_t n = 0; n < iter; ++n)
 			{
 				tqueue.pop();
 			}
@@ -81,14 +81,14 @@ class Q2ReaderWriter {
 		}
 
 		void write_helper( size_t iter, bool priority ) {
-			for (int n = 0; n < iter; ++n)
+			for (size_t n = 0; n < iter; ++n)
 			{
 				tqueue.push(n, priority);
 			}
 		}
 
 		void read_helper( size_t iter ) {
-			for (int n = 0; n < iter; ++n)
+			for (size_t n = 0; n < iter; ++n)
 			{
 				tqueue.pop();
 			}
