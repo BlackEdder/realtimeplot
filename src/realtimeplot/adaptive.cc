@@ -66,12 +66,21 @@ namespace realtimeplot {
 	}
 
 	void BackendAdaptivePlot::reset( PlotConfig conf ) {
+		if (conf.fixed_plot_area) { /*  || 
+				convert_to_adaptive( pEventHandler )->processed_events.size() >= conf.no_no_adaptive_events ) {*/
+			adapting = false;
+			if (pEventHandler) {
+				convert_to_adaptive( pEventHandler )->processed_events.clear();
+				convert_to_adaptive( pEventHandler )->adaptive = false;
+			}
+		}
 		if (adapting) {
 			max_data_x = -1;
 			max_data_y = -1;
 			min_data_x = 0;
 			min_data_y = 0;
 			if (pEventHandler) {
+				convert_to_adaptive( pEventHandler )->max_no_events = conf.no_adaptive_events;
 				convert_to_adaptive( pEventHandler )->processed_events.clear();
 			}
 		}

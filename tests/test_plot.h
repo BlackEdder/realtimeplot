@@ -23,6 +23,7 @@
 #include <cxxtest/TestSuite.h>
 
 #include "realtimeplot/plot.h"
+#include "realtimeplot/adaptive.h"
 
 using namespace realtimeplot;
 
@@ -57,6 +58,20 @@ class TestPlot : public CxxTest::TestSuite {
 			TS_ASSERT_EQUALS( cms.scale( 0.5 ), cm.scale( 0.5 ) );
 
 			TS_ASSERT_DIFFERS( cm( 0.1 ), cms(0.1) );
+		}
+
+		void testResetAdaptive() {
+			PlotConfig conf = PlotConfig();
+			conf.display = false;
+			Plot pl = Plot( conf );
+			boost::shared_ptr<AdaptiveEventHandler> pAEH =
+				boost::static_pointer_cast<AdaptiveEventHandler, 
+					EventHandler>( pl.pEventHandler );
+
+			TS_ASSERT_EQUALS( pAEH->adaptive, true );
+			conf.fixed_plot_area = true;
+			pl.reset( conf );
+			TS_ASSERT_EQUALS( pAEH->adaptive, false );
 		}
 };
 
