@@ -1,3 +1,5 @@
+* Plot.reset seems not to work (probably adaptive plot related). For example in benchmark I can't
+	use pl.reset( new_config ); to run the next benchmark.
 * Add benchmarks
 	* Stress test, number of points handled per minute.
 	* Frame rate (should be relatively constant?)
