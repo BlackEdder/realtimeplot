@@ -71,6 +71,7 @@ class TestPlot : public CxxTest::TestSuite {
 			TS_ASSERT_EQUALS( pAEH->adaptive, true );
 			conf.fixed_plot_area = true;
 			pl.reset( conf );
+			pAEH->event_queue.wait_till_empty();
 			TS_ASSERT_EQUALS( pAEH->adaptive, false );
 		}
 };

@@ -33,6 +33,7 @@
 
 #include "realtimeplot/thread_queue.h"
 class TestAdaptive;
+class TestPlot;
 
 namespace realtimeplot {
     class PlotConfig;
@@ -78,6 +79,7 @@ namespace realtimeplot {
 					
 					friend class TestBackendWithCairo;
 					friend class ::TestAdaptive;
+					friend class ::TestPlot;
 				protected:
 					boost::shared_ptr<BackendPlot> pBPlot;
 					ThreadSplitQueue<boost::shared_ptr<Event> > event_queue;
