@@ -74,5 +74,24 @@ class TestPlot : public CxxTest::TestSuite {
 			pAEH->event_queue.wait_till_empty();
 			TS_ASSERT_EQUALS( pAEH->adaptive, false );
 		}
+
+		void testResetNoAdaptiveEvents() {
+			PlotConfig conf = PlotConfig();
+			conf.display = false;
+			Plot pl = Plot( conf );
+			boost::shared_ptr<AdaptiveEventHandler> pAEH =
+				boost::static_pointer_cast<AdaptiveEventHandler, 
+					EventHandler>( pl.pEventHandler );
+			pl.point( 1,1);
+			pl.point( 1,1);
+			pl.point( 1,1);
+
+			TS_ASSERT_EQUALS( pAEH->adaptive, true );
+			conf.no_adaptive_events = 1;
+			pl.reset( conf );
+			pAEH->event_queue.wait_till_empty();
+			TS_ASSERT_EQUALS( pAEH->adaptive, false );
+		}
+
 };
 
