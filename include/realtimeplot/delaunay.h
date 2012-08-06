@@ -30,7 +30,7 @@ namespace realtimeplot {
 	namespace delaunay {
 		/*
 		 * This implementation follows the "corner method" as described in:
-		 * Venkates and Lee, An imporved incremental Delaunay Triangulation Algorithm
+		 * Venkates and Lee, An improved incremental Delaunay Triangulation Algorithm
 		 */
 		class Vertex {
 			public:
