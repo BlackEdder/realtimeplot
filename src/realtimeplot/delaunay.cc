@@ -173,16 +173,26 @@ namespace realtimeplot {
 		}
 
 		void Delaunay::setSuperTriangle(  float min_x, float max_x, float min_y, float max_y ) {
-			//Setup super triangle (slightly larger than plotting area)
+			//Setup skewed super triangle (slightly larger than plotting area)
+			//Skewed is to avoid certain numerical problems for square lattices
 			float dx = (max_x - min_x);
 			float dy = (max_y - min_y);
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x - 0.501*dx, 
-							max_y - 1.001*dy ) ) );
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x - 0.5*dx, 
-							max_y + 1.001*dy ) ) );
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x + 0.501*dx, 
-							max_y - 1.001*dy ) ) );
-			
+
+			double sq3 = sqrt(3);
+			double b1 = 1.0/6*(3+sq3);
+			double l1 = 1.0/6*(3*dy+2*sq3*dy+3*dx+2*sq3*dx);
+			double l2 = 1.0/6*(sq3*dy+sq3*dx);
+			double x1 = 1.0/6*(3*dx+sq3*dx);
+			double x2 = 1.0/6*(3*dy+sq3*dy);
+			double a1 = 1.0/6*(3-sq3);
+
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x + b1*dx, 
+							min_y + 1.2*dy + x1) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x - 1.2*x2, 
+							min_y + a1*dy ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x+b1*dx+l2, 
+							min_y+dy+x1-l1 ) ) );
+		
 			triangles.push_back( boost::shared_ptr<Triangle>( new Triangle ) );
 		}
 
