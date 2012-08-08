@@ -151,18 +151,7 @@ namespace realtimeplot {
 
 		Delaunay::Delaunay( float min_x, float max_x, float min_y, float max_y )
 		{
-			//Setup super triangle (slightly larger than plotting area)
-			float dx = (max_x - min_x);
-			float dy = (max_y - min_y);
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x - 0.501*dx, 
-							max_y - 1.001*dy ) ) );
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x - 0.5*dx, 
-							max_y + 1.001*dy ) ) );
-			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x + 0.501*dx, 
-							max_y - 1.001*dy ) ) );
-			
-			triangles.push_back( boost::shared_ptr<Triangle>( new Triangle ) );
-
+			setSuperTriangle( min_x, max_x, min_y, max_y );
 			for (size_t i = 0; i<3; ++i) {
 				boost::shared_ptr<Corner> corner (new Corner());
 				corner->vertex = vertices[i];
@@ -181,6 +170,20 @@ namespace realtimeplot {
 					j = 3+j;
 				corners[i]->previous = corners[j];
 			}
+		}
+
+		void Delaunay::setSuperTriangle(  float min_x, float max_x, float min_y, float max_y ) {
+			//Setup super triangle (slightly larger than plotting area)
+			float dx = (max_x - min_x);
+			float dy = (max_y - min_y);
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( min_x - 0.501*dx, 
+							max_y - 1.001*dy ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x - 0.5*dx, 
+							max_y + 1.001*dy ) ) );
+			vertices.push_back( boost::shared_ptr<Vertex>( new Vertex( max_x + 0.501*dx, 
+							max_y - 1.001*dy ) ) );
+			
+			triangles.push_back( boost::shared_ptr<Triangle>( new Triangle ) );
 		}
 
 		void Delaunay::add_data( boost::shared_ptr<Vertex> vertex ) {

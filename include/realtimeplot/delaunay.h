@@ -26,6 +26,9 @@
 #include <ostream>
 #include <vector>
 #include <boost/shared_ptr.hpp>
+
+class TestDelaunay;
+
 namespace realtimeplot {
 	namespace delaunay {
 		/*
@@ -130,12 +133,16 @@ namespace realtimeplot {
 				 * inprecision
 				 */
 				void flipEdgesRecursively( boost::shared_ptr<Corner> pC, size_t count = 0 );
-
-			/*private:
-				friend class TestDelaunay;*/
 				std::vector<boost::shared_ptr<Vertex> > vertices;
 				std::vector<boost::shared_ptr<Triangle> > triangles;
 				std::vector<boost::shared_ptr<Corner> > corners;
+			protected:
+				/**
+				 * \brief Set the super triangle that encompasses a rectangle
+				 *
+				 * This method is normally only used internally
+				 */
+				void setSuperTriangle( float min_x, float max_x, float min_y, float max_y ); 	
 		};
 	};
 };
