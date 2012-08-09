@@ -1,9 +1,9 @@
+* Redrawing on expose seems to not happen anymore. (Cairo problem?)
 * Add benchmarks
 	* Stress test, number of points handled per minute.
 	* Frame rate (should be relatively constant?)
 	* Benchmarks for each different plot
 	* Try sysprof/oprofile?
-* Add tests for delaunay and square grid (I know something goes wrong, want to add test 	that catches that)
 * Play more with axes etc. Test axes output etc.
 * Find out if segmentation fault within screen can be dealt with more gracefully 
 		(segmentation fault also seems to happen when display = false)
