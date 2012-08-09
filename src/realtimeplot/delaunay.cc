@@ -101,8 +101,6 @@ namespace realtimeplot {
 		bool Triangle::inCircumCircle( boost::shared_ptr<Vertex> pV ) {
 			// For now recalculate everything everytime, since vertices of corners
 			// can change between calls
-			//
-			// Should be adapted to deal with cases where all vertices are on same line
 			float x0 = corners[0]->vertex->x;
 			float y0 = corners[0]->vertex->y;
 
@@ -124,19 +122,8 @@ namespace realtimeplot {
 			if (v1.x*v2.y == v2.x*v1.y)
 				return true;
 
-
-			//Define vector starting from half way up the each edge, perpendicular to the edge
-			Vertex perp_v1 = Vertex( -v1.y, v1.x );
-			Vertex perp_v2 = Vertex( -v2.y, v2.x );
-
-			Edge e1 = Edge( boost::shared_ptr<Vertex>( new Vertex( 0.5*v1.x+x0, 0.5*v1.y+y0 ) ),
-					boost::shared_ptr<Vertex>( 
-						new Vertex( 0.5*v1.x+x0+perp_v1.x, 0.5*v1.y+y0+perp_v1.y ) ) );
-			Edge e2 = Edge( boost::shared_ptr<Vertex>( new Vertex( 0.5*v2.x+x0, 0.5*v2.y+y0 ) ),
-					boost::shared_ptr<Vertex>( 
-						new Vertex( 0.5*v2.x+x0+perp_v2.x, 0.5*v2.y+y0+perp_v2.y ) ) );
 			//Find intersection point.
-			Vertex inter = e1.intersectionVertex( e2 );
+			Vertex inter = centerGivenTwoEdges( v1, v2 );
 			
 			//Radius is distance from intersection point to any corner
 			float m_R2 = pow((inter.x-x0),2)+pow(inter.y-y0,2);
@@ -148,6 +135,43 @@ namespace realtimeplot {
 			return dist2 < m_R2;
 		}
 
+		Vertex Triangle::center() {
+			// For now recalculate everything everytime, since vertices of corners
+			// can change between calls
+			float x0 = corners[0]->vertex->x;
+			float y0 = corners[0]->vertex->y;
+
+			float x1 = corners[1]->vertex->x;
+			float y1 = corners[1]->vertex->y;
+
+			float x2 = corners[2]->vertex->x;
+			float y2 = corners[2]->vertex->y;
+			
+			//Calculate vectors for 2 of the edges
+			Vertex v1 = Vertex( x1-x0, y1-y0 );
+			Vertex v2 = Vertex( x2-x0, y2-y0 );
+
+			return centerGivenTwoEdges( v1, v2 );
+		}
+
+
+		Vertex Triangle::centerGivenTwoEdges( Vertex &v1, Vertex &v2 ) {
+			float x0 = corners[0]->vertex->x;
+			float y0 = corners[0]->vertex->y;
+
+			Vertex perp_v1 = Vertex( -v1.y, v1.x );
+			Vertex perp_v2 = Vertex( -v2.y, v2.x );
+
+			Edge e1 = Edge( boost::shared_ptr<Vertex>( new Vertex( 0.5*v1.x+x0, 0.5*v1.y+y0 ) ),
+					boost::shared_ptr<Vertex>( 
+						new Vertex( 0.5*v1.x+x0+perp_v1.x, 0.5*v1.y+y0+perp_v1.y ) ) );
+			Edge e2 = Edge( boost::shared_ptr<Vertex>( new Vertex( 0.5*v2.x+x0, 0.5*v2.y+y0 ) ),
+					boost::shared_ptr<Vertex>( 
+						new Vertex( 0.5*v2.x+x0+perp_v2.x, 0.5*v2.y+y0+perp_v2.y ) ) );
+			//Find intersection point.
+			return e1.intersectionVertex( e2 );
+		}
+	
 
 		Delaunay::Delaunay( float min_x, float max_x, float min_y, float max_y )
 		{

@@ -93,7 +93,19 @@ namespace realtimeplot {
 				bool inTriangle( boost::shared_ptr<Vertex> pV );
 
 				bool inCircumCircle( boost::shared_ptr<Vertex> pV ); 
-		};
+
+				/**
+				 * \brief Returns a vertex corresponding to the center of the triangle
+				 */
+				Vertex center();
+			protected:
+				/**
+				 * \brief Returns a vertex corresponding to the center of the triangle given two edges
+				 *
+				 * Intermediate method, introduced to minimize code duplication
+				 */
+				Vertex centerGivenTwoEdges( Vertex &v1, Vertex &v2 );
+			};
 
 		class Corner {
 			public:
