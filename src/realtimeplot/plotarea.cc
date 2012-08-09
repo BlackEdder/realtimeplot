@@ -125,6 +125,7 @@ namespace realtimeplot {
 			lines.push_front( line );
 		} else {
 			context->save();
+			transform_to_plot_units();
 			context->move_to( line->current_x, line->current_y );
 			context->line_to( x, y );
 			transform_to_device_units();
