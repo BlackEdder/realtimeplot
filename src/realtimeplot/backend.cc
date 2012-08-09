@@ -930,28 +930,6 @@ namespace realtimeplot {
 		}
 
 		pause_display = before;
-		/*for (size_t i=0; i<delaunay.triangles.size(); ++i) {
-			Color col = Color::by_id( i );
-			col.a = 0.5;
-			Triangle3D tr = Triangle3D( delaunay.triangles[i] );
-			for (size_t j=0; j<3; ++j) {
-				std::cout << delaunay.triangles[i]->corners[j]->vertex->x << " " <<
-					delaunay.triangles[i]->corners[j]->vertex->y << std::endl;
-				std::cout << tr.vertices[j]->x << " " <<
-					tr.vertices[j]->y << " " << tr.vertices[j]->z << std::endl;
-				line_add( delaunay.triangles[i]->corners[j]->vertex->x,
-						delaunay.triangles[i]->corners[j]->vertex->y, i, col );
-			}
-			line_add( delaunay.triangles[i]->corners[0]->vertex->x,
-					delaunay.triangles[i]->corners[0]->vertex->y, i, col );
-			std::vector<boost::shared_ptr<Vertex3D> > v = tr.gradientVector();
-			col.a = 1;
-			line_add( v[0]->x, v[0]->y, i, col );
-			line_add( v[1]->x, v[1]->y, i, col );
-			std::cout << v[0]->x << " " << v[0]->y << " " << v[0]->z << " " <<
-				v[1]->x << " " << v[1]->y << " " << v[1]->z << std::endl;
-
-		}*/
 		display();
 	}
 
