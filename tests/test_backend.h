@@ -478,10 +478,6 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( v[1]->y, 0.5 );
 			TS_ASSERT_EQUALS( v[1]->z, 1 );
 
-			TS_ASSERT_EQUALS( pV3->x, 1 );
-			TS_ASSERT_EQUALS( pV3->y, 1 );
-			TS_ASSERT_EQUALS( pV3->z, 1 );
-
 			Triangle3D tr2 = Triangle3D();
 			tr2.vertices.push_back( pV3 );
 			tr2.vertices.push_back( pV1 );
@@ -493,6 +489,39 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( v[1]->x, 1.5 );
 			TS_ASSERT_EQUALS( v[1]->y, 0.5 );
 			TS_ASSERT_EQUALS( v[1]->z, 1 );
+
+			pV1.reset( new Vertex3D( 0,0.5,0 ) );
+			pV2.reset( new Vertex3D( 0.5,0.5,0 ) );
+			pV3.reset( new Vertex3D( 0,1,0.25 ) );
+
+			Triangle3D tr3 = Triangle3D();
+			tr3.vertices.push_back( pV1 );
+			tr3.vertices.push_back( pV2 );
+			tr3.vertices.push_back( pV3 );
+			v = tr3.gradientVector();
+			TS_ASSERT_EQUALS( v[0]->x, 0 );
+			TS_ASSERT_EQUALS( v[0]->y, 0.5 );
+			TS_ASSERT_EQUALS( v[0]->z, 0 );
+			TS_ASSERT_EQUALS( v[1]->x, 0 );
+			TS_ASSERT_EQUALS( v[1]->y, 1 );
+			TS_ASSERT_EQUALS( v[1]->z, 0.25 );
+			pV1.reset( new Vertex3D( 0,0.5,0 ) );
+			pV2.reset( new Vertex3D( 0.5,0.5,0 ) );
+			pV3.reset( new Vertex3D( 0,1,0.25 ) );
+
+
+			// All zs are equal
+			pV1.reset( new Vertex3D( 0,0.5,1 ) );
+			pV2.reset( new Vertex3D( 0.5,0.5,1 ) );
+			pV3.reset( new Vertex3D( 0,1,1 ) );
+
+			Triangle3D tr4 = Triangle3D();
+			tr4.vertices.push_back( pV1 );
+			tr4.vertices.push_back( pV2 );
+			tr4.vertices.push_back( pV3 );
+			v = tr4.gradientVector();
+			TS_ASSERT_EQUALS( v[0]->z, 0 );
+			TS_ASSERT_EQUALS( v[1]->z, 0 );
 		}
 };
 	

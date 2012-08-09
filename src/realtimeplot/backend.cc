@@ -803,6 +803,56 @@ namespace realtimeplot {
 		plot();
 	}
 
+
+	std::vector<boost::shared_ptr<Vertex3D> > Triangle3D::gradientVector() {
+				std::vector<boost::shared_ptr<Vertex3D> > v;
+				//Find lowest and highest Vertex
+				v.push_back( boost::shared_ptr<Vertex3D>( new Vertex3D( vertices[0]->x, 
+								vertices[0]->y, vertices[0]->z ) ) );
+				v.push_back( boost::shared_ptr<Vertex3D>( new Vertex3D( vertices[1]->x, 
+								vertices[1]->y, vertices[1]->z ) ) );
+
+				for (size_t i=0; i<3; ++i) {
+					if (vertices[i]->z < v[0]->z)
+						v[0].reset( new Vertex3D( vertices[i]->x, vertices[i]->y, vertices[i]->z ) );
+					if (vertices[i]->z > v[1]->z)
+						v[1].reset( new Vertex3D( vertices[i]->x, vertices[i]->y, vertices[i]->z ) );
+				}
+
+				// Flat, so the vector should be flat as well
+				if (v[0]->z == v[1]->z) {
+					v[0]->z = 0;
+					v[1]->z = 0;
+					return v;
+				}
+
+				boost::shared_ptr<Vertex3D> pEV1( new Vertex3D( vertices[1]->x-vertices[0]->x,
+							vertices[1]->y-vertices[0]->y,
+							vertices[1]->z-vertices[0]->z ) );
+				boost::shared_ptr<Vertex3D> pEV2( new Vertex3D( vertices[2]->x-vertices[0]->x,
+							vertices[2]->y-vertices[0]->y,
+							vertices[2]->z-vertices[0]->z ) );
+				float x2; float y2; float z2;
+				boost::shared_ptr<Vertex3D> pNormal;
+				pNormal = pEV1->crossProduct( pEV2 );
+				if (pNormal->x == 0) {
+					x2 = pNormal->x/pNormal->y;
+					y2 = 1;
+					z2 = -(pow(pNormal->y,2)+pow(pNormal->x,2))/(pNormal->y*pNormal->z);
+				} else {
+					x2 = 1;
+					y2 = pNormal->y/pNormal->x;
+					z2 = -(pow(pNormal->y,2)+pow(pNormal->x,2))/(pNormal->x*pNormal->z);
+				}
+
+				float scalar = (v[1]->z-v[0]->z)/z2;
+				v[1]->x = v[0]->x+scalar*x2;
+				v[1]->y = v[0]->y+scalar*y2;
+				v[1]->z = v[0]->z+scalar*z2;
+				return v;
+			}
+
+
 	/*
 	 * HeightMap
 	 */
@@ -878,7 +928,30 @@ namespace realtimeplot {
 				//delaunay.triangles[i]->corners[0]->vertex->y, i, Color::red() );
 			}
 		}
+
 		pause_display = before;
+		/*for (size_t i=0; i<delaunay.triangles.size(); ++i) {
+			Color col = Color::by_id( i );
+			col.a = 0.5;
+			Triangle3D tr = Triangle3D( delaunay.triangles[i] );
+			for (size_t j=0; j<3; ++j) {
+				std::cout << delaunay.triangles[i]->corners[j]->vertex->x << " " <<
+					delaunay.triangles[i]->corners[j]->vertex->y << std::endl;
+				std::cout << tr.vertices[j]->x << " " <<
+					tr.vertices[j]->y << " " << tr.vertices[j]->z << std::endl;
+				line_add( delaunay.triangles[i]->corners[j]->vertex->x,
+						delaunay.triangles[i]->corners[j]->vertex->y, i, col );
+			}
+			line_add( delaunay.triangles[i]->corners[0]->vertex->x,
+					delaunay.triangles[i]->corners[0]->vertex->y, i, col );
+			std::vector<boost::shared_ptr<Vertex3D> > v = tr.gradientVector();
+			col.a = 1;
+			line_add( v[0]->x, v[0]->y, i, col );
+			line_add( v[1]->x, v[1]->y, i, col );
+			std::cout << v[0]->x << " " << v[0]->y << " " << v[0]->z << " " <<
+				v[1]->x << " " << v[1]->y << " " << v[1]->z << std::endl;
+
+		}*/
 		display();
 	}
 

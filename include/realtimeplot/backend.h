@@ -250,39 +250,7 @@ namespace realtimeplot {
 				}
 			}
 
-			std::vector<boost::shared_ptr<Vertex3D> > gradientVector() {
-				std::vector<boost::shared_ptr<Vertex3D> > v;
-				//Find lowest and highest Vertex
-				v.push_back( boost::shared_ptr<Vertex3D>( new Vertex3D( vertices[0]->x, 
-								vertices[0]->y, vertices[0]->z ) ) );
-				v.push_back( boost::shared_ptr<Vertex3D>( new Vertex3D( vertices[0]->x, 
-								vertices[0]->y, vertices[0]->z ) ) );
-				for (size_t i=1; i<3; ++i) {
-					if (vertices[i]->z < v[0]->z)
-						v[0].reset( new Vertex3D( vertices[i]->x, vertices[i]->y, vertices[i]->z ) );
-					if (vertices[i]->z > v[1]->z)
-						v[1].reset( new Vertex3D( vertices[i]->x, vertices[i]->y, vertices[i]->z ) );
-				}
-
-				boost::shared_ptr<Vertex3D> pEV1( new Vertex3D( vertices[1]->x-vertices[0]->x,
-							vertices[1]->y-vertices[0]->y,
-							vertices[1]->z-vertices[0]->z ) );
-				boost::shared_ptr<Vertex3D> pEV2( new Vertex3D( vertices[2]->x-vertices[0]->x,
-							vertices[2]->y-vertices[0]->y,
-							vertices[2]->z-vertices[0]->z ) );
-				float y2; float z2;
-				boost::shared_ptr<Vertex3D> pNormal;
-				pNormal = pEV1->crossProduct( pEV2 );
-				y2 = pNormal->y/pNormal->x;
-				z2 = -(pow(pNormal->y,2)+pow(pNormal->x,2))/(pNormal->x*pNormal->z);
-
-				float scalar = (v[1]->z-v[0]->z)/z2;
-				v[1]->x = v[0]->x+scalar;
-				v[1]->y = v[0]->y+scalar*y2;
-				v[1]->z = v[0]->z+scalar*z2;
-				return v;
-			}
-
+			std::vector<boost::shared_ptr<Vertex3D> > gradientVector();
 			std::vector<boost::shared_ptr<Vertex3D> > vertices;
 	};
 	/**
