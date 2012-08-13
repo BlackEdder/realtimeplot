@@ -163,7 +163,6 @@ namespace realtimeplot {
 	}
 
 	void AdaptiveEventHandler::process_events() {
-		//Ideally event queue would have a blocking get function
 		while ( processing_events || !window_closed ) {
 			boost::shared_ptr<Event> pEvent = event_queue.pop();
 			if (adaptive ) {
