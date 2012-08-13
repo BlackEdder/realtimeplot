@@ -246,6 +246,17 @@ namespace realtimeplot {
     };
 
 		/**
+		 \brief Event to redraw the current plot onto the xSurface
+		 */
+    class DisplayEvent : public Event {
+        public:
+            DisplayEvent() {};
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+							pBPlot->display();
+						}
+    };
+
+		/**
 		 \brief Event to clear the current plot
 		 */
     class ClearEvent : public Event {
