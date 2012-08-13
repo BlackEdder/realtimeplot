@@ -112,7 +112,9 @@ install (FILES include/realtimeplot/realtimeplot.h
 	include/realtimeplot/backend.h
 	include/realtimeplot/plotarea.h
 	include/realtimeplot/eventhandler.h
+	include/realtimeplot/thread_queue.h
 	include/realtimeplot/xcbhandler.h
+	include/realtimeplot/adaptive.h
 	include/realtimeplot/utils.h
 	include/realtimeplot/events.h
 	include/realtimeplot/delaunay.h

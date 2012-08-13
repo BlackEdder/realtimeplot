@@ -177,8 +177,7 @@ namespace realtimeplot {
 			boost::shared_ptr<EventHandler> pEventHandler ) :
 		plot_conf( plot_conf ),
 		pEventHandler( pEventHandler )
-	{
-	}
+	{}
 
 	void OpenHeightMapEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
 		pBPlot.reset( new BackendHeightMap( plot_conf, pEventHandler ) );
