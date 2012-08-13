@@ -1,4 +1,3 @@
-* Redrawing on expose seems to not happen anymore. (Cairo problem?)
 * Add benchmarks
 	* Stress test, number of points handled per minute.
 	* Frame rate (should be relatively constant?)
