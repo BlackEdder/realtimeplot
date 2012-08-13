@@ -158,6 +158,10 @@ namespace realtimeplot {
 								new ScaleXSurfaceEvent( conf->width, conf->height ) ) ); 
 					break;
 				case XCB_EXPOSE:
+					xcb_expose_event_t *expose;
+					expose = (xcb_expose_event_t *)event;
+					send_event( expose->window, boost::shared_ptr<Event>( 
+						new DisplayEvent() ) ); 
 					//display();
 					break;
 				case XCB_KEY_PRESS:
