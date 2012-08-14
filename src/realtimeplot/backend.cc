@@ -429,7 +429,8 @@ namespace realtimeplot {
 	void BackendPlot::zoom_around_pixel( double scale, int x, int y ) {
 		double plot_x = x;
 		double plot_y = y;
-		pPlotArea->context->user_to_device( plot_x, plot_y );
+		pAxesArea->transform_to_plot_units();
+		pAxesArea->context->device_to_user( plot_x, plot_y );
 		zoom_around( scale, plot_x, plot_y );
 	}
 
