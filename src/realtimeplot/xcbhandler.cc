@@ -207,11 +207,11 @@ namespace realtimeplot {
 					switch (bp->detail) {
 						case 4:
 							send_event( bp->event, boost::shared_ptr<Event>( 
-										new ZoomEvent( 0.95 ) ) );
+										new ZoomAroundPixelEvent( 0.95, bp->event_x, bp->event_y ) ) );
 							break;
 						case 5:
 							send_event( bp->event, boost::shared_ptr<Event>( 
-										new ZoomEvent( 1/0.95 ) ) );
+										new ZoomAroundPixelEvent( 1/0.95, bp->event_x, bp->event_y ) ) );
 							break;
 						case 3:
 							move_tracking = true;
