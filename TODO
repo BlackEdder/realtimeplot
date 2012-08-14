@@ -11,7 +11,6 @@
 * Provide a combine method that easily allows you to combine one plot with another
 	* Probably need to make plot surface transparent
 * PDF backend
-* Mouse wheel zoom should zoom around the current position
 * Use a key to start (and stop) recording to a png file
 * Allow multiple data sets in one histogram/histogram3d plot
 * GTK backend?
