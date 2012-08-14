@@ -425,6 +425,14 @@ namespace realtimeplot {
 		display();
 	}
 
+	
+	void BackendPlot::zoom_around_pixel( double scale, int x, int y ) {
+		double plot_x = x;
+		double plot_y = y;
+		pPlotArea->context->user_to_device( plot_x, plot_y );
+		zoom_around( scale, plot_x, plot_y );
+	}
+
 	void BackendPlot::zoom( double scale ) {
 		double xrange = config.max_x-config.min_x;
 		double xshift = (scale-1)*xrange/2.0;;
