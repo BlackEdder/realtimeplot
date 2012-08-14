@@ -204,8 +204,30 @@ class TestBackend : public CxxTest::TestSuite
 			TS_ASSERT_EQUALS( bpl.config.min_x, bpl.pPlotArea->min_x );
 			TS_ASSERT_EQUALS( bpl.config.max_y, bpl.pPlotArea->max_y );
 			TS_ASSERT_EQUALS( bpl.config.min_y, bpl.pPlotArea->min_y );
-			
 		}
+
+		void testZoomAround() {
+			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.zoom_around(0.9, 5, 0);
+			TS_ASSERT_EQUALS( bpl.config.max_x, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -4 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 4.5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -4.5 );
+
+			bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			bpl.zoom_around(5.0, 0, 5);
+			TS_ASSERT_EQUALS( bpl.config.max_x, 25.0 );
+			TS_ASSERT_EQUALS( bpl.config.min_x, -25.0 );
+			TS_ASSERT_EQUALS( bpl.config.max_y, 5 );
+			TS_ASSERT_EQUALS( bpl.config.min_y, -25 ); //Limited by the size of the plotArea 
+
+			bpl.zoom_around(5.1, 1, -1);
+			TS_ASSERT_EQUALS( bpl.config.max_x, bpl.pPlotArea->max_x );
+			TS_ASSERT_EQUALS( bpl.config.min_x, bpl.pPlotArea->min_x );
+			TS_ASSERT_EQUALS( bpl.config.max_y, bpl.pPlotArea->max_y );
+			TS_ASSERT_EQUALS( bpl.config.min_y, bpl.pPlotArea->min_y );
+		}
+
 
 		void testRollingUpdate() {
 			//conf.area = 500*500;

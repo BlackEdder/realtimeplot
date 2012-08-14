@@ -207,6 +207,10 @@ namespace realtimeplot {
 			void move( double direction_x, double direction_y );
 
 			/**
+			 * \brief Zoom in or out according to the given scale and around a specific point
+			 */
+			void zoom_around( double scale, float x, float y );
+				/**
 			 * \brief Zoom in or out according to the given scale
 			 */
 			void zoom( double scale );

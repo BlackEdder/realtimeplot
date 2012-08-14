@@ -412,6 +412,19 @@ namespace realtimeplot {
 		display();
 	}
 
+	void BackendPlot::zoom_around( double scale, float x, float y ) {
+		double xrange = config.max_x-config.min_x;
+		double xshift = (scale-1)*xrange;;
+		config.max_x += xshift*(config.max_x-x)/xrange;
+		config.min_x -= xshift*(x-config.min_x)/xrange;
+		double yrange = config.max_y-config.min_y;
+		double yshift = (scale-1)*yrange;
+		config.max_y += yshift*(config.max_y-y)/yrange;
+		config.min_y -= yshift*(y-config.min_y)/yrange;
+		update_config();
+		display();
+	}
+
 	void BackendPlot::zoom( double scale ) {
 		double xrange = config.max_x-config.min_x;
 		double xshift = (scale-1)*xrange/2.0;;
