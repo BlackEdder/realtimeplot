@@ -181,6 +181,19 @@ namespace realtimeplot {
 				double scale;
 		};
 
+		class ZoomAroundEvent : public Event {
+			public:
+				ZoomAroundEvent( double scale, float x, float y ) :
+				scale( scale ), x( x ), y( y )
+			{
+			}
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				pBPlot->zoom_around( scale, x, y );
+			}
+			private:
+				double scale, x, y;
+		};
+
 
 
     class RectangleEvent : public Event {
