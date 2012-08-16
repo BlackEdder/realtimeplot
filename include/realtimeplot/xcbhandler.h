@@ -105,6 +105,11 @@ namespace realtimeplot {
 
 			void set_title( size_t window_id, std::string );
 			void close_window( size_t window_id );
+
+			/**
+			 * \brief Check if we can connect to x
+			 */
+			static bool checkXRunning();
 		protected:
 			boost::shared_ptr<boost::thread> pXEventProcessingThrd;
 			int mask;

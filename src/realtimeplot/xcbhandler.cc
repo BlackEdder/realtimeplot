@@ -42,6 +42,14 @@ namespace realtimeplot {
 	DisplayHandler* DisplayHandler::pInstance = NULL;
 
 #ifndef NO_X
+	bool XcbHandler::checkXRunning() {
+		xcb_connection_t *connection = xcb_connect(NULL,NULL);
+		bool error = xcb_connection_has_error( connection );
+		if (!error)
+			xcb_disconnect( connection );
+		return error;
+	}
+
 	DisplayHandler* XcbHandler::Instance() {
 		i_mutex.lock();
 		if (pInstance == NULL) {
@@ -85,6 +93,9 @@ namespace realtimeplot {
 	XcbHandler::XcbHandler() : DisplayHandler() 
 	{
 		connection = xcb_connect(NULL,NULL);
+		if (xcb_connection_has_error( connection ))
+			std::cout << "Bla 3 " << std::endl;
+
 		screen = xcb_setup_roots_iterator(xcb_get_setup(connection)).data;
 
 		visual_type = get_root_visual_type( screen );
