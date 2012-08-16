@@ -41,9 +41,13 @@ namespace realtimeplot {
 		checkConfig();
 
 #ifndef NO_X
-		if (config.display)
+		if (config.display && XcbHandler::checkXRunning()) 
 			pDisplayHandler = XcbHandler::Instance();
 		else {
+			if (config.display) {
+				std::cout << "Unable to connect to X. Either X is not running or the $DISPLAY variable is not set. Switched off plotting to the display." << std::endl;
+				config.display = false;
+			}
 			pDisplayHandler = DummyHandler::Instance();
 			if (pEventHandler != NULL)
 				pEventHandler->window_closed = true;

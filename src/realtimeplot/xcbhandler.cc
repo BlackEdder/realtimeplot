@@ -47,7 +47,7 @@ namespace realtimeplot {
 		bool error = xcb_connection_has_error( connection );
 		if (!error)
 			xcb_disconnect( connection );
-		return error;
+		return !error;
 	}
 
 	DisplayHandler* XcbHandler::Instance() {
