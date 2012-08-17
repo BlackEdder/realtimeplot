@@ -183,7 +183,7 @@ namespace realtimeplot {
 		max_x = 1;
 		min_y = 0;
 		max_y = 1;
-		nr_of_ticks = 10;
+		nr_of_ticks = 5;
 		ticks_length = 7;
 		xlabel = "x";
 		ylabel = "y";
