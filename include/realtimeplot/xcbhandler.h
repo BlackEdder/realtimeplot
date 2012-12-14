@@ -119,7 +119,8 @@ namespace realtimeplot {
 			xcb_intern_atom_reply_t* reply2;
 
 			XcbHandler();
-			~XcbHandler() { pXEventProcessingThrd->join(); }
+			~XcbHandler() { if (pXEventProcessingThrd->joinable())
+					pXEventProcessingThrd->join(); }
 			//static DisplayHandler *pInstance;
 
 			void process_xevents();

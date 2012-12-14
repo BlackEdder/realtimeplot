@@ -233,7 +233,7 @@ namespace realtimeplot {
 					new FinalEvent(pEventHandler, false ) ) );
 		if (detach)
 			pEventHandler->pEventProcessingThrd->detach();
-		else
+		else if (pEventHandler->pEventProcessingThrd->joinable())
 			pEventHandler->pEventProcessingThrd->join();
 	}
 

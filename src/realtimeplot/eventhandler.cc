@@ -40,7 +40,8 @@ namespace realtimeplot {
 	}
 
 	EventHandler::~EventHandler() {
-		pEventProcessingThrd->join();
+		if (pEventProcessingThrd->joinable())
+			pEventProcessingThrd->join();
 	}
 
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent, 
