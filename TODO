@@ -1,3 +1,5 @@
+* Make adaptive colormap
+	* Basically ability to add data to colormap and it will keep track of max etc automatically
 * Add benchmarks
 	* Stress test, number of points handled per minute.
 	* Frame rate (should be relatively constant?)
