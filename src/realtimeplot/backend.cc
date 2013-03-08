@@ -225,9 +225,11 @@ namespace realtimeplot {
 			if (!config.fixed_plot_area)
 			rolling_update(max_x, max_y);
 			}*/
+		Color old_color = pPlotArea->foreground_color;
 		global_mutex.lock();
 		pPlotArea->set_color( color );
 		pPlotArea->rectangle( min_x, min_y, width_x, width_y, fill );
+		pPlotArea->set_color( old_color );
 		global_mutex.unlock();
 		display();
 	}
@@ -239,9 +241,12 @@ namespace realtimeplot {
 				rolling_update(x, y);
 		}
 
+		Color old_color = pPlotArea->foreground_color;
+
 		global_mutex.lock();
 		pPlotArea->set_color( color );
 		pPlotArea->line_add( x, y, id );
+		pPlotArea->set_color( old_color );
 		global_mutex.unlock();
 
 		display();

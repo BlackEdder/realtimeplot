@@ -30,12 +30,18 @@
 
 
 namespace realtimeplot {
+	Area::Area() {
+		set_color( Color::black() );
+	}
+
 	void Area::transform_to_device_units() {
 		context->set_identity_matrix();
 	}
 
 	void Area::set_color( Color color ) {
-		context->set_source_rgba( color.r, color.g, color.b, color.a );
+		foreground_color = color;
+		if (context)
+			context->set_source_rgba( color.r, color.g, color.b, color.a );
 	}
 
 	PlotArea::PlotArea( PlotConfig &config ) : Area() {

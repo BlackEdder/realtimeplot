@@ -46,6 +46,9 @@ namespace realtimeplot {
 			Cairo::RefPtr<Cairo::Context> context;
 			size_t width, height;
 
+			Color foreground_color;
+
+			Area();
 			void transform_to_device_units();
 
 			void set_color( Color color );
