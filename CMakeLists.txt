@@ -27,7 +27,7 @@ cmake_minimum_required(VERSION 2.6)
 project(RealTimePlot)
 
 #SET (CMAKE_CXX_FLAGS "-O2 -march=native -pipe -ffast-math -fomit-frame-pointer -Wall ${CMAKE_CXX_FLAGS}")
-SET (CMAKE_CXX_FLAGS "-O3 ${CMAKE_CXX_FLAGS}")
+SET (CMAKE_CXX_FLAGS "-O3 -std=c++11 ${CMAKE_CXX_FLAGS}")
 
 if(NO_X)
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_X")
@@ -42,7 +42,12 @@ pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
 set(BOOST_LIBS thread date_time math_tr1 )
 find_package(Boost COMPONENTS ${BOOST_LIBS} REQUIRED)
 
-SET(LIBS "${PANGOMM_LIBRARIES};${Boost_LIBRARIES}")
+find_library( CPPA cppa )
+if (NOT CPPA)
+	message( FATAL_ERROR "libcppa not found" )
+	endif()
+
+SET(LIBS "${PANGOMM_LIBRARIES};${Boost_LIBRARIES};${CPPA}")
 SET(SRC
 	"src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;src/realtimeplot/plotarea.cc;src/realtimeplot/plot.cc;src/realtimeplot/adaptive.cc")
 
@@ -56,6 +61,9 @@ if(NOT NO_X)
 	SET(LIBS "${LIBS};${XCB-UTIL}")
 	SET(SRC "${SRC};src/cairomm/xcb_surface.cc")
 endif()
+
+# Can be used by youcompleteme to lookup compile information
+SET (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include_directories( ${PANGOMM_INCLUDE_DIRS} )
 include_directories( ${CAIROMM_INCLUDE_DIRS} )

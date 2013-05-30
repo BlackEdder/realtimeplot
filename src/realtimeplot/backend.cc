@@ -252,13 +252,13 @@ namespace realtimeplot {
 		display();
 	}
 
-	void BackendPlot::title( std::string &title ) {
+	void BackendPlot::title( const std::string &title ) {
 		pDisplayHandler->set_title( win, title );
 		config.title = title;
 	}
 
 	// FIXME: Move to pPlotArea
-	void BackendPlot::text( float x, float y, std::string &text ) {
+	void BackendPlot::text( float x, float y, const std::string &text ) {
 		if (!within_plot_bounds(x,y)) {
 			if (!config.fixed_plot_area)
 				rolling_update(x, y);

@@ -36,7 +36,8 @@ namespace realtimeplot {
     class ConfigEvent : public Event {
         public:
             ConfigEvent( PlotConfig new_config );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( 
+								boost::shared_ptr<BackendPlot> &pBPlot ) const;
         private:
             PlotConfig config;
      };
@@ -53,8 +54,9 @@ namespace realtimeplot {
     class MultipleEvents : public Event {
         public:
             MultipleEvents( std::vector<boost::shared_ptr<Event> > events );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
-        private:
+            virtual void execute( 
+								boost::shared_ptr<BackendPlot> &pBPlot ) const;
+         private:
             std::vector<boost::shared_ptr<Event> > events;
     };
 		
@@ -64,7 +66,7 @@ namespace realtimeplot {
 		class OpenPlotEvent : public Event {
 			public:
 				OpenPlotEvent( PlotConfig plot_conf, boost::shared_ptr<EventHandler> pEventHandler );
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+ 			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
 			private:
 				PlotConfig plot_conf;
 				boost::shared_ptr<EventHandler> pEventHandler;
@@ -76,7 +78,7 @@ namespace realtimeplot {
 		class ResetEvent : public Event {
 			public:
 				ResetEvent( PlotConfig plot_conf );
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
 			private:
 				PlotConfig plot_conf;
 		};
@@ -90,7 +92,7 @@ namespace realtimeplot {
     class SetColorEvent : public Event {
         public:
             SetColorEvent( Color color );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
         private:
             Color color;
     };
@@ -103,7 +105,7 @@ namespace realtimeplot {
     class RestoreEvent : public Event {
         public:
             RestoreEvent() {}
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {pBPlot->restore();}
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const {pBPlot->restore(); }
     };
 
     /**
@@ -112,7 +114,7 @@ namespace realtimeplot {
     class PointEvent : public Event {
         public:
             PointEvent( float x, float y );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
         private:
             float x_crd, y_crd;
     };
@@ -123,7 +125,7 @@ namespace realtimeplot {
     class ScaleXSurfaceEvent : public Event {
         public:
             ScaleXSurfaceEvent( size_t width, size_t height );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
         private:
             size_t width, height;
     };
@@ -131,7 +133,7 @@ namespace realtimeplot {
 		class PauseEvent : public Event {
 			public:
 				PauseEvent() {};
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const {
 					if (pBPlot->pause_display) {
 						pBPlot->pause_display = false;
 						pBPlot->display();
@@ -147,7 +149,7 @@ namespace realtimeplot {
 				dx( direction_x ), dy(direction_y)
 			{
 			}
-			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const {
 				pBPlot->move( dx, dy );
 			}
 			private:
@@ -160,7 +162,7 @@ namespace realtimeplot {
 				dx( direction_x ), dy(direction_y)
 			{
 			}
-			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const {
 				pBPlot->move_pixels( dx, dy );
 			}
 			private:
@@ -174,7 +176,7 @@ namespace realtimeplot {
 				scale( scale )
 			{
 			}
-			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const {
 				pBPlot->zoom( scale );
 			}
 			private:
@@ -187,7 +189,7 @@ namespace realtimeplot {
 				scale( scale ), x( x ), y( y )
 			{
 			}
-			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+			virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const {
 				pBPlot->zoom_around_pixel( scale, x, y );
 			}
 			private:
@@ -201,7 +203,7 @@ namespace realtimeplot {
         public:
             RectangleEvent( float min_x, float min_y, float width_x, float width_y,
 								bool fill, Color color );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
         private:
 						float min_x, min_y, width_x, width_y;
 						bool fill;
@@ -218,7 +220,7 @@ namespace realtimeplot {
      class LineAddEvent : public Event {
         public:
             LineAddEvent( float x, float y, int id, Color color );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
         private:
             float x_crd, y_crd;
             int id;
@@ -229,7 +231,7 @@ namespace realtimeplot {
         public:
             TitleEvent( std::string title ) 
 							: title(title) {}
-						virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+						virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 							pBPlot->title( title );
 						}
         private:
@@ -240,7 +242,7 @@ namespace realtimeplot {
         public:
             TextEvent( float x, float y, std::string text ) 
 							: x(x), y(y), text(text) {}
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 							pBPlot->text( x, y, text );
 						}
         private:
@@ -254,7 +256,7 @@ namespace realtimeplot {
     class SaveEvent : public Event {
         public:
             SaveEvent( std::string filename );
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
         private:
             std::string filename;
     };
@@ -265,7 +267,7 @@ namespace realtimeplot {
     class DisplayEvent : public Event {
         public:
             DisplayEvent() {};
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 							pBPlot->display();
 						}
     };
@@ -276,7 +278,7 @@ namespace realtimeplot {
     class ClearEvent : public Event {
         public:
             ClearEvent();
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
     };
 		/**
 		 \brief Event to close the current plot (window)
@@ -284,7 +286,7 @@ namespace realtimeplot {
     class CloseWindowEvent : public Event {
         public:
             CloseWindowEvent();
-            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+            virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
     };
 
 		/**
@@ -297,7 +299,7 @@ namespace realtimeplot {
 		class FinalEvent : public Event {
 			public:
 				FinalEvent(boost::shared_ptr<EventHandler> pEventHandler, bool force = false);
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
 			private:
 				boost::shared_ptr<EventHandler> pEventHandler;
 				bool force;
@@ -318,7 +320,7 @@ namespace realtimeplot {
 						pEventHandler( pEventHandler )
 			{}
 
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 					pBPlot.reset( new BackendHistogram( plot_conf, 
 								frequency, no_bins, pEventHandler ) ); 
 				}
@@ -335,7 +337,7 @@ namespace realtimeplot {
 				HistDataEvent( double new_data )
 					: new_data( new_data )
 			{}
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 					boost::static_pointer_cast<BackendHistogram, 
 						BackendPlot>(pBPlot)->add_data( new_data );
 				}
@@ -348,7 +350,7 @@ namespace realtimeplot {
 				HistOptimizeEvent( double proportion ) 
 				: proportion( proportion ) 
 				{};
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 					boost::static_pointer_cast<BackendHistogram, 
 						BackendPlot>(pBPlot)->optimize_bounds( proportion );
 				}
@@ -359,7 +361,7 @@ namespace realtimeplot {
 		class HistPlotEvent : public Event {
 			public:
 				HistPlotEvent() {};
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 					boost::static_pointer_cast<BackendHistogram, 
 						BackendPlot>(pBPlot)->plot();
 				}
@@ -382,7 +384,7 @@ namespace realtimeplot {
 						pEventHandler( pEventHandler )
 			{}
 
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 					pBPlot.reset( new BackendHistogram3D( plot_conf, 
 								pEventHandler, no_bins_x, no_bins_y ) ); 
 				}
@@ -398,7 +400,7 @@ namespace realtimeplot {
 				Hist3DDataEvent( double x, double y )
 					: x( x ), y( y )
 			{}
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 					boost::static_pointer_cast<BackendHistogram3D, 
 						BackendPlot>(pBPlot)->add_data( x, y );
 				}
@@ -409,7 +411,7 @@ namespace realtimeplot {
 		class Hist3DPlotEvent : public Event {
 			public:
 				Hist3DPlotEvent() {};
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 					boost::static_pointer_cast<BackendHistogram3D, 
 						BackendPlot>(pBPlot)->plot();
 				}
@@ -420,7 +422,7 @@ namespace realtimeplot {
 		class Hist3DHeightScalingEvent	: public Event {
 			public:
 				Hist3DHeightScalingEvent( ) {};
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 				boost::static_pointer_cast<BackendHistogram3D, BackendPlot>( 
 						pBPlot )->calculate_height_scaling();
 				}
@@ -436,7 +438,7 @@ namespace realtimeplot {
 		class AdaptiveOpenPlotEvent : public Event {
 			public:
 				AdaptiveOpenPlotEvent( PlotConfig plot_conf, boost::shared_ptr<EventHandler> pEventHandler );
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
 			private:
 				PlotConfig plot_conf;
 				boost::shared_ptr<EventHandler> pEventHandler;
@@ -452,7 +454,7 @@ namespace realtimeplot {
 		class OpenHeightMapEvent : public Event {
 			public:
 				OpenHeightMapEvent( PlotConfig plot_conf, boost::shared_ptr<EventHandler> pEventHandler );
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
 			private:
 				PlotConfig plot_conf;
 				boost::shared_ptr<EventHandler> pEventHandler;
@@ -464,7 +466,7 @@ namespace realtimeplot {
 		class HMDataEvent : public Event {
 			public:
 				HMDataEvent( float x, float y, float z, bool show );
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot );
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) const;
 			private:
 				float x, y, z;
 				bool show;
@@ -476,7 +478,7 @@ namespace realtimeplot {
 		class HMHeightScalingEvent	: public Event {
 			public:
 				HMHeightScalingEvent( ) {};
-				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+				virtual void execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 				boost::static_pointer_cast<BackendHeightMap, BackendPlot>( pBPlot )->calculate_height_scaling();
 				}
 		};

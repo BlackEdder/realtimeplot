@@ -28,7 +28,7 @@ namespace realtimeplot {
         config = new_config;
     }
 
-    void ConfigEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+    void ConfigEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
         pBPlot->config = config;
         pBPlot->update_config();
     }
@@ -37,8 +37,8 @@ namespace realtimeplot {
         events = event_vector;
     }
 
-    void MultipleEvents::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
-        for (std::vector<boost::shared_ptr<Event> >::iterator it = events.begin(); 
+    void MultipleEvents::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
+        for (std::vector<boost::shared_ptr<Event> >::const_iterator it = events.begin(); 
                 it!=events.end(); ++it) {
             (*it)->execute( pBPlot );
         }
@@ -51,7 +51,7 @@ namespace realtimeplot {
 		{
 		}
 
-		void OpenPlotEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+		void OpenPlotEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) const  {
 			pBPlot.reset( new BackendPlot( plot_conf, pEventHandler ) );
 		}
 
@@ -60,7 +60,7 @@ namespace realtimeplot {
 		{
 		}
 
-		void ResetEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+		void ResetEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) const {
 			pBPlot->reset( plot_conf );
 		}
 
@@ -68,7 +68,7 @@ namespace realtimeplot {
         color = colour;
     }
 
-    void SetColorEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+    void SetColorEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
         pBPlot->pPlotArea->set_color( color );
     }
 
@@ -77,7 +77,7 @@ namespace realtimeplot {
 		y_crd = y;
 	}
 
-	void PointEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void PointEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot->point( x_crd, y_crd );
 	}
 
@@ -85,7 +85,7 @@ namespace realtimeplot {
 		: width( width), height( height )
 	{ }
 
-	void ScaleXSurfaceEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void ScaleXSurfaceEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot->scale_xsurface( width, height );
 	}
 
@@ -100,7 +100,7 @@ namespace realtimeplot {
 		color( color )
 	{}
 
-	void RectangleEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void RectangleEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot->rectangle( min_x, min_y, width_x, width_y, fill, color );
 	}
 
@@ -112,7 +112,7 @@ namespace realtimeplot {
 		color = col;
 	}
 
-	void LineAddEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void LineAddEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot->line_add( x_crd, y_crd, id, color );
 	}
 
@@ -121,20 +121,20 @@ namespace realtimeplot {
 		filename = fn;
 	}
 
-	void SaveEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void SaveEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot->save(filename);
 	}
 
 	ClearEvent::ClearEvent() {
 	}
 
-	void ClearEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void ClearEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot->clear();
 	}
 
 	CloseWindowEvent::CloseWindowEvent() {
 	}
-	void CloseWindowEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void CloseWindowEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot->close_window();
 	}
 
@@ -145,7 +145,7 @@ namespace realtimeplot {
 	{
 	}
 
-	void FinalEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void FinalEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pEventHandler->processing_events = false;
 		// Close even when window is still open
 		if (force)
@@ -164,7 +164,7 @@ namespace realtimeplot {
 	{
 	}
 
-	void AdaptiveOpenPlotEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void AdaptiveOpenPlotEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot.reset( new BackendAdaptivePlot( plot_conf, pEventHandler ) );
 	}
 
@@ -179,7 +179,7 @@ namespace realtimeplot {
 		pEventHandler( pEventHandler )
 	{}
 
-	void OpenHeightMapEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void OpenHeightMapEvent::execute( boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		pBPlot.reset( new BackendHeightMap( plot_conf, pEventHandler ) );
 	}
 
@@ -187,7 +187,7 @@ namespace realtimeplot {
 		: x(x), y(y), z(z), show( show )
 	{}
 
-	void HMDataEvent::execute(boost::shared_ptr<BackendPlot> &pBPlot ) {
+	void HMDataEvent::execute(boost::shared_ptr<BackendPlot> &pBPlot )  const{
 		boost::static_pointer_cast<BackendHeightMap, BackendPlot>(pBPlot)->add_data( x, y, z, show );
 	}
 

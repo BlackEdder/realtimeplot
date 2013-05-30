@@ -31,6 +31,8 @@
 #include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
+#include "cppa/cppa.hpp"
+
 #include "realtimeplot/thread_queue.h"
 class TestAdaptive;
 class TestPlot;
@@ -52,7 +54,8 @@ namespace realtimeplot {
     class Event {
         public:
             Event() {}
-            virtual void execute( boost::shared_ptr<BackendPlot> &bPl ) {}
+            virtual void execute(
+								boost::shared_ptr<BackendPlot> &bPl ) const {}
     };
 
     /**
@@ -87,5 +90,22 @@ namespace realtimeplot {
 					virtual void process_events();
 
 		};
+
+		class EventActor : cppa::event_based_actor {
+			public:
+				void init() {
+					cppa::become (
+							cppa::on(
+								"execute", cppa::arg_match) >> [=]( const Event &ev ) {
+								ev.execute( pBPlot );
+							}
+					);
+				}
+			protected:
+				boost::shared_ptr<BackendPlot> pBPlot;
+
+		};
+
+
 }
 #endif
