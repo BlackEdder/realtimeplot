@@ -58,6 +58,25 @@ namespace realtimeplot {
 								boost::shared_ptr<BackendPlot> &bPl ) const {}
     };
 
+		class EventActor : public cppa::event_based_actor {
+			public:
+				EventActor( boost::shared_ptr<BackendPlot> pBPlot ) 
+					: pBPlot( pBPlot )				
+				{};
+
+				void init() {
+					cppa::become (
+							cppa::on(
+								cppa::atom("execute"), cppa::arg_match) >> [=]( 
+									const boost::shared_ptr<Event> &pEvent ) {
+								pEvent->execute( pBPlot );
+								//cppa::reply( cppa::atom("done") );
+							}
+					);
+				}
+				boost::shared_ptr<BackendPlot> pBPlot;
+
+		};
     /**
     \brief Accepts events and starts a thread which handles those events
 
@@ -68,12 +87,16 @@ namespace realtimeplot {
     class EventHandler : public boost::enable_shared_from_this<EventHandler> {
         public:
 					boost::shared_ptr<boost::thread> pEventProcessingThrd;
-            //Constructor
+
+					cppa::actor_ptr ev_actor;
+
+          //Constructor
 					EventHandler();
 					~EventHandler();
 
 					//Add an event to the event queue
-					void add_event( boost::shared_ptr<Event> pEvent, bool high_priority=false );
+					void add_event( boost::shared_ptr<Event> pEvent, 
+							bool high_priority=false );
 					int get_queue_size();
 
 					// ! Are/Should we be processing events
@@ -90,22 +113,5 @@ namespace realtimeplot {
 					virtual void process_events();
 
 		};
-
-		class EventActor : cppa::event_based_actor {
-			public:
-				void init() {
-					cppa::become (
-							cppa::on(
-								"execute", cppa::arg_match) >> [=]( const Event &ev ) {
-								ev.execute( pBPlot );
-							}
-					);
-				}
-			protected:
-				boost::shared_ptr<BackendPlot> pBPlot;
-
-		};
-
-
 }
 #endif

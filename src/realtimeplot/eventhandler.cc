@@ -33,6 +33,10 @@ namespace realtimeplot {
 		window_closed( false ),
 		event_queue( 1000 )
 	{
+
+		ev_actor = cppa::spawn<EventActor>(
+				boost::shared_ptr<BackendPlot>() 
+				);
 		//start processing thread
 		pEventProcessingThrd = boost::shared_ptr<boost::thread>( 
 				new boost::thread( boost::bind( 
@@ -46,7 +50,9 @@ namespace realtimeplot {
 
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent, 
 			bool high_priority ) {
-		event_queue.push( pEvent, high_priority );
+		//auto msg = make_any_tuple( cppa::atom("execute"), pEvent );
+		//cppa::send( ev_actor, msg );
+		//event_queue.push( pEvent, high_priority );
 	}
 
 	int EventHandler::get_queue_size() {
