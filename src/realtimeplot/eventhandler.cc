@@ -51,7 +51,7 @@ namespace realtimeplot {
 	void EventHandler::add_event( boost::shared_ptr<Event> pEvent, 
 			bool high_priority ) {
 		//auto msg = make_any_tuple( cppa::atom("execute"), pEvent );
-		//cppa::send( ev_actor, msg );
+		cppa::send( ev_actor, cppa::atom("execute"), pEvent );
 		//event_queue.push( pEvent, high_priority );
 	}
 
