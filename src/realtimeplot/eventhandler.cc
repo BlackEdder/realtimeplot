@@ -28,8 +28,7 @@
 namespace realtimeplot {
 
 	EventHandler::EventHandler()
-		: 
-		processing_events( true ),
+		: processing_events( true ),
 		window_closed( false ),
 		event_queue( 1000 )
 	{

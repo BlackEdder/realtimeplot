@@ -67,8 +67,8 @@ namespace realtimeplot {
 				void init() {
 					cppa::become (
 							cppa::on(
-								cppa::atom("execute"), cppa::arg_match) >> [=]( 
-									const boost::shared_ptr<Event> &pEvent ) {
+								cppa::atom("execute"), cppa::arg_match) >> [&]( 
+									boost::shared_ptr<Event> pEvent ) {
 								pEvent->execute( pBPlot );
 								//cppa::reply( cppa::atom("done") );
 							}
