@@ -68,6 +68,8 @@ SET (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include_directories( ${PANGOMM_INCLUDE_DIRS} )
 include_directories( ${CAIROMM_INCLUDE_DIRS} )
 include_directories( ${GLIBMM_INCLUDE_DIRS} )
+include_directories( "/usr/lib/x86_64-linux-gnu/glibmm-2.4/include" )
+include_directories( "/usr/lib/x86_64-linux-gnu/sigc++-2.0/include" )
 
 include_directories("include")
 

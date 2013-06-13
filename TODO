@@ -1,3 +1,11 @@
+* Use libcppa instead of multiple threads/eventhandler
+	* One main messageserver (This will make it easy to switch to network based messages)
+	* Client sends starting message and waits for reply with plotid
+		* Every following message includes plotid, so that the messagesserver knows which backend should receive which message
+		* Message always has first atom with id, second with type of action and rest
+			variables needed for the action
+		* xcb handler will also need to send messages to message server
+
 * Make adaptive colormap
 	* Basically ability to add data to colormap and it will keep track of max etc automatically
 * Add benchmarks
