@@ -27,7 +27,7 @@ cmake_minimum_required(VERSION 2.6)
 project(RealTimePlot)
 
 #SET (CMAKE_CXX_FLAGS "-O2 -march=native -pipe -ffast-math -fomit-frame-pointer -Wall ${CMAKE_CXX_FLAGS}")
-SET (CMAKE_CXX_FLAGS "-O3 ${CMAKE_CXX_FLAGS}")
+SET (CMAKE_CXX_FLAGS "-O3 -std=c++11 ${CMAKE_CXX_FLAGS}")
 
 if(NO_X)
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_X")

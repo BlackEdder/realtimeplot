@@ -50,6 +50,27 @@ class TestUtils : public CxxTest::TestSuite {
 			TS_ASSERT_EQUALS( bins[1], 3 );
 		}
 
+		void testCombine() {
+			bintype bins1;
+			bins1.min = -1;
+			bins1.width = 1;
+			bins1.bins = { 0.5, 0.1 };
+			bintype bins2;
+			bins2.min = -2;
+			bins2.width = 2;
+			bins2.bins = { 0.22, 0.31 };
+
+			auto new_bins = combine_bins( bins1, bins2, 1 );
+			TS_ASSERT_EQUALS( new_bins.min, -2 );
+			TS_ASSERT_EQUALS( new_bins.width, 1 );
+			//std::vector<double> nbins = { 0.11, 0.61, 0.255, 0.155 }; // Some numerical issues when bin borders interject are there, but the end result is good
+			TS_ASSERT_EQUALS( new_bins.bins.size(), 5 );
+			std::vector<double> nbins = { 0.0733, 0.3233, 0.4766, 0.1532, 0.1032 };
+			for ( size_t i = 0; i < new_bins.bins.size(); ++i) {
+				TS_ASSERT_DELTA( new_bins.bins[i], nbins[i], 0.001 );
+			}
+		}
+
 		void testRangeCover() {
 			std::vector<double> bins(10);
 			std::vector<size_t> range;

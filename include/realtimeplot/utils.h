@@ -31,6 +31,14 @@ namespace realtimeplot {
 	 * \brief Some useful classes
 	 */
 	namespace utils {
+		/**
+		 * \brief Struct to hold information that defines the bins
+		 */
+		struct bintype {
+			double min;
+			double width;
+			std::vector<double> bins;
+		};
 
 		/**
 		 * \brief Function to bin data
@@ -42,6 +50,13 @@ namespace realtimeplot {
 		 * \brief Return bin id/counter of a data point 
 		 */
 		size_t bin_id( double min_x, double bin_width, double data );
+
+		/**
+		 * \brief Combine two sets of bins into one that has the given bin width
+		 *
+		 * Will cover the entire set of data;
+		 */
+		bintype combine_bins( const bintype &bins1, const bintype &bins2, double width );
 
 		/**
 		 * \brief Return a minimal range of bins that together cover at least the given percentage of data
