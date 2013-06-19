@@ -47,6 +47,12 @@ namespace realtimeplot {
 				const std::vector<double> &data );
 
 		/**
+		 * \brief Create new bintype based on the data
+		 */
+		bintype calculate_bintype( double min_x, double max_x, size_t no_bins, 
+				const std::vector<double> &data );
+	
+		/**
 		 * \brief Return bin id/counter of a data point 
 		 */
 		size_t bin_id( double min_x, double bin_width, double data );

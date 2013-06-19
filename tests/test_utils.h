@@ -66,8 +66,24 @@ class TestUtils : public CxxTest::TestSuite {
 			std::vector<double> nbins = { 0.11, 0.61, 0.255, 0.155 }; 
 			TS_ASSERT_EQUALS( new_bins.bins.size(), 4 );
 			for ( size_t i = 0; i < new_bins.bins.size(); ++i) {
-				TS_ASSERT_DELTA( new_bins.bins[i], nbins[i], 0.001 );
+				TS_ASSERT_DELTA( new_bins.bins[i], nbins[i], 0.000001 );
 			}
+
+			bins1.min = -1;
+			bins1.width = 0.1;
+			bins1.bins = { 0.5, 0.1 };
+			bins2.min = -2;
+			bins2.width = 2;
+			bins2.bins = { 0.22, 0.31 };
+
+			new_bins = combine_bins( bins1, bins2, 1 );
+			TS_ASSERT_EQUALS( new_bins.min, -2 );
+			TS_ASSERT_EQUALS( new_bins.width, 1 );
+			nbins = { 0.11, 0.71, 0.155, 0.155 }; 
+			TS_ASSERT_EQUALS( new_bins.bins.size(), 4 );
+			for ( size_t i = 0; i < new_bins.bins.size(); ++i) {
+				TS_ASSERT_DELTA( new_bins.bins[i], nbins[i], 0.000001 );
+			}	
 		}
 
 		void testRangeCover() {
