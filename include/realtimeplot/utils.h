@@ -58,13 +58,6 @@ namespace realtimeplot {
 		size_t bin_id( double min_x, double bin_width, double data );
 
 		/**
-		 * \brief Combine two sets of bins into one that has the given bin width
-		 *
-		 * Will cover the entire set of data;
-		 */
-		bintype combine_bins( const bintype &bins1, const bintype &bins2, double width );
-
-		/**
 		 * \brief Return a minimal range of bins that together cover at least the given percentage of data
 		 * 
 		 * Will start around the  bin that currently has most data in it.

@@ -51,47 +51,6 @@ namespace realtimeplot {
 			return (data-min_x)/bin_width;
 		}
 
-		bintype combine_bins( const bintype &bins1, const bintype &bins2, 
-				double width ) {
-			bintype new_bins;
-			new_bins.width = width;
-			new_bins.min = bins1.min;
-			if (bins2.min<new_bins.min)
-				new_bins.min = bins2.min;
-
-			double value = bins1.min;
-			for ( auto & freq : bins1.bins ) {
-				size_t min_id = bin_id( new_bins.min, new_bins.width, value );
-				value += bins1.width; 
-				size_t max_id = bin_id( new_bins.min, new_bins.width, 
-						value-10*std::numeric_limits<double>::epsilon() ); // Solve some
-							// numerical problems
-
-				double rescale = 1.0/(max_id-min_id+1);
-				for (size_t i = min_id; i <= max_id; ++i) {
-					if (i>=new_bins.bins.size())
-						new_bins.bins.resize( i+1 );
-					new_bins.bins[i] += rescale*freq;
-				}
-			}
-
-			value = bins2.min;
-			for ( auto & freq : bins2.bins ) {
-				size_t min_id = bin_id( new_bins.min, new_bins.width, value );
-				value += bins2.width; 
-				size_t max_id = bin_id( new_bins.min, new_bins.width,
-						value-10*std::numeric_limits<double>::epsilon() );
-				double rescale = 1.0/(max_id-min_id+1);
-				for (size_t i = min_id; i <= max_id; ++i) {
-					if (i>=new_bins.bins.size())
-						new_bins.bins.resize( i+1 );
-					new_bins.bins[i] += rescale*freq;
-				}
-			}
-
-			return new_bins;
-		}
-
 		std::vector<size_t> range_of_bins_covering( double percentage,
 				std::vector<double> bins ) {
 			std::vector<size_t> range;
