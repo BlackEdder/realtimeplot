@@ -29,6 +29,7 @@
 #include "realtimeplot/backend.h"
 
 namespace realtimeplot {
+	using namespace cppa;
 	class Actor : public cppa::event_based_actor {
 		public:
 			Actor();

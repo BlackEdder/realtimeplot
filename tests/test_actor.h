@@ -30,6 +30,14 @@ using namespace realtimeplot;
 class TestActor : public CxxTest::TestSuite 
 {
 	public:
+		void testLinking() {
+		}
+
+		void testOpen() {
+			actor_ptr actor = spawn<Actor>();
+			actor << make_any_tuple( atom("open"), atom("plot") );
+		}
+
 		void testDummy() {
 			TS_ASSERT( true );
 		}

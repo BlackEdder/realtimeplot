@@ -24,8 +24,12 @@
 #include "realtimeplot/actor.hh"
 
 namespace realtimeplot {
+	using namespace cppa;
 	Actor::Actor() {}
 
 	void Actor::init() {
+		become (
+			others() >> [] { aout << "Message not understood" << std::endl; }
+		);
 	}
 };
