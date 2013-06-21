@@ -58,25 +58,7 @@ namespace realtimeplot {
 								boost::shared_ptr<BackendPlot> &bPl ) const {}
     };
 
-		class EventActor : public cppa::event_based_actor {
-			public:
-				EventActor( boost::shared_ptr<BackendPlot> pBPlot ) 
-					: pBPlot( pBPlot )				
-				{};
 
-				void init() {
-					cppa::become (
-							cppa::on(
-								cppa::atom("execute"), cppa::arg_match) >> [&]( 
-									boost::shared_ptr<Event> pEvent ) {
-								pEvent->execute( pBPlot );
-								//cppa::reply( cppa::atom("done") );
-							}
-					);
-				}
-				boost::shared_ptr<BackendPlot> pBPlot;
-
-		};
     /**
     \brief Accepts events and starts a thread which handles those events
 

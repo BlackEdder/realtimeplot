@@ -49,7 +49,7 @@ if (NOT CPPA)
 
 SET(LIBS "${PANGOMM_LIBRARIES};${Boost_LIBRARIES};${CPPA}")
 SET(SRC
-	"src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;src/realtimeplot/plotarea.cc;src/realtimeplot/plot.cc;src/realtimeplot/adaptive.cc")
+	"src/realtimeplot/backend.cc;src/realtimeplot/eventhandler.cc;src/realtimeplot/events.cc;src/realtimeplot/delaunay.cc;src/realtimeplot/xcbhandler.cc;src/realtimeplot/utils.cc;src/realtimeplot/plotarea.cc;src/realtimeplot/plot.cc;src/realtimeplot/adaptive.cc;src/realtimeplot/actor.cc")
 
 if(NOT NO_X)
 	find_library( XCB-UTIL xcb-keysyms xcb-util )
@@ -129,6 +129,7 @@ install (FILES include/realtimeplot/realtimeplot.h
 	include/realtimeplot/utils.h
 	include/realtimeplot/events.h
 	include/realtimeplot/delaunay.h
+	include/realtimeplot/actor.hh
  	include/realtimeplot/plot.h DESTINATION 
 	include/realtimeplot)
 
@@ -144,6 +145,9 @@ if(CXXTEST_FOUND)
 	include_directories(tests/include)
 	enable_testing()
 
+	CXXTEST_ADD_TEST(unittest_actor test_actor.cc
+		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_actor.h)
+	target_link_libraries(unittest_actor realtimeplot)
 	CXXTEST_ADD_TEST(unittest_thread_queue test_thread_queue.cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/test_thread_queue.h)
 	target_link_libraries(unittest_thread_queue realtimeplot)
