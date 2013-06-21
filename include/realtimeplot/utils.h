@@ -34,10 +34,13 @@ namespace realtimeplot {
 		/**
 		 * \brief Struct to hold information that defines the bins
 		 */
-		struct bintype {
-			double min;
-			double width;
-			std::vector<double> bins;
+		class bintype {
+			public:
+				bintype() : bins( std::vector<double>() ), width(0), min(0) {};
+				~bintype() {};
+				double min;
+				double width;
+				std::vector<double> bins;
 		};
 
 		/**
