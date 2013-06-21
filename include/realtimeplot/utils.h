@@ -38,6 +38,14 @@ namespace realtimeplot {
 			public:
 				bintype() : bins( std::vector<double>() ), width(0), min(0) {};
 				~bintype() {};
+				bintype( const bintype &cpy ) {
+					this->min = cpy.min;
+					this->width = cpy.width;
+					this->bins.clear();
+					this->bins.reserve( cpy.bins.size() );
+					for (auto & bin : cpy.bins)
+						this->bins.push_back( bin );
+				}
 				double min;
 				double width;
 				std::vector<double> bins;
