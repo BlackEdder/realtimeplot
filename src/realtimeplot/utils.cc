@@ -20,6 +20,7 @@
 
 	 -------------------------------------------------------------------
 	 */
+#include <limits>
 #include "realtimeplot/utils.h"
 
 #include <sstream>
@@ -35,6 +36,16 @@ namespace realtimeplot {
 			}
 			return binned;
 		}
+
+		bintype calculate_bintype( double min_x, double max_x, size_t no_bins, 
+				const std::vector<double> &data ) {
+			bintype binned;
+			binned.min = min_x;
+			binned.width = (max_x-min_x)/no_bins;
+			binned.bins = calculate_bins( min_x, max_x, no_bins, data );
+			return binned;
+		}
+
 
 		size_t bin_id( double min_x, double bin_width, double data ) {
 			return (data-min_x)/bin_width;

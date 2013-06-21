@@ -23,7 +23,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <iostream>
+#include<iostream>
 #include<vector>
 
 namespace realtimeplot {
@@ -31,6 +31,25 @@ namespace realtimeplot {
 	 * \brief Some useful classes
 	 */
 	namespace utils {
+		/**
+		 * \brief Struct to hold information that defines the bins
+		 */
+		class bintype {
+			public:
+				bintype() : bins( std::vector<double>() ), width(0), min(0) {};
+				~bintype() {};
+				bintype( const bintype &cpy ) {
+					this->min = cpy.min;
+					this->width = cpy.width;
+					this->bins.clear();
+					this->bins.reserve( cpy.bins.size() );
+					for (auto & bin : cpy.bins)
+						this->bins.push_back( bin );
+				}
+				double min;
+				double width;
+				std::vector<double> bins;
+		};
 
 		/**
 		 * \brief Function to bin data
@@ -38,6 +57,12 @@ namespace realtimeplot {
 		std::vector<double> calculate_bins( double min_x, double max_x, size_t no_bins, 
 				const std::vector<double> &data );
 
+		/**
+		 * \brief Create new bintype based on the data
+		 */
+		bintype calculate_bintype( double min_x, double max_x, size_t no_bins, 
+				const std::vector<double> &data );
+	
 		/**
 		 * \brief Return bin id/counter of a data point 
 		 */
