@@ -51,4 +51,16 @@ class TestActor : public CxxTest::TestSuite
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
+
+		void testPoint() {
+			TS_ASSERT( false );
+		}
+
+		void testColor() {
+			TS_ASSERT( false );
+		}
+
+		void testPlotLines() { // Need to change id and then add point
+			TS_ASSERT( false );
+		}
 };
