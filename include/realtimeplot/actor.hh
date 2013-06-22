@@ -37,7 +37,6 @@ namespace realtimeplot {
 			void init();
 
 			boost::shared_ptr<BackendPlot> pBPlot;
-
 	};
 };
 #endif

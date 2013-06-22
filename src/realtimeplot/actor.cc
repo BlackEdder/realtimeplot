@@ -29,6 +29,25 @@ namespace realtimeplot {
 
 	void Actor::init() {
 		become (
+			on(atom("open"), arg_match ) >> [this] ( const std::string &type ) {
+				PlotConfig conf = PlotConfig(); // Default config
+				conf.area = 50*50;
+				conf.min_x = -5;
+				conf.max_x = 5;
+				conf.min_y = -5;
+				conf.max_y = 5;
+				conf.margin_x = 20;
+				conf.margin_y = 20;
+				conf.display = false;
+				if (type == "plot") {
+					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( conf, 
+						boost::shared_ptr<EventHandler>()  ) );
+				}
+			},
+			on(atom("save"), arg_match ) >> [this] ( const std::string &filename ) {
+				pBPlot->save( filename );
+			},
+			on(atom("close")) >> [=]() { reply(atom("DONE")); },
 			others() >> [] { aout << "Message not understood" << std::endl; }
 		);
 	}

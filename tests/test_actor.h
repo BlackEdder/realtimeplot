@@ -30,15 +30,25 @@ using namespace realtimeplot;
 class TestActor : public CxxTest::TestSuite 
 {
 	public:
-		void testLinking() {
+		void wait_for_exit( actor_ptr actor ) {
+			actor << make_any_tuple( atom("close") );
+			bool open = true;
+			do_receive (
+				on( atom("DONE") ) >> [&open]() { open = false; }
+			).until( gref(open) == false );
+		}
+
+		void testClose() {
+			actor_ptr actor = spawn<Actor>();
+			wait_for_exit( actor );
+			TS_ASSERT( true );
 		}
 
 		void testOpen() {
 			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open"), atom("plot") );
-		}
-
-		void testDummy() {
-			TS_ASSERT( true );
+			actor << make_any_tuple( atom("open"), "plot" );
+			actor << make_any_tuple( atom("save"), fn("empty_plot") );
+			wait_for_exit( actor );
+			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
 };
