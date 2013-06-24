@@ -47,6 +47,12 @@ namespace realtimeplot {
 			on(atom("save"), arg_match ) >> [this] ( const std::string &filename ) {
 				pBPlot->save( filename );
 			},
+			on(atom("point"), arg_match ) >> [this] ( const int &x, const int &y ) {
+				pBPlot->point( x, y );
+			},
+			on(atom("point"), arg_match ) >> [this] ( const double &x, const double &y ) {
+				pBPlot->point( x, y );
+			},
 			on(atom("close")) >> [=]() { reply(atom("DONE")); },
 			others() >> [] { aout << "Message not understood" << std::endl; }
 		);
