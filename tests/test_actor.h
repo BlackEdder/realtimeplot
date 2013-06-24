@@ -72,6 +72,23 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testPlotLines() { // Need to change id and then add point
+			actor_ptr actor = spawn<Actor>();
+			actor << make_any_tuple( atom("open"), "plot" );
+			actor << make_any_tuple( atom("color"), Color::green() );
+			actor << make_any_tuple( atom("line_id"), 1 );
+			actor << make_any_tuple( atom("line_add"), 1, 1 );
+			actor << make_any_tuple( atom("color"), Color::red() );
+			actor << make_any_tuple( atom("line_id"), 2 );
+			actor << make_any_tuple( atom("line_add"), 1, 1 );
+			actor << make_any_tuple( atom("line_id"), 1 );
+			actor << make_any_tuple( atom("line_add"), 1, 2 );
+			actor << make_any_tuple( atom("line_add"), 2, 2 );
+			actor << make_any_tuple( atom("line_id"), 2 );
+			actor << make_any_tuple( atom("line_add"), -1, 2 );
+			actor << make_any_tuple( atom("line_add"), -2, 2 );
+			actor << make_any_tuple( atom("save"), fn("line_plot1") );
+			wait_for_exit( actor );
+			TS_ASSERT( check_plot( "line_plot1" ) );
 			TS_ASSERT( false );
 		}
 };
