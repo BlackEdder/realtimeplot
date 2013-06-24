@@ -25,7 +25,9 @@
 
 namespace realtimeplot {
 	using namespace cppa;
-	Actor::Actor() {}
+	Actor::Actor() {
+		announce<Color>( &Color::r, &Color::g, &Color::b, &Color::a );
+	}
 
 	void Actor::init() {
 		become (
@@ -52,6 +54,9 @@ namespace realtimeplot {
 			},
 			on(atom("point"), arg_match ) >> [this] ( const double &x, const double &y ) {
 				pBPlot->point( x, y );
+			},
+			on(atom("color"), arg_match ) >> [this] ( const Color &color ) {
+				pBPlot->set_color( color );
 			},
 			on(atom("close")) >> [=]() { reply(atom("DONE")); },
 			others() >> [] { aout << "Message not understood" << std::endl; }

@@ -40,7 +40,7 @@ namespace realtimeplot {
 		a = alpha;
 	}
 
-	bool Color::operator==(Color color)
+	bool Color::operator==(const Color &color) const
 	{ 
 		if (color.r == r && color.g == g && color.b == b && color.a == a)
 			return true;

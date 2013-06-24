@@ -60,7 +60,7 @@ namespace realtimeplot {
 			Color( double red, double green, double blue, double alpha );
 			~Color() {};
 
-			bool operator==(Color color);
+			bool operator==(const Color &color) const;
 
 			static Color black();
 			static Color white();

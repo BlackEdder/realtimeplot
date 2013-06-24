@@ -62,7 +62,13 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testColor() {
-			TS_ASSERT( false );
+			actor_ptr actor = spawn<Actor>();
+			actor << make_any_tuple( atom("open"), "plot" );
+			actor << make_any_tuple( atom("color"), Color::red() );
+			actor << make_any_tuple( atom("point"), 1, 1 );
+			actor << make_any_tuple( atom("save"), fn("red_point_plot") );
+			wait_for_exit( actor );
+			TS_ASSERT( check_plot( "red_point_plot" ) );
 		}
 
 		void testPlotLines() { // Need to change id and then add point
