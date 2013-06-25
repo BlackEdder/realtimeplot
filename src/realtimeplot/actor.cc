@@ -56,15 +56,16 @@ namespace realtimeplot {
 					const double &y ) {
 				pBPlot->point( x, y );
 			},
+			on(atom("line_id"), arg_match ) >> [this] ( const int id  ) {
+				pBPlot->current_line = id;
+			},
 			on(atom("line_add"), arg_match ) >> [this] ( const int &x, 
 					const int &y ) {
-				aout << "Unimplemented" << std::endl;
-				//pBPlot->line_add( x, y );
+				pBPlot->line_add( x, y );
 			},
 			on(atom("line_add"), arg_match ) >> [this] ( const double &x, 
 					const double &y ) {
-				aout << "Unimplemented" << std::endl;
-				//pBPlot->line_add( x, y );
+				pBPlot->line_add( x, y );
 			},
 			on(atom("color"), arg_match ) >> [this] ( const Color &color ) {
 				pBPlot->set_color( color );

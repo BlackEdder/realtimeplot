@@ -112,34 +112,26 @@ namespace realtimeplot {
 	}
 
 	void PlotArea::line_add( float x, float y, int id ) {
-		boost::shared_ptr<LineAttributes> line( new LineAttributes( x, y, id ) );
+		if (lines.count( id )) {
+			auto line = lines[id];
+			Color old_color = foreground_color;
 
-		//check if line already exists
-		bool exists = false;
-		std::list<boost::shared_ptr<LineAttributes> >::iterator i;
-		for (i=lines.begin(); i != lines.end(); ++i) {
-			if ((*i)->id == id) {
-				line = (*i);
-				exists = true;
-				break;
-			}
-		}
-
-		if (!exists) {
-			//Push to the front assuming that new lines are more likely to added to
-			//and the check if line already exists will be quicker
-			lines.push_front( line );
-		} else {
 			context->save();
 			transform_to_plot_units();
+			set_color( line->color );
 			context->move_to( line->current_x, line->current_y );
 			context->line_to( x, y );
 			transform_to_device_units();
 			context->stroke();
+			set_color( old_color );
 			context->restore();
 
 			line->current_x = x;
 			line->current_y = y;
+		} else {
+			boost::shared_ptr<LineAttributes> line( new LineAttributes( x, y,
+						foreground_color ) );
+			lines[id] = line;
 		}
 	}
 
@@ -183,6 +175,7 @@ namespace realtimeplot {
 		set_color( Color::white() );
 		rectangle( min_x, min_y, max_x-min_x, max_y-min_y,
 				true );
+		set_color( Color::black() );
 		context->restore();
 		lines.clear();
 	}

@@ -76,6 +76,9 @@ namespace realtimeplot {
 			//last_update_time (display at least every second)
 			boost::posix_time::ptime time_of_last_update;
 
+			//! Current line id
+			int current_line;
+
 			//set a flag when display shouldn't be updated (plotting still runs on)
 			bool pause_display;
 			/*
@@ -138,6 +141,14 @@ namespace realtimeplot {
 			//point
 			//draw point on surface
 			void point( float x, float y );
+			
+			/** 
+			 * \brief Add a point to a line
+			 *
+			 * The line to add the point to is controlled by set_line_id and the color
+			 * via set_color
+			 */
+			void line_add( float x, float y );
 
 			/**
 				\brief Add a point to a line 

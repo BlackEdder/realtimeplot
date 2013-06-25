@@ -22,6 +22,7 @@
 	 */
 #ifndef PLOTAREA_H
 #define PLOTAREA_H
+#include <map>
 
 #include <cairomm/context.h>
 #include "realtimeplot/plot.h"
@@ -32,11 +33,11 @@ namespace realtimeplot {
 	 */
 	class LineAttributes {
 		public:
-			int id;
 			float current_x, current_y;
+			Color color;
 
-			LineAttributes( float x, float y, int id ) 
-				: id( id ), current_x( x ), current_y( y )	{
+			LineAttributes( float x, float y, const Color &color ) 
+				: current_x( x ), current_y( y ), color( color ) {
 			}
 	};
 
@@ -93,7 +94,7 @@ namespace realtimeplot {
 			void clear();
 		//private:
 			//Keep track to lines
-			std::list<boost::shared_ptr<LineAttributes> > lines;
+			std::map<int, boost::shared_ptr<LineAttributes> > lines;
 	};
 
 	/**

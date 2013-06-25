@@ -35,7 +35,7 @@ namespace realtimeplot {
 	 */
 	boost::mutex BackendPlot::global_mutex;
 
-	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : config( conf ), pEventHandler( pEventHandler ) 
+	BackendPlot::BackendPlot(PlotConfig conf, boost::shared_ptr<EventHandler> pEventHandler) : config( conf ), pEventHandler( pEventHandler ), current_line( -1 )
 	{
 		//config = conf;
 		checkConfig();
@@ -231,6 +231,19 @@ namespace realtimeplot {
 		pPlotArea->rectangle( min_x, min_y, width_x, width_y, fill );
 		pPlotArea->set_color( old_color );
 		global_mutex.unlock();
+		display();
+	}
+
+	void BackendPlot::line_add( float x, float y ) {
+		if (!within_plot_bounds(x,y)) {
+			if (!config.fixed_plot_area)
+				rolling_update(x, y);
+		}
+
+		global_mutex.lock();
+		pPlotArea->line_add( x, y, current_line );
+		global_mutex.unlock();
+
 		display();
 	}
 
