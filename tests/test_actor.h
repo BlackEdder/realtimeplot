@@ -89,6 +89,5 @@ class TestActor : public CxxTest::TestSuite
 			actor << make_any_tuple( atom("save"), fn("line_plot1") );
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "line_plot1" ) );
-			TS_ASSERT( false );
 		}
 };
