@@ -46,7 +46,7 @@ class TestActor : public CxxTest::TestSuite
 
 		void testOpen() {
 			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open"), "plot" );
+			actor << make_any_tuple( atom("open_test"), "plot" );
 			actor << make_any_tuple( atom("save"), fn("empty_plot") );
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "empty_plot" ) );
@@ -54,7 +54,7 @@ class TestActor : public CxxTest::TestSuite
 
 		void testPoint() {
 			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open"), "plot" );
+			actor << make_any_tuple( atom("open_test"), "plot" );
 			actor << make_any_tuple( atom("point"), 1, 1 );
 			actor << make_any_tuple( atom("save"), fn("point_plot") );
 			wait_for_exit( actor );
@@ -63,7 +63,7 @@ class TestActor : public CxxTest::TestSuite
 
 		void testColor() {
 			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open"), "plot" );
+			actor << make_any_tuple( atom("open_test"), "plot" );
 			actor << make_any_tuple( atom("color"), Color::red() );
 			actor << make_any_tuple( atom("point"), 1, 1 );
 			actor << make_any_tuple( atom("save"), fn("red_point_plot") );
@@ -73,7 +73,7 @@ class TestActor : public CxxTest::TestSuite
 
 		void testPlotLines() { // Need to change id and then add point
 			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open"), "plot" );
+			actor << make_any_tuple( atom("open_test"), "plot" );
 			actor << make_any_tuple( atom("color"), Color::green() );
 			actor << make_any_tuple( atom("line_id"), 1 );
 			actor << make_any_tuple( atom("line_add"), 1, 1 );

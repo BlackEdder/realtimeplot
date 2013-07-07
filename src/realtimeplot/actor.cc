@@ -31,7 +31,7 @@ namespace realtimeplot {
 
 	void Actor::init() {
 		become (
-			on(atom("open"), arg_match ) >> [this] ( const std::string &type ) {
+			on(atom("open_test"), arg_match ) >> [this] ( const std::string &type ) {
 				PlotConfig conf = PlotConfig(); // Default config
 				conf.area = 50*50;
 				conf.min_x = -5;
@@ -43,6 +43,12 @@ namespace realtimeplot {
 				conf.display = false;
 				if (type == "plot") {
 					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( conf, 
+						boost::shared_ptr<EventHandler>()  ) );
+				}
+			},
+			on(atom("open"), arg_match ) >> [this] ( const std::string &type ) {
+				if (type == "plot") {
+					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( PlotConfig(), 
 						boost::shared_ptr<EventHandler>()  ) );
 				}
 			},
