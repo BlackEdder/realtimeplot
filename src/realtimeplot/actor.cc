@@ -47,8 +47,9 @@ namespace realtimeplot {
 				}
 			},
 			on(atom("open"), arg_match ) >> [this] ( const std::string &type ) {
+				PlotConfig conf = PlotConfig(); // Default config
 				if (type == "plot") {
-					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( PlotConfig(), 
+					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( conf, 
 						boost::shared_ptr<EventHandler>()  ) );
 				}
 			},

@@ -62,7 +62,8 @@ namespace realtimeplot {
 	void XcbHandler::send_event( xcb_drawable_t window, 
 			boost::shared_ptr<Event> pEvent ) {
 		boost::mutex::scoped_lock( map_mutex );
-		mapWindow[window]->add_event( pEvent, true );
+		if (mapWindow[window])
+			mapWindow[window]->add_event( pEvent, true );
 	}
 
 	size_t XcbHandler::open_window(size_t width, size_t height,
