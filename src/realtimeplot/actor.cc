@@ -22,6 +22,7 @@
 	 */
 
 #include "realtimeplot/actor.hh"
+#include "realtimeplot/backend.h"
 
 namespace realtimeplot {
 	using namespace cppa;

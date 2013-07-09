@@ -25,6 +25,7 @@
 #include "testhelpers.h"
 
 #include "realtimeplot/actor.hh"
+#include "realtimeplot/backend.h"
 
 using namespace realtimeplot;
 class TestActor : public CxxTest::TestSuite 

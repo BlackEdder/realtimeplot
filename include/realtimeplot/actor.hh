@@ -25,11 +25,12 @@
 #define REALTIMEPLOT_ACTOR_H
 
 #include "cppa/cppa.hpp"
-
-#include "realtimeplot/backend.h"
+#include "boost/shared_ptr.hpp"
 
 namespace realtimeplot {
 	using namespace cppa;
+	class BackendPlot; // Forward declaration
+
 	class Actor : public cppa::event_based_actor {
 		public:
 			Actor();
