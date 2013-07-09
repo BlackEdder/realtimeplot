@@ -26,7 +26,7 @@
 
 namespace realtimeplot {
 	using namespace cppa;
-	Actor::Actor() {
+	Actor::Actor() : new_line_id( -2 ) {
 		announce<Color>( &Color::r, &Color::g, &Color::b, &Color::a );
 	}
 
@@ -66,6 +66,10 @@ namespace realtimeplot {
 			on(atom("point"), arg_match ) >> [this] ( const double &x, 
 					const double &y ) {
 				pBPlot->point( x, y );
+			},
+			on(atom("new_line")) >> [this] () {
+				pBPlot->current_line = new_line_id;
+				--new_line_id;
 			},
 			on(atom("line_id"), arg_match ) >> [this] ( const int id  ) {
 				pBPlot->current_line = id;

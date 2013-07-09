@@ -38,6 +38,8 @@ namespace realtimeplot {
 			void init();
 
 			boost::shared_ptr<BackendPlot> pBPlot;
+		private:
+			int new_line_id; // line id used when new line is called
 	};
 };
 #endif
