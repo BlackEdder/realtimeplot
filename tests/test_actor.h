@@ -72,6 +72,16 @@ class TestActor : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "red_point_plot" ) );
 		}
 
+		void testText() {
+			actor_ptr actor = spawn<Actor>();
+			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor << make_any_tuple( atom("text"), 1.0, 1.0, "test" );
+			actor << make_any_tuple( atom("save"), fn("text_plot") );
+			wait_for_exit( actor );
+			TS_ASSERT( check_plot( "text_plot" ) );
+		}
+
+
 		void testPlotLines() { // Need to change id and then add point
 			actor_ptr actor = spawn<Actor>();
 			actor << make_any_tuple( atom("open_test"), "plot" );

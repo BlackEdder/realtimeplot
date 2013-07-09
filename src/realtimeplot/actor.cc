@@ -67,6 +67,14 @@ namespace realtimeplot {
 					const double &y ) {
 				pBPlot->point( x, y );
 			},
+			on(atom("text"), arg_match ) >> [this] ( const int &x, const int &y,
+					const std::string &txt ) {
+				pBPlot->text( x, y, txt );
+			},
+			on(atom("text"), arg_match ) >> [this] ( const double &x, 
+					const double &y, const std::string &txt ) {
+				pBPlot->text( x, y, txt );
+			},
 			on(atom("new_line")) >> [this] () {
 				pBPlot->current_line = new_line_id;
 				--new_line_id;

@@ -103,7 +103,8 @@ class TestBackend : public CxxTest::TestSuite
 
 		void testLinePlot() {
 			//conf.area = 500*500;
-			BackendPlot bpl = BackendPlot( conf, boost::shared_ptr<EventHandler>()  );
+			BackendPlot bpl = BackendPlot( conf, 
+					boost::shared_ptr<EventHandler>()  );
 			bpl.line_add( 1, 1, 1, Color::green() );
 			bpl.line_add( 1, 1, 2, Color::red() );
 			bpl.line_add( 1, 2, 1, Color::green() );
