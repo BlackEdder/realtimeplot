@@ -23,6 +23,7 @@
 #ifndef REALTIMEPLOT_H
 #define REALTIMEPLOT_H
 #include "realtimeplot/plot.h"
+#include "realtimeplot/actor.hh"
 
 /**
  * \brief RealTimePlot namespace
