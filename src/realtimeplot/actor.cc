@@ -54,6 +54,9 @@ namespace realtimeplot {
 						boost::shared_ptr<EventHandler>()  ) );
 				}
 			},
+			on(atom("plot"), arg_match ) >> [this] () {
+				pBPlot->display(); // Force redraw/draw
+			},
 			on(atom("save"), arg_match ) >> [this] ( const std::string &filename ) {
 				pBPlot->save( filename );
 			},
