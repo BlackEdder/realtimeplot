@@ -215,7 +215,22 @@ namespace realtimeplot {
 		display();
 	}
 
-	void BackendPlot::rectangle( float min_x, float min_y, float width_x, float width_y, 
+	void BackendPlot::rectangle_at( const float &x, const float &y, 
+			const float &width, const float &height, const bool &fill ) {
+		float min_x = x-0.5*width;
+		float min_y = y-0.5*height;
+		if (!within_plot_bounds(min_x,min_y)) {
+			if (!config.fixed_plot_area)
+				rolling_update(min_x, min_y);
+		}
+		global_mutex.lock();
+		pPlotArea->rectangle( min_x, min_y, width, height, fill );
+		global_mutex.unlock();
+		display();
+	}
+
+	void BackendPlot::rectangle( float min_x, float min_y, 
+			float width_x, float width_y, 
 			bool fill, Color color ) {
 		if (!within_plot_bounds(min_x,min_y)) {
 			if (!config.fixed_plot_area)

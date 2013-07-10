@@ -104,7 +104,12 @@ namespace realtimeplot {
 					const double &max ) {
 				pBPlot->yrange( min, max );
 			},
-			on(atom("xlabel"), arg_match ) >> [this] ( const std::string &title ) {
+			on(atom("rectangle"), arg_match ) >> [this] ( const double &x, 
+					const double &y, const double &width, const double &height,
+					const bool &fill ) {
+				pBPlot->rectangle_at( x, y, width, height, fill );
+			},
+				on(atom("xlabel"), arg_match ) >> [this] ( const std::string &title ) {
 				pBPlot->xlabel( title );
 			},
 			on(atom("ylabel"), arg_match ) >> [this] ( const std::string &title ) {

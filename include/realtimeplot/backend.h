@@ -165,6 +165,10 @@ namespace realtimeplot {
 			 * Currently always left justified
 			 */
 			virtual void text( float x, float y, const std::string &text );
+			
+			//! Draw rectangle centered on x and y
+			void rectangle_at( const float &x, const float &y, 
+					const float &width, const float &height, const bool &fill );
 
 			//! Draw rectangle to the surface
 			void rectangle( float min_x, float min_y, float width_x, float width_y, 

@@ -133,4 +133,24 @@ class TestActor : public CxxTest::TestSuite
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "empty2_plot" ) );
 		}
+
+		void testRectangle() {
+			actor_ptr actor = spawn<Actor>();
+			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor << make_any_tuple( atom("color"), Color::red() );
+			actor << make_any_tuple( atom("rectangle"), -1.0, -1.0, 
+					3.0, 2.0, true );
+			actor << make_any_tuple( atom("save"), fn("rectangle_fill_plot") );
+			wait_for_exit( actor );
+			TS_ASSERT( check_plot( "rectangle_fill_plot" ) );
+
+			actor_ptr actor2 = spawn<Actor>();
+			actor2 << make_any_tuple( atom("open_test"), "plot" );
+			actor2 << make_any_tuple( atom("color"), Color::red() );
+			actor2 << make_any_tuple( atom("rectangle"), -1.0, -1.0, 
+					3.0, 2.0, false );
+			actor2 << make_any_tuple( atom("save"), fn("rectangle_unfill_plot") );
+			wait_for_exit( actor2 );
+			TS_ASSERT( check_plot( "rectangle_unfill_plot" ) );
+		}
 };
