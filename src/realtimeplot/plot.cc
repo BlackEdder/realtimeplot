@@ -115,7 +115,6 @@ namespace realtimeplot {
 		colors.push_back( Color::red() );
 		colors.push_back( Color::green() );
 		colors.push_back( Color::blue() );
-		colors.push_back( Color::yellow() );
 		colors.push_back( Color::purple() );
 		colors.push_back( Color::grey() );
 		colors.push_back( Color::brown() );
@@ -124,6 +123,7 @@ namespace realtimeplot {
 		colors.push_back( Color::indigo() );
 		colors.push_back( Color::orange() );
 		colors.push_back( Color::cadetblue() );
+		colors.push_back( Color::yellow() );
 		return colors;
 	}
 	/*
