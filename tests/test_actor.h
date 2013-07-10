@@ -76,6 +76,8 @@ class TestActor : public CxxTest::TestSuite
 			actor_ptr actor = spawn<Actor>();
 			actor << make_any_tuple( atom("open_test"), "plot" );
 			actor << make_any_tuple( atom("text"), 1.0, 1.0, "test" );
+			actor << make_any_tuple( atom("color"), Color::red() );
+			actor << make_any_tuple( atom("text"), -3.0, -2.0, "test" );
 			actor << make_any_tuple( atom("save"), fn("text_plot") );
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "text_plot" ) );

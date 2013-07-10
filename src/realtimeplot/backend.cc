@@ -287,7 +287,7 @@ namespace realtimeplot {
 
 		pPlotArea->context->move_to( x, y );
 		pPlotArea->transform_to_device_units();
-		set_foreground_color( pPlotArea->context );
+		//set_foreground_color( pPlotArea->context );
 		//plot_context->show_text( text );
 		pango_layout->set_text( text );
 		//pango_layout->add_to_cairo_context(plot_context); //adds text to cairos stack of stuff to be drawn
