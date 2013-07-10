@@ -93,6 +93,9 @@ namespace realtimeplot {
 			on(atom("color"), arg_match ) >> [this] ( const Color &color ) {
 				pBPlot->set_color( color );
 			},
+			on(atom("title"), arg_match ) >> [this] ( const std::string &title ) {
+				pBPlot->title( title );
+			},
 			on(atom("close")) >> [=]() { reply(atom("DONE")); },
 			others() >> [] { aout << "Message not understood" << std::endl; }
 		);

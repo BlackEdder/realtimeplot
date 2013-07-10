@@ -83,7 +83,6 @@ class TestActor : public CxxTest::TestSuite
 			TS_ASSERT( check_plot( "text_plot" ) );
 		}
 
-
 		void testPlotLines() { // Need to change id and then add point
 			actor_ptr actor = spawn<Actor>();
 			actor << make_any_tuple( atom("open_test"), "plot" );
@@ -103,6 +102,7 @@ class TestActor : public CxxTest::TestSuite
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "line_plot1" ) );
 		}
+
 		void testPlotNewLines() { // Need to change id and then add point
 			actor_ptr actor = spawn<Actor>();
 			actor << make_any_tuple( atom("open_test"), "plot" );
