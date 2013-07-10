@@ -96,6 +96,20 @@ namespace realtimeplot {
 			on(atom("title"), arg_match ) >> [this] ( const std::string &title ) {
 				pBPlot->title( title );
 			},
+			on(atom("xrange"), arg_match ) >> [this] ( const double &min, 
+					const double &max ) {
+				pBPlot->xrange( min, max );
+			},
+			on(atom("yrange"), arg_match ) >> [this] ( const double &min, 
+					const double &max ) {
+				pBPlot->yrange( min, max );
+			},
+			on(atom("xlabel"), arg_match ) >> [this] ( const std::string &title ) {
+				pBPlot->xlabel( title );
+			},
+			on(atom("ylabel"), arg_match ) >> [this] ( const std::string &title ) {
+				pBPlot->ylabel( title );
+			},
 			on(atom("close")) >> [=]() { reply(atom("DONE")); },
 			others() >> [] { aout << "Message not understood" << std::endl; }
 		);

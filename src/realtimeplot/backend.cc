@@ -469,6 +469,29 @@ namespace realtimeplot {
 		display();
 	}
 
+	void BackendPlot::xrange( const float &min, const float &max ) {
+		auto new_config = config;
+		new_config.max_x = max;
+		new_config.min_x = min;
+		reset( new_config );
+	}
+	void BackendPlot::yrange( const float &min, const float &max ) {
+		auto new_config = config;
+		new_config.max_y = max;
+		new_config.min_y = min;
+		reset( new_config );
+	}
+	void BackendPlot::xlabel( const std::string &label ) {
+		config.xlabel = label;
+		draw_axes_surface();
+		display();
+	}
+	void BackendPlot::ylabel( const std::string &label ) {
+		config.ylabel = label;
+		draw_axes_surface();
+		display();
+	}
+
 	void BackendPlot::update_config() { 
 		//Check that it can be done:
 		if (config.max_x > pPlotArea->max_x)

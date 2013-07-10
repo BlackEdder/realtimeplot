@@ -120,4 +120,17 @@ class TestActor : public CxxTest::TestSuite
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "line_plot1" ) );
 		}
+
+		void testAxes() {
+			actor_ptr actor = spawn<Actor>();
+			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor << make_any_tuple( atom("xrange"), 0.0, 1.0 );
+			actor << make_any_tuple( atom("yrange"), -1.0, 0.0 );
+			actor << make_any_tuple( atom("point"), 0.5, -0.5 );
+			actor << make_any_tuple( atom("xlabel"), "xlabel" );
+			actor << make_any_tuple( atom("ylabel"), "ylabel" );
+			actor << make_any_tuple( atom("save"), fn("empty2_plot") );
+			wait_for_exit( actor );
+			TS_ASSERT( check_plot( "empty2_plot" ) );
+		}
 };

@@ -194,6 +194,31 @@ namespace realtimeplot {
 			bool plot_bounds_within_surface_bounds( );
 
 			/**
+			 * \brief Change xaxis coordinates
+			 *
+			 * For now this resets the plot completely.
+			 *
+			 * TODO make this "non destructive"
+			 */
+			void xrange( const float &min, const float &max );
+			/**
+			 * \brief Change yaxis coordinates
+			 *
+			 * For now this resets the plot completely.
+			 *
+			 * TODO make this "non destructive"
+			 */
+			void yrange( const float &min, const float &max );
+			/**
+			 * \brief Change xaxis label
+			 */
+			void xlabel( const std::string &label );
+			/**
+			 * \brief Change xaxis label
+			 */
+			void ylabel( const std::string &label );
+		
+			/**
 			 * \brief Call this when config is updated
 			 *
 			 * Would be better to do it automatically, but this works for now
