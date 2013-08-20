@@ -42,7 +42,17 @@ namespace realtimeplot {
 			bintype binned;
 			binned.min = min_x;
 			binned.width = (max_x-min_x)/no_bins;
-			binned.bins = calculate_bins( min_x, max_x, no_bins, data );
+			//binned.bins = calculate_bins( min_x, max_x, no_bins, data );
+			binned.bins.resize(no_bins);
+			
+			for (size_t i=0; i<data.size(); ++i) {
+				if (data[i]>=min_x && data[i]<max_x) {
+					size_t id = bin_id( binned.min, binned.width, data[i]);
+					++binned.bins[id];
+					if (binned.bins[id] > binned.max_count)
+						binned.max_count = binned.bins[id];
+				}
+			}
 			return binned;
 		}
 

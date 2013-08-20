@@ -36,7 +36,7 @@ namespace realtimeplot {
 		 */
 		class bintype {
 			public:
-				bintype() : bins( std::vector<double>() ), width(0), min(0) {};
+				bintype() : bins( std::vector<double>() ), width(0), min(0), max_count(0) {};
 				~bintype() {};
 				bintype( const bintype &cpy ) {
 					this->min = cpy.min;
@@ -48,6 +48,8 @@ namespace realtimeplot {
 				}
 				double min;
 				double width;
+				//! Maximum count in the bins;
+				double max_count;
 				std::vector<double> bins;
 		};
 
