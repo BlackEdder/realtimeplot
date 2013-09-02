@@ -33,10 +33,7 @@ class TestActor : public CxxTest::TestSuite
 	public:
 		void wait_for_exit( actor_ptr actor ) {
 			actor << make_any_tuple( atom("close") );
-			bool open = true;
-			do_receive (
-				on( atom("DONE") ) >> [&open]() { open = false; }
-			).until( gref(open) == false );
+			await_all_others_done();
 		}
 
 		void testClose() {

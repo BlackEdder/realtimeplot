@@ -115,7 +115,8 @@ namespace realtimeplot {
 			on(atom("ylabel"), arg_match ) >> [this] ( const std::string &title ) {
 				pBPlot->ylabel( title );
 			},
-			on(atom("close")) >> [=]() { reply(atom("DONE")); },
+			on(atom("close")) >> [=]() { reply(atom("EXIT"));
+				unbecome(); },
 			others() >> [] { aout << "Message not understood" << std::endl; }
 		);
 	}
