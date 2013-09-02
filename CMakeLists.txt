@@ -82,6 +82,9 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 add_executable(plot_points examples/plot_points.cc)
 target_link_libraries(plot_points realtimeplot)
 
+add_executable(plot_points_actor examples/plot_points_actor.cc)
+target_link_libraries(plot_points_actor realtimeplot)
+
 add_executable(plot_test examples/plot_test.cc)
 target_link_libraries(plot_test realtimeplot)
 

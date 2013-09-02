@@ -46,6 +46,11 @@ namespace realtimeplot {
 					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( conf, 
 						boost::shared_ptr<EventHandler>()  ) );
 				}
+				delayed_send( self, std::chrono::milliseconds(100), atom("poll"));
+			},
+			on(atom("poll")) >> [this]() { 
+				delayed_send(self, std::chrono::milliseconds(100), atom("poll"));
+				pBPlot->display(); // Force redraw/draw
 			},
 			on(atom("open"), arg_match ) >> [this] ( const std::string &type ) {
 				PlotConfig conf = PlotConfig(); // Default config
