@@ -28,9 +28,50 @@
 #include "realtimeplot/backend.h"
 
 using namespace realtimeplot;
+
+class CacheActor : public event_based_actor {
+	public:
+		void init() {
+			become(
+				on(atom("resend")) >> [&]() { 
+					for ( auto & tuple : _cache ) {
+						self->last_sender() << tuple;
+					}
+				},
+				on(atom("close")) >> []() { 
+					reply(atom("EXIT"));
+					unbecome(); 
+				},
+				others() >> [&] { _cache.push_back( self->last_dequeued() ); }
+			);
+		}
+	protected:
+		std::vector<any_tuple> _cache;
+};
+
+	
+
 class TestActor : public CxxTest::TestSuite 
 {
 	public:
+		void testCache() {
+			actor_ptr actor = spawn<CacheActor>();
+			int i = 0;
+			for ( ; i<10; ++i ) {
+				actor << make_any_tuple( i );
+			}
+			actor << make_any_tuple( atom("resend") );
+			i = 0;
+			receive_for( i, 10 ) (
+				 on<int>() >> [&](int value) { 
+					 TS_ASSERT_EQUALS( i, value ); 
+				 },
+				 others() >> [&] { std::cout << "confused" << std::endl; }
+			);
+			wait_for_exit( actor );
+		}
+		
+
 		void wait_for_exit( actor_ptr actor ) {
 			actor << make_any_tuple( atom("close") );
 			await_all_others_done();
