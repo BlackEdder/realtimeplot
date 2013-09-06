@@ -58,7 +58,7 @@ namespace realtimeplot {
 			boost::shared_ptr<Event> pEvent = event_queue.pop();
 			pEvent->execute( pBPlot );
 			if (get_queue_size() == 0) {
-				if (pBPlot != NULL) {
+				if (pBPlot != nullptr) {
 					pBPlot->display();
 				}
 			}
@@ -71,7 +71,7 @@ namespace realtimeplot {
 			}*/
 		}
 		// Make sure we let pBPlot go/freed.
-		if (pBPlot != NULL)
+		if (pBPlot != nullptr)
 			pBPlot.reset();
 	}
 }
