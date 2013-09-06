@@ -29,46 +29,69 @@
 
 using namespace realtimeplot;
 
+/**
+ * \brief Cache messages before forwarding messages to another actor
+ *
+ * Will resend all the messages on a atom("resend")
+ */
 class CacheActor : public event_based_actor {
 	public:
+		CacheActor( actor_ptr actor ) : _actor( actor ) {
+			//self->link_to( _actor );
+		}
 		void init() {
 			become(
 				on(atom("resend")) >> [&]() { 
 					for ( auto & tuple : _cache ) {
-						self->last_sender() << tuple;
+						_actor << tuple;
 					}
 				},
-				on(atom("close")) >> []() { 
-					reply(atom("EXIT"));
+				on(atom("close")) >> [&] {
+					_actor << make_any_tuple( atom("close") );
 					unbecome(); 
 				},
-				others() >> [&] { _cache.push_back( self->last_dequeued() ); }
+				others() >> [&] {
+					auto msg = self->last_dequeued();
+					_actor << msg;
+					_cache.push_back( msg  ); 
+				}
 			);
 		}
 	protected:
 		std::vector<any_tuple> _cache;
+		actor_ptr _actor;
 };
 
-	
+size_t msg_count;
+
+class DummyActor : public event_based_actor {
+	public:
+	void init() {
+		become(
+			on(atom("close")) >> []() {
+				reply( atom("close") );
+				unbecome(); 
+			},
+			others() >> [&] {
+				++msg_count;
+			}
+		);
+	}
+};
 
 class TestActor : public CxxTest::TestSuite 
 {
 	public:
 		void testCache() {
-			actor_ptr actor = spawn<CacheActor>();
+			actor_ptr dummy_actor = spawn<DummyActor>();
+			actor_ptr actor = spawn<CacheActor>( dummy_actor );
 			int i = 0;
 			for ( ; i<10; ++i ) {
 				actor << make_any_tuple( i );
 			}
 			actor << make_any_tuple( atom("resend") );
-			i = 0;
-			receive_for( i, 10 ) (
-				 on<int>() >> [&](int value) { 
-					 TS_ASSERT_EQUALS( i, value ); 
-				 },
-				 others() >> [&] { std::cout << "confused" << std::endl; }
-			);
 			wait_for_exit( actor );
+			TS_ASSERT_EQUALS( 20, msg_count );
 		}
 		
 
