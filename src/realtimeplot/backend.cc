@@ -49,14 +49,14 @@ namespace realtimeplot {
 				config.display = false;
 			}
 			pDisplayHandler = DummyHandler::Instance();
-			if (pEventHandler != NULL)
+			if (pEventHandler != nullptr)
 				pEventHandler->window_closed = true;
 		}
 #endif
 #ifdef NO_X
 		pDisplayHandler = DummyHandler::Instance();
 		config.display = false;
-		if (pEventHandler != NULL)
+		if (pEventHandler != nullptr)
 			pEventHandler->window_closed = true;
 #endif
 
@@ -173,7 +173,7 @@ namespace realtimeplot {
 			xSurface.clear();
 			pDisplayHandler->close_window( win );
 		}
-		if (pEventHandler != NULL)
+		if (pEventHandler != nullptr)
 			pEventHandler->window_closed = true;
 	}
 

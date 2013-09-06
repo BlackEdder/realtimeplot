@@ -176,13 +176,13 @@ namespace realtimeplot {
 			}
 			pEvent->execute( pBPlot );
 			if (get_queue_size() == 0) {
-				if (pBPlot != NULL) {
+				if (pBPlot != nullptr) {
 					pBPlot->display();
 				}
 			}	
 		}
 		// Make sure we let pBPlot go/freed.
-		if (pBPlot != NULL)
+		if (pBPlot != nullptr)
 			pBPlot.reset();
 	}
 
