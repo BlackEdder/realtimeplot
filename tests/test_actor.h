@@ -36,6 +36,17 @@ class TestActor : public CxxTest::TestSuite
 			await_all_others_done();
 		}
 
+		actor_ptr open_empty_plot() {
+			actor_ptr actor = spawn<Actor>();
+			actor << make_any_tuple( atom("open"), "plot", false );
+			actor << make_any_tuple( atom("area_size"), 50*50 );
+			actor << make_any_tuple( atom("xrange"), -5.0 , 5.0 );
+			actor << make_any_tuple( atom("yrange"), -5.0 , 5.0 );
+			actor << make_any_tuple( atom("margin_x"), 20 );
+			actor << make_any_tuple( atom("margin_y"), 20 );
+			return actor;
+		}
+
 		void testClose() {
 			actor_ptr actor = spawn<Actor>();
 			wait_for_exit( actor );
@@ -43,16 +54,14 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testOpen() {
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("save"), fn("empty_plot") );
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "empty_plot" ) );
 		}
 
 		void testPoint() {
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("point"), 1, 1 );
 			actor << make_any_tuple( atom("save"), fn("point_plot") );
 			wait_for_exit( actor );

@@ -214,6 +214,30 @@ namespace realtimeplot {
 			 */
 			void yrange( const float &min, const float &max );
 			/**
+			 * \brief Change total no of pixels of the area
+			 *
+			 * For now this resets the plot completely.
+			 *
+			 * TODO make this "non destructive"
+			 */
+			void area_size( size_t no_pixels );
+			/**
+			 * \brief Change height of margin under x axis 
+			 *
+			 * For now this resets the plot completely.
+			 *
+			 * TODO make this "non destructive"
+			 */
+			void margin_x( size_t no_pixels );
+			/**
+			 * \brief Change width of margin left of y axis 
+			 *
+			 * For now this resets the plot completely.
+			 *
+			 * TODO make this "non destructive"
+			 */
+			void margin_y( size_t no_pixels );
+				/**
 			 * \brief Change xaxis label
 			 */
 			void xlabel( const std::string &label );
