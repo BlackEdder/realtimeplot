@@ -29,39 +29,6 @@
 
 using namespace realtimeplot;
 
-/**
- * \brief Cache messages before forwarding messages to another actor
- *
- * Will resend all the messages on a atom("resend")
- */
-class CacheActor : public event_based_actor {
-	public:
-		CacheActor( actor_ptr actor ) : _actor( actor ) {
-			//self->link_to( _actor );
-		}
-		void init() {
-			become(
-				on(atom("resend")) >> [&]() { 
-					for ( auto & tuple : _cache ) {
-						_actor << tuple;
-					}
-				},
-				on(atom("close")) >> [&] {
-					_actor << make_any_tuple( atom("close") );
-					unbecome(); 
-				},
-				others() >> [&] {
-					auto msg = self->last_dequeued();
-					_actor << msg;
-					_cache.push_back( msg  ); 
-				}
-			);
-		}
-	protected:
-		std::vector<any_tuple> _cache;
-		actor_ptr _actor;
-};
-
 size_t msg_count;
 
 class DummyActor : public event_based_actor {
@@ -69,7 +36,6 @@ class DummyActor : public event_based_actor {
 	void init() {
 		become(
 			on(atom("close")) >> []() {
-				reply( atom("close") );
 				unbecome(); 
 			},
 			others() >> [&] {

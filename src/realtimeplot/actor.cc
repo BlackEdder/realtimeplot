@@ -26,6 +26,31 @@
 
 namespace realtimeplot {
 	using namespace cppa;
+
+	CacheActor::CacheActor( actor_ptr actor ) 
+		: _actor( actor ) {}
+
+	void CacheActor::init() {
+		become(
+			on(atom("resend")) >> [&]() { 
+				for ( auto & tuple : _cache ) {
+					_actor << tuple;
+				}
+			},
+			on(atom("close")) >> [&] {
+				forward_to( _actor );
+				unbecome(); 
+			},
+			others() >> [&] {
+				forward_to( _actor );
+				_cache.push_back( self->last_dequeued()  ); 
+			}
+		);
+	}
+
+ 	/**
+	 * Actor
+	 */
 	Actor::Actor() : new_line_id( -2 ) {
 		announce<Color>( &Color::r, &Color::g, &Color::b, &Color::a );
 	}

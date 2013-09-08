@@ -31,6 +31,24 @@ namespace realtimeplot {
 	using namespace cppa;
 	class BackendPlot; // Forward declaration
 
+	/**
+	 * \brief Cache messages before forwarding messages to another actor
+	 *
+	 * Will resend all the messages on a atom("resend")
+	 */
+	class CacheActor : public event_based_actor {
+		public:
+			CacheActor( actor_ptr actor );
+
+			void init();	
+
+		protected:
+			std::vector<any_tuple> _cache;
+			actor_ptr _actor;
+	};
+
+
+
 	class Actor : public cppa::event_based_actor {
 		public:
 			Actor();
