@@ -99,8 +99,7 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testColor() {
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("color"), Color::red() );
 			actor << make_any_tuple( atom("point"), 1, 1 );
 			actor << make_any_tuple( atom("save"), fn("red_point_plot") );
@@ -109,8 +108,7 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testText() {
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("text"), 1.0, 1.0, "test" );
 			actor << make_any_tuple( atom("color"), Color::red() );
 			actor << make_any_tuple( atom("point"), 1.0, 1.0 );
@@ -121,8 +119,7 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testPlotLines() { // Need to change id and then add point
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("color"), Color::green() );
 			actor << make_any_tuple( atom("line_id"), 1 );
 			actor << make_any_tuple( atom("line_add"), 1, 1 );
@@ -141,8 +138,7 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testPlotNewLines() { // Need to change id and then add point
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("color"), Color::green() );
 			actor << make_any_tuple( atom("line_id"), 1 );
 			actor << make_any_tuple( atom("line_add"), 1, 1 );
@@ -159,8 +155,7 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testAxes() {
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("xrange"), 0.0, 1.0 );
 			actor << make_any_tuple( atom("yrange"), -1.0, 0.0 );
 			actor << make_any_tuple( atom("point"), 0.5, -0.5 );
@@ -172,8 +167,7 @@ class TestActor : public CxxTest::TestSuite
 		}
 
 		void testRectangle() {
-			actor_ptr actor = spawn<Actor>();
-			actor << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor = open_empty_plot();
 			actor << make_any_tuple( atom("color"), Color::red() );
 			actor << make_any_tuple( atom("rectangle"), -1.0, -1.0, 
 					3.0, 2.0, true );
@@ -181,8 +175,7 @@ class TestActor : public CxxTest::TestSuite
 			wait_for_exit( actor );
 			TS_ASSERT( check_plot( "rectangle_fill_plot" ) );
 
-			actor_ptr actor2 = spawn<Actor>();
-			actor2 << make_any_tuple( atom("open_test"), "plot" );
+			actor_ptr actor2 = open_empty_plot();
 			actor2 << make_any_tuple( atom("color"), Color::red() );
 			actor2 << make_any_tuple( atom("rectangle"), -1.0, -1.0, 
 					3.0, 2.0, false );

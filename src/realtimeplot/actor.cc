@@ -57,22 +57,6 @@ namespace realtimeplot {
 
 	void Actor::init() {
 		become (
-			on(atom("open_test"), arg_match ) >> [this] ( const std::string &type ) {
-				PlotConfig conf = PlotConfig(); // Default config
-				conf.area = 50*50;
-				conf.min_x = -5;
-				conf.max_x = 5;
-				conf.min_y = -5;
-				conf.max_y = 5;
-				conf.margin_x = 20;
-				conf.margin_y = 20;
-				conf.display = false;
-				if (type == "plot") {
-					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( conf, 
-						boost::shared_ptr<EventHandler>()  ) );
-				}
-				delayed_send( self, std::chrono::milliseconds(100), atom("poll"));
-			},
 			on(atom("poll")) >> [this]() { 
 				delayed_send(self, std::chrono::milliseconds(100), atom("poll"));
 				pBPlot->display(); // Force redraw/draw
@@ -85,6 +69,7 @@ namespace realtimeplot {
 					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( conf, 
 						boost::shared_ptr<EventHandler>()  ) );
 				}
+				delayed_send( self, std::chrono::milliseconds(100), atom("poll"));
 			},
 			on(atom("open"), arg_match ) >> [this] ( const std::string &type ) {
 				PlotConfig conf = PlotConfig(); // Default config
