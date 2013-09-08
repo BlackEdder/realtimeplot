@@ -77,6 +77,15 @@ namespace realtimeplot {
 				delayed_send(self, std::chrono::milliseconds(100), atom("poll"));
 				pBPlot->display(); // Force redraw/draw
 			},
+			on(atom("open"), arg_match ) >> [this] ( const std::string &type,
+				const bool &window ) {
+				PlotConfig conf = PlotConfig(); // Default config
+				conf.display = window;
+				if (type == "plot") {
+					pBPlot = boost::shared_ptr<BackendPlot>( new BackendPlot( conf, 
+						boost::shared_ptr<EventHandler>()  ) );
+				}
+			},
 			on(atom("open"), arg_match ) >> [this] ( const std::string &type ) {
 				PlotConfig conf = PlotConfig(); // Default config
 				if (type == "plot") {
@@ -140,7 +149,18 @@ namespace realtimeplot {
 					const bool &fill ) {
 				pBPlot->rectangle_at( x, y, width, height, fill );
 			},
-				on(atom("xlabel"), arg_match ) >> [this] ( const std::string &title ) {
+			on(atom("area_size"), arg_match ) >> [this] ( const int &no_pixels ) {
+				pBPlot->area_size( no_pixels );
+			},
+			on(atom("margin_x"), arg_match ) >> [this] ( const int &no_pixels ) {
+				pBPlot->margin_x( no_pixels );
+			},
+			on(atom("margin_y"), arg_match ) >> [this] ( const int &no_pixels ) {
+				pBPlot->margin_y( no_pixels );
+			},
+			on(atom("ylabel"), arg_match ) >> [this] ( const std::string &title ) {
+			},
+			on(atom("xlabel"), arg_match ) >> [this] ( const std::string &title ) {
 				pBPlot->xlabel( title );
 			},
 			on(atom("ylabel"), arg_match ) >> [this] ( const std::string &title ) {

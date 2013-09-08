@@ -484,19 +484,37 @@ namespace realtimeplot {
 		update_config();
 		display();
 	}
+	void BackendPlot::area_size( size_t no_pixels ) {
+		auto new_config = config;
+		new_config.area = no_pixels;
+		reset( new_config );
+	}
+	void BackendPlot::margin_x( size_t no_pixels ) {
+		auto new_config = config;
+		new_config.bottom_margin = no_pixels;
+		reset( new_config );
+	}
 
+	void BackendPlot::margin_y( size_t no_pixels ) {
+		auto new_config = config;
+		new_config.left_margin = no_pixels;
+		reset( new_config );
+	}
+	
 	void BackendPlot::xrange( const float &min, const float &max ) {
 		auto new_config = config;
 		new_config.max_x = max;
 		new_config.min_x = min;
 		reset( new_config );
 	}
+
 	void BackendPlot::yrange( const float &min, const float &max ) {
 		auto new_config = config;
 		new_config.max_y = max;
 		new_config.min_y = min;
 		reset( new_config );
 	}
+
 	void BackendPlot::xlabel( const std::string &label ) {
 		config.xlabel = label;
 		draw_axes_surface();
