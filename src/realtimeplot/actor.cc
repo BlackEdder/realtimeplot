@@ -144,6 +144,7 @@ namespace realtimeplot {
 				pBPlot->margin_y( no_pixels );
 			},
 			on(atom("ylabel"), arg_match ) >> [this] ( const std::string &title ) {
+				pBPlot->ylabel( title );
 			},
 			on(atom("xlabel"), arg_match ) >> [this] ( const std::string &title ) {
 				pBPlot->xlabel( title );
