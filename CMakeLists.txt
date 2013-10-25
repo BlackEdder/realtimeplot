@@ -79,38 +79,18 @@ target_link_libraries(realtimeplot ${LIBS})
 
 #Examples.. should be under own build target -> make examples
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
-add_executable(plot_points examples/plot_points.cc)
-target_link_libraries(plot_points realtimeplot)
+FILE(GLOB examplesRaw RELATIVE ${CMAKE_HOME_DIRECTORY} examples/*.cc)
+FOREACH(example ${examplesRaw})
+	get_filename_component( ex ${example} NAME_WE )
+	add_executable(${ex} EXCLUDE_FROM_ALL ${example})
+ 	target_link_libraries(${ex} realtimeplot)
+ 	SET(examples ${examples};${ex})
+ENDFOREACH()
+MESSAGE( ${examples} )
 
-add_executable(plot_points_actor examples/plot_points_actor.cc)
-target_link_libraries(plot_points_actor realtimeplot)
-
-add_executable(plot_test examples/plot_test.cc)
-target_link_libraries(plot_test realtimeplot)
-
-add_executable(plot_line examples/plot_line.cc)
-target_link_libraries(plot_line realtimeplot)
-
-add_executable(plot_stream examples/plot_stream.cc)
-target_link_libraries(plot_stream realtimeplot)
-
-add_executable(plot_thread examples/plot_thread.cc)
-target_link_libraries(plot_thread realtimeplot pthread)
-
-add_executable(plot_histogram examples/plot_histogram.cc)
-target_link_libraries(plot_histogram realtimeplot)
-
-add_executable(plot_surface examples/plot_surface.cc)
-target_link_libraries(plot_surface realtimeplot)
-
-add_executable(plot_rolling_update_stress_test examples/plot_rolling_update_stress_test.cc)
-target_link_libraries(plot_rolling_update_stress_test realtimeplot)
-
-add_executable(plot_heightmap examples/plot_heightmap.cc)
-target_link_libraries(plot_heightmap realtimeplot)
-
-add_executable(plot_multiple examples/plot_multiple.cc)
-target_link_libraries(plot_multiple realtimeplot)
+add_custom_target( examples
+	DEPENDS ${examples}
+	)
 
 # Refresh tags file after changes
 FIND_PROGRAM(CTAGS ctags)
