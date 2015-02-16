@@ -14,8 +14,9 @@ RealTimePlot is a simple c++ library that provides plotting capabilities using c
 What makes it different from other plotting libraries is that most libraries seem to expect all the data to be already produced and therefore are build around the fact that you send the data and only then plot it. This library is meant to display data, while it is being produced/calculated.
 
 Features:
-¿ Multithreaded
-¿ Rolling updates (i.e. the plot will ¿shift¿ to include new data)
-¿ Keyboard controlled (arrow keys to move plot around, w to write a png, space to pause plotting (will not block to process that¿s sending data)).
 
-Feel free to contact me with any questions/suggestion/bugs (see AUTHORS file for my email or use gitorious to send me a message). Knowing that people actually use/are in interisted in my code will motivate me to clean up/better document the code.
+- Multithreaded
+- Rolling updates (i.e. the plot will "shift" to include new data)
+- Keyboard controlled (arrow keys to move plot around, w to write a png, space to pause plotting (will not block to process that¿s sending data)).
+
+Feel free to contact me with any questions/suggestion/bugs (see AUTHORS file for my email or use gitorious/github to send me a message). Knowing that people actually use/are in interisted in my code will motivate me to clean up/better document the code.
